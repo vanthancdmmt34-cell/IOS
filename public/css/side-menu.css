@@ -330,25 +330,33 @@ html body.in-app .mtab { display: none; }
 
 /* ---------- Điện thoại: thanh dưới chuẩn và menu điều hướng (46, 47) ---------- */
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html body.in-app .shell > .main { padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .shell > .main { padding-bottom: calc(74px + env(safe-area-inset-bottom)) !important; }
   /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
   html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
 
+  /* Thanh điều hướng dưới nổi (Floating Frosted Pill Dock) */
   html body.in-app .mtab {
     position: fixed;
     z-index: 60;
     display: grid;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: 10px;
+    right: 10px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 1px;
-    padding: 3px 4px calc(4px + env(safe-area-inset-bottom));
-    border-radius: 0;
-    background: var(--cp-surface, #FFFFFF);
-    border: 0;
-    border-top: 1px solid var(--cp-border, #E6EAF0);
-    box-shadow: 0 -4px 18px rgba(22, 43, 61, .05);
+    gap: 2px;
+    padding: 4px 6px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 10px 28px rgba(22, 43, 61, 0.11), 0 2px 8px rgba(63, 151, 211, 0.08);
+  }
+  html[data-theme="dark"] body.in-app .mtab,
+  body.dark.in-app .mtab {
+    background: rgba(22, 32, 46, 0.90);
+    border-color: rgba(71, 85, 105, 0.45);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   }
   html body.in-app .mtab.mtab-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -361,30 +369,31 @@ html body.in-app .mtab { display: none; }
   }
   html body.in-app .mtab.mtab-7 a,
   html body.in-app .mtab.mtab-7 .mtab-more {
-    font-size: 8.4px;
+    font-size: 8.3px;
     letter-spacing: -0.02em;
     padding: 2px 0;
   }
   html body.in-app .mtab a,
   html body.in-app .mtab .mtab-more {
+    position: relative;
     appearance: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1px;
-    min-height: 38px;
+    gap: 1.5px;
+    min-height: 42px;
     min-width: 0;
     padding: 2px 1px;
     border: 0;
-    border-radius: 9px;
+    border-radius: 14px;
     background: transparent;
     color: var(--cp-ink-3, #64748B);
     font: 700 9px/1.05 var(--cp-font);
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: transform .12s ease, color .15s ease;
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1), color .18s ease, background-color .18s ease;
   }
   html body.in-app .mtab .mtab-lbl {
     max-width: 100%;
@@ -393,50 +402,65 @@ html body.in-app .mtab { display: none; }
     text-overflow: ellipsis;
   }
   @media (max-width: 359px) {
+    html body.in-app .mtab { left: 6px; right: 6px; padding: 4px; border-radius: 18px; }
     html body.in-app .mtab.mtab-6 a,
     html body.in-app .mtab.mtab-6 .mtab-more,
     html body.in-app .mtab.mtab-7 a,
     html body.in-app .mtab.mtab-7 .mtab-more {
-      font-size: 7.7px;
+      font-size: 7.5px;
       letter-spacing: -0.03em;
     }
   }
   html body.in-app .mtab a:active,
-  html body.in-app .mtab .mtab-more:active { transform: translateY(1px); }
+  html body.in-app .mtab .mtab-more:active { transform: scale(0.93); }
   html body.in-app .mtab a:focus-visible,
   html body.in-app .mtab .mtab-more:focus-visible { outline: 2px solid var(--cp-primary); outline-offset: 2px; }
   html body.in-app .mtab .mtab-ic {
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 22px;
-    border-radius: 8px;
-    transition: background .18s ease, color .18s ease;
+    width: 28px;
+    height: 24px;
+    border-radius: 10px;
+    transition: background .2s ease, color .2s ease, transform .2s ease;
   }
-  html body.in-app .mtab .mtab-ic svg { width: 16px !important; height: 16px !important; }
+  html body.in-app .mtab .mtab-ic svg { width: 16.5px !important; height: 16.5px !important; }
   html body.in-app .mtab a.on,
   html body.in-app .mtab .mtab-more[aria-expanded="true"] {
-    color: #2577B0;
+    color: #1E6FA8;
     font-weight: 800;
   }
+  html body.in-app .mtab a.on::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    width: 14px;
+    height: 2.5px;
+    border-radius: 999px;
+    background: #3F97D3;
+  }
+  html body.in-app .mtab a.mtab-center.on::after { display: none; }
   html body.in-app .mtab a.on .mtab-ic,
   html body.in-app .mtab .mtab-more[aria-expanded="true"] .mtab-ic {
     background: #EAF4FB;
-    color: #2577B0;
-    box-shadow: none;
+    color: #1E6FA8;
+    transform: translateY(-1px);
   }
 
-  /* Nút Học ở giữa: ô vuông bo góc màu xanh #3F97D3, chữ Học hiện bên dưới */
-  html body.in-app .mtab a.mtab-center { transform: translateY(-2px); }
-  html body.in-app .mtab a.mtab-center:active { transform: translateY(-1px); }
+  /* Nút Học ở giữa nổi bật với gradient & viền phát sáng nhẹ */
+  html body.in-app .mtab a.mtab-center { transform: translateY(-5px); }
+  html body.in-app .mtab a.mtab-center:active { transform: translateY(-3px) scale(0.95); }
   html body.in-app .mtab a.mtab-center .mtab-ic,
   html body.in-app .mtab a.mtab-center.on .mtab-ic {
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
-    background: #3F97D3 !important;
+    width: 36px;
+    height: 36px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #4B9CD3 0%, #2B7CB8 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 10px rgba(63, 151, 211, .28);
+    box-shadow: 0 6px 16px rgba(43, 124, 184, 0.36), 0 0 0 3px rgba(255, 255, 255, 0.94);
+  }
+  html[data-theme="dark"] body.in-app .mtab a.mtab-center .mtab-ic,
+  html[data-theme="dark"] body.in-app .mtab a.mtab-center.on .mtab-ic {
+    box-shadow: 0 6px 16px rgba(43, 124, 184, 0.45), 0 0 0 3px rgba(22, 32, 46, 0.94);
   }
   html body.in-app .mtab a.mtab-center .mtab-ic svg { color: #FFFFFF !important; }
   html body.in-app .mtab a.mtab-center .mtab-lbl { color: #2577B0; font-weight: 800; }

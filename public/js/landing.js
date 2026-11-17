@@ -1786,7 +1786,7 @@ export function openAuth(mode = "login", onAuthed) {
     <h2 data-title></h2>
     <p class="lead" data-lead></p>
     <div data-auth-view="login">
-      <form class="auth-form" novalidate>
+      <form class="auth-form" method="post" action="/app/dang-nhap" autocomplete="on" novalidate>
         <label class="field">Tên đăng nhập
           <input name="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" required>
           <small data-reg>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small>
@@ -1801,8 +1801,12 @@ export function openAuth(mode = "login", onAuthed) {
           <small>Dùng để nhận mã OTP khi quên mật khẩu.</small>
         </label>
         <label class="field">Mật khẩu
-          <span class="pass-wrap"><input name="p" type="password" maxlength="128" required><button type="button" data-eye aria-pressed="false">Hiện</button></span>
+          <span class="pass-wrap"><input name="p" type="password" autocomplete="current-password" maxlength="128" required><button type="button" data-eye aria-pressed="false">Hiện</button></span>
           <small data-reg>Tối thiểu 6 ký tự.</small>
+        </label>
+        <label class="check auth-remember" data-login-only>
+          <input type="checkbox" name="remember" checked>
+          <span>Ghi nhớ tài khoản &amp; lưu mật khẩu</span>
         </label>
         <p class="form-msg" role="alert" data-msg></p>
         <button class="btn btn-primary btn-lg btn-block" data-submit></button>
@@ -1845,8 +1849,13 @@ export function openAuth(mode = "login", onAuthed) {
       b.classList.toggle("on", on);
       b.setAttribute("aria-selected", String(on));
     });
-    el.querySelectorAll("[data-reg]").forEach((x) => { x.style.display = reg ? "" : "none"; });
+    el.querySelectorAll("[data-reg]").forEach((x) => {
+      x.style.display = reg ? "" : "none";
+      x.querySelectorAll("input, select, textarea").forEach((inp) => { inp.disabled = !reg; });
+    });
     el.querySelectorAll("[data-login-only]").forEach((x) => { x.style.display = reg ? "none" : ""; });
+    const remSpan = el.querySelector(".auth-remember span");
+    if (remSpan) remSpan.textContent = currentLang() === "en" ? "Remember account & save password" : "Ghi nhớ tài khoản & lưu mật khẩu";
     el.querySelector("[data-title]").textContent = reg ? "Tạo tài khoản học" : "Chào mừng trở lại";
     const isEn = currentLang() === "en";
     el.querySelector("[data-lead]").textContent = reg
@@ -1969,6 +1978,16 @@ export function openAuth(mode = "login", onAuthed) {
 
   const last = store.get("py-lab-last-user");
   if (last && !reg) el.querySelector("[name=u]").value = last;
+  if (!reg && navigator.credentials && navigator.credentials.get) {
+    navigator.credentials.get({ password: true, mediation: "silent" }).then((cred) => {
+      if (cred && cred.type === "password" && !reg) {
+        const ui = el.querySelector("[name=u]");
+        const pi = el.querySelector("[name=p]");
+        if (ui && !ui.value && cred.id) ui.value = cred.id;
+        if (pi && !pi.value && cred.password) pi.value = cred.password;
+      }
+    }).catch(() => {});
+  }
   setTimeout(() => el.querySelector(last && !reg ? "[name=p]" : "[name=u]").focus(), 40);
 
   el.querySelector("form").addEventListener("submit", async (e) => {
@@ -1976,6 +1995,7 @@ export function openAuth(mode = "login", onAuthed) {
     const u = el.querySelector("[name=u]").value.trim();
     const p = el.querySelector("[name=p]").value;
     const n = el.querySelector("[name=n]").value.trim();
+    const remember = reg || !!el.querySelector("[name=remember]")?.checked;
     const msg = el.querySelector("[data-msg]");
     const btn = el.querySelector("[data-submit]");
     const fail = (t) => { msg.textContent = t; msg.className = "form-msg err"; };
@@ -1988,7 +2008,13 @@ export function openAuth(mode = "login", onAuthed) {
     try {
       const j = await api(reg ? "/api/register" : "/api/login", "POST", reg ? { username: u, password: p, displayName: n || u, email: (el.querySelector("[name=e]")?.value || "").trim(), classCode: (el.querySelector("[name=code]") || {}).value || "", accountType: (el.querySelector("[name=acct]") || {}).value || "student", lang: currentLang() } : { username: u, password: p });
       S.csrf = j.csrfToken;
-      store.set("py-lab-last-user", u);
+      if (remember) store.set("py-lab-last-user", u); else store.del("py-lab-last-user");
+      if (remember && window.PasswordCredential && navigator.credentials && navigator.credentials.store) {
+        try {
+          const cred = new window.PasswordCredential({ id: u, password: p, name: n || (j.user && j.user.displayName) || u });
+          navigator.credentials.store(cred).catch(() => {});
+        } catch {}
+      }
       if (reg) {
         trackFunnel("register_complete");
         try {

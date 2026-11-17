@@ -1901,13 +1901,12 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     align-items: center !important;
     justify-content: space-between !important;
     gap: 10px !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-bottom: 1px solid var(--cp-border, #E6EAF0) !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    padding: 2px 0 10px !important;
-    margin-bottom: 2px !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 4px 16px rgba(22, 43, 61, 0.04) !important;
+    border-radius: 20px !important;
+    padding: 9px 12px !important;
+    margin-bottom: 10px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-chibi-banner .hm-cb-left {
     display: flex !important;
@@ -4379,4 +4378,50 @@ html body #main .hm-ov-kpi span {
   html body #main .hm-ov-kpi { padding: 6px 3px; border-radius: 11px; }
   html body #main .hm-ov-kpi b { font-size: 11.5px; }
   html body #main .hm-ov-kpi span { font-size: 9.5px; }
+}
+
+/* Nâng cấp chiều sâu hiện đại cho nền & thẻ di động + Dark Mode parity */
+@media (max-width: 760px) {
+  html[data-theme="light"] body.in-app:not(.ax-on) {
+    background: #F4F7FB !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-band {
+    background: linear-gradient(135deg, var(--k), color-mix(in srgb, var(--k) 80%, #1E293B)) !important;
+    position: relative;
+    overflow: hidden;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-band::before {
+    content: "";
+    position: absolute;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    pointer-events: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAFCFF 100%) !important;
+    box-shadow: 0 8px 24px rgba(22, 43, 61, 0.05) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-tool-card {
+    box-shadow: 0 4px 12px rgba(22, 43, 61, 0.04);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-tool-card:active,
+  html:root body.in-app:not(.ax-on) #main .hm-skill:active,
+  html:root body.in-app:not(.ax-on) #main .hm-ov-kpi:active,
+  html:root body.in-app:not(.ax-on) #main .hm-step-chip:active {
+    transform: scale(0.98);
+  }
+}
+html[data-theme="dark"] body.in-app #main .hm-m-overview-kpis .hm-ov-kpi,
+html[data-theme="dark"] body.in-app #main .hm-lang-chip,
+html[data-theme="dark"] body.in-app #main .hm-step-chip,
+html[data-theme="dark"] body.in-app #main .hm-tool-card,
+html[data-theme="dark"] body.in-app #main .hm-chibi-banner {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: rgba(71, 85, 105, 0.6) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app #main :is(.hm-ov-kpi b, .hm-step-copy b, .hm-tool-copy b, .hm-lang-chip b) {
+  color: #F8FAFC !important;
 }
