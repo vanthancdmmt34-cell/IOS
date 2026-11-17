@@ -1695,16 +1695,27 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
     { id: "fr", name: en ? "French" : "Tiếng Pháp", lvl: "DELF A1–C1", kit: "bunny", tone: "is-mint", idx: 4 },
     { id: "es", name: en ? "Spanish" : "Tây Ban Nha", lvl: "DELE A1–C1", kit: "frog", tone: "is-gold", idx: 5 },
   ];
+  const dockSvg = {
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c.7 4 2.8 6.1 6.8 6.8-4 .7-6.1 2.8-6.8 6.8-.7-4-2.8-6.1-6.8-6.8 4-.7 6.1-2.8 6.8-6.8z"/></svg>',
+    tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 16.8 6.2 19.9l1.1-6.5L2.6 8.8l6.5-.9z"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+    mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8.5 21h7"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    brief: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  };
   const html = `
     <div class="lp-m-home" id="lpMobileHome">
       <section class="lp-m-hero">
-        <div class="lp-m-hero-pill">✨ ${en ? "6 LANGUAGES · AI SPEAKING COACH" : "6 NGOẠI NGỮ · CHẤM PHÁT ÂM AI"}</div>
+        <div class="lp-m-hero-pill">${en ? "6 LANGUAGES · AI SPEAKING COACH" : "6 NGOẠI NGỮ · CHẤM PHÁT ÂM AI"}</div>
         <div class="lp-m-hero-body">
           <div class="lp-m-hero-copy">
             <h1>${en ? "Speak foreign languages with confidence." : "Học ngoại ngữ tự tin giao tiếp mỗi ngày."}</h1>
             <p>${en ? "5-minute lessons, instant AI pronunciation scoring, and smart SRS review." : "Bài học ngắn 5 phút, AI chấm phát âm từng từ và nhắc ôn thông minh."}</p>
           </div>
-          <img class="lp-m-hero-art" src="/img/chibi/hero-tutor.webp" alt="LifeRivo Tutor" width="96" height="96" decoding="async" />
+          <img class="lp-m-hero-art" src="/img/chibi/hero-tutor.webp" alt="LifeRivo Tutor" width="96" height="96" loading="eager" decoding="sync" />
         </div>
         <div class="lp-m-hero-actions">
           <button type="button" class="lp-m-btn-primary" data-m-auth="register">${en ? "Start free now" : "Tạo tài khoản miễn phí"}</button>
@@ -1714,8 +1725,8 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
 
       <div class="lp-m-kpis" aria-label="${en ? "Key numbers" : "Điểm nổi bật"}">
         <div class="lp-m-kpi is-blue"><b>6</b><span>${en ? "Languages" : "Ngoại ngữ"}</span></div>
-        <div class="lp-m-kpi is-green"><b>2.790+</b><span>${en ? "Exercises" : "Bài tập tự chấm"}</span></div>
-        <div class="lp-m-kpi is-purple"><b>30+</b><span>${en ? "AI Interviews" : "Ngành phỏng vấn"}</span></div>
+        <div class="lp-m-kpi is-green"><b>2.790+</b><span>${en ? "Exercises" : "Bài tập chấm"}</span></div>
+        <div class="lp-m-kpi is-purple"><b>30+</b><span>${en ? "AI Interviews" : "Ngành AI"}</span></div>
       </div>
 
       <section class="lp-m-card" id="lpMobileDemo" aria-label="${en ? "Try a quick exercise" : "Thử bài học 30 giây"}">
@@ -1748,13 +1759,13 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
 
       <section class="lp-m-sec">
         <div class="lp-m-sec-head">
-          <h2>🚀 ${en ? "Everything you need to progress" : "Đầy đủ công cụ học hiệu quả"}</h2>
+          <h2>✨ ${en ? "Everything you need to progress" : "Công cụ học tập hiện đại"}</h2>
         </div>
         <div class="lp-m-feat-grid">
-          <div class="lp-m-feat is-sky"><b>🎙️ ${en ? "AI Speaking Score" : "Chấm phát âm AI"}</b><span>${en ? "Word-by-word feedback & 0.6x slow audio" : "Nghe chậm 0.6x & chấm chuẩn từng từ"}</span></div>
-          <div class="lp-m-feat is-lavender"><b>💬 ${en ? "2-Way AI Roleplay" : "Hội thoại AI 2 chiều"}</b><span>${en ? "Real situations & instant grammar fixes" : "Nhập vai tình huống & sửa câu ngay"}</span></div>
-          <div class="lp-m-feat is-mint"><b>🃏 ${en ? "Smart SRS Review" : "Nhắc ôn SRS 1-3-7"}</b><span>${en ? "Never forget learned vocabulary" : "Nhắc đúng lúc trước khi quên từ"}</span></div>
-          <div class="lp-m-feat is-peach"><b>💼 ${en ? "TOEIC & Interviews" : "TOEIC & 30 ngành"}</b><span>${en ? "7 TOEIC Parts & job interview prep" : "7 Part TOEIC & luyện phỏng vấn việc làm"}</span></div>
+          <div class="lp-m-feat is-sky"><span class="lp-m-feat-ic">${dockSvg.mic}</span><b>${en ? "AI Speaking Score" : "Chấm phát âm AI"}</b><span>${en ? "Word-by-word feedback & 0.6x slow audio" : "Nghe chậm 0.6x & chấm từng từ"}</span></div>
+          <div class="lp-m-feat is-lavender"><span class="lp-m-feat-ic">${dockSvg.chat}</span><b>${en ? "2-Way AI Roleplay" : "Hội thoại AI 2 chiều"}</b><span>${en ? "Real situations & instant grammar fixes" : "Nhập vai tình huống & sửa câu"}</span></div>
+          <div class="lp-m-feat is-mint"><span class="lp-m-feat-ic">${dockSvg.clock}</span><b>${en ? "Smart SRS Review" : "Nhắc ôn SRS 1-3-7"}</b><span>${en ? "Never forget learned vocabulary" : "Nhắc đúng lúc trước khi quên từ"}</span></div>
+          <div class="lp-m-feat is-peach"><span class="lp-m-feat-ic">${dockSvg.brief}</span><b>${en ? "TOEIC & Interviews" : "TOEIC & 30 ngành"}</b><span>${en ? "7 TOEIC Parts & job interview prep" : "7 Part TOEIC & phỏng vấn việc"}</span></div>
         </div>
       </section>
 
@@ -1787,11 +1798,11 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
       </section>
 
       <nav class="lp-m-dock" aria-label="${en ? "Quick navigation" : "Điều hướng nhanh"}">
-        <a href="#lpMobileLangs" class="lp-m-dock-it"><span class="lp-m-dock-ic">🌍</span><span>${en ? "Courses" : "Ngoại ngữ"}</span></a>
-        <a href="#lpMobileDemo" class="lp-m-dock-it"><span class="lp-m-dock-ic">⚡</span><span>${en ? "Try Quiz" : "Chơi thử"}</span></a>
-        <button type="button" class="lp-m-dock-it is-center" data-m-auth="register"><span class="lp-m-dock-ic">✨</span><span>${en ? "Start" : "Học ngay"}</span></button>
-        <a href="/${en ? "en" : "vi"}/pricing" class="lp-m-dock-it"><span class="lp-m-dock-ic">💎</span><span>${en ? "Pricing" : "Bảng giá"}</span></a>
-        <button type="button" class="lp-m-dock-it" data-m-auth="login"><span class="lp-m-dock-ic">👤</span><span>${en ? "Sign in" : "Đăng nhập"}</span></button>
+        <a href="#lpMobileLangs" class="lp-m-dock-it"><span class="lp-m-dock-ic">${dockSvg.globe}</span><span>${en ? "Courses" : "Ngoại ngữ"}</span></a>
+        <a href="#lpMobileDemo" class="lp-m-dock-it"><span class="lp-m-dock-ic">${dockSvg.bolt}</span><span>${en ? "Try Quiz" : "Chơi thử"}</span></a>
+        <button type="button" class="lp-m-dock-it is-center" data-m-auth="register"><span class="lp-m-dock-ic">${dockSvg.play}</span><span>${en ? "Start" : "Học ngay"}</span></button>
+        <a href="/${en ? "en" : "vi"}/pricing" class="lp-m-dock-it"><span class="lp-m-dock-ic">${dockSvg.tag}</span><span>${en ? "Pricing" : "Bảng giá"}</span></a>
+        <button type="button" class="lp-m-dock-it" data-m-auth="login"><span class="lp-m-dock-ic">${dockSvg.user}</span><span>${en ? "Sign in" : "Đăng nhập"}</span></button>
       </nav>
     </div>`;
 
