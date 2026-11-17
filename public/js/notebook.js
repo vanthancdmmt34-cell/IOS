@@ -66,7 +66,14 @@ export function pageNotebook(main, _params, _query, ctx) {
                   <button type="button" class="btn btn-sm lx-nb-say-btn" data-nb-say="${i}" aria-label="${EN ? "Listen" : "Nghe"}">🔊</button>
                   <button type="button" class="btn btn-sm btn-ghost lx-nb-del-btn" data-nb-del="${i}" aria-label="${EN ? "Remove" : "Xóa"}">×</button>
                 </div></li>`;
-            }).join("")}</ul>`).join("") : `<p class="muted">${EN ? "No saved words yet. Open a lesson's vocabulary and tap Save." : "Chưa có từ nào. Mở phần từ vựng của bài học và bấm Lưu từ."}</p>`}
+            }).join("")}</ul>`).join("") : `<div class="lx-nb-empty">
+              <img src="/img/kit/chibi-frog.webp" alt="" width="76" height="76" loading="lazy" />
+              <div>
+                <b>${EN ? "Your vocabulary notebook is empty" : "Sổ tay từ vựng đang trống"}</b>
+                <p class="muted">${EN ? "Tap ☆ Save on any vocabulary word in a lesson to build your personal list." : "Bấm ☆ Lưu từ ở phần từ vựng trong bài học để ôn tập nhanh bất cứ lúc nào."}</p>
+                <a class="btn btn-primary btn-sm" href="/app/lo-trinh">${EN ? "Open Learning Roadmap" : "Mở lộ trình học"} →</a>
+              </div>
+            </div>`}
         </section>
         <section class="sheet sheet-pad lx-nb-sec">
           <h2>${EN ? "My notes" : "Ghi chú của tôi"}</h2>

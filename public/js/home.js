@@ -562,6 +562,84 @@ export async function pageStudentHome(main, params, query, ctx) {
           </a>`;
         }).join("")}</div>
       </section>` : "";
+    const langStripHtml = (lang.courses || []).length ? `
+      <nav class="hm-lang-strip" aria-label="${L("Chuyển nhanh ngoại ngữ", "Quick language switch")}">
+        ${(lang.courses || []).map((c) => {
+          const isCur = heroSub && c.id === heroSub.id;
+          return `<a class="hm-lang-chip${isCur ? " on" : ""}" href="/app/${esc(c.id)}">
+            <span class="hm-lang-chip-flag">${c.flag}</span>
+            <b>${esc(c.name.replace(/^Tiếng\s+/i, ""))}</b>
+            <em>${c.pct || 0}%</em>
+          </a>`;
+        }).join("")}
+        <a class="hm-lang-chip hm-lang-chip-more" href="/app/chon-mon">+ ${L("Tất cả", "All")}</a>
+      </nav>` : "";
+
+    const step1Done = lessonsToday >= 1;
+    const step2Done = lessonsToday >= 2;
+    const step3Done = reviewedToday > 0 || lessonsToday >= 3;
+    const dailyStepsHtml = heroSub ? `
+      <div class="hm-daily-steps">
+        <a class="hm-step-chip${step1Done ? " is-done" : " is-active"}" href="${esc(heroSub.next.href)}">
+          <span class="hm-step-ic is-blue">${step1Done ? "✓" : "📘"}</span>
+          <div class="hm-step-copy">
+            <b>${L("1. Học bài mới", "1. Next lesson")}</b>
+            <small>${esc(nx ? (nx.u?.title || nx.title || L("Mở bài học", "Open lesson")) : L("Tiếp tục lộ trình", "Continue path"))}</small>
+          </div>
+          <span class="hm-step-tag">${step1Done ? L("Xong", "Done") : L("Học ngay", "Start")}</span>
+        </a>
+        <a class="hm-step-chip${step2Done ? " is-done" : ""}" href="/app/ngoai-ngu/luyen-noi/${esc(heroSub.id)}">
+          <span class="hm-step-ic is-purple">${step2Done ? "✓" : "🎙️"}</span>
+          <div class="hm-step-copy">
+            <b>${L("2. Luyện phát âm AI", "2. AI Speaking")}</b>
+            <small>${L("Nghe mẫu 0.6x & chấm từng từ", "0.6x audio & word scoring")}</small>
+          </div>
+          <span class="hm-step-tag">${L("5 phút", "5 min")}</span>
+        </a>
+        <a class="hm-step-chip${step3Done ? " is-done" : ""}" href="/app/ngoai-ngu/on-tap/${esc(heroSub.id)}">
+          <span class="hm-step-ic is-green">${step3Done ? "✓" : "🃏"}</span>
+          <div class="hm-step-copy">
+            <b>${L("3. Ôn tập từ vựng SRS", "3. SRS Review")}</b>
+            <small>${reviewDueShown ? L(`${fmtN(reviewDueShown)} từ đến hạn cần ôn`, `${fmtN(reviewDueShown)} words due`) : L("Ghi nhớ từ vựng dài hạn", "Long-term retention")}</small>
+          </div>
+          <span class="hm-step-tag">${reviewDueShown ? `${fmtN(reviewDueShown)} từ` : "SRS"}</span>
+        </a>
+      </div>` : "";
+
+    const exploreToolsHtml = heroSub ? `
+      <section class="hm-explore-tools" aria-label="${L("Công cụ học tập trực quan", "Interactive learning tools")}">
+        <div class="hm-skills-head">
+          <h2>${L("Khám phá & Luyện tập nhanh", "Quick Practice & Tools")}</h2>
+          <a class="hm-link" href="/app/lo-trinh">${L("Lộ trình 4 bước", "4-step path")} →</a>
+        </div>
+        <div class="hm-tools-grid">
+          <a class="hm-tool-card is-sky" href="/app/ngoai-ngu/tro-chuyen/${esc(heroSub.id)}">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-owl.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${L("Hội thoại AI", "AI Conversation")}</b><small>${L("Nhập vai 2 chiều & sửa lỗi câu", "Roleplay & instant correction")}</small></div>
+          </a>
+          <a class="hm-tool-card is-lavender" href="/app/tro-choi/${esc(heroSub.id)}">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-bunny.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${L("Trò chơi học tập", "Mini Games")}</b><small>${L("9 trò chơi rèn phản xạ từ vựng", "9 vocabulary arcade games")}</small></div>
+          </a>
+          <a class="hm-tool-card is-peach" href="/app/phong-van/${esc(heroSub.id)}">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-fox.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${L("Phỏng vấn 30 ngành", "Job Interview")}</b><small>${L("Luyện trả lời phỏng vấn chuyên sâu", "30 industry interview tracks")}</small></div>
+          </a>
+          <a class="hm-tool-card is-mint" href="/app/so-tay">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-frog.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${L("Sổ tay từ vựng", "Vocabulary Notebook")}</b><small>${L("Từ đã lưu, phát âm & ghi chú", "Saved words & personal notes")}</small></div>
+          </a>
+          <a class="hm-tool-card is-pink" href="/app/ngoai-ngu/huy-hieu/${esc(heroSub.id)}">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-cat.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${L("Huy hiệu & Xếp hạng", "Badges & Rank")}</b><small>${L("Chứng nhận cấp độ & bảng vàng", "Certificates & leaderboard")}</small></div>
+          </a>
+          <a class="hm-tool-card is-gold" href="${heroSub.id === "en" ? "/app/toeic" : ["zh", "ja", "ko"].includes(heroSub.id) ? `/app/ngoai-ngu/luyen-viet/${esc(heroSub.id)}/${esc((heroSub.levels[0] || {}).id || "hsk1")}` : `/app/co-vu`}">
+            <img class="hm-tool-chibi" src="/img/kit/chibi-dragon.webp" alt="" width="48" height="48" loading="lazy" />
+            <div class="hm-tool-copy"><b>${heroSub.id === "en" ? L("Luyện thi TOEIC", "TOEIC Center") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Luyện viết chữ", "Handwriting") : L("Cổ vũ & Kế hoạch", "Daily Focus")}</b><small>${heroSub.id === "en" ? L("7 Part · Đề thi thử 120 phút", "7 Parts & mock tests") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Tô nét chữ & chấm độ khớp", "Stroke tracing canvas") : L("Theo dõi chuỗi ngày học", "Track your weekly streak")}</small></div>
+          </a>
+        </div>
+      </section>` : "";
+
     const current = heroSub ? `
       <section class="hm-current" style="--c:${esc(heroSub.color)}" aria-label="${L("Môn đang học", "Current language")}">
         <div class="hm-current-head">
@@ -570,20 +648,14 @@ export async function pageStudentHome(main, params, query, ctx) {
           <div class="hm-current-title">
             <h2 class="hm-status-title">${statusWord(heroSub.pct)}</h2>
             <p class="hm-current-today">${L("Hôm nay đã hoàn thành", "Completed today")} <b>${fmtN(lessonsToday)} ${L("nhiệm vụ", "tasks")}</b></p>
-            <p class="hm-current-goal-sub">${L("Mục tiêu ngày", "Daily goal")} · ${fmtN(lessonsToday)}/${fmtN(goal)} ${L("bước", "steps")}</p>
-            <p class="hm-status hm-desk-only">${esc(trUi(heroSub.name))}${heroSub.meta ? ` · ${esc(heroSub.meta)}` : ""}</p>
-            <p class="hm-focus-text hm-desk-only">${esc(heroSub.plain || heroSub.next.label)}</p>
+            <p class="hm-current-goal-sub">${L("Mục tiêu ngày", "Daily goal")} · ${fmtN(lessonsToday)}/${fmtN(goal)} ${L("bước", "steps")} · ${fmtN(heroSub.done)}/${fmtN(heroSub.total)} ${L("bài đạt", "passed")}</p>
           </div>
         </div>
-        <p class="hm-current-goal hm-desk-only">${L("Mục tiêu", "Goal")}: <b>${goalMeta ? esc(L(goalMeta.vi, goalMeta.en)) : L("chưa đặt", "not set yet")}</b></p>
-        <div class="hm-progress hm-desk-only">
-          <div class="hm-progress-top"><span>${L("Tiến độ tổng thể", "Overall progress")} · ${fmtN(heroSub.done)} / ${fmtN(heroSub.total)} ${L("bài đã đạt", "exercises passed")}</span><b>${heroSub.pct}%</b></div>
-          ${bar(heroSub.pct, heroSub.color)}
-        </div>
+        ${dailyStepsHtml}
       </section>
       <div class="hm-primary-row">
         <a class="hm-btn hm-btn-primary hm-continue" href="${esc(heroSub.next.href)}">${sketchIcon("play")}<span>${L("Tiếp tục học", "Continue learning")}</span></a>
-        <a class="hm-btn" href="/app/?mon=${esc(heroSub.id)}">${L("Xem lộ trình", "Course path")}</a>
+        <a class="hm-btn" href="/app/lo-trinh">${L("Xem lộ trình", "Course path")}</a>
       </div>` : "";
 
     const unfinished = !heroSub ? "" : `
@@ -624,8 +696,10 @@ export async function pageStudentHome(main, params, query, ctx) {
 
     const order = [
       ...take(":scope > .hm-chibi-banner"),
+      ...nodes(langStripHtml),
       ...nodes(current),
       ...nodes(skillsBlock),
+      ...nodes(exploreToolsHtml),
       ...take(":scope > .hm-daily"),
       ...take(":scope > .hm-courses"),
       ...take(":scope > .hm-kpis"),

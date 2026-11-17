@@ -507,7 +507,25 @@ async function focusLanguage(main, data, c, ctx) {
     kit: "owl",
     cls: "lx-roadmap-hero",
   });
+  const rmLangStrip = (data.courses || []).length ? `
+    <nav class="hm-lang-strip" aria-label="${tx("Chuyển nhanh ngoại ngữ", "Quick language switch")}">
+      ${(data.courses || []).map((courseItem) => {
+        const isCur = courseItem.id === c.id;
+        return `<a class="hm-lang-chip${isCur ? " on" : ""}" href="/app/?mon=${esc(courseItem.id)}">
+          <span class="hm-lang-chip-flag">${courseItem.flag}</span>
+          <b>${esc(courseItem.name.replace(/^Tiếng\s+/i, ""))}</b>
+          <em>${courseItem.pct || 0}%</em>
+        </a>`;
+      }).join("")}
+    </nav>` : "";
+  const stepCtaLabels = [
+    tx("Học phát âm & nền tảng →", "Learn basics →"),
+    tx("Làm bài từ vựng & câu →", "Practice words →"),
+    tx("Mở phòng luyện nói AI →", "Open AI speaking →"),
+    tx("Ôn thẻ SRS & nhận chứng nhận →", "SRS & certificates →"),
+  ];
   main.innerHTML = `
+  ${rmLangStrip}
   ${rmHeroHtml}
   <section class="lx-sec lx-beginner-track" aria-label="${esc(RH.title)}">
     <div class="sec-head lx-beg-head"><div><h2>${sketchIcon("route")} ${esc(RH.title)}</h2><p>${esc(RH.desc)}</p></div><span class="lx-beg-total">${fmtN(c.pct || 0)}% ${tx("tổng quan", "overall")}</span></div>
@@ -515,14 +533,15 @@ async function focusLanguage(main, data, c, ctx) {
       ${STANDARD_ROADMAP.map((st, i) => {
         const s = roadmapStep(st, rmEn);
         const state = begState[i];
-        const label = state === "cur" ? tx("Đang học", "In progress") : state === "done" ? tx("Hoàn thành", "Completed") : tx("Chưa mở", "Locked");
-        const stepPct = state === "done" ? 100 : state === "cur" ? Math.max(18, Math.min(92, Number(c.pct) || 40)) : 0;
+        const label = state === "cur" ? tx("Đang học", "In progress") : state === "done" ? tx("Hoàn thành", "Completed") : tx("Sẵn sàng", "Ready");
+        const stepPct = state === "done" ? 100 : state === "cur" ? Math.max(18, Math.min(92, Number(c.pct) || 40)) : 8;
         return `<li class="lx-beg-item ${state || "todo"}"><span class="lx-beg-dot" aria-hidden="true"></span><a class="lx-beg-step ${state}" href="${begHref[i]}">
           <span class="lx-beg-ico">${sketchIcon(st.ic)}</span>
           <div class="lx-beg-body">
             <div class="lx-beg-top"><b>${i + 1}. ${esc(s.title)}</b><em class="lx-beg-pill ${state || "todo"}">${label}</em></div>
             <span>${esc(s.desc)}</span>
             <div class="lx-beg-bar"><i style="width:${stepPct}%"></i></div>
+            <span class="lx-beg-cta">${esc(stepCtaLabels[i] || tx("Mở bước này →", "Open step →"))}</span>
           </div>
         </a></li>`;
       }).join("")}
@@ -1154,12 +1173,12 @@ export async function pageLangTheory(page, [langId, levelId, unitId], query, ctx
     </div>
     <div class="page-head"><div><span class="edu-eyebrow">${t.flag} ${esc(t.langName)} · ${esc(t.levelTitle)} · LÝ THUYẾT</span>
       <h1>Bài ${esc(t.unitNo || t.unitId)}: ${esc(t.unitTitle)}</h1><p>Đọc và nghe trước, rồi làm 4 dạng bài tập bên dưới. Có thắc mắc, bấm <b>Hỏi AI</b> — gia sư biết bạn đang học bài này.</p></div>${ChibiMascot({ state: "learning", size: 78 })}</div>
-    <details class="sheet lx-box" ${t.levelId === (t.lang === "zh" ? "hsk1" : t.lang === "ja" ? "n5" : t.lang === "ko" ? "topik1" : "a1") && String(t.unitId) === "1" ? "open" : ""}><summary><b>${li("ruler")}Quy tắc nền tảng của ${esc(t.langName)}</b></summary><ul>${t.basics.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></details>
     ${t.words.length ? `<section class="sheet lx-box lx-vocab-sec"><h2>${li("book")}Từ vựng (${t.words.length})</h2>
       <table class="lx-vocab"><thead><tr><th>Từ</th>${t.typeMode === "word" ? "" : `<th>${esc(t.readingLabel)}</th>`}<th>Nghĩa</th><th></th></tr></thead><tbody>
       ${t.words.map((w) => `<tr><td class="lx-w">${esc(w.word)}</td>${t.typeMode === "word" ? "" : `<td class="lx-ipa"><span class="lx-ipa-pill">${esc(w.reading)}</span></td>`}<td class="lx-vi">${esc(w.meaning)}</td><td><button type="button" class="lx-say-pill" data-say="${esc(w.word)}" data-lang="${esc(t.speech)}">▶ ${tx("Nghe mẫu", "Listen")}</button> ${sayBtn(w.word, t.speech)} <button type="button" class="btn btn-sm lx-save-word" data-w="${esc(w.word)}" data-r="${esc(w.reading || "")}" data-m="${esc(w.meaning || "")}" data-l="${esc(t.lang)}" aria-pressed="${isWordSaved(t.lang, w.word)}">${isWordSaved(t.lang, w.word) ? "★" : "☆"} ${isWordSaved(t.lang, w.word) ? tx("Đã lưu", "Saved") : tx("Lưu từ", "Save")}</button></td></tr>`).join("")}</tbody></table>
     </section>` : ""}
     ${t.sentences.length ? `<section class="sheet lx-box lx-sent-sec"><h2>${li("chat")}Mẫu câu</h2>${t.sentences.map((x) => `<div class="lx-sent"><div><b>${esc(x.text)}</b><span class="lx-vi">${esc(x.meaning)}</span><button type="button" class="lx-say-sent" data-say="${esc(x.text)}" data-lang="${esc(t.speech)}">🔊 ${tx("Nghe câu mẫu", "Listen to sentence")}</button></div>${sayBtn(x.text, t.speech)}</div>`).join("")}</section>` : ""}
+    <details class="sheet lx-box"><summary><b>${li("ruler")}Quy tắc nền tảng của ${esc(t.langName)}</b></summary><ul>${t.basics.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></details>
     ${t.rules.length ? `<section class="sheet lx-box lx-note-card"><h2>💡 ${tx("Ghi nhớ", "Key notes")}</h2><ol class="lx-rules">${t.rules.map((r) => `<li>${esc(r)}</li>`).join("")}</ol></section>` : `<section class="sheet lx-box lx-note-card"><h2>💡 ${tx("Ghi nhớ", "Key notes")}</h2><p class="lx-note-p">${esc(t.basics && t.basics[1] ? t.basics[1] : tx("Nghe phát âm mẫu rồi lặp lại to, rõ từng từ trước khi làm bài tập.", "Listen to the model pronunciation and repeat aloud before starting the exercise."))}</p></section>`}
     ${firstEx ? `<div class="lx-th-cta-wrap"><a class="btn btn-primary btn-block lx-th-cta" href="/app/ngoai-ngu/bai/${esc(firstEx.id)}">${tx("Làm bài luyện tập", "Start exercise")} →</a></div>` : ""}
     <section class="lx-box"><div class="row lx-theory-actions"><button class="btn" id="lxAskRule">${li("chat", 16)}Hỏi AI giải thích bài này</button>${t.words.length ? `<button class="btn" type="button" id="lxAskVocab">${li("book", 16)}Mẹo nhớ từ vựng bài này</button><a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/tu/${esc(t.unitId)}">${li("mic", 16)}Luyện đọc từ vựng bài này</a>` : ""}${t.sentences.length ? `<a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/cau/${esc(t.unitId)}">${li("mic", 16)}Đọc theo mẫu câu</a>` : ""}</div>

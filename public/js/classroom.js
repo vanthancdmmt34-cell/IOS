@@ -191,9 +191,12 @@ export async function pageTeacher(main, _p, _q, ctx) {
   const firstCls = j.classes && j.classes[0];
   main.innerHTML = `
     <div class="tc-m-head">
-      <div>
-        <h1>Xin chào, Giáo viên</h1>
-        <p>Tổng quan lớp và hoạt động học viên.</p>
+      <div class="tc-m-greet">
+        <img src="/img/kit/chibi-owl.webp" alt="" width="44" height="44" loading="lazy" />
+        <div>
+          <h1>Xin chào, Giáo viên</h1>
+          <p>Tổng quan lớp và hoạt động học viên.</p>
+        </div>
       </div>
       <span class="lx-ex-pill">Teacher</span>
     </div>
@@ -201,20 +204,20 @@ export async function pageTeacher(main, _p, _q, ctx) {
       <a class="btn" href="/app/giao-vien/hoc-vien">${icon("user")}Học viên của tôi</a>
       ${j.canCreate ? `<button class="btn btn-primary" id="newClass">${icon("plus")}Tạo lớp</button>` : `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">${icon("star")}Mua / gia hạn giấy phép</a>`}</div>
     ${L ? `<div class="pay-warn" style="margin:0 0 14px">${L.licenses.length ? `Giấy phép: đã dùng <b>${L.used}/${L.seats}</b> chỗ học sinh · ${L.licenses.map((l) => `${esc(l.tier)} ${l.seats} chỗ đến ${fmtDate(l.expiresAt, false)}`).join(" · ")}` : `Giấy phép Teacher của bạn đã hết hạn. Lớp cũ vẫn xem được nhưng học sinh không còn quyền Pro từ lớp và bạn không tạo được lớp mới.`}</div>` : ""}
-    ${!j.classes.length && j.canCreate ? `<section class="sheet sheet-pad" style="margin-bottom:16px;border:1px dashed var(--line)">
-      <h2 style="margin:0 0 8px">Bắt đầu trong 3 bước</h2>
-      <ol class="small" style="margin:0 0 12px 1.2em;line-height:1.7">
+    <div class="stats biz-stats tc-m-stats">
+      <div><b>${fmtN(j.stats.classes)}</b><span>Lớp đang dạy</span></div><div><b>${fmtN(j.stats.students)}</b><span>Học viên</span></div>
+      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${j.stats.avgScore != null ? j.stats.avgScore : fmtN(j.stats.missing)}</b><span>${j.stats.avgScore != null ? "Điểm TB bài tập" : "Bài quá hạn"}</span></div>
+      <div class="tc-stat-desk"><b>${j.stats.avgScore ?? "—"}</b><span>Điểm TB bài tập</span></div><div class="tc-stat-desk"><b>${L ? fmtN(Math.max(0, L.seats - L.used)) : "∞"}</b><span>Chỗ giấy phép còn lại</span></div>
+    </div>
+    ${!j.classes.length && j.canCreate ? `<section class="sheet sheet-pad tc-m-steps" style="margin-bottom:16px">
+      <h2 style="margin:0 0 10px">Bắt đầu trong 3 bước</h2>
+      <ol class="small tc-step-list">
         <li><b>Tạo lớp</b> — đặt tên lớp, lấy mã/join link gửi học sinh.</li>
         <li><b>Thêm học viên</b> — học sinh tự vào bằng mã, hoặc bạn tạo tài khoản tại <a href="/app/giao-vien/hoc-vien">Học viên của tôi</a>.</li>
         <li><b>Giao bài</b> — vào lớp → tab Bài tập → giao bài có sẵn hoặc tự soạn.</li>
       </ol>
       <button class="btn btn-primary" id="newClassTop">${icon("plus")}Tạo lớp đầu tiên</button>
     </section>` : ""}
-    <div class="stats biz-stats tc-m-stats">
-      <div><b>${fmtN(j.stats.classes)}</b><span>Lớp đang dạy</span></div><div><b>${fmtN(j.stats.students)}</b><span>Học viên</span></div>
-      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${j.stats.avgScore != null ? j.stats.avgScore : fmtN(j.stats.missing)}</b><span>${j.stats.avgScore != null ? "Điểm TB bài tập" : "Bài quá hạn"}</span></div>
-      <div class="tc-stat-desk"><b>${j.stats.avgScore ?? "—"}</b><span>Điểm TB bài tập</span></div><div class="tc-stat-desk"><b>${L ? fmtN(Math.max(0, L.seats - L.used)) : "∞"}</b><span>Chỗ giấy phép còn lại</span></div>
-    </div>
     <div class="tc-m-actions">
       <h2>Công việc cần xử lý</h2>
       <a class="tc-m-act" href="${firstCls ? `/app/giao-vien/lop/${firstCls.id}?tab=bai-tap` : "/app/giao-vien/hoc-vien"}"><span class="tc-m-ico">📝</span><div class="tc-m-copy"><b>Bài tập và chấm điểm</b><span>${fmtN(j.stats.assignments)} bài đã giao trong các lớp</span></div><span class="tc-m-arr">›</span></a>

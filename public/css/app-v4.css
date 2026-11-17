@@ -1940,7 +1940,7 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
 }
 
 /* ---------- Giai đoạn 27 (Phase 3): Lý thuyết (10), Bài tập (11), Luyện nói (12, 13), Hội thoại AI (14, 15), Luyện viết (52), AI Tutor (57) ---------- */
-html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-studio-kicker, .sp-m-tip-card, .sp-m-score-btn, .sp-listen-pill, .sp-chat-coach, .ai-m-top, .lx-say-pill, .lx-say-sent, .lx-rev-m-head, .lx-flash-top, .lx-flash-reveal, .cg-m-head, .cg-m-streak-card, .iv-m-card, .iv-m-kpis, .toeic-m-hero, .toeic-m-kpis, .toeic-m-struct, .lx-cert-featured, .lx-cert-next, .lx-lb-hero, .lx-lb-av, .nt-m-toolbar, .pf-m-hero, .pf-m-kpis, .pf-m-nav, .plan-m-top, .plan-m-perks, .cl-m-head, .cl-m-card-top, .cl-m-quick, .cl-m-hero, .cl-m-kpis, .tc-m-head, .tc-m-actions, .tc-m-stu-av, .fam-m-head, .fam-m-card, .fam-m-recent) {
+html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-studio-kicker, .sp-m-tip-card, .sp-m-score-btn, .sp-listen-pill, .sp-chat-coach, .ai-m-top, .lx-say-pill, .lx-say-sent, .lx-rev-m-head, .lx-flash-top, .lx-flash-reveal, .cg-m-head, .cg-m-streak-card, .nt-m-toolbar, .iv-m-card, .iv-m-kpis, .toeic-m-hero, .toeic-m-kpis, .toeic-m-struct, .lx-cert-featured, .lx-cert-next, .lx-lb-hero, .lx-lb-av, .pf-m-hero, .pf-m-kpis, .pf-m-nav, .plan-m-top, .plan-m-perks, .cl-m-head, .cl-m-card-top, .cl-m-quick, .cl-m-hero, .cl-m-kpis, .tc-m-head, .tc-m-actions, .tc-m-stu-av, .fam-m-head, .fam-m-card, .fam-m-recent) {
   display: none;
 }
 
@@ -3674,5 +3674,433 @@ html body .ad-m-quick {
     border: 1px solid #E6EAF0 !important;
     background: #FFFFFF !important;
     box-shadow: none !important;
+  }
+}
+
+/* ---------- Nâng cấp Trực quan Toàn diện (Mobile & Desktop) ---------- */
+/* 1. Thanh chuyển nhanh 6 ngoại ngữ (.hm-lang-strip) */
+html body #main .hm-lang-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  margin-bottom: 10px;
+  scrollbar-width: none;
+}
+html body #main .hm-lang-strip::-webkit-scrollbar {
+  display: none;
+}
+html body #main .hm-lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid #E6EAF0;
+  background: #FFFFFF;
+  color: #334155;
+  text-decoration: none;
+  white-space: nowrap;
+  flex: none;
+  box-shadow: 0 2px 6px rgba(22, 43, 61, 0.03);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+html body #main .hm-lang-chip:hover {
+  border-color: #93C5FD;
+  transform: translateY(-1px);
+}
+html body #main .hm-lang-chip.on {
+  border-color: #3F97D3;
+  background: #EAF4FB;
+  color: #162B3D;
+}
+html body #main .hm-lang-chip-flag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+}
+html body #main .hm-lang-chip b {
+  font: 800 13.5px/1.1 var(--cp-font);
+}
+html body #main .hm-lang-chip em {
+  font: 800 11.5px/1 var(--cp-font);
+  font-style: normal;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #F1F5F9;
+  color: #475569;
+}
+html body #main .hm-lang-chip.on em {
+  background: #3F97D3;
+  color: #FFFFFF;
+}
+html body #main .hm-lang-chip-more {
+  background: #F8FAFC;
+  font: 700 13px/1.1 var(--cp-font);
+  color: #2B7CB8;
+}
+
+/* 2. 3 Bước hành động trực quan trong ngày (.hm-daily-steps) */
+html body #main .hm-daily-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #EEF2F6;
+}
+@media (max-width: 960px) {
+  html body #main .hm-daily-steps {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+html body #main .hm-step-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid #E6EAF0;
+  background: #F8FAFC;
+  text-decoration: none;
+  color: #162B3D;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+html body #main .hm-step-chip:hover {
+  border-color: #93C5FD;
+  background: #FFFFFF;
+  transform: translateY(-1px);
+}
+html body #main .hm-step-chip.is-active {
+  border-color: #B9DDF6;
+  background: #F2F9FE;
+}
+html body #main .hm-step-chip.is-done {
+  border-color: #BBF7D0;
+  background: #F0FDF4;
+}
+html body #main .hm-step-ic {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  flex: none;
+}
+html body #main .hm-step-ic.is-blue { background: #EAF4FB; color: #1E6FA8; }
+html body #main .hm-step-ic.is-purple { background: #F3EFFF; color: #6D28D9; }
+html body #main .hm-step-ic.is-green { background: #E7F8EF; color: #15803D; }
+html body #main .hm-step-copy {
+  display: grid;
+  gap: 2px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+html body #main .hm-step-copy b {
+  font: 800 14px/1.2 var(--cp-font);
+  color: #162B3D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html body #main .hm-step-copy small {
+  font: 500 12px/1.25 var(--cp-font);
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html body #main .hm-step-tag {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #2B7CB8;
+  font: 800 11.5px/1 var(--cp-font);
+  flex: none;
+}
+
+/* 3. Lưới 6 Công cụ Khám phá & Luyện tập nhanh (.hm-explore-tools) */
+html body #main .hm-explore-tools {
+  margin-top: 16px;
+}
+html body #main .hm-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+@media (max-width: 760px) {
+  html body #main .hm-tools-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+html body #main .hm-tool-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(22, 43, 61, 0.07);
+  background: #FFFFFF;
+  text-decoration: none;
+  color: #162B3D;
+  box-shadow: 0 3px 12px rgba(22, 43, 61, 0.03);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+html body #main .hm-tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(22, 43, 61, 0.07);
+}
+html body #main .hm-tool-card.is-sky { background: linear-gradient(135deg, #F0F8FF 0%, #FFFFFF 100%); border-color: #D6EAF8; }
+html body #main .hm-tool-card.is-lavender { background: linear-gradient(135deg, #F5F2FF 0%, #FFFFFF 100%); border-color: #E4DCFF; }
+html body #main .hm-tool-card.is-peach { background: linear-gradient(135deg, #FFF6EE 0%, #FFFFFF 100%); border-color: #FDE2C8; }
+html body #main .hm-tool-card.is-mint { background: linear-gradient(135deg, #EEFCF5 0%, #FFFFFF 100%); border-color: #CCF3DF; }
+html body #main .hm-tool-card.is-pink { background: linear-gradient(135deg, #FFF0F6 0%, #FFFFFF 100%); border-color: #FBCFE8; }
+html body #main .hm-tool-card.is-gold { background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%); border-color: #FDE68A; }
+html body #main .hm-tool-chibi {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px;
+  flex: none;
+}
+html body #main .hm-tool-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+html body #main .hm-tool-copy b {
+  font: 800 14.5px/1.2 var(--cp-font);
+  color: #162B3D;
+}
+html body #main .hm-tool-copy small {
+  font: 500 12px/1.3 var(--cp-font);
+  color: #64748B;
+}
+
+/* 4. Trang Chọn ngoại ngữ (.sw-m-view) & Lộ trình (.lx-beg-cta) */
+html body #main .sw-m-hero-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #4B9CD3 0%, #68B4E5 100%);
+  color: #FFFFFF;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 22px rgba(63, 151, 211, 0.2);
+}
+html body #main .sw-m-kicker {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1E6FA8;
+  font: 800 10.5px/1.2 var(--cp-font);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+html body #main .sw-m-hero-banner h1 {
+  margin: 0 !important;
+  font: 900 24px/1.15 var(--cp-font) !important;
+  color: #FFFFFF !important;
+}
+html body #main .sw-m-hero-banner .sw-m-sub {
+  margin: 4px 0 0 !important;
+  font: 500 13.5px/1.4 var(--cp-font) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+html body #main .sw-m-hero-banner img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  flex: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
+}
+html body #main .sw-m-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html body #main .sw-m-status-pill {
+  display: inline-flex;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #F1F5F9;
+  color: #64748B;
+  font: 800 11px/1 var(--cp-font);
+}
+html body #main .sw-m-status-pill.is-learning {
+  background: #E7F8EF;
+  color: #15803D;
+}
+html body #main .sw-m-chibi {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #F8FAFC;
+  border: 1px solid #E6EAF0;
+  flex: none;
+}
+html body #main .sw-m-row.is-active {
+  border-color: #3F97D3 !important;
+  background: #F5FAFF !important;
+}
+html body #main .lx-beg-cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 6px;
+  font: 800 13px/1.2 var(--cp-font);
+  color: #2B7CB8;
+}
+
+/* ---------- Empty Notebook visual card & Teacher step list ---------- */
+html body #main .lx-nb-empty {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #F4FAFF, #F8FAFC);
+  border: 1px dashed #CBD5E1;
+}
+html body #main .lx-nb-empty img {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: #FFFFFF;
+  border: 1px solid #E6EAF0;
+}
+html body #main .lx-nb-empty b {
+  display: block;
+  font: 800 15px/1.3 var(--cp-font);
+  color: #162B3D;
+}
+html body #main .lx-nb-empty p {
+  margin: 4px 0 10px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+html body #main .tc-m-greet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+html body #main .tc-m-greet img {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #EAF4FB;
+  border: 1px solid #CBE4F6;
+  flex: none;
+}
+html body #main .tc-m-steps {
+  border-radius: 22px !important;
+  border: 1px dashed #CBD5E1 !important;
+  background: #FAFBFD !important;
+}
+html body #main .tc-step-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  counter-reset: tcstep;
+}
+html body #main .tc-step-list li {
+  counter-increment: tcstep;
+  position: relative;
+  padding-left: 30px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #334155;
+}
+html body #main .tc-step-list li::before {
+  content: counter(tcstep);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #EAF4FB;
+  color: #2577B0;
+  font: 800 11.5px/21px var(--cp-font);
+  text-align: center;
+}
+
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  /* Compact exercise header & roomnav so Q1 sits cleanly above the fold */
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page:not(.lx-theory):not(.lx-review-page) > .page-head {
+    padding: 12px 14px !important;
+    margin-bottom: 10px !important;
+    border-radius: 18px !important;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page:not(.lx-theory):not(.lx-review-page) > .page-head h1 {
+    font-size: 19px !important;
+    margin: 2px 0 3px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page:not(.lx-theory):not(.lx-review-page) > .page-head p {
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page:not(.lx-theory):not(.lx-review-page) > .page-head .chibi-mascot {
+    width: 52px !important;
+    height: 52px !important;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .lx-roomnav {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px !important;
+    margin-bottom: 12px !important;
+    border-radius: 16px !important;
+    background: #FFFFFF;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    box-shadow: var(--v4-shadow);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .lx-roomnav > span:empty {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .lx-roomnav-mid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .lx-roomnav a,
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .lx-roomnav button {
+    min-height: 32px !important;
+    padding: 4px 10px !important;
+    border-radius: 999px !important;
+    font: 700 12px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-empty {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
   }
 }

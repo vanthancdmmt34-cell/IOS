@@ -173,18 +173,24 @@ function renderClassicPicker(main, lang, ctx) {
   };
 
   const rmEn = currentLang() === "en", RH = ROADMAP_HEAD[rmEn ? "en" : "vi"];
+  const kits = { en: "bunny", zh: "dragon", ja: "cat", ko: "fox", fr: "owl", es: "frog" };
   const mobileRows = list.map((x) => {
     const meta = CHIBI_COURSE_META[x.id] || CHIBI_COURSE_META.ja;
+    const isCur = x.id === savedSubj;
     const subTxt = x.done > 0
-      ? `${x.framework || "A1"} · ${L("Đang học", "In progress")}`
-      : `${L("Khám phá", "Explore")} · ${x.framework || ""}`;
-    return `<a class="sw-m-row" href="/app/?mon=${esc(x.id)}" style="--c:${esc(x.color || "#3F97D3")};--tint:${meta.tint}" data-subject="${esc(x.id)}">
+      ? `${x.framework || "A1"} · ${fmtN(x.done)}/${fmtN(x.total)} ${L("bài đã đạt", "passed")}`
+      : `${x.framework || "A1–C1"} · ${fmtN(x.total)} ${L("bài tập", "exercises")}`;
+    return `<a class="sw-m-row${isCur ? " is-active" : ""}" href="/app/${esc(x.id)}" style="--c:${esc(x.color || "#3F97D3")};--tint:${meta.tint}" data-subject="${esc(x.id)}">
       <span class="sw-m-flag" aria-hidden="true">${x.flag}</span>
       <span class="sw-m-info">
-        <b>${esc(x.name)}</b>
+        <span class="sw-m-title-row">
+          <b>${esc(x.name)}</b>
+          <span class="sw-m-status-pill ${x.done > 0 || isCur ? "is-learning" : ""}">${isCur ? L("Đang chọn", "Selected") : x.done > 0 ? L("Đang học", "Learning") : L("Khám phá", "Explore")}</span>
+        </span>
         <small>${esc(subTxt)}</small>
-        <span class="sw-m-bar"><i style="width:${Math.max(0, Math.min(100, x.pct))}%;background:${esc(x.color || "#3F97D3")}"></i></span>
+        <span class="sw-m-bar"><i style="width:${Math.max(4, Math.min(100, x.pct || (isCur ? 8 : 0)))}%;background:${esc(x.color || "#3F97D3")}"></i></span>
       </span>
+      <img class="sw-m-chibi" src="/img/kit/chibi-${kits[x.id] || "bunny"}.webp" alt="" width="40" height="40" loading="lazy" />
       <em class="sw-m-pct">${x.pct}%</em>
     </a>`;
   }).join("");
@@ -192,10 +198,16 @@ function renderClassicPicker(main, lang, ctx) {
   main.innerHTML = `
   <div class="sw sw-chibi-world">
     <section class="sw-m-view" aria-label="${L("Ngoại ngữ của bạn", "Your languages")}">
-      <h1>${L("Ngoại ngữ của bạn", "Your languages")}</h1>
-      <p class="sw-m-sub">${L("Chọn môn đang học hoặc khám phá một ngôn ngữ mới.", "Select a language you are learning or explore a new one.")}</p>
+      <div class="sw-m-hero-banner">
+        <div>
+          <span class="sw-m-kicker">6 NGOẠI NGỮ · LỘ TRÌNH CHUẨN QUỐC TẾ</span>
+          <h1>${L("Ngoại ngữ của bạn", "Your languages")}</h1>
+          <p class="sw-m-sub">${L("Chạm vào một ngôn ngữ để vào học ngay hoặc thiết lập lộ trình cá nhân.", "Tap a language to start learning right away or set up a personal roadmap.")}</p>
+        </div>
+        <img src="/img/kit/chibi-owl.webp" alt="Rivo" width="72" height="72" />
+      </div>
       <div class="sw-m-list">${mobileRows}</div>
-      <button type="button" class="btn btn-primary btn-block sw-m-add" id="swOpenOnboard">${L("Thêm ngoại ngữ", "Add language")}</button>
+      <button type="button" class="btn btn-primary btn-block sw-m-add" id="swOpenOnboard">✨ ${L("Thiết lập lộ trình & mục tiêu học tập", "Set up learning goal & roadmap")}</button>
     </section>
 
     <section class="sw-chibi-hero">
@@ -341,9 +353,9 @@ async function runOnboarding(main, lang, ctx) {
   const courses = (lang.courses || []).filter((c) => (c.total || 0) > 0 && (c.levels || []).some((l) => (l.total || 0) > 0));
   const name = S.me ? esc(S.me.displayName) : L("bạn", "there");
   const st = {
-    step: 0,
+    step: 2,
     goal: goalById(S.prefs && S.prefs.goalPath) || null, // đã chọn trước đó thì giữ lại
-    course: null,
+    course: courses[0] || null,
     choice: null, // "new" | "basic" | "known" | "skip"
     lvIdx: null,
     plan: null, // { status: "loading" | "ok" | "fallback", plan? }
@@ -515,16 +527,21 @@ async function runOnboarding(main, lang, ctx) {
     if (b.dataset.level) { st.choice = b.dataset.level; st.lvIdx = b.dataset.level === "known" ? st.lvIdx : null; return paintStep(); }
     if (b.dataset.lv) { st.choice = "known"; st.lvIdx = Number(b.dataset.lv); return paintStep(); }
     switch (b.dataset.ob) {
-      case "back": st.step = Math.max(0, st.step - 1); return paintStep();
+      case "back":
+        if (st.step === 1) st.step = 2;
+        else if (st.step === 3) st.step = 1;
+        else if (st.step === 4) st.step = 3;
+        else { main.onclick = null; return renderClassicPicker(main, lang, ctx); }
+        return paintStep();
       case "classic": main.onclick = null; return renderClassicPicker(main, lang, ctx);
       case "next":
-        if (st.step === 0) st.step = 1;
-        else if (st.step === 1) {
-          if (st.goal) savePrefs({ goal: st.goal.server, goalPath: st.goal.id });
-          st.step = 2;
-        } else if (st.step === 2) {
+        if (st.step === 0) st.step = 2;
+        else if (st.step === 2) {
           if (!st.course) return;
           setSubject(st.course.id); // ngôn ngữ là bước bắt buộc: lưu ngay vào prefs.subject
+          st.step = 1;
+        } else if (st.step === 1) {
+          if (st.goal) savePrefs({ goal: st.goal.server, goalPath: st.goal.id });
           st.step = 3;
         } else if (st.step === 3) {
           if (!st.choice) return;
@@ -533,7 +550,7 @@ async function runOnboarding(main, lang, ctx) {
         }
         return paintStep();
       case "skip":
-        if (st.step === 1) { st.goal = null; st.step = 2; return paintStep(); }
+        if (st.step === 1) { st.goal = null; st.step = 3; return paintStep(); }
         if (st.step === 3) { st.choice = "skip"; st.lvIdx = null; st.step = 4; st.plan = null; return paintStep(); }
         return;
       case "start": if (st.href) setAppHash(st.href); return;
@@ -554,8 +571,6 @@ export async function pageSubjectWelcome(main, params, query, ctx) {
   let lang = { courses: [] };
   try { lang = await api("/api/lang"); } catch {}
   if (!ctx.isCurrent()) return;
-  // Lần đầu (chưa có môn): luồng thiết lập. Đã có môn: trang chọn môn như trước.
-  // Dùng môn đã lưu trong tài khoản (prefs), không dùng localStorage của trình duyệt (có thể còn từ tài khoản khác)
-  if (!(S.prefs && S.prefs.subject)) return runOnboarding(main, lang, ctx);
+  if (!(S.prefs && S.prefs.subject) && !getSubject()) return runOnboarding(main, lang, ctx);
   return renderClassicPicker(main, lang, ctx);
 }
