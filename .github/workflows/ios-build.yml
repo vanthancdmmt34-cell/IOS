@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: Lấy mã nguồn
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Cài Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: npm
@@ -56,9 +56,14 @@ jobs:
       - name: Đồng bộ Capacitor sang iOS (cài CocoaPods)
         run: npx cap sync ios
 
+      - name: Liệt kê scheme Xcode
+        working-directory: ios/App
+        run: xcodebuild -list -workspace App.xcworkspace
+
       - name: Build archive (không ký)
         working-directory: ios/App
         run: |
+          set -o pipefail
           xcodebuild \
             -workspace App.xcworkspace \
             -scheme App \
@@ -68,7 +73,30 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            archive
+            archive 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Hiện lỗi build trong Annotations
+        if: failure()
+        run: |
+          LOG="$RUNNER_TEMP/xcodebuild.log"
+          if [[ ! -f "$LOG" ]]; then
+            echo "::error::Không có log xcodebuild: lỗi xảy ra trước bước build (xem log bước đỏ)."
+            exit 0
+          fi
+          grep -E "error:|ARCHIVE FAILED|BUILD FAILED" "$LOG" | head -n 30 | while IFS= read -r line; do
+            echo "::error::$line"
+          done
+          echo "--- 80 dòng cuối của log xcodebuild ---"
+          tail -n 80 "$LOG"
+
+      - name: Lưu log xcodebuild
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: ${{ runner.temp }}/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Đóng gói file .ipa
         run: |
