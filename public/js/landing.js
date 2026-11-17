@@ -1982,109 +1982,142 @@ let authedCb = null;
 
 export function openAuth(mode = "login", onAuthed) {
   if (onAuthed) authedCb = onAuthed;
-  let reg = mode === "register" && cfg("allowRegister", true) !== false;
-  // An nut VI/EN o header khi modal dang nhap dang mo (bam se reload + dong modal);
-  // modal tu dong bo ngon ngu ngoai qua currentLang() trong paint().
+  const allowReg = cfg("allowRegister", true) !== false;
+  let reg = mode === "register" && allowReg;
+  const en = currentLang() === "en";
   document.body.classList.add("auth-open");
   const m = openModal(`
-    ${cfg("allowRegister", true) !== false ? `<div class="seg" role="tablist">
-      <button type="button" role="tab" data-m="login">Đăng nhập</button>
-      <button type="button" role="tab" data-m="register">Tạo tài khoản</button>
-    </div>` : ""}
-    <h2 data-title></h2>
-    <p class="lead" data-lead></p>
-    <div data-auth-view="login">
-      <form class="auth-form" method="post" action="/app/dang-nhap" autocomplete="on" novalidate>
-        <label class="field">Tên đăng nhập
-          <input name="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" required>
-          <small data-reg>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small>
-        </label>
-        ${cfg("registerCodeRequired") ? `<label class="field" data-reg>Mã lớp<input name="code" autocomplete="off" maxlength="40" placeholder="Giáo viên cung cấp"><small>Hỏi giáo viên mã lớp để tạo tài khoản.</small></label>` : ""}
-        <label class="field" data-reg>Tên hiển thị
-          <input name="n" autocomplete="name" maxlength="40" placeholder="Ví dụ: Nguyễn Văn An">
-          <small>Tên này hiện trên bảng xếp hạng và chứng nhận.</small>
-        </label>
-        <label class="field" data-reg>Email (không bắt buộc)
-          <input name="e" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="ban@example.com">
-          <small>Dùng để nhận mã OTP khi quên mật khẩu.</small>
-        </label>
-        <label class="field">Mật khẩu
-          <span class="pass-wrap"><input name="p" type="password" autocomplete="current-password" maxlength="128" required><button type="button" data-eye aria-pressed="false">Hiện</button></span>
-          <small data-reg>Tối thiểu 6 ký tự.</small>
-        </label>
-        <label class="check auth-remember" data-login-only>
-          <input type="checkbox" name="remember" checked>
-          <span>Ghi nhớ tài khoản &amp; lưu mật khẩu</span>
-        </label>
-        <p class="form-msg" role="alert" data-msg></p>
-        <button class="btn btn-primary btn-lg btn-block" data-submit></button>
-        <p class="auth-links" data-login-only>
-          <button type="button" class="linkish" data-forgot>Quên mật khẩu?</button>
-        </p>
-        ${cfg("allowRegister", true) === false ? `<p class="small muted" data-login-only style="margin-top:10px">Chưa có tài khoản? Giáo viên sẽ tạo tài khoản cho bạn.</p>` : ""}
-      </form>
+    <header class="lp-auth-top">
+      <button type="button" class="lp-auth-brand" data-close aria-label="${en ? "Back to homepage" : "Quay lại trang chủ"}">
+        <span class="lp-auth-back" aria-hidden="true">←</span>
+        <span class="lp-auth-word">life<b>rivo</b></span>
+      </button>
+      <button type="button" class="lp-auth-help" data-auth-help>${en ? "Help" : "Trợ giúp"}</button>
+    </header>
+    <div class="lp-auth-help-note" data-help-note hidden>
+      ${en ? "Need help logging in? Tap <b>Forgot password?</b> below or email <b>study@liferivo.com</b>." : "Cần hỗ trợ? Chọn <b>Quên mật khẩu?</b> bên dưới hoặc gửi email về <b>study@liferivo.com</b>."}
     </div>
-    <div data-auth-view="forgot" hidden>
-      <form class="auth-form" data-forgot-form novalidate>
-        <label class="field">Tên đăng nhập hoặc email
-          <input name="forgotUser" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required placeholder="Tên đăng nhập hoặc email đã đăng ký">
-        </label>
-        <p class="form-msg" data-forgot-msg role="status" aria-live="polite"></p>
-        <button type="submit" class="btn btn-primary btn-lg btn-block" data-forgot-go>Gửi mã OTP</button>
-        <p class="auth-links"><button type="button" class="linkish" data-back-login>← Quay lại đăng nhập</button></p>
-      </form>
-      <form class="auth-form" data-otp-form novalidate hidden>
-        <p class="small muted" data-otp-note>Mã OTP gồm 6 số đã được gửi về email của tài khoản (nếu tài khoản có email). Mã có hiệu lực 10 phút.</p>
-        <label class="field">Mã OTP (6 số)
-          <input name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" required placeholder="000000">
-        </label>
-        <label class="field">Mật khẩu mới
-          <input name="np" type="password" autocomplete="new-password" minlength="6" maxlength="128" required>
-        </label>
-        <label class="field">Nhập lại mật khẩu mới
-          <input name="np2" type="password" autocomplete="new-password" minlength="6" maxlength="128" required>
-        </label>
-        <p class="form-msg" data-otp-msg role="status" aria-live="polite"></p>
-        <button type="submit" class="btn btn-primary btn-lg btn-block" data-otp-go>Đặt mật khẩu mới</button>
-        <p class="auth-links"><button type="button" class="linkish" data-otp-resend>Gửi lại mã</button> · <button type="button" class="linkish" data-back-login2>← Quay lại đăng nhập</button></p>
-      </form>
-    </div>`, { label: "Đăng nhập", cls: "auth-compact", onClose: () => { document.body.classList.remove("auth-open"); const ae = document.activeElement; if (ae && ae.closest && ae.closest(".aw-auth")) ae.blur(); } });
+    <div class="lp-auth-body">
+      <div class="lp-auth-mascot">
+        <img src="/img/kit/chibi-owl.webp" alt="Pippa" width="48" height="48" loading="eager" decoding="sync" />
+      </div>
+      <div class="lp-auth-head">
+        <h2 data-title></h2>
+        <p class="lead" data-lead></p>
+      </div>
+      <div class="lp-auth-card">
+        <div data-auth-view="login">
+          <form class="auth-form" method="post" action="/app/dang-nhap" autocomplete="on" novalidate>
+            <label class="field">
+              <span class="lp-field-lbl" data-u-lbl>${en ? "ACCOUNT" : "TÀI KHOẢN"}</span>
+              <input name="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" required placeholder="${en ? "Username" : "Tên đăng nhập"}">
+              <small data-reg>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small>
+            </label>
+            ${cfg("registerCodeRequired") ? `<label class="field" data-reg><span class="lp-field-lbl">${en ? "CLASS CODE" : "MÃ LỚP"}</span><input name="code" autocomplete="off" maxlength="40" placeholder="Giáo viên cung cấp"><small>Hỏi giáo viên mã lớp để tạo tài khoản.</small></label>` : ""}
+            <label class="field" data-reg>
+              <span class="lp-field-lbl">${en ? "DISPLAY NAME" : "TÊN HIỂN THỊ"}</span>
+              <input name="n" autocomplete="name" maxlength="40" placeholder="Ví dụ: Nguyễn Văn An">
+            </label>
+            <label class="field" data-reg>
+              <span class="lp-field-lbl">${en ? "EMAIL (OPTIONAL)" : "EMAIL (KHÔNG BẮT BUỘC)"}</span>
+              <input name="e" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="ban@example.com">
+              <small>Dùng để nhận mã OTP khi quên mật khẩu.</small>
+            </label>
+            <label class="field">
+              <span class="lp-field-lbl">${en ? "PASSWORD" : "MẬT KHẨU"}</span>
+              <span class="pass-wrap"><input name="p" type="password" autocomplete="current-password" maxlength="128" required placeholder="••••••••••••"><button type="button" data-eye aria-pressed="false">${en ? "Show" : "Hiện"}</button></span>
+              <small data-reg>Tối thiểu 6 ký tự.</small>
+            </label>
+            <div class="auth-meta-row" data-login-only>
+              <label class="check auth-remember">
+                <input type="checkbox" name="remember" checked>
+                <span>${en ? "Remember me" : "Ghi nhớ đăng nhập"}</span>
+              </label>
+              <button type="button" class="linkish auth-forgot-link" data-forgot>${en ? "Forgot password?" : "Quên mật khẩu?"}</button>
+            </div>
+            <p class="form-msg" role="alert" data-msg></p>
+            <button class="btn btn-primary btn-lg btn-block" data-submit></button>
+            ${allowReg ? `<div class="lp-auth-switch"><span data-switch-q></span> <button type="button" class="lp-auth-switch-btn" data-m="register"></button></div>` : `<p class="small muted" data-login-only style="margin:6px 0 0;text-align:center">Chưa có tài khoản? Giáo viên sẽ tạo tài khoản cho bạn.</p>`}
+          </form>
+        </div>
+        <div data-auth-view="forgot" hidden>
+          <form class="auth-form" data-forgot-form novalidate>
+            <label class="field">
+              <span class="lp-field-lbl">${en ? "USERNAME OR EMAIL" : "TÊN ĐĂNG NHẬP HOẶC EMAIL"}</span>
+              <input name="forgotUser" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required placeholder="${en ? "Registered username or email" : "Tên đăng nhập hoặc email đã đăng ký"}">
+            </label>
+            <p class="form-msg" data-forgot-msg role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" data-forgot-go>Gửi mã OTP</button>
+            <p class="auth-links"><button type="button" class="linkish" data-back-login>← Quay lại đăng nhập</button></p>
+          </form>
+          <form class="auth-form" data-otp-form novalidate hidden>
+            <p class="small muted" data-otp-note>Mã OTP gồm 6 số đã được gửi về email của tài khoản (nếu tài khoản có email). Mã có hiệu lực 10 phút.</p>
+            <label class="field">
+              <span class="lp-field-lbl">MÃ OTP (6 SỐ)</span>
+              <input name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" required placeholder="000000">
+            </label>
+            <label class="field">
+              <span class="lp-field-lbl">MẬT KHẨU MỚI</span>
+              <input name="np" type="password" autocomplete="new-password" minlength="6" maxlength="128" required placeholder="••••••••">
+            </label>
+            <label class="field">
+              <span class="lp-field-lbl">NHẬP LẠI MẬT KHẨU MỚI</span>
+              <input name="np2" type="password" autocomplete="new-password" minlength="6" maxlength="128" required placeholder="••••••••">
+            </label>
+            <p class="form-msg" data-otp-msg role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" data-otp-go>Đặt mật khẩu mới</button>
+            <p class="auth-links"><button type="button" class="linkish" data-otp-resend>Gửi lại mã</button> · <button type="button" class="linkish" data-back-login2>← Quay lại đăng nhập</button></p>
+          </form>
+        </div>
+      </div>
+    </div>`, { label: "Đăng nhập", cls: "auth-compact lp-auth-sheet", onClose: () => { document.body.classList.remove("auth-open"); const ae = document.activeElement; if (ae && ae.closest && ae.closest(".aw-auth")) ae.blur(); } });
 
   const el = m.el;
   const paint = () => {
-    el.querySelectorAll("[data-m]").forEach((b) => {
-      const on = (b.dataset.m === "register") === reg;
-      b.classList.toggle("on", on);
-      b.setAttribute("aria-selected", String(on));
-    });
+    const isEn = currentLang() === "en";
     el.querySelectorAll("[data-reg]").forEach((x) => {
       x.style.display = reg ? "" : "none";
       x.querySelectorAll("input, select, textarea").forEach((inp) => { inp.disabled = !reg; });
     });
     el.querySelectorAll("[data-login-only]").forEach((x) => { x.style.display = reg ? "none" : ""; });
+    const uLbl = el.querySelector("[data-u-lbl]");
+    const uInp = el.querySelector("[name=u]");
+    if (uLbl) uLbl.textContent = reg ? (isEn ? "USERNAME" : "TÊN ĐĂNG NHẬP") : (isEn ? "ACCOUNT" : "TÀI KHOẢN");
+    if (uInp) uInp.placeholder = reg ? (isEn ? "3-30 chars (letters, numbers, _ . -)" : "3–30 ký tự không dấu") : (isEn ? "Username" : "Tên đăng nhập");
     const remSpan = el.querySelector(".auth-remember span");
-    if (remSpan) remSpan.textContent = currentLang() === "en" ? "Remember account & save password" : "Ghi nhớ tài khoản & lưu mật khẩu";
-    el.querySelector("[data-title]").textContent = reg ? "Tạo tài khoản học" : "Chào mừng trở lại";
-    const isEn = currentLang() === "en";
+    if (remSpan) remSpan.textContent = isEn ? "Remember me" : "Ghi nhớ đăng nhập";
+    el.querySelector("[data-title]").textContent = reg
+      ? (isEn ? "Create learning account" : "Tạo tài khoản học")
+      : (isEn ? "Welcome back!" : "Chào mừng trở lại!");
     el.querySelector("[data-lead]").textContent = reg
-      ? (isEn ? "Create a free account and start learning. No payment required." : "Đăng ký tài khoản miễn phí để bắt đầu học. Không cần thanh toán.")
-      : (isEn ? "Sign in to continue learning." : "Đăng nhập để tiếp tục bài đang học.");
+      ? (isEn ? "Free to start. No credit card required." : "Đăng ký miễn phí để bắt đầu hành trình học.")
+      : (isEn ? "Continue your language learning journey." : "Tiếp tục hành trình học ngoại ngữ của bạn.");
     el.querySelector("[data-submit]").textContent = reg
       ? (isEn ? "Sign up" : "Đăng ký")
       : (isEn ? "Sign in" : "Đăng nhập");
+    const sq = el.querySelector("[data-switch-q]");
+    const sb = el.querySelector("[data-m]");
+    if (sq) sq.textContent = reg ? (isEn ? "Already have an account?" : "Đã có tài khoản?") : (isEn ? "Don't have an account?" : "Chưa có tài khoản?");
+    if (sb) {
+      sb.dataset.m = reg ? "login" : "register";
+      sb.textContent = reg ? (isEn ? "Sign in now" : "Đăng nhập ngay") : (isEn ? "Sign up now" : "Đăng ký ngay");
+    }
     el.querySelector("[name=p]").setAttribute("autocomplete", reg ? "new-password" : "current-password");
     el.querySelector("[data-msg]").textContent = "";
   };
   paint();
 
+  el.querySelector("[data-auth-help]")?.addEventListener("click", () => {
+    const note = el.querySelector("[data-help-note]");
+    if (note) note.hidden = !note.hidden;
+  });
+
   el.querySelectorAll("[data-m]").forEach((b) => b.addEventListener("click", () => {
-    reg = b.dataset.m === "register";
+    reg = b.dataset.m === "register" && allowReg;
     const loginView = el.querySelector('[data-auth-view="login"]');
     const forgotView = el.querySelector('[data-auth-view="forgot"]');
     if (loginView) loginView.hidden = false;
     if (forgotView) forgotView.hidden = true;
-    const seg = el.querySelector(".seg");
-    if (seg) seg.style.display = "";
     paint();
     el.querySelector("[name=u]")?.focus();
   }));
@@ -2099,11 +2132,9 @@ export function openAuth(mode = "login", onAuthed) {
 
   const showAuthView = (name) => {
     el.querySelectorAll("[data-auth-view]").forEach((v) => { v.hidden = v.getAttribute("data-auth-view") !== name; });
-    const seg = el.querySelector(".seg");
-    if (seg) seg.style.display = name === "forgot" ? "none" : "";
     if (name === "forgot") {
       el.querySelector("[data-title]").textContent = t("Quên mật khẩu");
-      el.querySelector("[data-lead]").textContent = t("Nhập tên đăng nhập hoặc email đã lưu trong hồ sơ. Hệ thống sẽ gửi mã OTP về email đó.");
+      el.querySelector("[data-lead]").textContent = t("Nhập tên đăng nhập hoặc email đã lưu trong hồ sơ để nhận mã OTP.");
       otpStep(false);
       const fu = el.querySelector("[name=forgotUser]");
       if (fu && !fu.value) fu.value = el.querySelector("[name=u]")?.value || "";

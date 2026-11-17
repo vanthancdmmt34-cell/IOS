@@ -221,45 +221,262 @@ html body:not(.in-app) #modalHost .modal {
   background: var(--cp-surface) !important;
   color: var(--cp-ink) !important;
   border: 1px solid var(--cp-border) !important;
-  border-radius: 26px !important;
+  border-radius: 20px !important;
   box-shadow: var(--cp-shadow-lg) !important;
 }
-html body:not(.in-app) #modalHost .modal :is(input, select, textarea) {
-  background: var(--cp-surface) !important;
-  color: var(--cp-ink) !important;
-  border: 1.5px solid var(--cp-border-strong) !important;
-  border-radius: 12px !important;
-  box-shadow: none !important;
-  min-height: 46px;
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet {
+  width: min(100%, 404px) !important;
+  background: #F5F8FC !important;
+  border: 1px solid #E2EBF4 !important;
+  border-radius: 22px !important;
+  padding: 20px 18px 18px !important;
 }
-html body:not(.in-app) #modalHost .modal :is(input, select, textarea):focus {
-  border-color: var(--cp-primary) !important;
-  box-shadow: 0 0 0 3px rgba(155, 138, 251, .45) !important;
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top { display: none; }
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help-note {
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #EAF4FB;
+  border: 1px solid #CFE5F7;
+  color: #1E6FA8;
+  font-size: 12px;
+  line-height: 1.4;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #EAF4FB;
+  border: 1px solid #D7E8F7;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 12px rgba(63, 151, 211, 0.10);
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head {
+  text-align: center;
+  margin-bottom: 14px;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head h2 {
+  margin: 0 !important;
+  font: 900 22px/1.22 var(--cp-font) !important;
+  color: #162B3D !important;
+  letter-spacing: -0.02em;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head .lead {
+  margin: 4px 0 0 !important;
+  font: 500 13px/1.4 var(--cp-font) !important;
+  color: #64748B !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-card {
+  background: #FFFFFF;
+  border: 1px solid #E6EEF6;
+  border-radius: 20px;
+  padding: 16px 15px 15px;
+  box-shadow: 0 8px 24px rgba(22, 43, 61, 0.05);
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-form {
+  display: grid;
+  gap: 11px;
+  margin: 0 !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .field {
+  margin: 0 !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-field-lbl {
+  display: block;
+  font: 800 10.5px/1.2 var(--cp-font);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #7B8BA1;
+  margin-bottom: 5px;
+}
+html body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  background: #F8FAFC !important;
+  color: #162B3D !important;
+  border: 1.5px solid #DDE5EE !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+  min-height: 41px;
+  padding: 8px 12px;
+  margin-top: 0 !important;
+  font: 600 13.5px/1.3 var(--cp-font) !important;
+}
+html body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)::placeholder {
+  color: #94A3B8 !important;
+  font-weight: 500 !important;
+}
+html body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+  background: #FFFFFF !important;
+  border-color: #3F97D3 !important;
+  box-shadow: 0 0 0 3px rgba(63, 151, 211, 0.16) !important;
   outline: 0 !important;
 }
 html body:not(.in-app) #modalHost .modal button {
-  border: 1px solid var(--cp-border-strong) !important;
+  border: 1px solid #DDE5EE !important;
   border-radius: 999px !important;
   box-shadow: none !important;
-  background: var(--cp-surface) !important;
-  color: var(--cp-ink) !important;
+  background: #FFFFFF !important;
+  color: #162B3D !important;
   font-weight: 800 !important;
 }
-html body:not(.in-app) #modalHost .modal .seg { background: var(--cp-surface-2) !important; border: 0 !important; border-radius: 999px !important; box-shadow: none !important; }
-html body:not(.in-app) #modalHost .modal .seg > button { border: 0 !important; background: transparent !important; color: var(--cp-ink-2) !important; }
-html body:not(.in-app) #modalHost .modal .seg > button.on,
-html body:not(.in-app) #modalHost .modal .seg > [aria-selected="true"] { background: var(--cp-surface) !important; color: var(--cp-primary-ink) !important; box-shadow: var(--cp-shadow-sm) !important; }
+html body:not(.in-app) #modalHost .modal .pass-wrap button {
+  border: 0 !important;
+  background: transparent !important;
+  color: #2B7CB8 !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 2px;
+}
+html body:not(.in-app) #modalHost .modal .auth-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1.2 var(--cp-font);
+  color: #64748B;
+  margin: 0;
+  cursor: pointer;
+}
+html body:not(.in-app) #modalHost .modal .auth-remember input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  min-height: 15px;
+  margin: 0;
+  accent-color: #3F97D3;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-forgot-link,
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-links .linkish,
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch-btn {
+  border: 0 !important;
+  background: transparent !important;
+  color: #3F97D3 !important;
+  font: 700 12px/1.2 var(--cp-font) !important;
+  padding: 2px 3px !important;
+  text-decoration: none !important;
+  border-radius: 6px !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch-btn {
+  font-weight: 800 !important;
+  font-size: 12.5px !important;
+}
+html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch {
+  margin-top: 2px;
+  padding-top: 2px;
+  text-align: center;
+  font: 600 12.5px/1.3 var(--cp-font);
+  color: #64748B;
+}
 html body:not(.in-app) #modalHost .modal .btn-primary,
 html body:not(.in-app) #modalHost .modal button.on:not(.seg > button) {
-  background: var(--cp-primary-strong) !important;
-  border-color: var(--cp-primary-strong) !important;
+  background: #3F97D3 !important;
+  border-color: #3F97D3 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 6px 16px rgba(103, 83, 224, .28) !important;
-  min-height: 46px;
+  box-shadow: 0 6px 16px rgba(63, 151, 211, 0.28) !important;
+  border-radius: 999px !important;
+  min-height: 43px;
+  font: 800 14px/1 var(--cp-font) !important;
 }
-html body:not(.in-app) #modalHost .modal .btn-primary:hover { background: var(--cp-primary-hover) !important; }
-html body:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn) { background: var(--cp-surface-2) !important; border: 0 !important; }
-html body:not(.in-app) #modalHost .modal a { color: var(--cp-primary-ink) !important; }
+html body:not(.in-app) #modalHost .modal .btn-primary:hover { background: #2B7CB8 !important; border-color: #2B7CB8 !important; }
+html body:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn) { background: #FFFFFF !important; border: 1px solid #E2EBF4 !important; border-radius: 50% !important; color: #475569 !important; }
+html body:not(.in-app) #modalHost .modal a { color: #3F97D3 !important; }
+@media (max-width: 760px) {
+  html body:not(.in-app) #modalHost .modal-wrap:has(.lp-auth-sheet) {
+    padding: 0 !important;
+    align-items: stretch !important;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100dvh;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: #F5F8FC !important;
+    display: flex;
+    flex-direction: column;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet > .modal-x { display: none !important; }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E8EFF6;
+    flex: none;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0 !important;
+    background: transparent !important;
+    padding: 4px 0 !important;
+    border-radius: 8px !important;
+    font: 900 18px/1 var(--cp-font) !important;
+    color: #162B3D !important;
+    letter-spacing: -0.02em;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-back {
+    font-size: 16px;
+    color: #64748B;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-word b { color: #3F97D3; font-weight: 900; }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help {
+    border: 0 !important;
+    background: #EEF6FC !important;
+    color: #2B7CB8 !important;
+    padding: 7px 13px !important;
+    border-radius: 999px !important;
+    font: 700 12px/1 var(--cp-font) !important;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help-note {
+    margin: 10px 16px 0;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-body {
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+    padding: 18px 18px calc(24px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot {
+    width: 60px;
+    height: 60px;
+    margin: 2px 0 12px;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot img { width: 48px; height: 48px; }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head h2 { font-size: 21px !important; }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head .lead { font-size: 12.5px !important; }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-card {
+    padding: 17px 15px 15px;
+    border-radius: 20px;
+  }
+  html body:not(.in-app) #modalHost .modal.lp-auth-sheet .field small {
+    margin-top: 2px;
+    font-size: 10.5px;
+    line-height: 1.25;
+  }
+}
 
 /* ---------- Hỏi đáp và thẻ môn học: bỏ bóng cứng, viền đứt nét, nền vàng ---------- */
 html body:not(.in-app) .landing-page.aw .aw-faq details.faq-item,
