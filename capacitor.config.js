@@ -14,6 +14,6 @@ export const server = {
   cleartext: serverUrl.startsWith("http://"),
 };
 export const android = { allowMixedContent: false };
-export const ios = { contentInset: "automatic" };
+export const ios = { contentInset: "never" };
 
 export default { appId, appName, webDir, server, android, ios };

@@ -4661,3 +4661,6 @@ html[data-theme="dark"] body.in-app #main .hm-chibi-banner {
 html[data-theme="dark"] body.in-app #main :is(.hm-ov-kpi b, .hm-step-copy b, .hm-tool-copy b, .hm-lang-chip b) {
   color: #F8FAFC !important;
 }
+
+/* Chặn kéo đàn hồi (bounce) của trang khi chạy trong app iOS: thanh menu dưới không bị trôi theo. */
+html:has(body.in-app) { overscroll-behavior: none; }
