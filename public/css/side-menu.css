@@ -371,6 +371,10 @@ html body.in-app .mtab { display: none; }
     grid-template-columns: repeat(8, minmax(0, 1fr));
     padding: 4px 5px;
   }
+  html body.in-app .mtab.mtab-9 {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    padding: 4px 4px;
+  }
   html body.in-app .mtab.mtab-7 a,
   html body.in-app .mtab.mtab-7 .mtab-more {
     font-size: 8.3px;
@@ -381,6 +385,12 @@ html body.in-app .mtab { display: none; }
   html body.in-app .mtab.mtab-8 .mtab-more {
     font-size: 7.4px;
     letter-spacing: -0.03em;
+    padding: 2px 0;
+  }
+  html body.in-app .mtab.mtab-9 a,
+  html body.in-app .mtab.mtab-9 .mtab-more {
+    font-size: 7px;
+    letter-spacing: -0.04em;
     padding: 2px 0;
   }
   html body.in-app .mtab a,
@@ -421,6 +431,19 @@ html body.in-app .mtab { display: none; }
     html body.in-app .mtab.mtab-8 .mtab-more {
       font-size: 6.7px;
       letter-spacing: -0.04em;
+    }
+    html body.in-app .mtab.mtab-9 {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(42px, 1fr);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    html body.in-app .mtab.mtab-9::-webkit-scrollbar { display: none; }
+    html body.in-app .mtab.mtab-9 a,
+    html body.in-app .mtab.mtab-9 .mtab-more {
+      font-size: 7px;
+      letter-spacing: -0.03em;
     }
   }
   html body.in-app .mtab a:active,

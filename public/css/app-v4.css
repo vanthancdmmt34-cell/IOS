@@ -2844,7 +2844,9 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
   }
 
   /* 20-luyen-thi-toeic.webp: Luyện thi TOEIC */
+  html:root body.in-app:not(.ax-on) #main .toeic-overview-head { display: none !important; }
   html:root body.in-app:not(.ax-on) #main .toeic-m-hero {
+    display: block !important;
     margin-bottom: 12px;
   }
   html:root body.in-app:not(.ax-on) #main .toeic-m-kpis {
