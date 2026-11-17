@@ -640,6 +640,14 @@ export async function pageStudentHome(main, params, query, ctx) {
         </div>
       </section>` : "";
 
+    const overviewKpisHtml = heroSub ? `
+      <nav class="hm-m-overview-kpis" aria-label="${L("Tổng quan nhanh", "Quick stats")}">
+        <a class="hm-ov-kpi is-orange" href="/app/co-vu"><b>🔥 ${fmtN(streak)}</b><span>${L("Chuỗi ngày", "Streak")}</span></a>
+        <a class="hm-ov-kpi is-blue" href="/app/ngoai-ngu/${esc(heroSub.id)}"><b>${fmtN(heroSub.done)}/${fmtN(heroSub.total)}</b><span>${L("Bài đạt", "Passed")}</span></a>
+        <a class="hm-ov-kpi is-green" href="/app/ngoai-ngu/on-tap/${esc(heroSub.id)}"><b>${fmtN(reviewDueShown)}</b><span>${L("Cần ôn", "Due")}</span></a>
+        <a class="hm-ov-kpi is-gold" href="/app/ngoai-ngu/huy-hieu/${esc(heroSub.id)}"><b>⭐ ${fmtN(starCount)}</b><span>${L("Điểm sao", "Stars")}</span></a>
+      </nav>` : "";
+
     const current = heroSub ? `
       <section class="hm-current" style="--c:${esc(heroSub.color)}" aria-label="${L("Môn đang học", "Current language")}">
         <div class="hm-current-head">
@@ -697,6 +705,7 @@ export async function pageStudentHome(main, params, query, ctx) {
     const order = [
       ...take(":scope > .hm-chibi-banner"),
       ...nodes(langStripHtml),
+      ...nodes(overviewKpisHtml),
       ...nodes(current),
       ...nodes(skillsBlock),
       ...nodes(exploreToolsHtml),

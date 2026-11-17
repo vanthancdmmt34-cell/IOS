@@ -4336,3 +4336,47 @@ html body #main .hm-pet-bars span,
 html body #main .hm-pet-bars b {
   white-space: nowrap;
 }
+
+/* Bảng 4 chỉ số Tổng quan nhanh trên Trang chủ / Tổng quan (.hm-m-overview-kpis) */
+html body #main .hm-m-overview-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+html body #main .hm-ov-kpi {
+  display: grid;
+  gap: 2px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  border: 1px solid #E6EAF0;
+  background: #FFFFFF;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(22, 43, 61, .03);
+  transition: transform .15s ease, border-color .15s ease;
+}
+html body #main .hm-ov-kpi:hover {
+  transform: translateY(-1px);
+  border-color: #93C5FD;
+}
+html body #main .hm-ov-kpi.is-orange { background: #FFF8EE; border-color: #FDE2B8; }
+html body #main .hm-ov-kpi.is-blue { background: #F0F8FF; border-color: #CDE6FA; }
+html body #main .hm-ov-kpi.is-green { background: #EEFCF5; border-color: #C7F0DB; }
+html body #main .hm-ov-kpi.is-gold { background: #FFFBEB; border-color: #FDE68A; }
+html body #main .hm-ov-kpi b {
+  font: 900 13px/1.2 var(--cp-font);
+  color: #162B3D;
+  white-space: nowrap;
+}
+html body #main .hm-ov-kpi span {
+  font: 600 10.5px/1.15 var(--cp-font);
+  color: #64748B;
+  white-space: nowrap;
+}
+@media (max-width: 359px) {
+  html body #main .hm-m-overview-kpis { gap: 5px; }
+  html body #main .hm-ov-kpi { padding: 6px 3px; border-radius: 11px; }
+  html body #main .hm-ov-kpi b { font-size: 11.5px; }
+  html body #main .hm-ov-kpi span { font-size: 9.5px; }
+}
