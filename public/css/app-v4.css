@@ -1,0 +1,1217 @@
+/* ==========================================================================
+   LifeRivo — Giao diện trong app, giai đoạn 1 (v4)
+   Một bộ token theo trang chủ (--cp-*, font Nunito) cho các thành phần dùng chung nhất:
+   thanh trên, khung nội dung (sheet / card / hm-card), nút và nhãn.
+   Nạp cuối bundle (sau side-menu.css) nên thắng các định nghĩa cũ. Các giai đoạn sau sẽ xóa dần
+   định nghĩa cũ trong app.css, ui-unified.css, theme.css, chibi-ui.css, chibi-premium.css, home-learner.css.
+   ========================================================================== */
+
+html body.in-app:not(.ax-on) {
+  --v4-radius: 20px;
+  --v4-radius-sm: 14px;
+  --v4-shadow: 0 1px 2px rgba(48, 48, 71, .04), 0 10px 28px rgba(48, 48, 71, .06);
+  --v4-shadow-btn: 0 8px 18px rgba(103, 83, 224, .22);
+  --v4-btn-lip: #4B3DB8;
+}
+
+/* Khung nội dung: thẻ trắng, viền mảnh, bo lớn, bóng nhẹ */
+html body.in-app:not(.ax-on) .sheet,
+html body.in-app:not(.ax-on) .card,
+html body.in-app:not(.ax-on) .hm-card {
+  background: var(--cp-surface) !important;
+  border: 1px solid var(--cp-border) !important;
+  border-radius: var(--v4-radius) !important;
+  box-shadow: var(--v4-shadow) !important;
+}
+
+/* Nút: bo vừa, chữ đậm; nút chính là màu nhấn của trang chủ */
+html body.in-app:not(.ax-on) .btn {
+  border-radius: var(--v4-radius-sm) !important;
+  font-family: var(--cp-font);
+  font-weight: 800;
+}
+html body.in-app:not(.ax-on) .btn-primary {
+  background: var(--cp-primary-strong) !important;
+  border-color: transparent !important;
+  color: var(--cp-on-primary) !important;
+  box-shadow: var(--v4-shadow-btn) !important;
+}
+html body.in-app:not(.ax-on) .btn-primary:hover {
+  background: var(--cp-primary-hover) !important;
+}
+
+/* Nhãn: viên thuốc */
+html body.in-app:not(.ax-on) .tag {
+  border-radius: 999px;
+  font-family: var(--cp-font);
+  font-weight: 800;
+}
+
+/* ---------- Giai đoạn 2: ngôn ngữ thị giác của trang chủ ---------- */
+/* Nền trang đồng màu, không gradient */
+html body.in-app:not(.ax-on) .shell > .main { background: var(--cp-bg); }
+
+/* Tiêu đề: đậm 900, màu ink, chữ hơi khít như trang chủ */
+html body.in-app:not(.ax-on) .main :is(h1, h2, h3) {
+  color: var(--cp-ink) !important;
+  font-family: var(--cp-font);
+  font-weight: 900 !important;
+  letter-spacing: -.015em !important;
+}
+
+/* Nút dạng viên (pill) như các nút trên trang chủ */
+html body.in-app:not(.ax-on) .btn {
+  border-radius: 999px !important;
+  min-height: 40px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+html body.in-app:not(.ax-on) .btn-primary {
+  min-height: 44px;
+}
+
+/* ---------- Giai đoạn 3: ô nhập, hộp thoại, thẻ bước lộ trình ---------- */
+/* Ô nhập: nền trắng, viền đậm vừa, vòng sáng màu nhấn khi focus */
+html body.in-app:not(.ax-on) .main :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea):not(.cat-search input) {
+  background: var(--cp-surface);
+  border: 1.5px solid var(--cp-border-strong);
+  border-radius: var(--v4-radius-sm);
+  color: var(--cp-ink);
+  font-family: var(--cp-font);
+}
+html body.in-app:not(.ax-on) .main :is(input, select, textarea):focus-visible {
+  outline: none;
+  border-color: var(--cp-primary-strong);
+  box-shadow: 0 0 0 4px rgba(103, 83, 224, .16);
+}
+
+/* Hộp thoại: bo lớn, bóng sâu hơn thẻ */
+html body.in-app:not(.ax-on) .modal {
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(48, 48, 71, .18);
+}
+
+/* Bước lộ trình (lx-step) và thẻ chặng: cùng bộ bo và bóng với thẻ */
+html body.in-app:not(.ax-on) .lx-step,
+html body.in-app:not(.ax-on) .lx-unit,
+html body.in-app:not(.ax-on) .lx-pick {
+  border-radius: var(--v4-radius) !important;
+  border: 1px solid var(--cp-border) !important;
+  background: var(--cp-surface) !important;
+  box-shadow: var(--v4-shadow) !important;
+}
+
+/* ---------- Giai đoạn 4: khu vực lộ trình, các ô thống kê ---------- */
+/* Bốn ô thống kê dùng chung một kiểu: nền trắng, viền mảnh, icon màu nhấn (không còn pastel mỗi ô một màu) */
+html:root body.in-app:not(.ax-on) #main .lx-kpis > div:nth-child(n),
+html:root body.in-app:not(.ax-on) #main .lx-kpis-premium > div:nth-child(n) {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--v4-radius);
+  box-shadow: var(--v4-shadow);
+}
+html body.in-app:not(.ax-on) .lx-kpis b { color: var(--cp-ink); }
+html body.in-app:not(.ax-on) .lx-kpis .lx-kpi-icon {
+  background: var(--cp-primary-soft);
+  color: var(--cp-primary-ink);
+  border: 0;
+  border-radius: 12px;
+}
+html body.in-app:not(.ax-on) .lx-kpis span { color: var(--cp-ink-2); }
+html body.in-app:not(.ax-on) .lx-kpis small { color: var(--cp-ink-3); }
+
+/* ---------- Giai đoạn 5: nút bấm dùng chung ----------
+   Họ nút: .btn (mặc định), .btn-primary (nút chính), .btn-ghost (nút phụ không viền), .btn-danger,
+   kích thước .btn-xs / .btn-sm / .btn-lg, .btn-block, .icon-btn, và .hm-btn / .hm-btn-primary của tổng quan.
+   Cùng một bộ trạng thái: hover, bấm (co nhẹ), focus bằng bàn phím, vô hiệu hóa.
+   Điện thoại: chiều cao tối thiểu 44 px để dễ chạm. */
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px !important;
+  border: 1.5px solid var(--cp-border-strong) !important;
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  font: 800 14px/1.1 var(--cp-font);
+  text-decoration: none;
+  /* Nút phụ kiểu 2D: viền và một bóng đáy phẳng, không đổ bóng mềm */
+  box-shadow: 0 3px 0 var(--cp-border-strong) !important;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease, box-shadow .15s ease;
+}
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) svg { flex: none; width: 18px; height: 18px; }
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):hover {
+  background: var(--cp-surface-2) !important;
+  border-color: var(--cp-primary) !important;
+  color: var(--cp-primary-ink) !important;
+}
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--cp-border-strong) !important; }
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):is(:disabled, [aria-disabled="true"]) {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+  background: var(--cp-surface-2) !important;
+}
+
+/* Nút chính: màu nhấn đậm, chữ trắng, bóng nhẹ */
+html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary) {
+  background: var(--cp-primary-strong) !important;
+  border-color: transparent !important;
+  color: var(--cp-on-primary) !important;
+  /* Nút chính kiểu 3D: bậc dày bên dưới màu nhấn đậm, nhấn xuống khi bấm */
+  box-shadow: 0 4px 0 var(--v4-btn-lip), var(--v4-shadow-btn) !important;
+}
+html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary):hover {
+  background: var(--cp-primary-hover) !important;
+  border-color: transparent !important;
+  color: var(--cp-on-primary) !important;
+  box-shadow: 0 4px 0 var(--v4-btn-lip), var(--v4-shadow-btn) !important;
+}
+html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary):active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--v4-btn-lip) !important;
+}
+
+/* Nút phụ không viền: chỉ chữ màu nhấn */
+html:root body.in-app:not(.ax-on) #main .btn-ghost {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--cp-primary-ink) !important;
+  box-shadow: none !important;
+}
+html:root body.in-app:not(.ax-on) #main .btn-ghost:hover {
+  background: var(--cp-primary-soft) !important;
+  border-color: transparent !important;
+  color: var(--cp-primary-ink) !important;
+}
+
+/* Nút nguy hiểm (xóa, đăng xuất trong trang) */
+html:root body.in-app:not(.ax-on) #main .btn-danger {
+  background: var(--cp-bad) !important;
+  border-color: transparent !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 0 #8F1A2B !important;
+}
+html:root body.in-app:not(.ax-on) #main .btn-danger:hover { filter: brightness(.95); color: #FFFFFF !important; }
+
+/* Kích thước */
+html:root body.in-app:not(.ax-on) #main .btn-xs { min-height: 30px; padding: 0 10px; font-size: 12px; }
+html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 38px; padding: 0 14px; font-size: 13px; }
+html:root body.in-app:not(.ax-on) #main .btn-lg { min-height: 52px; padding: 0 24px; font-size: 16px; }
+html:root body.in-app:not(.ax-on) #main .btn-block { display: flex; width: 100%; }
+
+/* Nút biểu tượng: tròn, cùng viền với nút chữ */
+html:root body.in-app:not(.ax-on) #main .icon-btn {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1.5px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+  color: var(--cp-ink-2);
+  box-shadow: none;
+  cursor: pointer;
+}
+html:root body.in-app:not(.ax-on) #main .icon-btn:hover {
+  background: var(--cp-surface-2);
+  border-color: var(--cp-primary);
+  color: var(--cp-primary-ink);
+}
+html:root body.in-app:not(.ax-on) #main .icon-btn:focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
+
+/* ---------- Giai đoạn 7: bỏ icon nhân vật trong tiêu đề và nút chữ ----------
+   Icon minh họa dạng nhân vật (class chibi-ic / sk-ic) không còn hiện trong tiêu đề h1–h4 và trong
+   nút có chữ. Nút chỉ có biểu tượng (.icon-btn) và các nhân vật đồng hành không bị ảnh hưởng. */
+html:root body.in-app:not(.ax-on) #main :is(h1, h2, h3, h4) :is(.chibi-ic, .sk-ic) {
+  display: none !important;
+}
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):not(.icon-btn) :is(.chibi-ic, .sk-ic) {
+  display: none !important;
+}
+
+/* ---------- Giai đoạn 8: trang làm bài ----------
+   Đáp án là nút 2D chibi: viền mảnh, đế dày, chọn thì nền nhạt và viền màu nhấn; đúng và sai có màu riêng.
+   Thanh nộp bài là một khối nổi bo lớn, nút nộp là nút 3D chính. */
+html:root body.in-app:not(.ax-on) #main .lx-opt {
+  min-height: 50px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1.5px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+  color: var(--cp-ink);
+  box-shadow: 0 3px 0 var(--cp-border-strong);
+  font: 700 15px/1.3 var(--cp-font);
+  text-align: left;
+  transition: transform .1s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+html:root body.in-app:not(.ax-on) #main .lx-opt:hover {
+  border-color: var(--cp-primary);
+  background: var(--cp-surface-2);
+}
+html:root body.in-app:not(.ax-on) #main .lx-opt:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--cp-border-strong);
+}
+html:root body.in-app:not(.ax-on) #main .lx-opt.sel {
+  border-color: var(--cp-primary-strong);
+  background: var(--cp-primary-soft);
+  color: var(--cp-primary-ink);
+  box-shadow: 0 3px 0 var(--cp-primary-strong);
+}
+html:root body.in-app:not(.ax-on) #main .lx-opt.right {
+  border-color: #0F9D6B;
+  background: color-mix(in srgb, #0F9D6B 14%, var(--cp-surface));
+  color: #0B7A52;
+  box-shadow: 0 3px 0 #0F9D6B;
+}
+html:root body.in-app:not(.ax-on) #main .lx-opt.wrong {
+  border-color: var(--cp-bad);
+  background: color-mix(in srgb, var(--cp-bad) 12%, var(--cp-surface));
+  color: var(--cp-bad);
+  box-shadow: 0 3px 0 var(--cp-bad);
+}
+
+/* Số thứ tự câu: chip bo vuông nhạt */
+html:root body.in-app:not(.ax-on) #main .lx-q-no {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--cp-primary-soft);
+  color: var(--cp-primary-ink);
+  font: 900 14px/1 var(--cp-font);
+  box-shadow: 0 3px 0 var(--cp-border-strong);
+}
+
+/* Thanh nộp bài: khối nổi bo lớn với đế 2D, nút nộp dùng nút chính 3D đã có */
+html:root body.in-app:not(.ax-on) #main .lx-submit-bar {
+  border-radius: 22px;
+  border: 1.5px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+  box-shadow: 0 4px 0 var(--cp-border-strong), 0 12px 28px rgba(48, 48, 71, .12);
+}
+
+/* ---------- Giai đoạn 9: tổng quan (dashboard) ----------
+   Các khối lớn dùng cùng một kiểu: thẻ trắng, viền mảnh, bo lớn, đế 2D như nút chibi.
+   Khối môn đang học giữ vạch màu bên trái theo môn. Các ô kế hoạch có đế 3D khi bấm. */
+html:root body.in-app:not(.ax-on) #main :is(.hm-current, .hm-goal, .hm-focus, .hm-plan-card, .hm-pet-card, .hm-insights, .hm-quick, .hm-chibi-banner) {
+  background: var(--cp-surface);
+  border: 1.5px solid var(--cp-border);
+  border-radius: var(--v4-radius);
+  box-shadow: 0 4px 0 var(--cp-border);
+}
+html:root body.in-app:not(.ax-on) #main .hm-current {
+  border-left: 6px solid var(--c, var(--cp-primary-strong));
+}
+html:root body.in-app:not(.ax-on) #main .hm-star-pill {
+  border: 1.5px solid color-mix(in srgb, #F59E0B 40%, var(--cp-border));
+  box-shadow: 0 3px 0 color-mix(in srgb, #F59E0B 40%, var(--cp-border));
+  border-radius: 999px;
+}
+html:root body.in-app:not(.ax-on) #main .hm-plan-tile {
+  border: 1.5px solid var(--cp-border-strong);
+  border-radius: 20px;
+  box-shadow: 0 4px 0 var(--cp-border-strong);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+html:root body.in-app:not(.ax-on) #main .hm-plan-tile:hover { transform: translateY(-2px); }
+html:root body.in-app:not(.ax-on) #main .hm-plan-tile:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cp-border-strong);
+}
+
+/* ---------- Giai đoạn 10: luyện nói, luyện viết, TOEIC, phỏng vấn ----------
+   Thẻ (lx-card, sp-scene, toeic-part, ô số liệu) cùng một kiểu 2D; icon trong thẻ là chip nhạt;
+   tab là viên thuốc có đế 2D, tab đang chọn là nút chính; thanh tiến độ bo tròn. */
+html:root body.in-app:not(.ax-on) #main :is(.lx-card, .sp-scene, .toeic-part, .toeic-stats > *) {
+  background: var(--cp-surface);
+  border: 1.5px solid var(--cp-border);
+  border-radius: var(--v4-radius);
+  box-shadow: 0 4px 0 var(--cp-border);
+}
+html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part) {
+  transition: transform .12s ease, box-shadow .12s ease, border-color .15s ease;
+}
+html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part):hover {
+  transform: translateY(-2px);
+  border-color: var(--cp-primary);
+}
+html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part):active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cp-border);
+}
+html:root body.in-app:not(.ax-on) #main :is(.lx-card-ico, .toeic-no, .sp-scene-ico) {
+  background: var(--cp-primary-soft);
+  color: var(--cp-primary-ink);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 3px 0 var(--cp-border-strong);
+}
+html:root body.in-app:not(.ax-on) #main .toeic-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-2);
+  overflow: hidden;
+}
+html:root body.in-app:not(.ax-on) #main .toeic-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cp-primary-strong);
+}
+html:root body.in-app:not(.ax-on) #main .tabs > * {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+  color: var(--cp-ink-2);
+  box-shadow: 0 3px 0 var(--cp-border-strong);
+  font: 800 13px/1 var(--cp-font);
+}
+html:root body.in-app:not(.ax-on) #main .tabs > .on {
+  background: var(--cp-primary-strong);
+  border-color: transparent;
+  color: var(--cp-on-primary);
+  box-shadow: 0 3px 0 var(--v4-btn-lip);
+}
+
+/* ---------- Giai đoạn 11: tổng quan theo bố cục "Bài học của bạn" ----------
+   Vòng tiến độ ở khối môn đang học; lưới 2 cột bốn loại bài, mỗi thẻ có dải màu với mặt nhân vật,
+   thanh tiến độ và số bài thật. Màu dịu, cùng họ màu thương hiệu. */
+html:root body.in-app:not(.ax-on) #main .hm-ring {
+  position: relative;
+  order: 2;
+  margin-left: auto;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+}
+html:root body.in-app:not(.ax-on) #main .hm-ring svg { position: absolute; inset: 0; }
+html:root body.in-app:not(.ax-on) #main .hm-ring b {
+  position: relative;
+  font: 900 13px/1 var(--cp-font);
+  color: var(--cp-ink);
+}
+html:root body.in-app:not(.ax-on) #main .hm-greet-sub {
+  margin: 4px 0 0;
+  font: 600 14px/1.4 var(--cp-font);
+  color: var(--cp-ink-3);
+}
+html:root body.in-app:not(.ax-on) #main .hm-current-today {
+  margin: 0;
+  font: 600 14px/1.4 var(--cp-font);
+  color: var(--cp-ink-2);
+}
+html:root body.in-app:not(.ax-on) #main .hm-current-today > b { color: var(--cp-ink); font-weight: 900; }
+/* Vòng tiến độ đã hiện phần trăm nên ẩn thanh tiến độ trùng lặp trong thẻ môn đang học */
+html:root body.in-app:not(.ax-on) #main .hm-current .hm-progress .hm-bar { display: none; }
+html:root body.in-app:not(.ax-on) #main .hm-skills { display: grid; gap: 12px; }
+html:root body.in-app:not(.ax-on) #main .hm-skills-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+html:root body.in-app:not(.ax-on) #main .hm-skills-head h2 { font-size: clamp(18px, 4vw, 22px); }
+html:root body.in-app:not(.ax-on) #main .hm-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--v4-radius);
+  border: 1.5px solid var(--cp-border);
+  background: var(--cp-surface);
+  box-shadow: 0 4px 0 var(--cp-border);
+  color: var(--cp-ink);
+  text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .15s ease;
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill:hover {
+  transform: translateY(-2px);
+  border-color: var(--k);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cp-border);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-band {
+  display: grid;
+  place-items: center;
+  height: 68px;
+  background: var(--k);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-band svg { width: 60px; height: 38px; }
+html:root body.in-app:not(.ax-on) #main .hm-skill-body {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  min-width: 0;
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-body > b {
+  font: 900 15px/1.2 var(--cp-font);
+  color: var(--cp-ink);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-body > small {
+  font: 600 12px/1.35 var(--cp-font);
+  color: var(--cp-ink-3);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-bar {
+  display: block;
+  height: 7px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--k) 16%, var(--cp-surface));
+  overflow: hidden;
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--k);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  font: 700 12px/1.2 var(--cp-font);
+  color: var(--cp-ink-2);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-foot > b {
+  font: 900 13px/1 var(--cp-font);
+  color: var(--cp-ink);
+}
+/* Màn hẹp: vòng tiến độ và cờ nhỏ lại để tên môn và dòng trạng thái đủ chỗ */
+@media (max-width: 400px) {
+  html:root body.in-app:not(.ax-on) #main .hm-ring { width: 52px; height: 52px; }
+  html:root body.in-app:not(.ax-on) #main .hm-ring b { font-size: 11px; }
+  html:root body.in-app:not(.ax-on) #main .hm-current-head .hm-flag { width: 44px; height: 44px; }
+}
+@media (max-width: 360px) {
+  html:root body.in-app:not(.ax-on) #main .hm-skill-body > b { font-size: 14px; }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-foot { flex-direction: column; gap: 2px; }
+}
+
+/* ---------- Giai đoạn 12: chặng học dạng thẻ màu (trang khóa học) ----------
+   Mỗi chặng có một màu nhấn riêng, lấy theo thứ tự xuất hiện (bảng màu dịu, cùng họ thương hiệu).
+   Số bài đã đạt và thanh tiến độ là số thật từ dữ liệu khóa học. */
+html:root body.in-app:not(.ax-on) #main .lx-unit {
+  --uc: #6753E0;
+  overflow: hidden;
+  border-radius: var(--v4-radius) !important;
+  border: 1.5px solid var(--cp-border) !important;
+  box-shadow: 0 4px 0 var(--cp-border) !important;
+}
+html:root body.in-app:not(.ax-on) #main .lx-unit:nth-child(6n+2) { --uc: #C97A1E; }
+html:root body.in-app:not(.ax-on) #main .lx-unit:nth-child(6n+3) { --uc: #1F9A72; }
+html:root body.in-app:not(.ax-on) #main .lx-unit:nth-child(6n+4) { --uc: #C4417A; }
+html:root body.in-app:not(.ax-on) #main .lx-unit:nth-child(6n+5) { --uc: #2F80C7; }
+html:root body.in-app:not(.ax-on) #main .lx-unit:nth-child(6n+6) { --uc: #7A8F2A; }
+html:root body.in-app:not(.ax-on) #main .lx-unit > .lx-unit-head {
+  background: color-mix(in srgb, var(--uc) 13%, var(--cp-surface)) !important;
+}
+html:root body.in-app:not(.ax-on) #main .lx-unit-no {
+  background: var(--uc) !important;
+  color: #FFFFFF !important;
+  border-radius: 12px;
+}
+html:root body.in-app:not(.ax-on) #main .lx-unit .bar > i { background: var(--uc) !important; }
+
+/* Ngày trong tuần ở thẻ chuỗi ngày: mỗi ngày là một vòng tròn; ngày có học được tô màu, hôm nay có viền nổi */
+html:root body.in-app:not(.ax-on) #main .hm-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+html:root body.in-app:not(.ax-on) #main .hm-week > span {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 40px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 2px solid var(--cp-border-strong);
+  background: var(--cp-surface);
+}
+html:root body.in-app:not(.ax-on) #main .hm-week > span.on {
+  border-color: var(--cp-primary-strong);
+  background: var(--cp-primary-soft);
+}
+html:root body.in-app:not(.ax-on) #main .hm-week > span.now { box-shadow: 0 0 0 3px var(--cp-primary-soft); }
+/* Thẻ chuỗi ngày: nền vàng nhạt thay cho màu vàng đậm cũ */
+html:root body.in-app:not(.ax-on) #main .hm-streak {
+  background: color-mix(in srgb, #F59E0B 8%, var(--cp-surface));
+  border-color: color-mix(in srgb, #F59E0B 30%, var(--cp-border));
+}
+html:root body.in-app:not(.ax-on) #main .hm-week > span > i { display: none; }
+html:root body.in-app:not(.ax-on) #main .hm-week > span > em {
+  font: 800 10px/1 var(--cp-font);
+  font-style: normal;
+  color: var(--cp-ink-2);
+  white-space: nowrap;
+}
+
+/* Bạn đồng hành: câu giới thiệu ngắn dưới tên và tính cách trên thẻ chọn */
+html:root body.in-app:not(.ax-on) #main .cp-pick-intro {
+  display: block;
+  margin-top: 2px;
+  font: 600 12px/1.4 var(--cp-font);
+  font-style: normal;
+  color: var(--cp-ink-3);
+}
+
+/* Trên màn rộng: chừa chỗ cho nhân vật đồng hành ở góc phải để không che nút Nộp bài */
+@media (min-width: 961px), (min-width: 761px) and (min-height: 501px) {
+  html:root body.in-app:not(.ax-on) #main .lx-submit-bar { padding-right: 120px; }
+}
+/* Điện thoại (dọc, hoặc ngang với chiều cao ≤500px): thanh nộp bài không dính đáy, chừa chỗ cho thanh điều hướng */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-submit-bar {
+    position: relative;
+    bottom: auto;
+    margin: 12px 0 calc(96px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Icon nét đơn trên thanh trên: kích thước cố định, không bị co theo CSS cũ */
+html:root body.in-app:not(.ax-on) .topbar .line-ic,
+html:root body.in-app:not(.ax-on) .topbar #searchBtn svg.line-ic { width: 17px; height: 17px; max-width: none; flex: none; }
+
+/* Điện thoại: mục tiêu chạm đủ lớn */
+@media (max-width: 640px) {
+  html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) { min-height: 46px; font-size: 15px; }
+  html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 42px; font-size: 14px; }
+  html:root body.in-app:not(.ax-on) #main .btn-xs { min-height: 34px; }
+}
+
+/* Nhãn kiểu chip trên trang chủ: viền mảnh, nền trắng */
+html body.in-app:not(.ax-on) .tag {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  color: var(--cp-ink-2);
+  padding: 4px 10px;
+}
+
+/* ---------- Giai đoạn 13: trang khóa học trên điện thoại = lưới thẻ màu hai cột ----------
+   Mỗi chặng là một thẻ: góc có chibi theo trạng thái, tên chặng, số bài đạt/tổng và phần trăm (số thật từ dữ liệu khóa học).
+   Thẻ đang mở trải rộng cả hàng. Dưới 360px chuyển thành một cột. Desktop giữ bản đồ chặng. */
+html:root body.in-app:not(.ax-on) #main .lx-unit-mascot,
+html:root body.in-app:not(.ax-on) #main .lx-unit-pct { display: none; }
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-map {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    padding-left: 0 !important;
+    max-width: none;
+    align-items: start;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-map::before,
+  html:root body.in-app:not(.ax-on) #main .lx-map-goal::before { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit { grid-column: auto !important; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit[open] { grid-column: 1 / -1 !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit > .lx-unit-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 8px;
+    padding: 12px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-state {
+    position: static !important;
+    grid-column: 1 / -1;
+    font-size: 10.5px;
+    line-height: 1.3;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-here { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map .lx-unit-no {
+    position: static !important;
+    grid-column: 1;
+    grid-row: 2;
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 14px;
+    box-shadow: none !important;
+    margin: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot {
+    display: block !important;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    align-self: center;
+    width: 46px;
+    height: 46px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot :is(.cm-wrap, .cm-card) { margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot svg { display: block; width: 46px !important; height: 46px !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t { grid-column: 1 / -1; grid-row: 3; display: grid; gap: 2px; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t b { white-space: normal; overflow: visible; font-size: 15px; line-height: 1.25; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t span { white-space: normal; font-size: 12px; line-height: 1.35; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-prog {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 8px;
+    width: auto;
+    justify-items: stretch;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-prog b { grid-column: 1; grid-row: 1; font-size: 12.5px; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-pct { display: block; grid-column: 2; grid-row: 1; font-style: normal; font-size: 12px; font-weight: 800; color: var(--uc); font-variant-numeric: tabular-nums; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-prog .lx-bar { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-chev,
+  html:root body.in-app:not(.ax-on) #main details.lx-unit > summary::after { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map-goal { grid-column: 1 / -1; }
+}
+@media (max-width: 359px) {
+  html:root body.in-app:not(.ax-on) #main .lx-map { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/* ---------- Giai đoạn 14: màn 320–360px ----------
+   Thẻ môn học gọn hơn (mascot, khoảng cách và cỡ chữ vừa màn hẹp); nhãn thanh dưới không xuống dòng. */
+@media (max-width: 360px) {
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-stage { padding: 12px 12px 10px; gap: 4px; }
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-mascot-wrap svg { width: 64px; height: 64px; }
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-body { padding: 12px 14px 14px; gap: 8px; }
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-title h3 { font-size: 17px; }
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-desc { font-size: 13px; line-height: 1.45; margin: 0; }
+  html:root body.in-app:not(.ax-on) #main .sw-mini-steps { font-size: 12.5px; gap: 2px; }
+  html:root body.in-app:not(.ax-on) #main .sw-chibi-cta { min-height: 42px; font-size: 14px; }
+  html body.in-app .mtab { left: 8px; right: 8px; padding: 6px 4px; gap: 2px; }
+  html body.in-app .mtab a,
+  html body.in-app .mtab .mtab-more { font-size: 10px; white-space: nowrap; min-height: 54px; }
+}
+
+/* ---------- Giai đoạn 15: bài học trên điện thoại ----------
+   Luyện nghe: nút "Nghe" to, đủ chiều ngang để bấm chắc tay; gợi ý nằm dưới nút, không lẫn với câu hỏi. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-q-text:has(> .lx-listen) {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-q-text > .lx-listen {
+    width: 100%;
+    min-height: 56px;
+    justify-content: center;
+    font-size: 17px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-q-text > .muted.small {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-q-head > .lx-q-text:has(> .lx-listen) { flex: 1 1 auto; width: 100%; }
+}
+
+/* ---------- Giai đoạn 16: Cổ Vũ trên điện thoại ----------
+   Chọn bạn đồng hành: ba cột, xuống dòng; trước đây sáu nút nằm trên một hàng cuộn ngang nên ba nút cuối bị khuất. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .hm-pet-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px;
+    overflow: visible !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-pet-tabs .hm-pet-tab {
+    width: 100%;
+    min-width: 0;
+    flex: none;
+  }
+  /* Màn chọn bạn đồng hành: hai cột, mọi bạn đều nhìn thấy (không cuộn ngang) */
+  html:root body.in-app:not(.ax-on) #main .cp-picker {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+    overflow: visible !important;
+    scroll-snap-type: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .cp-picker .cp-pick {
+    flex: none;
+    width: 100%;
+    scroll-snap-align: none;
+  }
+}
+
+/* ---------- Giai đoạn 17: trò chuyện AI trên điện thoại ----------
+   Ô nhập và nút Gửi/Nói dính phía trên thanh điều hướng dưới, không bị thanh này che. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .sp-chat .sp-dock {
+    bottom: calc(100px + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  /* Bong bóng của bạn đồng hành nằm trên ô nhập khi trang có ô nhập (trò chuyện AI) */
+  html:root body.in-app:has(.sp-dock) .cp-follow { bottom: calc(176px + env(safe-area-inset-bottom)); }
+}
+
+/* ---------- Giai đoạn 18: phòng luyện nói ở màn 320–360px ----------
+   Hàng nút (nghe, tốc độ, micro, tai nghe, bàn phím) thu nhỏ để không đẩy cả thẻ ra ngoài màn hình. */
+@media (max-width: 360px) {
+  html:root body.in-app:not(.ax-on) #main .sp-ctl { gap: 8px; flex-wrap: wrap; }
+  html:root body.in-app:not(.ax-on) #main .sp-round,
+  html:root body.in-app:not(.ax-on) #main .sp-tool { width: 40px; height: 40px; }
+  html:root body.in-app:not(.ax-on) #main .sp-mic { width: 62px; height: 62px; }
+}
+
+/* ---------- Giai đoạn 19: đầu trang bài học trên điện thoại ----------
+   Chibi nhỏ đặt cạnh tiêu đề (không nằm dưới); các nút điều hướng bài gọn hơn để câu hỏi lên sớm hơn. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .page-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .page-head { flex-wrap: nowrap; }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .page-head > div { flex: 1 1 0; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .page-head .cm-wrap { flex: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-page .page-head .cm-wrap svg { width: 46px; height: 46px; }
+  html:root body.in-app:not(.ax-on) #main .lx-roomnav { gap: 6px; }
+  html:root body.in-app:not(.ax-on) #main .lx-roomnav-mid { padding: 0; gap: 6px; }
+  html:root body.in-app:not(.ax-on) #main .lx-roomnav a,
+  html:root body.in-app:not(.ax-on) #main .lx-roomnav button { min-height: 38px; padding: 6px 10px !important; font-size: 13px !important; }
+}
+
+/* ---------- Giai đoạn 20: bong bóng bạn đồng hành trên điện thoại ngang ----------
+   Bong bóng hẹp hơn để ít che nội dung ở chiều cao thấp (812×375). */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) .cp-follow-say { max-width: 200px; font-size: 12px; padding: 8px 12px; }
+}
+
+/* ---------- Giai đoạn 21: trang ôn tập trên điện thoại ----------
+   Danh sách nội dung đến hạn (dữ liệu thật từ lượt ôn): mỗi dòng là một từ, bấm để nhảy tới thẻ đó.
+   Chỉ hiện trên điện thoại; desktop không đổi. */
+html:root body.in-app:not(.ax-on) #main .lx-due-list { display: none; }
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-due-list {
+    display: block;
+    margin-top: 14px;
+    padding: 0 12px;
+    background: var(--cp-surface);
+    border: 1.5px solid var(--cp-border);
+    border-radius: var(--v4-radius);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-due-list > summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 15px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-due-list > summary::-webkit-details-marker { display: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-list > summary b { font-size: 12.5px; color: var(--cp-ink-3); font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-list > ol {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-due-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 6px 10px;
+    border: 1px solid var(--cp-border);
+    border-radius: 14px;
+    background: var(--cp-surface-2);
+    color: var(--cp-ink);
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-due-row.on { border-color: var(--cp-primary); background: var(--cp-primary-soft); }
+  html:root body.in-app:not(.ax-on) #main .lx-due-row:focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-no {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--cp-surface);
+    font-size: 12px;
+    font-weight: 900;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-due-t { display: grid; flex: 1; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-t b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-t small { font-size: 12.5px; color: var(--cp-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html:root body.in-app:not(.ax-on) #main .lx-due-row em {
+    flex: none;
+    font-style: normal;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #B45309;
+    background: #FEF3C7;
+    padding: 3px 7px;
+    border-radius: 999px;
+  }
+}
+
+/* ---------- Giai đoạn 22: bảng từ vựng bài học trên điện thoại thành thẻ từ ----------
+   Mỗi từ là một thẻ: từ to, cách đọc (nếu có), nghĩa; nút phát âm và Lưu từ nằm bên phải. Dữ liệu vẫn là bảng thật.
+   Desktop giữ nguyên bảng. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab thead { display: none; }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab,
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab tbody { display: grid; gap: 10px; width: 100%; }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 2px;
+    align-items: center;
+    padding: 12px;
+    border: 1.5px solid var(--cp-border);
+    border-radius: var(--v4-radius);
+    background: var(--cp-surface);
+    box-shadow: 0 3px 0 var(--cp-border);
+  }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td { display: block; padding: 0; border: 0; min-width: 0; background: none; }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td.lx-w { grid-column: 1; font-size: 19px; font-weight: 900; overflow-wrap: anywhere; }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td:not(.lx-w):not(.lx-vi):not(:last-child) { grid-column: 1; font-size: 13px; color: var(--cp-ink-3); }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td.lx-vi { grid-column: 1; font-size: 15px; overflow-wrap: anywhere; }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td:last-child {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+}
+
+/* ---------- Giai đoạn 23: đáp án từ ngắn trên điện thoại ----------
+   Khi mọi đáp án đều ngắn (≤16 ký tự), xếp thành lưới hai cột để bài từ vựng ngắn hơn; đáp án dài giữ một cột. Desktop không đổi. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-opts.lx-opts-short {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-opts.lx-opts-short .lx-opt { width: 100%; min-width: 0; }
+}
+
+/* ---------- Giai đoạn 24: quy tắc ngữ pháp trên điện thoại ----------
+   Mỗi quy tắc là một thẻ có số thứ tự; nội dung là dữ liệu thật của bài. Desktop không đổi. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main ol.lx-rules {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    counter-reset: rule;
+  }
+  html:root body.in-app:not(.ax-on) #main ol.lx-rules > li {
+    counter-increment: rule;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 12px 12px 12px 54px;
+    border: 1.5px solid var(--cp-border);
+    border-radius: 14px;
+    background: var(--cp-surface-2);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  html:root body.in-app:not(.ax-on) #main ol.lx-rules > li::before {
+    content: counter(rule);
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--cp-primary-soft);
+    color: var(--cp-primary-ink);
+    font-size: 13px;
+    font-weight: 900;
+  }
+}
+
+/* ---------- Giai đoạn 25: đoạn văn đọc hiểu trên điện thoại ----------
+   Chữ dễ đọc hơn (cỡ và độ tương phản); đoạn văn không bị gập. Desktop không đổi. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .lx-passage p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--cp-ink);
+  }
+}
+
+/* ---------- Giai đoạn 26: thanh điều hướng dưới chỉ có chữ, nút viên nhỏ ----------
+   Bỏ icon; mỗi mục là một viên nhỏ. Mục đang mở có nền nhạt và đế 2D; nút Học tập nổi bật bằng nền đậm.
+   Áp dụng cho điện thoại dọc và ngang. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) .shell > .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
+  html:root body.in-app:not(.ax-on) .mtab {
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    grid-template-columns: repeat(5, auto);
+    justify-content: space-between;
+    gap: 3px;
+    padding: 5px;
+    border-radius: 999px;
+    border: 1px solid var(--cp-border);
+    background: var(--cp-surface);
+    box-shadow: 0 8px 22px rgba(48, 48, 71, .10);
+  }
+  html:root body.in-app:not(.ax-on) .mtab a,
+  html:root body.in-app:not(.ax-on) .mtab .mtab-more {
+    min-height: 44px;
+    gap: 0;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--cp-ink-3);
+    font: 800 12.5px/1 var(--cp-font);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app:not(.ax-on) .mtab .mtab-lbl {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  html:root body.in-app:not(.ax-on) .mtab a.on {
+    background: var(--cp-primary-soft);
+    color: var(--cp-primary-ink);
+    box-shadow: 0 2px 0 var(--cp-primary);
+  }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center {
+    transform: none;
+    background: var(--cp-primary-strong);
+    color: #FFFFFF;
+    box-shadow: 0 3px 0 var(--v4-btn-lip);
+  }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-lbl { color: #FFFFFF; }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center.on { background: var(--cp-primary-strong); color: #FFFFFF; box-shadow: 0 3px 0 var(--v4-btn-lip); }
+}
+@media (max-width: 360px) {
+  html:root body.in-app:not(.ax-on) .mtab { gap: 2px; }
+  html:root body.in-app:not(.ax-on) .mtab a,
+  html:root body.in-app:not(.ax-on) .mtab .mtab-more { font-size: 10.5px; padding: 0 3px; }
+}
+
+/* ---------- Giai đoạn 27: tương thích trình duyệt và WebView trên điện thoại ----------
+   Ô nhập tối thiểu 16px: iOS Safari và Android WebView không tự phóng to khi chạm vào ô nhập,
+   nên bố cục không bị lệch sau khi nhập. Áp dụng cho điện thoại dọc và ngang. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html body.in-app:not(.ax-on) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]), select, textarea) {
+    font-size: 16px;
+  }
+}
+/* Mục tiêu chạm tối thiểu 44px trên thanh trên và chip môn học (chuẩn iOS; Android khuyến nghị 48dp) */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) .topbar :is(button, a) { min-width: 44px; min-height: 44px; }
+  html:root body.in-app:not(.ax-on) .topbar .lx-subj,
+  html:root body.in-app:not(.ax-on) .topbar a.side-subj-swap { min-height: 44px; }
+}
+
+/* Mục tiêu chạm 44px: nút điều hướng dưới, nút trò chuyện AI và nút nhỏ trong bài học */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 44px; }
+  html:root body.in-app:not(.ax-on) #main .sp-back,
+  html:root body.in-app:not(.ax-on) #main .sp-tool,
+  html:root body.in-app:not(.ax-on) #main .sp-round { min-width: 44px; min-height: 44px; }
+}
+/* Chấm chỉ vị trí cuộn ngang: hình chấm giữ 10px nhưng vùng chạm 44px (đệm trong, lề âm để không đổi bố cục) */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .hdots button,
+  html:root body.in-app:not(.ax-on) #main .hdots > * {
+    padding: 20px;
+    margin: -20px 0;
+    background-clip: content-box;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-mini { min-width: 44px; min-height: 44px; }
+}
+/* Nút đóng bong bóng bạn đồng hành: hình 22px, vùng chạm 44px */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) .cp-follow-x { box-sizing: content-box; width: 22px; height: 22px; padding: 11px; margin: -11px; background-clip: content-box; }
+}
+
+/* ---------- Giai đoạn 28: trang chủ và thanh dưới theo ảnh mẫu (điện thoại) ----------
+   Lời chào không nằm trong thẻ, mascot bên phải; thẻ Mục tiêu hằng ngày và Khóa học dùng số liệu thật;
+   thanh dưới có icon, nút Học tập nổi ở giữa. Desktop không đổi. */
+html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: block; }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner { background: transparent; border: 0; box-shadow: none; padding: 4px 2px 0; }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner .hm-cb-left { flex-direction: row-reverse; justify-content: space-between; align-items: flex-start; }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 { font-size: 26px; line-height: 1.15; font-weight: 900; }
+  html:root body.in-app:not(.ax-on) #main .hm-streak .hm-week { display: none; }
+
+  html:root body.in-app:not(.ax-on) #main .hm-daily,
+  html:root body.in-app:not(.ax-on) #main .hm-courses {
+    margin-top: 14px;
+    padding: 18px;
+    background: var(--cp-surface);
+    border: 1.5px solid var(--cp-border);
+    border-radius: 22px;
+    box-shadow: 0 3px 0 var(--cp-border);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-head,
+  html:root body.in-app:not(.ax-on) #main .hm-courses-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-head h2,
+  html:root body.in-app:not(.ax-on) #main .hm-courses-head h2 { font-size: 18px; font-weight: 800; margin: 0; }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-streak {
+    font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: var(--cp-warm, #FFF4D6);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-row {
+    display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px;
+    font-size: 16px; color: var(--cp-ink-3);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-row b { color: var(--cp-primary-ink); font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-bar {
+    height: 10px; margin-top: 10px; border-radius: 999px; background: var(--cp-surface-2); overflow: hidden;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-bar i {
+    display: block; height: 100%; border-radius: inherit; background: var(--cp-primary);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-daily .hm-week { margin-top: 16px; }
+
+  html:root body.in-app:not(.ax-on) #main .hm-courses-add {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 12px;
+    background: var(--cp-ink); color: #FFFFFF; font-weight: 800; font-size: 15px; text-decoration: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-course-row {
+    display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+    padding: 12px 0; border-top: 1px solid var(--cp-border); color: var(--cp-ink); text-decoration: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-course-row:first-of-type { border-top: 0; margin-top: 10px; }
+  html:root body.in-app:not(.ax-on) #main .hm-course-flag {
+    width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center;
+    background: color-mix(in srgb, var(--c, #6753E0) 16%, var(--cp-surface)); font-size: 22px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-course-t { display: grid; gap: 2px; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .hm-course-t b { font-size: 16px; font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main .hm-course-t small { font-size: 13px; color: var(--cp-ink-3); }
+  html:root body.in-app:not(.ax-on) #main .hm-course-go { font-size: 22px; color: var(--cp-ink-3); }
+  html:root body.in-app:not(.ax-on) #main .hm-courses-empty { margin: 10px 0 0; color: var(--cp-ink-3); font-size: 14px; }
+
+  /* Thanh dưới: icon, nút Học tập tròn nổi ở giữa */
+  html:root body.in-app:not(.ax-on) .mtab {
+    background: var(--cp-surface);
+    border-radius: 28px;
+    padding: 6px 8px;
+    box-shadow: 0 8px 22px rgba(48, 48, 71, .12);
+  }
+  html:root body.in-app:not(.ax-on) .mtab a,
+  html:root body.in-app:not(.ax-on) .mtab .mtab-more {
+    gap: 3px;
+    font-size: 11px;
+    min-height: 52px;
+  }
+  html:root body.in-app:not(.ax-on) .mtab .mtab-ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 28px;
+    border-radius: 999px;
+    background: transparent;
+    box-shadow: none;
+  }
+  html:root body.in-app:not(.ax-on) .mtab .mtab-ic svg { width: 22px !important; height: 22px !important; }
+  html:root body.in-app:not(.ax-on) .mtab a.on { background: transparent; box-shadow: none; }
+  html:root body.in-app:not(.ax-on) .mtab a.on .mtab-ic { background: var(--cp-primary-soft); }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center { transform: translateY(-18px); background: transparent; box-shadow: none; }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--cp-primary-strong);
+    color: #FFFFFF;
+    box-shadow: 0 6px 16px rgba(103, 83, 224, .35), 0 3px 0 var(--v4-btn-lip);
+  }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic svg { color: #FFFFFF; }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-lbl {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+/* Lời chào trên điện thoại: không có khung, ghi đè các lớp thẻ chung */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner { background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+}
+/* Thanh dưới theo ảnh mẫu: icon nét đơn, mục đang mở chỉ đổi màu (không có nền) */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) .mtab .mtab-ic { background: transparent !important; }
+  html:root body.in-app:not(.ax-on) .mtab a.on .mtab-ic { background: transparent !important; color: var(--cp-primary-ink); }
+  html:root body.in-app:not(.ax-on) .mtab .mtab-ic .line-ic { width: 24px !important; height: 24px !important; color: inherit; }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic .line-ic { color: #FFFFFF; width: 26px !important; height: 26px !important; }
+  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic { background: var(--cp-primary-strong) !important; }
+}
+
+/* ---------- Giai đoạn 29: cỡ chữ và số liệu trên trang chủ điện thoại ----------
+   Cỡ chữ vừa màn 375px: tiêu đề 22px, mục 17px, nội dung 15px, nhãn 12px; số liệu học tập dạng lưới 2 cột. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app:not(.ax-on) #main h1 { font-size: 22px; line-height: 1.2; font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main h2 { font-size: 17px; line-height: 1.3; font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 { font-size: 22px; line-height: 1.2; font-weight: 800; }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-head h2,
+  html:root body.in-app:not(.ax-on) #main .hm-courses-head h2 { font-size: 17px; }
+  html:root body.in-app:not(.ax-on) #main .hm-daily-row { font-size: 15px; }
+  html:root body.in-app:not(.ax-on) #main .hm-greet-sub { font-size: 14px; }
+  html:root body.in-app:not(.ax-on) #main .hm-course-t b { font-size: 15px; }
+  html:root body.in-app:not(.ax-on) #main .hm-course-t small { font-size: 12px; }
+
+  html:root body.in-app:not(.ax-on) #main .hm-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-kpi {
+    display: grid;
+    gap: 4px;
+    padding: 14px;
+    background: var(--cp-surface);
+    border: 1.5px solid var(--cp-border);
+    border-radius: 18px;
+    box-shadow: 0 3px 0 var(--cp-border);
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-kpi b {
+    font-size: 22px; font-weight: 800; color: var(--cp-ink); font-variant-numeric: tabular-nums;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-kpi span { font-size: 12px; color: var(--cp-ink-3); line-height: 1.3; }
+}

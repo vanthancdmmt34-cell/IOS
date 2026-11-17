@@ -1,0 +1,16 @@
+[Unit]
+Description=LifeRivo SQLite verified backup
+After=network.target
+
+[Service]
+Type=oneshot
+User=liferivo
+Group=liferivo
+WorkingDirectory=/opt/liferivo
+EnvironmentFile=/opt/liferivo/.env
+ExecStart=/usr/bin/node /opt/liferivo/tools/db-maintenance.js backup
+StandardOutput=journal
+StandardError=journal
+ProtectSystem=strict
+ReadWritePaths=/opt/liferivo/data
+PrivateTmp=true

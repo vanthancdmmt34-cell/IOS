@@ -1,0 +1,291 @@
+, chạy lại.	, then run again.
+, quên đóng ngoặc, quên chữ	, forgetting to close brackets, forgetting the word
+, rồi nhập mã giao dịch (số tham chiếu) của giao dịch đó. Mỗi mã chỉ dùng một lần. Không kích hoạt chỉ dựa vào ảnh chụp màn hình. Mọi thao tác được ghi nhật ký.	, then enter that transaction's reference number. Each reference can be used only once. Never activate based on a screenshot alone. Every action is logged.
+· {0} học sinh	· {0} students
+· {0}/{1} chỗ	· {0}/{1} seats
+({0} ngày nữa).	({0} days left).
+{0} · Hạt giống	{0} · Seedling
+{0} = không giới hạn	{0} = unlimited
+{0} = không giới hạn (vẫn bị giới hạn bởi số chỗ trong giấy phép).	{0} = unlimited (still limited by the seats in the license).
+{0} bài	{0} exercises
+{0} bài đạt trọn {1} điểm ngay lần nộp đầu	{0} exercises with full {1} points on the first submission
+{0} bài học Giai đoạn {1}	{0} Stage {1} lessons
+{0} bài kiểm tra	{0} tests
+{0} bài luyện · {1} câu hỏi	{0} practice tasks · {1} questions
+{0} bài mỗi ngày	{0} exercises per day
+{0} bài nộp	{0} submissions
+{0} bài tập	{0} exercises
+{0} bài tập, mỗi chương kết thúc bằng một bài kiểm tra.	{0} exercises; every chapter ends with a test.
+{0} câu · {1} phút · {2} lượt làm	{0} questions · {1} minutes · {2} attempts
+{0} chương	{0} chapters
+{0} chương · {1} bài	{0} chapters · {1} exercises
+{0} chương với {1} bài tập chấm tự động, mỗi chương kết thúc bằng một bài kiểm tra.	{0} chapters with {1} auto-graded exercises; every chapter ends with a test.
+{0} chương, {1} bài tập chấm tự động	{0} chapters, {1} auto-graded exercises
+{0} đến {1} ký tự: chữ không dấu, số, dấu _ . -	{0} to {1} characters: letters without accents, digits, _ . -
+{0} đến {1} ký tự.	{0} to {1} characters.
+{0} điểm	{0} points
+{0} giao dịch · {1}đ	{0} transactions · {1}đ
+{0} học sinh	{0} students
+{0} học sinh · {1} tháng	{0} students · {1} months
+{0} học sinh · hoàn thành TB {1}% · điểm TB {2} · {3} cần hỗ trợ	{0} students · avg. completion {1}% · avg. score {2} · {3} need support
+{0} là xem ngay không cần nộp. Mặc định {1}.	{0} means visible immediately without submitting. Default {1}.
+{0} lần · lần cuối vừa xong	{0} times · last just now
+{0} lần gần nhất	last {0} submissions
+{0} lượt truy cập	{0} visits
+{0} năm	{0} year
+{0} ngày	{0} days
+{0} ngày có nộp bài, chuỗi hiện tại {1} ngày.	{0} days with submissions, current streak {1} days.
+{0} phút	{0} minutes
+{0} phút · {1} lượt	{0} minutes · {1} attempts
+{0} phút · {1} lượt · không trộn	{0} minutes · {1} attempts · not shuffled
+{0} phút · Chưa làm ({1} lượt)	{0} minutes · Not taken ({1} attempts)
+{0} tài khoản riêng, mỗi người một tiến độ	{0} separate accounts, each with its own progress
+{0} tuần gần nhất, ô càng đậm là ngày càng nộp nhiều bài.	Last {0} weeks; darker squares mean more submissions that day.
+{0} XP tuần này, bạn đang dẫn đầu!	{0} XP this week, you are in the lead!
+{0}. Bậc thầy	{0}. Master
+{0}. Câu hỏi nhanh	{0}. Quick quiz
+{0}. Chăm chỉ	{0}. Diligent
+{0}. Chuyên gia	{0}. Expert
+{0}. Cú pháp	{0}. Syntax
+{0}. Giải thích từng dòng	{0}. Line-by-line explanation
+{0}. Giỏi giang	{0}. Skilled
+{0}. Hạt giống	{0}. Seedling
+{0}. Học trò	{0}. Pupil
+{0}. Huyền thoại	{0}. Legend
+{0}. Khái niệm	{0}. Concept
+{0}. Lá non	{0}. Young leaf
+{0}. Lỗi thường gặp	{0}. Common mistakes
+{0}. Luyện tập	{0}. Practice
+{0}. Mầm xanh	{0}. Sprout
+{0}. Mục tiêu	{0}. Objectives
+{0}. Tập sự	{0}. Apprentice
+{0}. Thành thạo	{0}. Proficient
+{0}. Tóm tắt	{0}. Summary
+{0}. Ví dụ	{0}. Example
+{0}. Vì sao cần học	{0}. Why learn this
+{0}. Vững vàng	{0}. Solid
+{0}. Xuất sắc	{0}. Excellent
+{0}/{1} · {2} bài đạt trọn {3} điểm ngay lần nộp đầu	{0}/{1} · {2} exercises with full {3} points on the first submission
+{0}/{1} · Đạt {2} bài kiểm tra chương	{0}/{1} · Pass {2} chapter tests
+{0}/{1} · Đạt {2}/{3} một bài kiểm tra	{0}/{1} · Score {2}/{3} on a test
+{0}/{1} · Đạt một bài kiểm tra chương	{0}/{1} · Pass a chapter test
+{0}/{1} · Đủ điều kiện chứng nhận một nhóm	{0}/{1} · Qualify for a course certificate
+{0}/{1} · Hoàn thành bài tập của {2} chương	{0}/{1} · Complete the exercises of {2} chapters
+{0}/{1} · Học {2} ngày liên tiếp	{0}/{1} · Study {2} days in a row
+{0}/{1} · Làm đúng {2} bài ở chương {3}, {4}, {5}, {6}, {7}	{0}/{1} · Solve {2} exercises in chapters {3}, {4}, {5}, {6}, {7}
+{0}/{1} · Làm đúng {2} bài tập	{0}/{1} · Solve {2} exercises
+{0}/{1} · Làm đúng {2} bài trong các chương AI ({3}, {4} đến {5})	{0}/{1} · Solve {2} exercises in the AI chapters ({3}, {4} to {5})
+{0}/{1} · Làm đúng bài tập đầu tiên	{0}/{1} · Solve your first exercise
+{0}/{1} · Làm đúng mọi bài tập của một chương	{0}/{1} · Solve every exercise in a chapter
+{0}/{1} · Nộp {2} lần trong một ngày	{0}/{1} · Submit {2} times in one day
+{0}/{1} · Nộp bài sau {2} giờ	{0}/{1} · Submit after {2}:00
+{0}/{1} · Nộp bài trước {2} giờ sáng	{0}/{1} · Submit before {2} a.m.
+{0}/{1} bài đã đạt	{0}/{1} exercises passed
+{0}/{1} bài đã đạt trên toàn chương trình ({2}%).	{0}/{1} exercises passed across the whole program ({2}%).
+{0}/{1} bài, {2}%	{0}/{1} exercises, {2}%
+{0}/{1}/{2}: {3} bài nộp	{0}/{1}/{2}: {3} submissions
+{0}/{1}/{2}: {3} lần nộp	{0}/{1}/{2}: {3} submissions
+≈ {0}đ/tháng · tiết kiệm {1}%	≈ {0}đ/month · save {1}%
+Ai được tạo tài khoản, thời gian giữ đăng nhập và chế độ bảo trì.	Who can sign up, how long sessions last, and maintenance mode.
+AI hỗ trợ giảng dạy	AI teaching assistant
+AI tháng này	AI this month
+Rivo {0} lượt/ngày (Free: {1} lượt/ngày)	Rivo {0} questions/day (Free: {1}/day)
+Rivo chưa được cấu hình trên máy chủ. Hãy báo quản trị viên.	Rivo is not configured on the server. Please tell an administrator.
+Rivo chưa được cấu hình.	Rivo is not configured.
+Rivo chưa sẵn sàng	Rivo is not ready
+Rivo đang tắt.	Rivo is turned off.
+Rivo giới hạn lượt mỗi ngày	Rivo with a daily limit
+Rivo tạm dừng do đạt giới hạn sử dụng của hệ thống tháng này. Quản trị viên đã được thông báo.	Rivo is paused because the system reached this month's usage limit. Administrators have been notified.
+Áp dụng	Apply
+Áp dụng cho	Apply to
+Áp dụng cho lần đăng nhập mới.	Applies to new sign-ins.
+API key của webhook SePay	SePay webhook API key
+Ẩn bớt nội dung	Hide content
+Ẩn chương	Hide chapters
+Ẩn khóa học (nhóm)	Hide courses (groups)
+Ẩn khóa học, lộ trình hoặc chương với học viên. Giáo viên vẫn thấy tất cả.	Hide courses, paths or chapters from learners. Administrators still see everything.
+Ẩn lộ trình	Hide paths
+Ẩn tên người khác trên bảng xếp hạng	Hide other people's names on the leaderboard
+Ba ngày liền	Three days in a row
+Bài	Exercise
+Bài {0}/{1} của chương	Exercise {0}/{1} of the chapter
+Bài bạn tạo sẽ hiện ở đây.	Exercises you create will appear here.
+Bài có từ {0} lần nộp trở lên, tỉ lệ đạt thấp nhất.	Exercises with at least {0} submissions and the lowest pass rate.
+Bài đã đạt	Exercises passed
+Bài đã giao	Assignments given
+Bài đã nộp	Submissions
+Bài đạt	Passed
+Bài đầu chương luôn mở. Làm đúng bài trước để mở bài sau.	The first exercise of each chapter is always open. Solve one to unlock the next.
+Bài được giao	Assignments
+Bài học	Lessons
+Bài học có hướng dẫn	Guided lessons
+Bài học này dành cho thành viên Pro.	This lesson is for Pro members.
+Bài học viên hay sai	Most-failed exercises
+bài kiểm tra	tests
+Bài kiểm tra	Tests
+Bài kiểm tra cần ít nhất {0} câu hỏi.	A test needs at least {0} question.
+Bài kiểm tra chưa mở.	The test is not open yet.
+Bài kiểm tra chương	Chapter tests
+Bài kiểm tra chương {0}	Chapter {0} test
+Bài kiểm tra chương và chứng nhận hoàn thành	Chapter tests and completion certificates
+Bài kiểm tra cuối chương {0} điểm, có giờ mở, hạn nộp và đồng hồ đếm ngược	End-of-chapter tests worth {0} points, with open time, deadline and countdown
+Bài kiểm tra đã đạt	Tests passed
+Bài kiểm tra đã đóng.	The test is closed.
+Bài kiểm tra đã nộp	Tests submitted
+Bài kiểm tra đạt	Tests passed
+Bài làm	Work
+Bài làm cần dùng	Your solution must use
+Bài này chỉ cho nộp một lần.	This assignment allows only one submission.
+Bài này chỉ được làm một lần.	This test can only be taken once.
+Bài nộp	Submissions
+Bài nộp ({0} học sinh)	Submissions ({0} students)
+Bài nộp {0} ngày qua	Submissions in the last {0} days
+Bài nộp đầu tiên của bạn sẽ hiện ở đây.	Your first submission will appear here.
+Bài nộp gần đây	Recent submissions
+Bài quá hạn chưa nộp	Overdue, not submitted
+Bài sau	Next
+Bài tập	Exercises
+Bài tập {0}/{1}	Exercises {0}/{1}
+bài tập có chấm	graded exercises
+Bài tập gốc đã đạt	Original exercises passed
+Bài tập tổng hợp trung cấp	Intermediate mixed exercises
+Bài tập tùy chỉnh	Custom exercises
+Bài tập: {0} XP	Exercises: {0} XP
+Bài thi	Exam
+Bài thi này đang được chấm hoặc đã nộp.	This exam is being graded or was already submitted.
+Bài trong thư viện không còn.	The library exercise no longer exists.
+Bạn	You
+Bạn chưa có gói Family còn hạn.	You don't have an active Family plan.
+Bạn chưa đăng nhập.	You are not signed in.
+Bạn chưa tham gia lớp nào	You haven't joined any class yet
+Bạn đã là thành viên của gói.	You are already a member of the plan.
+Bạn đã nộp bài kiểm tra này rồi và hiện không được làm lại.	You already submitted this test and cannot retake it now.
+Bạn đang bị tạm khóa trong lớp này. Hãy liên hệ giáo viên.	You are suspended in this class. Please contact your teacher.
+Bạn đang có {0} đơn chờ thanh toán. Hãy thanh toán hoặc hủy bớt đơn cũ.	You have {0} orders waiting for payment. Pay or cancel some of them first.
+Bạn đang có quyền Lớp học (giấy phép giáo viên)	You have access via Class (teacher license)
+Bạn đang hạng	You are ranked
+Bạn đang làm bài kiểm tra. Rivo tạm khóa cho tới khi bạn nộp bài.	You are taking a test. Rivo is locked until you submit.
+Bản đồ khóa học trực quan: biết mình đang ở đâu, còn bao nhiêu chặng	A visual course map: see where you are and how far is left
+Bán gói Pro	Sell Pro plans
+Bán gói Pro bằng chuyển khoản VietQR vào tài khoản của bạn (cá nhân hoặc doanh nghiệp).	Sell Pro plans by VietQR bank transfer to your account (personal or business).
+Bạn hỏi nhanh quá. Hãy chờ khoảng {0} phút rồi hỏi tiếp.	You're asking too fast. Please wait about {0} minute and try again.
+Bản in / Lưu PDF	Print / Save as PDF
+Bạn không có gói Family.	You don't have a Family plan.
+Bạn không có quyền truy cập trang này.	You don't have permission to access this page.
+Bạn không có quyền vào trang này	You don't have permission to open this page
+Bạn không ở gói Family nào.	You are not in any Family plan.
+Bạn là giáo viên của lớp này.	You are the teacher of this class.
+Bạn lưu quá nhiều lần. Chờ vài phút.	Too many saves. Wait a few minutes.
+Bạn mời quá nhiều lần.	Too many invitations.
+Bạn mới xong {0}/{1} bài tập của chương. Nên làm hết bài tập trước khi thi.	You've finished {0}/{1} exercises in this chapter. Finish them all before the test.
+Bạn nộp nhanh quá, chờ chút nhé.	You're submitting too fast, please wait a moment.
+Bạn nộp nhanh quá. Hãy chờ vài giây rồi nộp lại.	You're submitting too fast. Wait a few seconds and try again.
+Bạn nộp nhanh quá. Hãy chờ vài giây.	You're submitting too fast. Wait a few seconds.
+Bạn sẽ có quyền Pro đến {0}/{1}/{2}.	You will have Pro until {0}/{1}/{2}.
+Bạn tạo lớp quá nhiều trong {0} giờ.	Too many classes created within {0} hour.
+Bạn tạo quá nhiều đơn trong {0} giờ. Hãy dùng lại đơn đang chờ.	Too many orders within {0} hour. Please use your pending order.
+Bạn thao tác quá nhiều lần. Hãy chờ quản trị viên kiểm tra.	Too many attempts. Please wait for an administrator to check.
+Bạn thử quá nhiều lần. Hãy chờ ít phút.	Too many attempts. Please wait a few minutes.
+Bảng giá	Pricing
+Bảng xếp hạng	Leaderboard
+Bảng xếp hạng, biểu đồ ngày học và chứng nhận in được	Leaderboard, study calendar and printable certificates
+Báo cáo	Reports
+Báo cáo dữ liệu dạng bảng	Tabular data reports
+Báo cáo học tập chi tiết: bài hay sai, tỷ lệ đúng	Detailed learning reports: frequent mistakes, accuracy
+Báo cáo lớp	Class report
+Báo cáo Pro	Pro report
+Báo cáo tiến độ, xuất Excel / PDF	Progress reports, export to Excel / PDF
+Báo giá	Quote
+Báo giá theo số học sinh	Priced by number of students
+Bảo mật	Privacy
+bằng cách	by
+Bắt đầu chương	Start chapter
+Bắt đầu học	Start learning
+Bắt đầu làm bài	Start the test
+Bấm	Press
+Bấm “Xuất CSV” ở tab Học viên	Click “Export CSV” in the Learners tab
+Bật bài kiểm tra chương	Enable chapter tests
+Bật tắt bài kiểm tra và giá trị mặc định cho chương mới.	Turn tests on or off and set defaults for new chapters.
+bật tắt chú thích	toggle comment
+biến	variable
+Biến và phép tính	Variables and arithmetic
+Biến, phép tính	Variables, arithmetic
+Biểu đồ số lần nộp bài theo ngày	Chart of submissions per day
+Bỏ qua (tiền ra)	Ignored (outgoing)
+Bỏ qua, tới nội dung chính	Skip to main content
+Body không hợp lệ.	Invalid request body.
+Bước đầu tiên	First step
+Cả hai cách đều dùng mã QR VietQR chuyển thẳng vào tài khoản bên dưới. Cách tự động cần khóa webhook SePay ở mục Thanh toán tự động SePay bên dưới.	Both methods use a VietQR code that transfers directly to the account below. Automatic mode needs the SePay webhook key in the SePay section below.
+Cả lớp	Whole class
+Cá nhân (Pro)	Personal (Pro)
+Các chương đã tích trong bảng bên dưới	Chapters ticked in the table below
+Các lần nộp	Submissions
+Các lần nộp và code đã nộp sẽ được lưu ở đây.	Your submissions and code will be saved here.
+Các lựa chọn (mỗi dòng một)	Options (one per line)
+Cách học	How it works
+Cách xác nhận thanh toán	Payment confirmation method
+Cài đặt chung	General settings
+Cài đặt lớp	Class settings
+cắt lát [a:b]	slicing [a:b]
+Cắt lát với bước	Slicing with a step
+Cần có kết quả cần in hoặc ít nhất một test.	An expected output or at least one test is required.
+Cần hỗ trợ	Needs support
+Cần hỗ trợ: hoàn thành dưới {0}%, điểm TB dưới {1} hoặc từ {2} bài quá hạn.	Needs support: completion below {0}%, average score below {1}, or {2}+ overdue assignments.
+Cần ít nhất {0} test (kết quả mong đợi).	At least {0} test (expected output) is required.
+Cần thêm bài nộp để thống kê.	More submissions are needed for statistics.
+Cấp	Level
+Cấp {0} · Hạt giống	Level {0} · Seedling
+Cấp độ, huy hiệu, chuỗi ngày, màn hình chúc mừng	Levels, badges, streaks, celebration screens
+Cấp độ, huy hiệu, chuỗi ngày, xếp hạng, đánh giá.	Levels, badges, streaks, leaderboard, ratings.
+Cấp giấy phép	Grant license
+Cấp tay	Manual
+Câu	Question
+Câu hỏi	Questions
+Câu hỏi ({0})	Questions ({0})
+Câu hỏi dài quá, hãy rút gọn.	The question is too long, please shorten it.
+Câu hỏi đã chọn:	Selected questions:
+Câu hỏi thường gặp	FAQ
+Cấu trúc	Structure
+Cấu trúc dữ liệu	Data structures
+Chào mừng trở lại	Welcome back
+Chạy	Run
+chạy code	running code
+Chạy code	Run code
+Chăm chỉ	Diligent
+Chấm bài	Grading
+Chấm cam: code đã khác code ban đầu, bản nháp được tự lưu	Orange dot: code differs from the starter; your draft is auto-saved
+Chấm điểm	Scoring
+Chế độ bảo trì	Maintenance mode
+Chỉ cần khi chọn cách xác nhận "Tự động qua SePay". Dùng QR tài khoản cá nhân thì để trống.	Only needed for "Automatic via SePay". Leave empty when using a personal account QR.
+Chỉ dùng khi chọn "Tự động qua SePay". Khi tạo webhook ở SePay, dán địa chỉ này, chọn sự kiện tiền vào.	Only used with "Automatic via SePay". When creating the webhook in SePay, paste this address and choose incoming transfers.
+Chỉ dùng nếu chọn kiểu xác thực API Key thay cho HMAC.	Only used if you chose API Key authentication instead of HMAC.
+Chỉ được đặt lại mật khẩu cho tài khoản học viên.	Passwords can only be reset for learner accounts.
+Chỉ gán được giao dịch chưa khớp.	Only unmatched transactions can be assigned.
+Chỉ giáo viên của lớp mới làm được thao tác này.	Only the class teacher can do this.
+Chỉ giáo viên.	Teachers only.
+Chỉ là hướng dẫn ở giao diện, máy chủ không chặn nộp bài.	Only a UI guide; the server does not block submissions.
+Chỉ mở cho học viên sau lần nộp đầu tiên.	Opens for learners after their first submission.
+Chi phí	Cost
+Chi phí AI	AI cost
+Chi phí AI trong kỳ	AI cost in period
+Chỉ quản trị viên được phân công lại giáo viên.	Only administrators can reassign teachers.
+Chỉ quản trị viên mới dùng được chức năng này.	Only administrators can use this feature.
+Chỉ tài khoản quản trị viên mới quản trị được lớp.	Only administrator accounts can access administration.
+Chi tiết	Details
+Chia sẻ tiến độ	Share progress
+Chim sớm	Early bird
+Chính sách hoàn tiền	Refund policy
+Chính sách thanh toán	Payment policy
+Cho chủ gói xem tiến độ học của tôi (điểm, số bài đã làm, ngày học)	Let the plan owner see my progress (scores, exercises done, study days)
+Cho học viên đánh giá hệ thống	Let learners rate the platform
+Cho làm lại	Allow retake
+Cho phép nộp lại	Allow resubmission
+Cho phép tự tạo tài khoản	Allow self sign-up
+Cho xem đáp án mẫu	Show sample solutions
+Chọn chương	Choose chapter
+Chọn chương {0}	Choose chapter {0}
+Chọn chương trước	Choose a chapter first
+Chọn chương…	Choose chapter…
+Chọn đường đi hợp với bạn	Choose the path that suits you
+Chọn gói	Choose plan
+Chọn học sinh	Choose students

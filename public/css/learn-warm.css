@@ -1,0 +1,148 @@
+/* Phần học của học viên theo phong cách trang chủ: nền giấy ấm, khối kem, thẻ pastel, nút viên thuốc. Nạp sau cùng. */
+body.in-app:not(.ax-on) {
+  --u: #1D1C27; --u2: #2E2C3D; --us: #F7EBC0; --uk: #1D1C27; --uk2: #4A4858; --um: #7A7887; --ul: #E4E1D3; --ub: #FBF9F0; --uf: #F1EFE5;
+  --iv: #1D1C27; --iv-2: #2E2C3D; --iv-soft: #F7EBC0; --iv-ink: #1D1C27; --iv-ink2: #4A4858; --iv-mut: #7A7887; --iv-line: #E4E1D3; --iv-bg: #F3F2EB;
+  --ud: #1D1C27; --ud-soft: #F7EBC0; --ud-ink: #1D1C27; --ud-mut: #7A7887; --ud-line: #E4E1D3;
+  --hd: "Bricolage Grotesque", Nunito, Inter, system-ui, sans-serif;
+  background: #F3F2EB !important;
+  background-image: radial-gradient(rgba(29, 28, 39, .035) 1px, transparent 1px) !important; background-size: 4px 4px !important;
+  font-family: Quicksand, Nunito, Inter, system-ui, sans-serif; font-weight: 500; color: #1D1C27;
+}
+body.in-app:not(.ax-on) h1, body.in-app:not(.ax-on) h2, body.in-app:not(.ax-on) h3 { font-family: var(--hd); letter-spacing: -.03em; }
+
+/* Khung: thanh trên, menu ngang, thanh bên */
+body.in-app:not(.ax-on) .main > .topbar { background: rgba(243, 242, 235, .9) !important; border-bottom: 1px solid #E4E1D3 !important; }
+body.in-app:not(.ax-on) .top-brand, body.in-app:not(.ax-on) .side .brand { font-family: var(--hd); }
+body.in-app:not(.ax-on) .topbar .search-btn { border-radius: 99px !important; background: #fff !important; }
+body.in-app:not(.ax-on) .topbar .icon-btn { border-radius: 99px; }
+body.in-app:not(.ax-on) .ud-user > button { background: #fff; padding: 3px 8px 3px 3px; box-shadow: 0 4px 14px -10px rgba(29, 28, 39, .4); }
+body.in-app:not(.ax-on) .ud-drop { background: #FFFDF6; border-radius: 16px; }
+body.in-app:not(.ax-on) .ud-drop a, body.in-app:not(.ax-on) .ud-drop button { border-radius: 99px; font-family: inherit; }
+body.in-app:not(.ax-on) .lx-subj { border-radius: 99px; background: #fff; }
+@media (min-width: 1021px) {
+  body.lx-top:not(.ax-on) .main > .topnav { gap: 6px; padding-top: 8px; padding-bottom: 8px; background: rgba(243, 242, 235, .9); border-bottom: 1px solid #E4E1D3; }
+  .main > .topnav a { padding: 8px 14px !important; border: 0 !important; margin: 0 !important; border-radius: 99px !important; font-weight: 700 !important; color: #4A4858 !important; }
+  .main > .topnav a:hover { background: rgba(29, 28, 39, .06) !important; }
+  .main > .topnav a.on { background: #1D1C27 !important; color: #fff !important; }
+  .main > .topnav a.on svg { color: #F9D976 !important; }
+}
+body.in-app:not(.ax-on) .shell > .side { background: #FBF9F0 !important; }
+body.in-app:not(.ax-on) .side .nav a { border-radius: 99px; font-weight: 600; }
+body.in-app:not(.ax-on) .side .nav a.on { background: #1D1C27; color: #fff; }
+body.in-app:not(.ax-on) .side .nav a.on svg { color: #F9D976; }
+body.in-app:not(.ax-on) .side .nav a.on::before { display: none; }
+body.lx-acct .side-back { border-radius: 99px; background: #fff; }
+
+/* Thành phần chung */
+body.in-app:not(.ax-on) .page-head { border-bottom-color: #E4E1D3; }
+body.in-app:not(.ax-on) .sheet, body.in-app:not(.ax-on) .card, body.in-app:not(.ax-on) .table-wrap, body.in-app:not(.ax-on) .lx-box, body.in-app:not(.ax-on) .lp-panel { background: #FFFDF6; border: 0 !important; border-radius: 20px; box-shadow: 0 2px 0 rgba(29, 28, 39, .06), inset 0 0 0 1px #E4E1D3 !important; }
+body.in-app:not(.ax-on) .table-wrap th, body.in-app:not(.ax-on) .sheet th { background: #F6F3E6; }
+body.in-app:not(.ax-on) .btn { border-radius: 99px; font-family: inherit; font-weight: 700; }
+body.in-app:not(.ax-on) .btn-primary { background: #1D1C27; border-color: #1D1C27; color: #fff; box-shadow: 0 3px 0 rgba(0, 0, 0, .25); }
+body.in-app:not(.ax-on) .btn-primary:hover { background: #2E2C3D; border-color: #2E2C3D; }
+body.in-app:not(.ax-on) .input, body.in-app:not(.ax-on) .field input, body.in-app:not(.ax-on) .field select, body.in-app:not(.ax-on) .field textarea, body.in-app:not(.ax-on) .select { border-radius: 12px; font-family: inherit; }
+body.in-app:not(.ax-on) .input:focus, body.in-app:not(.ax-on) .field input:focus { border-color: #1D1C27; box-shadow: 0 0 0 3px rgba(249, 217, 118, .6); }
+body.in-app:not(.ax-on) .tabs, body.in-app:not(.ax-on) .seg, body.in-app:not(.ax-on) .cat-seg { background: #ECE8DA; border-radius: 99px; }
+body.in-app:not(.ax-on) .tabs a, body.in-app:not(.ax-on) .tabs button, body.in-app:not(.ax-on) .seg button, body.in-app:not(.ax-on) .cat-seg button { border-radius: 99px; }
+body.in-app:not(.ax-on) .tabs .on, body.in-app:not(.ax-on) .seg .on, body.in-app:not(.ax-on) .cat-seg button.on { background: #1D1C27; color: #fff; }
+body.in-app:not(.ax-on) .tag-tim { background: #F7EBC0; color: #1D1C27; }
+body.in-app:not(.ax-on) .bar > i, .lh .hm-bar i { background: #5468D4; }
+body.in-app:not(.ax-on) .stats > div, body.in-app:not(.ax-on) .kpi { border: 0 !important; border-radius: 18px; background: #DCEBFB; box-shadow: 0 2px 0 rgba(29, 28, 39, .08); }
+body.in-app:not(.ax-on) .stats > div:nth-child(4n+2), body.in-app:not(.ax-on) .kpi:nth-child(4n+2) { background: #E6E0F8; }
+body.in-app:not(.ax-on) .stats > div:nth-child(4n+3), body.in-app:not(.ax-on) .kpi:nth-child(4n+3) { background: #D9F0E3; }
+body.in-app:not(.ax-on) .stats > div:nth-child(4n), body.in-app:not(.ax-on) .kpi:nth-child(4n) { background: #F6EBC9; }
+body.in-app:not(.ax-on) .modal { background: #FFFDF6; border-radius: 22px; }
+
+/* Trang tổng quan học viên */
+.lh-hero-main { background: #F7EBC0 !important; border: 1px solid rgba(201, 160, 40, .25) !important; border-radius: 24px !important; box-shadow: 6px 7px 0 #E9C96A; }
+.lh-hero-main::after { display: none; }
+.lh-kick { color: #1D1C27 !important; display: inline-block; padding: 5px 11px; border-radius: 8px; background: #fff; font-size: 11.5px !important; font-weight: 700 !important; letter-spacing: .06em; text-transform: uppercase; }
+.lh-hero-subj p, .lh-sub { color: #4A4858 !important; }
+.lh-flag { background: #fff !important; }
+.lh-hero-main .bar, .lh-hero-main .hm-bar { background: rgba(255, 255, 255, .7) !important; }
+.lh-hero-act .btn:not(.btn-primary) { background: #fff; border-color: transparent; box-shadow: 0 3px 0 rgba(29, 28, 39, .1); }
+.lh-day { background: #1D1C27 !important; border-radius: 24px !important; }
+.lh-week span.on i { background: #F9D976 !important; }
+.lh-stats > div { border: 0 !important; border-radius: 18px !important; background: #DCEBFB !important; box-shadow: 0 2px 0 rgba(29, 28, 39, .08); }
+.lh-stats > div:nth-child(2) { background: #E6E0F8 !important; } .lh-stats > div:nth-child(3) { background: #D9F0E3 !important; } .lh-stats > div:nth-child(4) { background: #F6EBC9 !important; }
+.lh-stats > div > span { background: #fff !important; color: #1D1C27 !important; }
+.lh-stats b { font-family: var(--hd); }
+.lh-card { background: #FFFDF6 !important; border: 0 !important; border-radius: 20px !important; box-shadow: 0 2px 0 rgba(29, 28, 39, .06), inset 0 0 0 1px #E4E1D3; }
+.lh-ch a { color: #1D1C27 !important; text-decoration: underline; text-underline-offset: 3px; }
+.lh-subjs a:hover, .lh-todo:hover { background: #F6F3E6 !important; }
+.lh-chip { border-radius: 99px; background: #fff; }
+.lh-ai { background: #F6F3E6 !important; }
+.lh-ai > span { background: #F7EBC0 !important; color: #1D1C27 !important; }
+
+/* Bài kiểm tra, Bài học, Khám phá, chương */
+.ex-sum, .ex-card, body.in-app:not(.ax-on) .edu-curriculum-summary, body.in-app:not(.ax-on) .edu-chapter-card, body.in-app:not(.ax-on) .lesson-card, body.in-app:not(.ax-on) .lx-pick.cat-card { background: #FFFDF6 !important; border: 0 !important; border-radius: 20px !important; box-shadow: 0 2px 0 rgba(29, 28, 39, .07), inset 0 0 0 1px #E4E1D3 !important; }
+.ex-card:hover, body.in-app:not(.ax-on) .edu-chapter-card:hover, body.in-app:not(.ax-on) .lx-pick.cat-card:hover { transform: translateY(-3px) rotate(-.4deg); }
+.ex-no { background: #F7EBC0 !important; color: #1D1C27 !important; }
+.ex-meta div { background: #F6F3E6 !important; }
+.ex-next { background: #1D1C27 !important; border-radius: 18px !important; }
+.ex-next em { color: #F9D976 !important; }
+.ex-ring { background: conic-gradient(#5468D4 calc(var(--p) * 1%), #ECE8DA 0) !important; }
+.ex-ring::before { background: #FFFDF6 !important; }
+body.in-app:not(.ax-on) .edu-chapter-no, body.in-app:not(.ax-on) .lesson-n { color: #5468D4; }
+body.in-app:not(.ax-on) .edu-curriculum-numbers b { background: #F6F3E6; border-radius: 16px; }
+body.in-app:not(.ax-on) .edu-guided-note { background: #F7EBC0; border-radius: 16px; }
+body.in-app:not(.ax-on) .cat-top { border-bottom: 0; }
+body.in-app:not(.ax-on) .cat-flag { border-radius: 16px; }
+body.in-app:not(.ax-on) .cat-levels i { background: #F6F3E6; border-radius: 99px; }
+body.in-app:not(.ax-on) .ch-head { background: #F7EBC0 !important; border: 1px solid rgba(201, 160, 40, .25) !important; border-radius: 24px !important; box-shadow: 6px 7px 0 #E9C96A !important; }
+body.in-app:not(.ax-on) .ch-head::after { display: none; }
+body.in-app:not(.ax-on) .ch-head .kicker { color: #1D1C27; }
+body.in-app:not(.ax-on) .edu-chapter-outcomes { background: #DCEFE4 !important; border-radius: 20px !important; }
+body.in-app:not(.ax-on) .edu-chapter-outcomes li { border-radius: 14px; }
+body.in-app:not(.ax-on) .edu-chapter-outcomes li::before { background: #1D1C27; }
+body.in-app:not(.ax-on) .ex-item.next .st { background: #1D1C27; border-color: #1D1C27; box-shadow: 0 0 0 4px #F7EBC0; }
+body.in-app:not(.ax-on) .ex-item.next a { background: #F7EBC0; }
+body.in-app:not(.ax-on) .code-view, body.in-app:not(.ax-on) .console { background: #1D1C27 !important; }
+
+/* Trang làm bài */
+body.in-app:not(.ax-on) .ws, body.in-app:not(.ax-on) .ws-left, body.in-app:not(.ax-on) .ws-right, body.in-app:not(.ax-on) .ed-bar { background: #FFFDF6; }
+body.in-app:not(.ax-on) .ws-left .tabs { background: none; border-radius: 0; }
+body.in-app:not(.ax-on) .ws-left .tabs button.on { background: none !important; color: #1D1C27; border-bottom-color: #1D1C27; }
+body.in-app:not(.ax-on) .ws-nav { background: #F6F3E6; }
+body.in-app:not(.ax-on) .ed-bar .file { background: #F6F3E6; border-radius: 99px; }
+
+/* ===== Đồng bộ toàn bộ: đổi màu gốc để mọi nút, liên kết, nhãn, tab còn sót theo cùng phong cách ===== */
+:root, :root[data-theme="dark"], :root[data-theme="light"] {
+  --tim: #1D1C27; --tim-2: #2E2C3D; --tim-soft: #F7EBC0; --tim-ink: #FFFFFF;
+  --paper: #F3F2EB; --paper-2: #FFFDF6; --paper-3: #F1EFE5; --ink: #1D1C27; --ink-2: #4A4858; --ink-3: #7A7887;
+  --line: #E4E1D3; --line-2: #D9D5C4; --code-bg: #FFFDF6; --code-gutter: #F6F3E6; --console-bg: #1D1C27; --console-ink: #F3F2EB;
+  color-scheme: light;
+}
+body { font-family: Quicksand, Nunito, Inter, system-ui, sans-serif; }
+h1, h2, h3, .modal h2 { font-family: "Bricolage Grotesque", Nunito, Inter, system-ui, sans-serif; letter-spacing: -.03em; }
+/* Chỉ còn giao diện sáng */
+.theme-btn, [data-theme-toggle] { display: none !important; }
+/* Mọi nút trong toàn hệ thống */
+.btn { border-radius: 99px !important; font-family: inherit; font-weight: 700; }
+.btn-primary { --b-bg: #1D1C27; --b-ink: #fff; --b-line: #1D1C27; background: #1D1C27 !important; border-color: #1D1C27 !important; color: #fff !important; box-shadow: 0 3px 0 rgba(0, 0, 0, .25) !important; }
+.btn-primary:hover { background: #2E2C3D !important; border-color: #2E2C3D !important; }
+.btn-primary svg { color: #F9D976; }
+.icon-btn { border-radius: 99px; }
+/* Hộp thoại (đăng nhập, xác nhận…) */
+.modal { background: #FFFDF6 !important; border-radius: 22px !important; border: 0 !important; box-shadow: 0 30px 60px -20px rgba(29, 28, 39, .4), inset 0 0 0 1px #E4E1D3 !important; }
+.modal .seg { background: #ECE8DA; border-radius: 99px; }
+.modal .seg button { border-radius: 99px; }
+.modal .seg button.on, .modal .seg [aria-selected="true"] { background: #1D1C27; color: #fff; }
+.modal input, .modal select, .modal textarea { border-radius: 12px !important; font-family: inherit; }
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #1D1C27 !important; box-shadow: 0 0 0 3px rgba(249, 217, 118, .6) !important; }
+/* Thông báo nhỏ, nhãn, liên kết */
+.toast { border-radius: 16px; background: #1D1C27; color: #F3F2EB; font-family: inherit; }
+.tag { border-radius: 99px; }
+.tag-tim { background: #F7EBC0 !important; color: #1D1C27 !important; }
+.lang-switch { border-radius: 99px; }
+.lang-switch button.on { background: #1D1C27; color: #fff; }
+.bar > i { background: #5468D4; }
+.stamp { --c: #5468D4; }
+
+/* Chứng nhận: tên đơn vị dùng màu chữ chính */
+.org { color: #1D1C27 !important; border-color: #1D1C27 !important; }
+
+/* Biến màu thương hiệu dùng làm điểm nhấn (thanh cấp độ C/C++/Java, viền, vạch): đổi theo phong cách mới
+   cho phần học và trang chủ; khu quản trị giữ màu thương hiệu thật để ô xem trước trong Cài đặt đúng */
+body.in-app:not(.ax-on) .main, body.in-app:not(.ax-on) .side, .aw { --brand: #1D1C27; --brand-deep: #2E2C3D; }
+body.in-app:not(.ax-on) .cx-levels a i { background: #5468D4; }

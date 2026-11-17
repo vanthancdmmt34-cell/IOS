@@ -1,0 +1,10 @@
+[Unit]
+Description=Run LifeRivo backup every day
+
+[Timer]
+OnCalendar=03:15
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

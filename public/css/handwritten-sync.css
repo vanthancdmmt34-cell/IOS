@@ -1,0 +1,887 @@
+/* ============================================================================
+   Handwritten Sync — lớp đồng bộ cuối cùng cho toàn bộ giao diện trong app
+   (body.in-app: học viên, quản trị, hồ sơ, modal, menu, tab...).
+   Nạp sau theme.css và home-learner.css (xem BUNDLE_SOURCES trong
+   tools/build-css.mjs). Mục đích: một bộ font, một bảng mực, một kiểu cho
+   nút / tab / chip / menu / thẻ / hộp thoại. Không dùng bóng mờ, gradient
+   hay viền xám "phần mềm" nữa.
+   ============================================================================ */
+
+body.in-app {
+  --hw-head: "Mali", "Patrick Hand", cursive, sans-serif;
+  --hw-body: "Patrick Hand", "Mali", cursive, sans-serif;
+  /* bút dạ vàng: trạng thái đang chọn, nút chính */
+  --hw-mark: #FDE047;
+  /* vàng nhạt: trạng thái rê chuột */
+  --hw-mark-soft: #FEF9C3;
+  /* nét vẽ tay (bo góc lệch) */
+  --hw-r: 14px 7px 16px 8px / 8px 14px 7px 15px;
+  --hw-r-lg: 22px 10px 24px 12px / 11px 22px 12px 24px;
+  --hw-shadow: 2px 2px 0 var(--line);
+  --hw-shadow-on: 3px 3px 0 var(--line);
+  --hw-shadow-lg: 5px 5px 0 var(--line);
+}
+
+/* ---------------------------------------------------------------------------
+   1) Font chữ: mọi chữ dùng Patrick Hand (nội dung) hoặc Mali (tiêu đề, nút,
+      tab, menu). Chỉ mã lập trình và ô soạn code giữ monospace.
+   :where() giữ độ ưu tiên thấp để các quy tắc Mali bên dưới vẫn thắng.
+   --------------------------------------------------------------------------- */
+body.in-app :where(*):not(:where(code, pre, .mono, [style*="mono"], .cm-editor, .cm-editor *, .code-editor, .code-editor *, svg, svg *)) {
+  font-family: var(--hw-body) !important;
+}
+body.in-app :is(h1, h2, h3, h4, h5, h6, button, .btn, summary, th, strong, b, .brand, .nav-cat-head, .badge, .tag, .pill, .lang-switch button) {
+  font-family: var(--hw-head) !important;
+  font-weight: 700 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   2) Tab, phân đoạn, chip lọc: MỘT kiểu duy nhất.
+      Hàng tab nằm trên một dòng, các mục chia đều chiều rộng; khi không đủ
+      chỗ thì cuộn ngang (không xuống dòng lệch kiểu).
+   --------------------------------------------------------------------------- */
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch;
+  gap: 8px !important;
+  margin: 0 0 16px !important;
+  padding: 2px 2px 4px !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs)::-webkit-scrollbar {
+  display: none;
+}
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) > :is(a, button) {
+  flex: 1 1 0 !important;
+  min-width: max-content !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 14px !important;
+  margin: 0 !important;
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r) !important;
+  background: var(--paper-2) !important;
+  color: var(--ink) !important;
+  box-shadow: var(--hw-shadow) !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, background-color .14s ease;
+}
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) > :is(a, button):hover:not(.on):not([aria-selected="true"]) {
+  background: var(--hw-mark-soft) !important;
+  transform: translate(-1px, -1px);
+  box-shadow: var(--hw-shadow-on) !important;
+}
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) > :is(a, button).on,
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) > :is(a, button)[aria-selected="true"],
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) > :is(a, button).active {
+  background: var(--hw-mark) !important;
+  color: #1C1917 !important;
+  box-shadow: var(--hw-shadow-on) !important;
+  transform: translate(-1px, -1px);
+}
+body.in-app :is(.tabs, .seg, .cat-seg, .sp-tabs, .sp-seg, .aiw-tabs, .lh-lang-tabs, .lx-rep-tabs, .buy-tabs, .ws-left .tabs) .n {
+  min-width: 20px;
+  padding: 0 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 99px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 700 12px/1.5 var(--hw-head);
+  text-align: center;
+  margin: 0;
+}
+
+/* Chip lọc (danh sách nút nhỏ) dùng cùng kiểu với tab: một hàng, cuộn ngang khi thiếu chỗ */
+body.in-app .chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 0 0 14px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 2px 2px 4px;
+}
+body.in-app .chips::-webkit-scrollbar {
+  display: none;
+}
+body.in-app :is(.aiw-quick, .ai-inline-prompts, .hm-chips).chips {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+body.in-app :is(.chips > :is(a, button), button.chip, a.chip) {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 5px 12px !important;
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r) !important;
+  background: var(--paper-2) !important;
+  color: var(--ink) !important;
+  box-shadow: var(--hw-shadow) !important;
+  font: 700 14px/1.2 var(--hw-head) !important;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, background-color .14s ease;
+}
+body.in-app :is(.chips > :is(a, button), button.chip, a.chip):hover:not(.on) {
+  background: var(--hw-mark-soft) !important;
+  transform: translate(-1px, -1px);
+  box-shadow: var(--hw-shadow-on) !important;
+}
+body.in-app :is(.chips > :is(a, button), button.chip, a.chip).on {
+  background: var(--hw-mark) !important;
+  color: #1C1917 !important;
+  box-shadow: var(--hw-shadow-on) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   3) Nút: nút chính là bút dạ vàng, viền mực, bóng lệch; các nút phụ dùng
+      nền giấy. Thay cho nút tối (#1D1C27) và gradient cũ.
+   --------------------------------------------------------------------------- */
+body.in-app :is(.btn-primary, .db-btn-primary, .hm-btn-primary, .modal .btn-primary) {
+  --b-bg: var(--hw-mark);
+  --b-ink: #1C1917;
+  --b-line: var(--line);
+  background: var(--hw-mark) !important;
+  background-image: none !important;
+  border-color: var(--line) !important;
+  color: #1C1917 !important;
+  box-shadow: 3px 4px 0 var(--line) !important;
+}
+body.in-app :is(.btn-primary, .db-btn-primary, .hm-btn-primary, .modal .btn-primary):hover {
+  background: var(--hw-mark-soft) !important;
+  border-color: var(--line) !important;
+  transform: translate(-1px, -1px);
+}
+body.in-app .btn-primary svg {
+  color: var(--ink);
+}
+/* Mọi nút trong app: không gradient, chỉ màu đặc */
+body.in-app .btn {
+  background-image: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   4) Thẻ, hero, hộp thoại, menu thả xuống: một kiểu giấy có viền mực.
+      Không còn nền tối / gradient / bóng mờ.
+   --------------------------------------------------------------------------- */
+body.in-app :is(.lx-focus-hero, .lx-hero, .lx-hero-pick, .lx-hero-sm, .lx-hero.lx-hero-pick, .sp-hero, .sp .sp-hero, .plan-now.pro, .cat-page-card) {
+  background: var(--paper-2) !important;
+  background-image: none !important;
+  color: var(--ink) !important;
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r-lg) !important;
+  box-shadow: var(--hw-shadow-lg) !important;
+}
+body.in-app :is(.lx-focus-hero, .lx-hero, .lx-hero-pick, .sp-hero) :is(h1, h2, h3) {
+  color: var(--ink) !important;
+}
+body.in-app :is(.lx-focus-hero, .lx-hero, .lx-hero-pick, .sp-hero) :is(p) {
+  color: var(--ink-2) !important;
+  opacity: 1 !important;
+}
+body.in-app :is(.lx-focus-hero, .lx-hero, .lx-hero-pick, .sp-hero) :is(.edu-eyebrow, .sp-eyebrow) {
+  background: var(--hw-mark) !important;
+  color: #1C1917 !important;
+  border: 1.8px solid var(--line);
+  border-radius: 10px 6px 12px 7px;
+  padding: 2px 10px;
+}
+body.in-app :is(.lx-focus-hero, .lx-hero-pick, .sp-hero) :is(.lx-switch, .sp-ghost) {
+  background: var(--paper-2) !important;
+  color: var(--ink) !important;
+  border: 2px solid var(--line) !important;
+  box-shadow: var(--hw-shadow) !important;
+}
+body.in-app :is(.sp-hero, .sp .sp-hero) b {
+  color: var(--ink) !important;
+}
+body.in-app :is(.sp-ring, .sp-ring.lg) {
+  background: var(--paper) !important;
+  background-image: none !important;
+  color: var(--ink) !important;
+  border: 2px solid var(--line) !important;
+  box-shadow: var(--hw-shadow) !important;
+}
+body.in-app :is(.sp-hero-stat, .sp-hero-nums) {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1.8px dashed var(--line) !important;
+  border-radius: var(--hw-r) !important;
+}
+/* Nhãn phụ trong thẻ luyện nói: màu xám xanh cũ quá nhạt trên nền giấy, đổi sang mực phụ */
+body.in-app .sp-hero :is(.sp-hero-cap, .sp-hero-nums span) {
+  color: var(--ink-2) !important;
+}
+
+body.in-app .modal {
+  background: var(--paper-2) !important;
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r-lg) !important;
+  box-shadow: var(--hw-shadow-lg) !important;
+}
+
+/* Menu thả xuống (tài khoản, chuông thông báo, quản trị): cùng một thẻ giấy */
+body.in-app :is(.ud-drop, .ud-bell-drop, .ad-drop, .ad-menu) {
+  background: var(--paper-2) !important;
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r-lg) !important;
+  box-shadow: var(--hw-shadow-lg) !important;
+}
+body.in-app :is(.ud-drop, .ud-bell-drop, .ad-drop, .ad-menu) :is(a, button):hover {
+  background: var(--hw-mark-soft) !important;
+}
+
+/* Menu bên trái: mục đang mở dùng cùng bút dạ vàng ở mọi khu vực (học viên và quản trị) */
+body.in-app .nav a.on,
+body.in-app .nav a[aria-current="page"],
+body.in-app .nav a.active {
+  background: var(--hw-mark) !important;
+  color: #1C1917 !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--hw-shadow-on) !important;
+}
+
+/* Khu quản trị: menu, ô tìm kiếm và thẻ dùng cùng kiểu với học viên */
+body.in-app .ad-grp a {
+  border: 1.8px solid transparent;
+  border-radius: 11px 6px 12px 7px;
+  padding: 6px 9px;
+  font-size: 14px;
+  color: var(--ink);
+  transition: transform .14s ease, box-shadow .14s ease, background-color .14s ease;
+}
+body.in-app .ad-grp a:hover:not(.on) {
+  border-color: var(--line);
+  background: var(--hw-mark-soft);
+}
+body.in-app .ad-grp a.on {
+  background: var(--hw-mark) !important;
+  color: #1C1917 !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--hw-shadow-on) !important;
+}
+body.in-app .ad-search {
+  border: 2px solid var(--line) !important;
+  border-radius: var(--hw-r) !important;
+  background: var(--paper-2) !important;
+  box-shadow: var(--hw-shadow) !important;
+}
+
+/* Thẻ nội dung (khối trắng có viền) dùng chung một kiểu */
+body.in-app :is(.sheet, .ad-ib, .qr-box, .zalo-box, .sp-card, .sp-mode, .sp-voice, .sp-scene, .sp-pack) {
+  background: var(--paper-2) !important;
+  border: 1.8px solid var(--line) !important;
+  border-radius: var(--hw-r-lg) !important;
+  box-shadow: var(--hw-shadow-on) !important;
+}
+
+/* Bóng mờ còn sót ở vài chỗ: đưa về bóng lệch viền mực */
+body.in-app :is(span.cat-flag, span.sw-inner, form.sp-chatbar, .cat-scroll-book) {
+  box-shadow: var(--hw-shadow) !important;
+}
+
+/* Thanh bên đã có menu và tiến độ ở đầu trang: bỏ khối "Tiến độ học tập" nằm ngay phía trên avatar ở chân thanh bên.
+   JS (lang.js, main.js) vẫn chạy bình thường vì đã kiểm tra phần tử tồn tại trước khi cập nhật. */
+body.in-app .side-foot > div:has(> .xp-line) {
+  display: none !important;
+}
+
+/* Thanh bên trái đã có đủ mục điều hướng: ẩn chip tài khoản và menu thả xuống ở góc phải trên (học viên).
+   Chân thanh bên trái (không hiện avatar) có hai nút: xem lại hướng dẫn và đăng xuất. */
+body.in-app:not(.ax-on) #udUserWrap {
+  display: none !important;
+}
+body.in-app:not(.ax-on) .side .me-card {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+body.in-app:not(.ax-on) .side .me-card > :not(.side-action) {
+  display: none !important;
+}
+body.in-app:not(.ax-on) .side .me-card .side-action {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--hw-r);
+  background: var(--paper-2);
+  color: var(--ink);
+  box-shadow: var(--hw-shadow);
+  font: 700 14px/1.2 var(--hw-head);
+  text-align: left;
+  cursor: pointer;
+}
+body.in-app:not(.ax-on) .side .me-card .side-action svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Điện thoại / máy tính bảng: thanh trên của khu quản trị và nhãn nút không bị bóp méo.
+   Nút chạm tối thiểu 40px, ô tìm kiếm co giãn, nhãn nút giữ một dòng.
+   --------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  body.in-app.ax-on .ad-top {
+    gap: 8px !important;
+    padding-inline: 10px !important;
+  }
+  body.in-app.ax-on .ad-top > #adMenu,
+  body.in-app.ax-on .ad-top > #axBell,
+  body.in-app.ax-on .ad-top > .ad-ib {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    flex: none !important;
+    display: grid !important;
+    place-items: center !important;
+    padding: 0 !important;
+  }
+  body.in-app.ax-on .ad-top #adSearch,
+  body.in-app.ax-on .ad-top .ad-search {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+}
+/* Nút chữ dài (CTA) được phép xuống dòng, không bị cắt; nút nhỏ và nút trong hàng phòng học vẫn giữ một dòng */
+body.in-app .btn {
+  white-space: normal;
+  max-width: 100%;
+  text-align: center;
+}
+body.in-app .btn.btn-sm,
+body.in-app .lx-roomnav .btn {
+  white-space: nowrap;
+}
+
+/* Hộp thoại: nút đóng (×) không đè lên hàng tab */
+body.in-app .modal:has(> .modal-x) .seg {
+  margin-right: 44px !important;
+}
+
+/* Đếm ngược đề luyện thi: nhãn vàng viết tay, chuyển đỏ khi còn dưới 2 phút */
+body.in-app .lx-timer {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--hw-r);
+  background: var(--hw-mark);
+  color: var(--ink);
+  box-shadow: var(--hw-shadow);
+  font: 700 15px/1.2 var(--hw-head);
+  white-space: nowrap;
+}
+body.in-app .lx-timer.warn {
+  background: #FCA5A5;
+}
+
+/* ---------------------------------------------------------------------------
+   Hàng cấp độ và dấu chấm chỉ vị trí (thay thanh cuộn xám trên điện thoại)
+   --------------------------------------------------------------------------- */
+body.in-app .lx-levels {
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0 !important;
+  margin-bottom: 6px !important;
+}
+body.in-app .lx-levels::-webkit-scrollbar {
+  display: none;
+}
+body.in-app .lx-levels > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+body.in-app .hdots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 14px;
+}
+body.in-app .hdots[hidden] {
+  display: none !important;
+}
+body.in-app .hdots button {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .15s ease;
+}
+body.in-app .hdots button.on {
+  background: var(--line);
+  transform: scale(1.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Điện thoại: chữ phụ không nhỏ hơn 13px, vùng chạm không dưới 40px
+   --------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  body.in-app .tag,
+  body.in-app .tag-line {
+    font-size: 13px !important;
+  }
+  body.in-app .lx-ex .t > span,
+  body.in-app .lx-test .t > span,
+  body.in-app .lx-unit-prog,
+  body.in-app .lx-unit-prog b,
+  body.in-app .lx-unit-t {
+    font-size: 14px !important;
+  }
+  body.in-app .lx-unit-t {
+    font-size: 15.5px !important;
+  }
+  body.in-app .lx-levels a span,
+  body.in-app .lx-levels a em {
+    font-size: 13px !important;
+  }
+  body.in-app .nav-cat-lbl {
+    font-size: 14px !important;
+  }
+  body.in-app .nav-cat-cnt {
+    font-size: 12.5px !important;
+  }
+  body.in-app .side-ver,
+  body.in-app .side-subj-info small {
+    font-size: 13px !important;
+  }
+  body.in-app .side-foot .side-action {
+    min-height: 40px;
+  }
+  body.in-app .streak-badge {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+/* Điện thoại: thẻ đầu trang (tiến độ + nút hỏi gia sư) xếp dọc, không bị ép thành hai cột nhỏ */
+@media (max-width: 640px) {
+  body.in-app .lx-hero .edu-route-progress {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  body.in-app .lx-hero .edu-route-progress > b {
+    white-space: nowrap;
+  }
+  body.in-app .lx-hero .edu-route-progress .btn {
+    flex: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Điện thoại: thanh điều hướng bài và thanh nộp bài
+   - Thanh điều hướng: Bài trước | các mục giữa (chip) | Bài sau, không bị chèn lệch
+   - Thanh nộp bài: dính sát mép dưới màn hình, đủ rộng, không che nửa câu hỏi cuối
+   --------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  body.in-app .lx-roomnav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 8px;
+  }
+  body.in-app .lx-roomnav > .btn,
+  body.in-app .lx-roomnav > a.btn {
+    flex: none;
+    white-space: nowrap;
+    min-height: 40px;
+    padding: 0 12px;
+  }
+  body.in-app .lx-roomnav-mid {
+    order: 3;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  body.in-app .lx-roomnav-mid > a,
+  body.in-app .lx-roomnav-mid > button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 2px solid var(--line);
+    border-radius: var(--hw-r);
+    background: var(--paper-2);
+    color: var(--ink);
+    box-shadow: var(--hw-shadow);
+    font: 700 13.5px/1.2 var(--hw-head);
+    text-decoration: none;
+  }
+  body.in-app .lx-submit-bar {
+    position: sticky;
+    bottom: 0;
+    margin: 0 -16px;
+    padding: 10px 16px 12px;
+    border-radius: 0;
+    border: 0;
+    border-top: 2px solid var(--line);
+    background: var(--paper-2);
+    box-shadow: none;
+  }
+  body.in-app .lx-submit-bar .btn {
+    min-height: 44px;
+    padding: 0 18px;
+  }
+}
+
+/* Vòng điểm luyện nói: lõi không còn màu xanh đêm mà dùng giấy có viền mực */
+body.in-app .sp-ring::before {
+  background: var(--paper-3) !important;
+  border: 2px solid var(--line);
+  box-sizing: border-box;
+}
+
+/* Điện thoại: nhãn phụ trong luyện nói và khu quản trị không nhỏ hơn 13px */
+@media (max-width: 640px) {
+  body.in-app .sp-chip,
+  body.in-app .sp-mode-foot .sp-chip {
+    font-size: 13px !important;
+  }
+  body.in-app .sp-bar-col,
+  body.in-app .sp-pill,
+  body.in-app .sp-hero .sp-eyebrow,
+  body.in-app .sp-hero-nums span {
+    font-size: 13px !important;
+  }
+  body.in-app .ad-grp-l,
+  body.in-app .ad-badge {
+    font-size: 12.5px !important;
+  }
+  body.in-app .ad-side .ad-grp a {
+    font-size: 14px;
+  }
+  body.in-app .side-subj-swap {
+    font-size: 13px !important;
+  }
+}
+
+/* Điện thoại: lưới huy hiệu hai cột (thay vì một cột cao cả màn hình) */
+@media (max-width: 640px) {
+  body.in-app .lx-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Khu quản trị: avatar có viền mực như các nút khác (trước đây chỉ có bóng
+   lệch ở khối bao ngoài, nhìn như một gạch chân đen).
+   --------------------------------------------------------------------------- */
+body.in-app .ad-user {
+  box-shadow: none !important;
+}
+body.in-app.ax-on .ad-user > button {
+  border: 1.8px solid var(--line);
+  border-radius: 99px;
+  background: var(--paper-2);
+  box-shadow: var(--hw-shadow) !important;
+}
+
+/* Điện thoại: thẻ chỉ số, thẻ tóm tắt và bảng người dùng gọn hơn, không phải cuộn dọc quá dài */
+@media (max-width: 640px) {
+  /* Thẻ chỉ số của khu quản trị (Học viên, Đang học, Online, Doanh thu): lưới 2 cột */
+  body.in-app .ad-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+  body.in-app .ad-kpi {
+    padding: 14px 12px;
+    gap: 2px;
+  }
+  body.in-app .ad-kpi-ic {
+    position: static;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 4px;
+  }
+  body.in-app .ad-kpi b {
+    font-size: 24px;
+  }
+  body.in-app .ad-kpi .l {
+    font-size: 12.5px;
+  }
+  body.in-app .ad-kpi .f {
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+  body.in-app .ad-bars em {
+    font-size: 10.5px;
+  }
+
+  /* Thẻ số liệu (.stats, .kpis, .biz-stats) dùng chung: hai cột thay vì một cột dài */
+  body.in-app .stats,
+  body.in-app .kpis,
+  body.in-app .biz-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  body.in-app .stats > div,
+  body.in-app .kpi,
+  body.in-app .biz-stats > div {
+    padding: 14px !important;
+  }
+  body.in-app .stats b,
+  body.in-app .kpi b,
+  body.in-app .biz-stats b {
+    font-size: 22px !important;
+  }
+  body.in-app .stats span,
+  body.in-app .kpi span,
+  body.in-app .biz-stats span {
+    font-size: 12.5px !important;
+  }
+
+  /* Bảng có class .stack-m: mỗi dòng thành một thẻ xếp dọc, nhãn cột nằm trước giá trị */
+  body.in-app .table-wrap:has(> table.stack-m) {
+    overflow: visible;
+    border: 0;
+    background: none;
+  }
+  body.in-app table.stack-m,
+  body.in-app table.stack-m tbody {
+    display: block;
+    width: 100%;
+  }
+  body.in-app table.stack-m thead {
+    display: none;
+  }
+  body.in-app table.stack-m tr {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border: 1.8px solid var(--line);
+    border-radius: var(--hw-r);
+    background: var(--paper-2);
+    box-shadow: var(--hw-shadow);
+  }
+  body.in-app table.stack-m td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 5px 0;
+    border: 0;
+    text-align: left;
+  }
+  body.in-app table.stack-m td:first-child {
+    display: block;
+    padding: 0 0 6px;
+  }
+  body.in-app table.stack-m td[data-label]::before {
+    content: attr(data-label);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+  body.in-app table.stack-m td:last-child {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    margin-top: 4px;
+  }
+  body.in-app table.stack-m tr:has(> td[colspan]) {
+    box-shadow: none;
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Nhãn phụ không nhỏ hơn 12px (rà soát: còn một số nhãn 10.5–11.5px, khó đọc
+   trên điện thoại và trên màn hình thường).
+   --------------------------------------------------------------------------- */
+body.in-app :is(.ad-badge, .ad-grp-l, .lx-pick-cur, .sp-mini, .sp-hero-nums span, .edu-help-ai-state span, .edu-help-ai-state a, .ad-kpi .f) {
+  font-size: 12px !important;
+}
+body.in-app .edu-help-option :is(span, em) {
+  font-size: 12.5px !important;
+}
+
+/* Luyện nói: dãy chấm tiến độ (một chấm cho mỗi mục) không được đẩy cả trang sang ngang.
+   Có nhiều mục thì dãy cuộn ngang trong khung thay vì tràn màn hình. */
+body.in-app .sp-dots {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+body.in-app .sp-dots::-webkit-scrollbar {
+  display: none;
+}
+body.in-app .sp-dot {
+  flex: 1 0 8px;
+  max-width: 28px;
+}
+
+/* ---------------------------------------------------------------------------
+   Trung tâm TOEIC & luyện thi (môn Tiếng Anh): thẻ Part, câu hỏi, đề thi, kết quả.
+   --------------------------------------------------------------------------- */
+body.in-app .toeic-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+body.in-app .toeic-suggest h2 { margin: 6px 0 4px; font-size: 22px; }
+body.in-app .toeic-suggest .row { display: flex; gap: 8px; flex-wrap: wrap; }
+body.in-app .toeic-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+body.in-app .toeic-stats > div {
+  padding: 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--hw-r);
+  background: var(--paper-2);
+  box-shadow: var(--hw-shadow);
+}
+body.in-app .toeic-stats b { display: block; font-size: 22px; }
+body.in-app .toeic-stats span { font-size: 12.5px; color: var(--ink-2); }
+body.in-app .toeic-no {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--hw-mark);
+  font: 800 16px/1 var(--hw-head);
+}
+body.in-app .toeic-part .toeic-bar { display: block; height: 8px; margin: 8px 0 4px; border: 1.5px solid var(--line); border-radius: 99px; background: var(--paper); overflow: hidden; }
+body.in-app .toeic-part .toeic-bar i { display: block; height: 100%; background: var(--hw-mark); }
+body.in-app .toeic-bar-top,
+body.in-app .toeic-timer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+  flex-wrap: wrap;
+}
+body.in-app .toeic-timer-bar { position: sticky; top: 0; z-index: 5; padding: 8px 0; background: var(--paper); }
+body.in-app .toeic-drill { display: grid; gap: 12px; }
+body.in-app .toeic-q {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--hw-r);
+  background: var(--paper-2);
+}
+body.in-app .toeic-qno {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  font: 800 13px/1 var(--hw-head);
+}
+body.in-app .toeic-qbody { min-width: 0; display: grid; gap: 8px; }
+body.in-app .toeic-qbody p { margin: 0; }
+body.in-app .toeic-scene { font-size: 56px; line-height: 1.1; text-align: center; }
+body.in-app .toeic-passage { padding: 12px; border: 1.8px dashed var(--line); border-radius: var(--hw-r); background: var(--paper); }
+body.in-app .toeic-passage p { margin: 0 0 6px; }
+body.in-app .toeic-script p { margin: 4px 0; color: var(--ink-2); }
+body.in-app .toeic-parthead { margin: 18px 0 4px; font: 800 17px/1.2 var(--hw-head); }
+body.in-app .toeic-explain { margin: 0; font-size: 14px; color: var(--ink-2); }
+body.in-app .toeic-ok { color: var(--la); font-weight: 700; margin: 0; }
+body.in-app .toeic-no-ok { color: var(--do); font-weight: 700; margin: 0; }
+body.in-app .toeic-rev.ok .toeic-qno { background: var(--la-soft); }
+body.in-app .toeic-rev.bad .toeic-qno { background: var(--do-soft); }
+body.in-app .toeic-scorebox { margin-top: 14px; }
+body.in-app .toeic-score .toeic-big { font: 800 44px/1 var(--hw-head); }
+body.in-app .toeic-bypart { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+body.in-app .toeic-reviewhead { margin: 22px 0 8px; }
+body.in-app .toeic-history { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+body.in-app .toeic-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: var(--hw-r);
+  background: var(--paper-2);
+}
+body.in-app .toeic-history small { color: var(--ink-3); }
+body.in-app .toeic-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+body.in-app .toeic-note { margin-top: 12px; }
+@media (max-width: 640px) {
+  body.in-app .toeic-stats { grid-template-columns: 1fr; }
+  body.in-app .toeic-q { grid-template-columns: 26px minmax(0, 1fr); padding: 10px; }
+  body.in-app .toeic-qno { width: 26px; height: 26px; font-size: 12px; }
+  body.in-app .toeic-scene { font-size: 44px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Con trỏ chuột hình bàn chân mèo: đen với đệm hồng (dùng cho cả nút và liên kết).
+   Ô nhập liệu giữ con trỏ chữ; nút bị khóa giữ con trỏ "không được".
+   --------------------------------------------------------------------------- */
+:root {
+  --cur-arrow: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'><g stroke='%23FFFFFF' stroke-width='1.1' stroke-linejoin='round'><ellipse cx='12' cy='15.8' rx='5.5' ry='4.5' fill='%231C1917'/><ellipse cx='5.7' cy='10.6' rx='1.9' ry='2.5' transform='rotate(-18 5.7 10.6)' fill='%231C1917'/><ellipse cx='9.4' cy='6.4' rx='1.9' ry='2.6' transform='rotate(-6 9.4 6.4)' fill='%231C1917'/><ellipse cx='14.6' cy='6.4' rx='1.9' ry='2.6' transform='rotate(6 14.6 6.4)' fill='%231C1917'/><ellipse cx='18.3' cy='10.6' rx='1.9' ry='2.5' transform='rotate(18 18.3 10.6)' fill='%231C1917'/></g><ellipse cx='12' cy='16.3' rx='3.1' ry='2.5' fill='%23F9A8D4'/><ellipse cx='5.9' cy='11.1' rx='.95' ry='1.3' transform='rotate(-18 5.9 11.1)' fill='%23F9A8D4'/><ellipse cx='9.5' cy='7' rx='.95' ry='1.35' transform='rotate(-6 9.5 7)' fill='%23F9A8D4'/><ellipse cx='14.5' cy='7' rx='.95' ry='1.35' transform='rotate(6 14.5 7)' fill='%23F9A8D4'/><ellipse cx='18.1' cy='11.1' rx='.95' ry='1.3' transform='rotate(18 18.1 11.1)' fill='%23F9A8D4'/></svg>") 11 4, default;
+  --cur-hand: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'><g stroke='%23FFFFFF' stroke-width='1.1' stroke-linejoin='round'><ellipse cx='12' cy='15.8' rx='5.5' ry='4.5' fill='%231C1917'/><ellipse cx='5.7' cy='10.6' rx='1.9' ry='2.5' transform='rotate(-18 5.7 10.6)' fill='%231C1917'/><ellipse cx='9.4' cy='6.4' rx='1.9' ry='2.6' transform='rotate(-6 9.4 6.4)' fill='%231C1917'/><ellipse cx='14.6' cy='6.4' rx='1.9' ry='2.6' transform='rotate(6 14.6 6.4)' fill='%231C1917'/><ellipse cx='18.3' cy='10.6' rx='1.9' ry='2.5' transform='rotate(18 18.3 10.6)' fill='%231C1917'/></g><ellipse cx='12' cy='16.3' rx='3.1' ry='2.5' fill='%23F9A8D4'/><ellipse cx='5.9' cy='11.1' rx='.95' ry='1.3' transform='rotate(-18 5.9 11.1)' fill='%23F9A8D4'/><ellipse cx='9.5' cy='7' rx='.95' ry='1.35' transform='rotate(-6 9.5 7)' fill='%23F9A8D4'/><ellipse cx='14.5' cy='7' rx='.95' ry='1.35' transform='rotate(6 14.5 7)' fill='%23F9A8D4'/><ellipse cx='18.1' cy='11.1' rx='.95' ry='1.3' transform='rotate(18 18.1 11.1)' fill='%23F9A8D4'/></svg>") 11 4, pointer;
+}
+body,
+body *:not(input):not(textarea):not([disabled]) {
+  cursor: var(--cur-arrow) !important;
+}
+body :is(a, button, label, summary, [role="button"], [role="tab"], .btn, .lx-opt, .lx-card, .lx-skill, .lx-step, .sw-card, .tabs > *, .chips > *, .seg > *, select):not([disabled]),
+body :is(a, button, label, summary, [role="button"], [role="tab"], .btn, .lx-opt, .lx-card, .lx-skill, .lx-step, .sw-card, .tabs > *, .chips > *, .seg > *):not([disabled]) * {
+  cursor: var(--cur-hand) !important;
+}
+body input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([disabled]),
+body textarea:not([disabled]) {
+  cursor: text !important;
+}
+body :is(input[type="checkbox"], input[type="radio"], input[type="range"]):not([disabled]) {
+  cursor: var(--cur-hand) !important;
+}

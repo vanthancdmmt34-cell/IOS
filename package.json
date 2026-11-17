@@ -1,0 +1,35 @@
+{
+  "description": "LifeRivo: học ngoại ngữ bằng tiếng Việt. Node.js 22+, SQLite/PostgreSQL, Prometheus metrics, Web Push.",
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "server.js",
+  "name": "hoc-ngoai-ngu",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "node tools/build-css.mjs && node tools/build-critical-css.mjs && node tools/build-landing-css.mjs && node tools/build-js.mjs && node tools/verify-languages.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "db:check": "node tools/db-maintenance.js check",
+    "db:checkpoint": "node tools/db-maintenance.js checkpoint",
+    "db:backup": "node tools/db-maintenance.js backup",
+    "verify:lang": "node tools/verify-languages.mjs",
+    "build:css": "node tools/build-css.mjs && node tools/build-critical-css.mjs && node tools/build-landing-css.mjs",
+    "check:css": "node tools/build-css.mjs --check && node tools/build-critical-css.mjs --check && node tools/build-landing-css.mjs --check",
+    "build:js": "node tools/build-js.mjs",
+    "check:js": "node tools/build-js.mjs --check"
+  },
+  "type": "module",
+  "dependencies": {
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/ios": "^7.6.10",
+    "pg": "^8.23.1",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.10",
+    "terser": "^5.51.2"
+  },
+  "version": "5.1.3"
+}

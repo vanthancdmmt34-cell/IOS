@@ -1,0 +1,179 @@
+/* Dedicated layouts for main learning pages (new design). Uses color variables from ui-v3.css. */
+
+/* ---------- Exams page (ex-) ---------- */
+.ex-sum { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 18px 22px; margin-bottom: 18px; background: #fff; border: 1px solid var(--ul); border-radius: 16px; }
+.ex-ring { --p: 0; position: relative; display: flex; align-items: baseline; justify-content: center; padding-top: 24px; width: 72px; height: 72px; border-radius: 50%; background: conic-gradient(var(--u) calc(var(--p) * 1%), var(--uf) 0); flex: none; }
+.ex-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.ex-ring b, .ex-ring span { position: relative; }
+.ex-ring b { font-size: 20px; font-weight: 800; line-height: 1; }
+.ex-ring span { font-size: 12px; color: var(--um); }
+.ex-sum-t { flex: 1; min-width: 200px; display: grid; gap: 3px; }
+.ex-sum-t b { font-size: 16.5px; font-weight: 700; color: var(--uk); }
+.ex-sum-t span { font-size: 13.5px; color: var(--um); }
+.ex-next { display: grid; gap: 2px; padding: 12px 16px; border-radius: 12px; background: var(--uk); color: #fff; text-decoration: none; min-width: 240px; }
+.ex-next span { font-size: 12px; color: #94A3B8; }
+.ex-next b { font-size: 14px; }
+.ex-next em { font-style: normal; font-size: 12.5px; font-weight: 600; color: color-mix(in srgb, var(--u) 40%, #fff); }
+.ex-next:hover { background: #1E293B; }
+.ex-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.ex-bar .input { width: min(280px, 100%); height: 38px; padding: 0 12px; }
+.ex-n { display: inline-grid; place-items: center; min-width: 20px; height: 18px; margin-left: 4px; padding: 0 5px; border-radius: 99px; background: rgba(15, 23, 42, .06); font-size: 11px; }
+.ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.ex-card { display: flex; flex-direction: column; gap: 10px; padding: 18px; background: #fff; border: 1px solid var(--ul); border-radius: 14px; transition: border-color .15s, box-shadow .15s; }
+.ex-card[hidden] { display: none; }
+.ex-card:hover { border-color: #CBD5E1; box-shadow: 0 14px 28px -24px rgba(15, 23, 42, .5); }
+.ex-top { display: flex; align-items: center; justify-content: space-between; }
+.ex-no { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--us); color: var(--u); font-size: 14px; font-weight: 800; }
+.ex-card h3 { margin: 2px 0 0; font-size: 15.5px; font-weight: 700; line-height: 1.35; }
+.ex-card h3 a { color: var(--uk); text-decoration: none; }
+.ex-card h3 a:hover { color: var(--u); }
+.ex-prep { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--um); }
+.ex-prep b { color: var(--uk2); }
+.ex-card .bar { height: 6px; }
+.ex-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 2px 0 0; }
+.ex-meta div { padding: 8px 10px; border-radius: 9px; background: var(--ub); }
+.ex-meta dt { font-size: 11.5px; color: var(--um); }
+.ex-meta dd { margin: 2px 0 0; font-size: 13px; font-weight: 600; color: var(--uk2); }
+.ex-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--uf); }
+.ex-score { font-size: 13px; color: var(--um); }
+.ex-score b { font-size: 19px; font-weight: 800; color: var(--uk); }
+.ex-score.ok b { color: var(--ok); } .ex-score.mid b { color: var(--wa); } .ex-score.low b { color: var(--ba); }
+
+/* ---------- Lessons page (edu-) ---------- */
+body.in-app .edu-curriculum-summary { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 18px 28px; align-items: center; padding: 22px 24px; margin-bottom: 26px; background: #fff; border: 1px solid var(--ul); border-radius: 16px; box-shadow: none; }
+body.in-app .edu-curriculum-summary h2 { margin: 6px 0 4px; font-size: 19px; font-weight: 800; letter-spacing: -.02em; color: var(--uk); }
+body.in-app .edu-curriculum-summary p { margin: 0; font-size: 14px; color: var(--um); line-height: 1.6; }
+body.in-app .edu-curriculum-numbers { display: flex; gap: 10px; }
+body.in-app .edu-curriculum-numbers b { display: grid; min-width: 86px; padding: 10px 14px; border-radius: 12px; background: var(--ub); font-size: 22px; font-weight: 800; color: var(--uk); text-align: center; }
+body.in-app .edu-curriculum-numbers small { font-size: 12px; font-weight: 500; color: var(--um); }
+body.in-app .edu-curriculum-progress { grid-column: 1 / -1; }
+body.in-app .edu-curriculum-progress .row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13.5px; color: var(--um); }
+body.in-app .edu-curriculum-progress b { color: var(--uk); }
+body.in-app .edu-chapter-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+body.in-app .edu-chapter-filter .input { flex: 1; min-width: 220px; height: 40px; }
+body.in-app .edu-chapter-filter .select { height: 40px; padding: 0 12px; }
+body.in-app .edu-chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+body.in-app .edu-chapter-card { display: flex; flex-direction: column; gap: 8px; padding: 18px; background: #fff; border: 1px solid var(--ul); border-radius: 14px; box-shadow: none; transition: border-color .15s, box-shadow .15s; }
+body.in-app .edu-chapter-card[hidden] { display: none; }
+body.in-app .edu-chapter-card:hover { border-color: #CBD5E1; box-shadow: 0 14px 28px -24px rgba(15, 23, 42, .5); }
+body.in-app .edu-chapter-card-top { display: flex; justify-content: space-between; align-items: center; }
+body.in-app .edu-chapter-no { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--u); }
+body.in-app .edu-chapter-card h3 { margin: 4px 0 0; font-size: 15.5px; font-weight: 700; color: var(--uk); line-height: 1.35; }
+body.in-app .edu-chapter-card p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--um); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body.in-app .edu-chapter-meta { display: flex; justify-content: space-between; margin-top: auto; padding-top: 6px; font-size: 12.5px; color: var(--um); }
+body.in-app .edu-chapter-meta b { color: var(--uk); }
+body.in-app .edu-chapter-card .bar { height: 6px; }
+body.in-app .edu-chapter-card .btn { align-self: flex-start; margin-top: 6px; }
+body.in-app .edu-guided-section { margin-top: 34px; }
+body.in-app .edu-guided-note { display: grid; gap: 4px; padding: 14px 16px; margin-bottom: 16px; border-radius: 12px; background: var(--us); border: 0; color: var(--uk2); font-size: 13.5px; }
+body.in-app .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+body.in-app .lesson-card { display: flex; flex-direction: column; gap: 6px; padding: 16px; background: #fff; border: 1px solid var(--ul); border-radius: 14px; box-shadow: none; color: var(--uk); text-decoration: none; }
+body.in-app .lesson-card:hover { border-color: var(--u); }
+body.in-app .lesson-card.locked { background: var(--ub); }
+body.in-app .lesson-n { font-size: 12px; font-weight: 700; color: var(--u); }
+body.in-app .lesson-card b { font-size: 14.5px; }
+
+/* ---------- Course catalog / explore page (cat-, lx-pick) ---------- */
+body.in-app .lx-hero-pick { padding: 0 0 20px; margin-bottom: 22px; background: none !important; border: 0; border-bottom: 1px solid var(--ul); border-radius: 0; color: var(--uk); box-shadow: none; }
+body.in-app .lx-hero-pick::before, body.in-app .lx-hero-pick::after { display: none; }
+body.in-app .lx-hero-pick h1 { margin: 6px 0 0; font-size: clamp(24px, 2.4vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--uk); }
+body.in-app .lx-hero-pick p { margin-top: 8px; max-width: 70ch; font-size: 15px; color: var(--um); line-height: 1.6; }
+body.in-app .cat-bar { gap: 10px; margin-bottom: 10px; }
+body.in-app .cat-search { height: 40px; border-radius: 9px; border: 1px solid var(--ul); background: #fff; }
+body.in-app .cat-select { height: 40px; }
+body.in-app .lx-pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+body.in-app .lx-pick.cat-card { display: flex; flex-direction: column; gap: 12px; padding: 0; overflow: hidden; background: #fff; border: 1px solid var(--ul); border-radius: 16px; box-shadow: none; color: var(--uk); text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
+body.in-app .lx-pick.cat-card:hover { border-color: color-mix(in srgb, var(--c) 45%, var(--ul)); box-shadow: 0 18px 32px -26px rgba(15, 23, 42, .55); transform: translateY(-2px); }
+body.in-app .lx-pick.is-cur { border-color: var(--c); box-shadow: 0 0 0 1px var(--c); }
+body.in-app .cat-top { display: flex; align-items: center; gap: 8px; padding: 18px; background: color-mix(in srgb, var(--c) 9%, #fff); border-bottom: 1px solid var(--uf); }
+body.in-app .cat-flag { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: #fff; font-size: 24px; box-shadow: 0 6px 14px -10px var(--c); margin-right: auto; }
+body.in-app .cat-flag img { width: 60%; height: auto; border-radius: 3px; }
+body.in-app .lx-pick-cur { font-style: normal; padding: 3px 10px; border-radius: 99px; background: var(--c); color: #fff; font-size: 11.5px; font-weight: 700; }
+body.in-app .lx-pick-body { display: flex; flex-direction: column; gap: 6px; padding: 0 18px; flex: 1; }
+body.in-app .lx-pick-body > b { font-size: 16px; font-weight: 700; }
+body.in-app .lx-pick-body > span { font-size: 13px; color: var(--um); }
+body.in-app .cat-levels { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+body.in-app .cat-levels i { font-style: normal; padding: 2px 8px; border-radius: 6px; background: var(--ub); font-size: 11.5px; font-weight: 600; color: var(--uk2); }
+body.in-app .lx-card-foot { display: grid; gap: 6px; margin-top: auto; padding-top: 8px; font-size: 12.5px; color: var(--um); }
+body.in-app .lx-pick.cat-card > .btn { margin: 0 18px 18px; justify-content: center; }
+
+@media (max-width: 640px) {
+  body.in-app .edu-curriculum-summary { grid-template-columns: minmax(0, 1fr); }
+  body.in-app .edu-curriculum-numbers b { min-width: 0; flex: 1; }
+  .ex-next { min-width: 0; width: 100%; }
+  .ex-bar .tabs { overflow-x: auto; max-width: 100%; }
+}
+body.in-app .lx-pick.cat-card::before { display: none !important; }
+body.in-app .lx-pick.cat-card > .btn { display: flex; width: auto; align-self: stretch; height: 40px; }
+
+/* ---------- Chapter page ---------- */
+body.in-app .ch-head { position: relative; padding: 26px 28px; margin-bottom: 18px; background: #fff; border: 1px solid var(--ul); border-radius: 18px; overflow: hidden; }
+body.in-app .ch-head::after { content: ""; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, var(--us), transparent 70%); pointer-events: none; }
+body.in-app .ch-head > * { position: relative; z-index: 1; }
+body.in-app .ch-head .kicker { font-size: 13px; font-weight: 600; color: var(--u); }
+body.in-app .ch-head h1 { margin: 6px 0 0; font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.03em; color: var(--uk); }
+body.in-app .ch-head .bar { height: 8px; }
+body.in-app .edu-chapter-outcomes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; align-items: center; padding: 18px 22px; margin-bottom: 18px; background: var(--us); border: 0; border-radius: 16px; box-shadow: none; }
+body.in-app .edu-chapter-outcomes b { display: block; margin-top: 4px; font-size: 15px; color: var(--uk); }
+body.in-app .edu-chapter-outcomes p { margin: 4px 0 0; font-size: 13.5px; color: var(--uk2); line-height: 1.6; }
+body.in-app .edu-chapter-outcomes ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; counter-reset: o; }
+body.in-app .edu-chapter-outcomes li { padding: 12px; border-radius: 12px; background: #fff; counter-increment: o; }
+body.in-app .edu-chapter-outcomes li::before { content: counter(o); display: grid; place-items: center; width: 22px; height: 22px; margin-bottom: 6px; border-radius: 7px; background: var(--u); color: #fff; font-size: 12px; font-weight: 700; }
+body.in-app .edu-chapter-outcomes li b { margin: 0; font-size: 13.5px; }
+body.in-app .edu-chapter-outcomes li span { display: block; margin-top: 2px; font-size: 12px; color: var(--um); }
+body.in-app .ch-layout { gap: 18px; grid-template-columns: minmax(0, 1fr) 320px; }
+body.in-app .theory { font-size: 15px; line-height: 1.75; color: var(--uk2); white-space: pre-line; }
+body.in-app .code-view { border-radius: 12px; background: #0F172A; color: #E2E8F0; border: 0; padding: 16px 18px; font-size: 13.5px; line-height: 1.7; }
+body.in-app .ex-list { position: relative; }
+body.in-app .ex-item { position: relative; border-bottom: 0; }
+body.in-app .ex-item:not(:last-child)::after { content: ""; position: absolute; left: 22px; top: 44px; bottom: -6px; width: 2px; background: var(--uf); }
+body.in-app .ex-item.done:not(:last-child)::after { background: color-mix(in srgb, var(--ok) 35%, #fff); }
+body.in-app .ex-item a, body.in-app .ex-item > div { grid-template-columns: 30px minmax(0, 1fr) auto; padding: 10px 8px; border-radius: 12px; }
+body.in-app .ex-item a:hover { background: var(--ub); }
+body.in-app .ex-item .st { position: relative; z-index: 1; width: 30px; height: 30px; border: 2px solid var(--ul); background: #fff; color: var(--um); font-size: 12.5px; font-weight: 700; }
+body.in-app .ex-item.done .st { background: var(--ok); border-color: var(--ok); color: #fff; }
+body.in-app .ex-item.next .st { background: var(--u); border-color: var(--u); color: #fff; box-shadow: 0 0 0 4px var(--us); }
+body.in-app .ex-item.locked .st { background: var(--ub); color: #94A3B8; }
+body.in-app .ex-item.next a { background: var(--us); }
+body.in-app .ex-item .st svg { width: 14px; height: 14px; }
+body.in-app .ex-item .t b { font-size: 14px; font-weight: 600; color: var(--uk); }
+body.in-app .ex-item .t span { font-size: 12.5px; color: var(--um); }
+body.in-app .ex-item.locked .t b { color: #94A3B8; }
+body.in-app .exam-card h3 { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+body.in-app .exam-meta { display: grid; gap: 0; margin: 12px 0 14px; }
+body.in-app .exam-meta > div { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--uf); font-size: 13px; }
+body.in-app .exam-meta dt { color: var(--um); }
+body.in-app .exam-meta dd { margin: 0; font-weight: 600; color: var(--uk2); text-align: right; }
+
+/* ---------- Exercise page: focus mode ---------- */
+body.lx-top:not(.ax-on) .main:has(#main.full) > .topnav { display: none !important; }
+body.in-app:not(.ax-on) .ws { height: calc(100vh - 64px); background: #fff; }
+body.in-app .ws-left { background: #fff; border-right: 1px solid var(--ul); }
+body.in-app .ws-left .tabs { display: flex; gap: 4px; padding: 0 16px; background: none; border-radius: 0; border-bottom: 1px solid var(--ul); }
+body.in-app .ws-left .tabs button { padding: 13px 10px 12px; border-radius: 0; background: none !important; box-shadow: none !important; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--um); font-size: 13.5px; }
+body.in-app .ws-left .tabs button.on { color: var(--u); border-bottom-color: var(--u); }
+body.in-app .ws-left .tabs .n { margin-left: 6px; padding: 0 6px; border-radius: 99px; background: var(--uf); font-size: 11px; }
+body.in-app .ws-scroll { padding: 24px 26px 32px; }
+body.in-app .ws-title .kicker { font-size: 13px; font-weight: 600; color: var(--u); }
+body.in-app .ws-title h1 { margin-top: 6px; font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--uk); }
+body.in-app .ws-scroll .prompt, body.in-app .ws-scroll p { font-size: 15px; line-height: 1.75; color: var(--uk2); }
+body.in-app .ws-scroll pre { border-radius: 10px; background: var(--ub); border: 1px solid var(--ul); }
+body.in-app .ws-nav { padding: 12px 16px; border-top: 1px solid var(--ul); background: var(--ub); }
+body.in-app .ws-right { background: #fff; }
+body.in-app .ed-bar { gap: 6px; padding: 8px 14px; background: #fff; border-bottom: 1px solid var(--ul); }
+body.in-app .ed-bar .file { padding: 5px 10px; border-radius: 8px; background: var(--ub); font-size: 12.5px; color: var(--uk2); }
+body.in-app .ed-bar .btn-primary { padding-inline: 14px; }
+body.in-app .console { background: #0F172A; color: #E2E8F0; border-top: 1px solid var(--ul); }
+body.in-app .console-tabs { padding: 0 10px; border-bottom-color: rgba(255, 255, 255, .08); }
+body.in-app .console-tabs button { color: #94A3B8; font-weight: 600; }
+body.in-app .console-tabs button.on { color: #fff; border-bottom-color: color-mix(in srgb, var(--u) 60%, #fff); }
+
+@media (max-width: 1020px) {
+  body.in-app .ch-layout { grid-template-columns: minmax(0, 1fr); }
+  body.in-app .edu-chapter-outcomes { grid-template-columns: minmax(0, 1fr); }
+  body.in-app:not(.ax-on) .ws { height: auto; }
+}
+@media (max-width: 640px) {
+  body.in-app .ch-head { padding: 20px; grid-template-columns: minmax(0, 1fr); }
+  body.in-app .edu-chapter-outcomes ol { grid-template-columns: minmax(0, 1fr); }
+}

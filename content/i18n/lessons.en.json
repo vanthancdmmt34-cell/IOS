@@ -1,0 +1,792 @@
+{
+ "l01": {
+  "title": "The print statement and comments",
+  "description": "Write your first Python program: print text to the screen with print, print several values, and use comments to annotate code.",
+  "objectives": [
+   "Use print() to print text and numbers",
+   "Print several values on one line",
+   "Write comments with #"
+  ],
+  "why": "Every program needs to show results to its user. print() is the simplest way for a program to \"talk\" to you, and it's also the number one tool for checking whether your code is working.",
+  "concept": "A Python program runs line by line, from top to bottom.\n\nprint(...) prints whatever is inside the parentheses. Text (a string) must go inside quotes \"...\" or '...'. Numbers are written directly, without quotes.\n\nWhen you give print several values separated by commas, Python inserts a space between them.\n\nA line that starts with # is a comment: Python ignores it; it's only there to help people read the code.",
+  "walkthrough": [
+   "Line 1: a comment, Python ignores it.",
+   "Line 2: prints the string Xin chào Python.",
+   "Line 3: prints two values, a string and a number; Python adds a space between them.",
+   "Line 4: Python computes 3 + 4 first, then prints the result 7."
+  ],
+  "mistakes": [
+   {
+    "why": "Missing quotes: Python thinks Xin is a variable name and raises NameError or SyntaxError."
+   },
+   {
+    "why": "Python is case-sensitive. Print is not print."
+   },
+   {
+    "why": "Missing closing parenthesis."
+   }
+  ],
+  "summary": [
+   "print() shows values on the screen; each print prints one line.",
+   "Strings go in quotes, numbers don't.",
+   "A comma inside print inserts a space.",
+   "# starts a comment."
+  ],
+  "practice": [
+   {
+    "id": "l01p1",
+    "title": "Two-line greeting",
+    "prompt": "Print exactly 2 lines:\nTôi đang học Python\nHọc từ con số 0"
+   },
+   {
+    "id": "l01p2",
+    "title": "Print a calculation",
+    "prompt": "Print the line: Tổng là 15 (Python must compute 7 + 8 itself; don't type 15 directly)."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "What does print(\"A\", \"B\") print?",
+    "options": [
+     "AB",
+     "A B",
+     "A,B",
+     "\"A\" \"B\""
+    ],
+    "explain": "Values separated by commas are printed with one space between them."
+   },
+   {
+    "q": "Which line is a comment?",
+    "options": [
+     "// note",
+     "# note",
+     "<!-- note -->",
+     "/* note */"
+    ],
+    "explain": "In Python, comments start with #."
+   },
+   {
+    "q": "What does print(2 * 3) print?",
+    "options": [
+     "2 * 3",
+     "6",
+     "23",
+     "Error"
+    ],
+    "explain": "There are no quotes, so Python does the multiplication and prints 6."
+   }
+  ]
+ },
+ "l02": {
+  "title": "Variables and data types",
+  "description": "What a variable is, how to name variables, the four basic data types int, float, str, bool, and the type() function.",
+  "objectives": [
+   "Create variables and assign values",
+   "Tell int, float, str and bool apart",
+   "Use type() to see a type",
+   "Name variables correctly"
+  ],
+  "why": "Programs need to remember information: a user's name, a score, a price. A variable is a \"labelled box\" to store that information and get it back.",
+  "concept": "Write variable_name = value to create a variable. In Python, = means assignment (putting a value in the box), not \"is equal to\".\n\nThe four basic types: int is a whole number (10, -3), float is a decimal number (3.14, 5.0), str is text (\"Lan\"), bool is true/false (True, False).\n\nVariable names contain letters, digits and _, can't start with a digit and have no spaces. Prefer meaningful names like math_score instead of x.\n\nAssigning a new value replaces the old one.",
+  "walkthrough": [
+   "Line 1: creates the variable ten holding the string \"Lan\".",
+   "Line 2: creates the variable tuoi holding the integer 15.",
+   "Line 3: takes the old value 15, adds 1 and assigns it back to tuoi, so tuoi is now 16.",
+   "Line 4: prints the values, separated by spaces.",
+   "Line 5: type(ten) tells you that ten is a str."
+  ],
+  "mistakes": [
+   {
+    "why": "Variable names can't start with a digit."
+   },
+   {
+    "why": "Variable names can't contain spaces."
+   },
+   {
+    "why": "You created tuoi (lowercase) but used Tuoi: Python raises NameError."
+   }
+  ],
+  "summary": [
+   "= is assignment.",
+   "int, float, str and bool are the 4 basic types.",
+   "type() tells you a value's type.",
+   "Variable names are case-sensitive; choose meaningful names."
+  ],
+  "practice": [
+   {
+    "id": "l02p1",
+    "title": "Introduce yourself",
+    "prompt": "Create the variables ten = \"Minh\" and tuoi = 12. Then print: Minh 12 tuổi (use the variables, don't type it directly)."
+   },
+   {
+    "id": "l02p2",
+    "title": "Type of a value",
+    "prompt": "Create the variable gia = 9.5. Print the type of gia using type()."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "What type is the value 5.0?",
+    "options": [
+     "int",
+     "float",
+     "str",
+     "bool"
+    ],
+    "explain": "It has a decimal point, so it's a float."
+   },
+   {
+    "q": "Which variable name is valid?",
+    "options": [
+     "diem toan",
+     "1diem",
+     "diem_toan",
+     "diem-toan"
+    ],
+    "explain": "Use only letters, digits and underscores, and don't start with a digit."
+   },
+   {
+    "q": "After x = 3 and then x = x * 2, what is x?",
+    "options": [
+     "3",
+     "5",
+     "6",
+     "x * 2"
+    ],
+    "explain": "The right side is evaluated first: 3 * 2 = 6, then assigned back to x."
+   }
+  ]
+ },
+ "l03": {
+  "title": "Reading input with input()",
+  "description": "Read what the user types with input(), convert strings to numbers with int() and float(), and the / and // operators.",
+  "objectives": [
+   "Read data with input()",
+   "Convert types with int(), float(), str()",
+   "Understand the difference between /, // and %"
+  ],
+  "why": "A useful program has to take data from the user: a name, a score, an amount of money. input() does that.",
+  "concept": "input() reads one line the user types and ALWAYS returns a string (str), even if they typed a number.\n\nTo calculate, convert it to a number: int(input()) for whole numbers, float(input()) for decimals.\n\nDivision / always gives a float (7 / 2 = 3.5, 6 / 2 = 3.0). // gives the whole-number part (7 // 2 = 3), and % gives the remainder (7 % 2 = 1).\n\nOn Python Lab, input comes from the \"Input\" box; each line is one input() call.",
+  "walkthrough": [
+   "Line 1: reads the first line \"7\", converts it to the number 7 and assigns it to a.",
+   "Line 2: reads the second line \"2\" and converts it to the number 2.",
+   "Line 3: 7 + 2 = 9.",
+   "Line 4: 7 / 2 = 3.5 (always a float).",
+   "Line 5: 7 divided by 2 leaves remainder 1."
+  ],
+  "mistakes": [
+   {
+    "why": "a is a string and can't be added to a number: TypeError."
+   },
+   {
+    "why": "Adding two strings joins them, so it prints 23, not 5."
+   },
+   {
+    "why": "int() can't convert a string with a decimal point: ValueError."
+   }
+  ],
+  "summary": [
+   "input() always returns a string.",
+   "int() and float() convert strings to numbers.",
+   "/ gives a float, // the whole part, % the remainder."
+  ],
+  "practice": [
+   {
+    "id": "l03p1",
+    "title": "Greet by name",
+    "prompt": "Read a name from the keyboard, then print: Xin chào <name>!\nFor example, if the input is An, print: Xin chào An!"
+   },
+   {
+    "id": "l03p2",
+    "title": "Rectangle perimeter",
+    "prompt": "Read the length and width (two integers, one per line). Print the perimeter = (length + width) * 2."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "What type does input() return?",
+    "options": [
+     "int",
+     "float",
+     "str",
+     "Depends on what was typed"
+    ],
+    "explain": "input() always returns a string; use int()/float() to convert it to a number."
+   },
+   {
+    "q": "What is 9 // 4?",
+    "options": [
+     "2.25",
+     "2",
+     "1",
+     "3"
+    ],
+    "explain": "// takes the whole-number part of the division."
+   },
+   {
+    "q": "What does 8 / 2 print?",
+    "options": [
+     "4",
+     "4.0",
+     "4.00",
+     "Error"
+    ],
+    "explain": "/ always gives a float, so it prints 4.0."
+   }
+  ]
+ },
+ "l04": {
+  "title": "Conditional statements if / elif / else",
+  "description": "Let a program make decisions: comparisons, if, elif, else, the and/or/not operators and indentation rules.",
+  "objectives": [
+   "Use the comparison operators ==, !=, <, >, <=, >=",
+   "Write if / elif / else",
+   "Combine conditions with and, or, not",
+   "Indent correctly"
+  ],
+  "why": "A smart program has to branch: enough points means pass, too few means fail; the right password lets you in, the wrong one shows an error.",
+  "concept": "if condition: runs the indented block below when the condition is true.\n\nelif (else if) checks another condition when the previous ones were false. else runs when all of them are false. Python stops at the FIRST true branch.\n\nEquality uses ==, while = is assignment. Combine conditions with and (both true), or (either true), not (negation).\n\nAfter the colon you must start a new line indented by 4 spaces. Lines in the same block must be indented equally.",
+  "walkthrough": [
+   "Line 1: reads the score 6.5.",
+   "Line 2: 6.5 >= 8 is false, so line 3 is skipped.",
+   "Line 4: 6.5 >= 5 is true, so line 5 runs and prints Đạt.",
+   "Lines 6-7: don't run, because a true branch was already found."
+  ],
+  "mistakes": [
+   {
+    "why": "= is assignment; comparison needs ==."
+   },
+   {
+    "why": "Missing colon at the end of the if line."
+   },
+   {
+    "why": "The block after if must be indented: IndentationError."
+   }
+  ],
+  "summary": [
+   "if / elif / else for branching.",
+   "== compares, = assigns.",
+   "and, or, not combine conditions.",
+   "The colon and 4-space indentation are required."
+  ],
+  "practice": [
+   {
+    "id": "l04p1",
+    "title": "Even or odd",
+    "prompt": "Read an integer n. Print Chẵn if n is divisible by 2, otherwise print Lẻ."
+   },
+   {
+    "id": "l04p2",
+    "title": "Classify the temperature",
+    "prompt": "Read a temperature t (integer). Print:\nLạnh if t < 18\nMát if 18 <= t <= 28\nNóng if t > 28"
+   }
+  ],
+  "quiz": [
+   {
+    "q": "Which operator tests equality?",
+    "options": [
+     "=",
+     "==",
+     "===",
+     "equals"
+    ],
+    "explain": "== compares, = assigns."
+   },
+   {
+    "q": "x = 7. What is the value of x > 5 and x < 10?",
+    "options": [
+     "True",
+     "False",
+     "7",
+     "Error"
+    ],
+    "explain": "Both conditions are true, so and gives True."
+   },
+   {
+    "q": "If several elif branches are true, which one runs?",
+    "options": [
+     "All of them",
+     "The last one",
+     "The first true one",
+     "None"
+    ],
+    "explain": "Python stops at the first branch whose condition is true."
+   }
+  ]
+ },
+ "l05": {
+  "title": "for and while loops",
+  "description": "Repeat work with for and range(), while, running totals, break and continue.",
+  "objectives": [
+   "Use for with range(start, stop, step)",
+   "Use while with a stopping condition",
+   "Write the running-total pattern",
+   "Use break and continue"
+  ],
+  "why": "Computers are best at doing things over and over without getting tired. Printing 100 lines, adding up 1000 numbers, going through a list of learners: all of them need loops.",
+  "concept": "for i in range(n): repeats n times with i = 0, 1, ..., n-1. range(a, b) goes from a to b-1. range(a, b, step) jumps by step.\n\nwhile condition: repeats as long as the condition is true. Something inside must eventually make the condition false, or it loops forever (the grader stops it after a few seconds).\n\nRunning-total pattern: set total = 0 before the loop, and each time round do total = total + value.\n\nbreak leaves the loop immediately; continue skips the rest of the current iteration.",
+  "walkthrough": [
+   "Line 1: n = 5.",
+   "Line 2: tong starts at 0.",
+   "Line 3: i goes 1, 2, 3, 4, 5 (range stops before n + 1 = 6).",
+   "Line 4: each time, i is added to tong: 1, 3, 6, 10, 15.",
+   "Line 5: printed only after the loop (this line is NOT indented)."
+  ],
+  "mistakes": [
+   {
+    "why": "range stops before the last number, so you only get 1..4."
+   },
+   {
+    "why": "i is never increased, so it loops forever."
+   },
+   {
+    "why": "Setting tong = 0 inside the loop resets the total every time."
+   }
+  ],
+  "summary": [
+   "for + range to repeat a known number of times.",
+   "while repeats on a condition; make sure it eventually becomes false.",
+   "Initialize the running total before the loop.",
+   "break exits, continue skips the current iteration."
+  ],
+  "practice": [
+   {
+    "id": "l05p1",
+    "title": "Times table",
+    "prompt": "Read a number n. Print the n times table from 1 to 10, each line in the form: n x i = result\nFor example, with n = 3 the first line is: 3 x 1 = 3"
+   },
+   {
+    "id": "l05p2",
+    "title": "Sum of digits",
+    "prompt": "Read a positive integer n. Print the sum of its digits using a while loop (hint: n % 10 gives the last digit, n // 10 drops it)."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "Which numbers does range(2, 8, 2) produce?",
+    "options": [
+     "2 4 6 8",
+     "2 4 6",
+     "2 3 4 5 6 7",
+     "4 6 8"
+    ],
+    "explain": "Start at 2, step 2, stop before 8."
+   },
+   {
+    "q": "Which statement leaves a loop immediately?",
+    "options": [
+     "continue",
+     "stop",
+     "break",
+     "exit"
+    ],
+    "explain": "break exits the loop."
+   },
+   {
+    "q": "How many times does for i in range(3): run?",
+    "options": [
+     "2",
+     "3",
+     "4",
+     "Forever"
+    ],
+    "explain": "i = 0, 1, 2: three times."
+   }
+  ]
+ },
+ "l06": {
+  "title": "Lists",
+  "description": "Store many values in one variable: creating lists, indexes, append, len, looping over a list, sum, max, min, split().",
+  "objectives": [
+   "Create a list and access items by index",
+   "Add and change items",
+   "Loop over a list with for",
+   "Use len, sum, max, min",
+   "Read several numbers on one line with split()"
+  ],
+  "why": "A class has 40 learners and nobody creates 40 variables. A list keeps a whole sequence of values in one variable and lets you process them with a loop.",
+  "concept": "Lists are written in square brackets: diem = [8, 6, 9].\n\nIndexes start at 0: diem[0] is 8. diem[-1] is the last item. Accessing an index that doesn't exist raises IndexError.\n\nappend(x) adds x at the end. len(lst) is the number of items. sum, max and min give the total, largest and smallest.\n\ninput().split() splits a line into a list of strings; use [int(x) for x in input().split()] or list(map(int, input().split())) to get a list of numbers.",
+  "walkthrough": [
+   "Line 1: splits \"8 6 10\" into [\"8\", \"6\", \"10\"] and converts each item to a number: [8, 6, 10].",
+   "Line 2: len gives 3.",
+   "Line 3: max gives 10.",
+   "Line 4: 24 / 3 = 8.0 (/ gives a float)."
+  ],
+  "mistakes": [
+   {
+    "why": "The list has 3 items, so indexes only go from 0 to 2: IndexError."
+   },
+   {
+    "why": "The items are still strings, so sum raises TypeError."
+   },
+   {
+    "why": "append takes only one value."
+   }
+  ],
+  "summary": [
+   "Lists use square brackets; indexes start at 0.",
+   "append, len, sum, max, min are everyday tools.",
+   "split() + map(int, ...) to read several numbers on one line."
+  ],
+  "practice": [
+   {
+    "id": "l06p1",
+    "title": "Count positive numbers",
+    "prompt": "One line contains several integers separated by spaces. Print how many are greater than 0."
+   },
+   {
+    "id": "l06p2",
+    "title": "Reverse a list",
+    "prompt": "One line contains words separated by spaces. Print the words in reverse order, separated by one space."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "ds = [5, 7, 9]. What is ds[1]?",
+    "options": [
+     "5",
+     "7",
+     "9",
+     "Error"
+    ],
+    "explain": "Indexes start at 0, so ds[1] is the second item."
+   },
+   {
+    "q": "Which call adds an item at the end of a list?",
+    "options": [
+     "ds.add(x)",
+     "ds.push(x)",
+     "ds.append(x)",
+     "ds.insert(x)"
+    ],
+    "explain": "append adds at the end."
+   },
+   {
+    "q": "What is len([1, [2, 3], 4])?",
+    "options": [
+     "3",
+     "4",
+     "2",
+     "Error"
+    ],
+    "explain": "The inner list [2, 3] counts as one item."
+   }
+  ]
+ },
+ "l07": {
+  "title": "Functions: default parameters, returning several values",
+  "description": "Write your own functions with def, return, default parameters, keyword arguments, returning several values (a tuple) and variable scope.",
+  "objectives": [
+   "Write functions with return",
+   "Use default parameters and keyword arguments",
+   "Return several values with a tuple",
+   "Understand local variables"
+  ],
+  "why": "Functions break a big program into small, clearly named pieces you can reuse. This is the first step towards writing code like a professional.",
+  "concept": "def function_name(parameters): defines a function; return sends a result back to the caller. A function without return returns None.\n\nDefault parameters: def chao(ten, loi=\"Xin chào\") lets you call chao(\"An\") or chao(\"An\", loi=\"Hi\").\n\nreturn a, b returns a tuple; receive it with x, y = func().\n\nVariables created inside a function are local and disappear when it ends. Pass data in through parameters and out through return instead of using global variables.",
+  "walkthrough": [
+   "Lines 1-2: define the function thong_ke that returns 3 values.",
+   "Line 4: calls it with [4, 8, 6]; the tuple (4, 8, 6.0) is unpacked into three variables.",
+   "Line 5: prints the three values."
+  ],
+  "mistakes": [
+   {
+    "why": "The function only prints and doesn't return, so tong(1, 2) is None: TypeError when adding."
+   },
+   {
+    "why": "Default parameters must come after required ones: SyntaxError."
+   },
+   {
+    "why": "A default list is shared between calls, so results pile up unexpectedly."
+   }
+  ],
+  "summary": [
+   "def + return to make reusable functions.",
+   "Default parameters come after required ones.",
+   "return a, b returns a tuple; receive it with x, y = ...",
+   "Don't use a list as a default value."
+  ],
+  "practice": [
+   {
+    "id": "l07p1",
+    "title": "Price with a discount",
+    "prompt": "Write a function tinh_tien(gia, so_luong, giam=0) that returns gia * so_luong * (100 - giam) // 100.\nRead gia, so_luong, giam (one number per line), then print the function's result."
+   },
+   {
+    "id": "l07p2",
+    "title": "A function returning two values",
+    "prompt": "Write a function chia(a, b) that returns two values: the integer quotient and the remainder. Read a and b on one line and print the quotient and remainder separated by a space."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "What does a function without return return?",
+    "options": [
+     "0",
+     "\"\"",
+     "None",
+     "Error"
+    ],
+    "explain": "Python returns None automatically."
+   },
+   {
+    "q": "def f(a, b=2): return a * b. What is f(5)?",
+    "options": [
+     "5",
+     "7",
+     "10",
+     "Error"
+    ],
+    "explain": "b takes its default value 2."
+   },
+   {
+    "q": "What type does return 1, 2 return?",
+    "options": [
+     "list",
+     "tuple",
+     "two separate values with no type",
+     "dict"
+    ],
+    "explain": "Several values separated by commas form a tuple."
+   }
+  ]
+ },
+ "l08": {
+  "title": "Dictionaries (dict) and sets",
+  "description": "Store data by key with dict, count frequencies, loop with items(), get(); remove duplicates with set.",
+  "objectives": [
+   "Create, read and update a dict",
+   "Use get() to avoid KeyError",
+   "Count frequencies with a dict",
+   "Use set to remove duplicates"
+  ],
+  "why": "Phone books, score sheets by name, counting how often words appear: \"key → value\" data is everywhere. dict is the most used data structure in real-world Python.",
+  "concept": "A dict is written {key: value}: diem = {\"An\": 8, \"Bình\": 7}. Read a value with diem[\"An\"]; assign diem[\"Chi\"] = 9 to add or update.\n\nA missing key raises KeyError; diem.get(\"Dũng\", 0) returns 0 instead of an error.\n\nLooping: for name, score in diem.items(). \"An\" in diem checks whether a key exists.\n\nA set is a collection without duplicates or order: set([1, 2, 2]) is {1, 2}. Use sorted(set(...)) to print in order.",
+  "walkthrough": [
+   "Line 1: splits the sentence into a list of words.",
+   "Line 2: an empty dict for counting.",
+   "Lines 3-4: for each word, take the old count (default 0) and add 1.",
+   "Lines 5-6: go through the keys in alphabetical order and print them."
+  ],
+  "mistakes": [
+   {
+    "why": "The first time word w appears, the key doesn't exist yet: KeyError."
+   },
+   {
+    "why": "{} is an empty dict, not an empty set."
+   },
+   {
+    "why": "A set doesn't guarantee order when printed."
+   }
+  ],
+  "summary": [
+   "dict stores key → value; keys are unique.",
+   "get(k, default) avoids KeyError.",
+   "items() to loop over keys and values together.",
+   "set removes duplicates."
+  ],
+  "practice": [
+   {
+    "id": "l08p1",
+    "title": "Count characters",
+    "prompt": "Read a string (with no spaces). Print each distinct character and how many times it appears, sorted by character, one per line: character count."
+   },
+   {
+    "id": "l08p2",
+    "title": "Distinct numbers",
+    "prompt": "One line contains integers. Print the distinct numbers in ascending order, separated by spaces."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "d = {\"x\": 1}. What does d.get(\"y\", 5) return?",
+    "options": [
+     "None",
+     "5",
+     "KeyError",
+     "1"
+    ],
+    "explain": "The key is missing, so the default value 5 is returned."
+   },
+   {
+    "q": "What is the correct way to create an empty set?",
+    "options": [
+     "{}",
+     "[]",
+     "set()",
+     "()"
+    ],
+    "explain": "{} is an empty dict."
+   },
+   {
+    "q": "What is len(set(\"hello\"))?",
+    "options": [
+     "5",
+     "4",
+     "3",
+     "Error"
+    ],
+    "explain": "The distinct characters are h, e, l, o."
+   }
+  ]
+ },
+ "l09": {
+  "title": "Handling errors with try / except",
+  "description": "Catch errors while a program runs: try, except ValueError, ZeroDivisionError, else, finally and raise.",
+  "objectives": [
+   "Tell syntax errors from runtime errors",
+   "Catch specific errors with except",
+   "Use else and finally",
+   "Raise your own errors with raise"
+  ],
+  "why": "Users will type the wrong thing: letters where a number is needed, dividing by 0. A good program doesn't crash; it reports the problem clearly and keeps running.",
+  "concept": "Put code that might fail inside try:. If an error happens, Python jumps to the matching except instead of stopping the program.\n\nCatch specific errors: except ValueError (bad conversion), except ZeroDivisionError (division by 0). Avoid a bare except, because it hides real bugs.\n\nelse runs when try had no error; finally always runs (for clean-up).\n\nraise ValueError(\"message\") raises your own error when data is invalid.",
+  "walkthrough": [
+   "Lines 1-2: a = 5, b = 0.",
+   "Line 4: 5 // 0 raises ZeroDivisionError, and Python skips the rest of try.",
+   "Lines 5-6: the matching except branch prints a message.",
+   "Lines 7-8: finally always runs."
+  ],
+  "mistakes": [
+   {
+    "why": "A bare except swallows every error, even a mistyped variable name, which makes bugs very hard to find."
+   },
+   {
+    "why": "Wrong error type: 1/0 is ZeroDivisionError, so it isn't caught."
+   },
+   {
+    "why": "Missing colon after try."
+   }
+  ],
+  "summary": [
+   "try/except keeps a program from crashing.",
+   "Catch specific errors; avoid a bare except.",
+   "else when there's no error, finally always runs.",
+   "raise to report your own errors."
+  ],
+  "practice": [
+   {
+    "id": "l09p1",
+    "title": "Safe number input",
+    "prompt": "Read one line. If it's an integer, print its square. If it isn't an integer, print: Dữ liệu không hợp lệ"
+   },
+   {
+    "id": "l09p2",
+    "title": "Division calculator",
+    "prompt": "Read two lines a and b. Print a / b rounded to 2 decimal places (use round). If b is 0, print: Lỗi chia cho 0. If the data isn't numeric, print: Lỗi dữ liệu"
+   }
+  ],
+  "quiz": [
+   {
+    "q": "Which error does int(\"abc\") raise?",
+    "options": [
+     "TypeError",
+     "ValueError",
+     "NameError",
+     "SyntaxError"
+    ],
+    "explain": "The string can't be converted to a number: ValueError."
+   },
+   {
+    "q": "Which block always runs, error or not?",
+    "options": [
+     "else",
+     "except",
+     "finally",
+     "try"
+    ],
+    "explain": "finally always runs."
+   },
+   {
+    "q": "Can try/except catch a SyntaxError inside its own try block?",
+    "options": [
+     "Yes",
+     "No, because the code can't even start running",
+     "Only with a bare except",
+     "Only with finally"
+    ],
+    "explain": "Syntax errors are detected before the code runs, so try never gets a chance to catch them."
+   }
+  ]
+ },
+ "l10": {
+  "title": "Object-oriented programming: classes",
+  "description": "Create a class, the __init__ constructor, attributes, methods, self, __str__ and creating several objects.",
+  "objectives": [
+   "Define a class with __init__",
+   "Understand self",
+   "Write methods that change an object's state",
+   "Use __str__ to print an object nicely"
+  ],
+  "why": "As a program grows, grouping related data and behaviour into one \"template\" keeps code easy to understand and extend. Most Python libraries (Django, pandas...) are built on classes.",
+  "concept": "A class is a template; an object is something made from it. class TaiKhoan: defines the template; tk = TaiKhoan(\"An\", 100) creates an object.\n\n__init__ runs when an object is created and sets its attributes: self.ten = ten.\n\nself is the object being used; every method has self as its first parameter.\n\n__str__ returns the string used when you print(obj).",
+  "walkthrough": [
+   "Lines 1-4: the TaiKhoan template has two attributes, chu and so_du.",
+   "Lines 6-7: the nap method adds money to the object's own so_du (self).",
+   "Lines 9-10: __str__ decides how the object is printed.",
+   "Line 12: creates an object; __init__ runs with chu = \"An\", so_du = 100.",
+   "Lines 13-14: deposit 50, then print; Python calls __str__."
+  ],
+  "mistakes": [
+   {
+    "why": "Missing self as the first parameter: calling tk.nap(50) raises TypeError."
+   },
+   {
+    "why": "Only a local variable is assigned, so the object has no chu attribute."
+   },
+   {
+    "why": "Typing __int__ instead of __init__ means the constructor is never called."
+   }
+  ],
+  "summary": [
+   "A class is a template, an object is what it makes.",
+   "__init__ sets attributes through self.",
+   "Methods always take self first.",
+   "__str__ makes objects readable when printed."
+  ],
+  "practice": [
+   {
+    "id": "l10p1",
+    "title": "Rectangle",
+    "prompt": "Write a class HinhChuNhat with __init__(self, dai, rong) and the methods dien_tich() and chu_vi().\nRead dai and rong on one line; print the area and the perimeter on two lines."
+   },
+   {
+    "id": "l10p2",
+    "title": "Shopping cart",
+    "prompt": "Write a class GioHang that starts with an empty list of items, with the methods them(ten, gia) and tong().\nThe first line is the number of items n; each of the next n lines is: name price. Print the total."
+   }
+  ],
+  "quiz": [
+   {
+    "q": "When does __init__ run?",
+    "options": [
+     "When the object is printed",
+     "When the object is created",
+     "When the object is deleted",
+     "When any method is called"
+    ],
+    "explain": "__init__ is the constructor."
+   },
+   {
+    "q": "What is self in a method?",
+    "options": [
+     "The class name",
+     "The object the method is called on",
+     "A keyword that must be named self",
+     "A global variable"
+    ],
+    "explain": "self is the object itself; the name self is a convention, not a keyword."
+   },
+   {
+    "q": "Which method decides how print(obj) looks?",
+    "options": [
+     "__init__",
+     "__print__",
+     "__str__",
+     "show"
+    ],
+    "explain": "print calls __str__."
+   }
+  ]
+ }
+}

@@ -1,0 +1,2313 @@
+Chương 1: Lệnh in đầu tiên	Chapter 1: Your First Print Command
+Chương 2: Biến và phép tính	Chapter 2: Variables and Calculations
+Chương 4: Rẽ nhánh if / else	Chapter 4: Branching with if / else
+Chương 5: Vòng lặp for	Chapter 5: for Loops
+Chương 6: Vòng lặp while	Chapter 6: while Loops
+Chương 7: Danh sách (list)	Chapter 7: Lists
+Chương 8: Hàm (def)	Chapter 8: Functions (def)
+Chương 9: Bài tập tổng hợp trung cấp	Chapter 9: Intermediate Synthesis Exercises
+Chương 10: Nâng cao & tổng hợp	Chapter 10: Advanced Topics and Synthesis
+Chương 12: Điểm số & xếp loại học sinh	Chapter 12: Scores and Student Grading
+Chương 13: Chuỗi văn bản (bài kiểu SGK)	Chapter 13: Text Strings (Textbook Style)
+Chương 14: Dãy số & vòng lặp (bài thi)	Chapter 14: Number Sequences and Loops (Exam Style)
+Chương 15: Bài tập dạng đề thi (biến cho sẵn)	Chapter 15: Exam-Style Exercises (Values Given)
+Chương 16: Đếm – lọc – thống kê	Chapter 16: Counting, Filtering and Statistics
+Chương 17: Hình học & công thức thực tế	Chapter 17: Geometry and Practical Formulas
+Chương 18: Luyện đề tổng hợp cho học sinh	Chapter 18: Synthesis Practice for Students
+Chương 19: Hàm nâng cao (sinh viên)	Chapter 19: Advanced Functions (University)
+Chương 20: Thuật toán cổ điển (sinh viên)	Chapter 20: Classic Algorithms (University)
+Chương 21: Luyện thêm · Cơ bản mở rộng	Chapter 21: Extra Practice · Extended Basics
+Chương 22: Luyện thêm · Thuật toán nhẹ	Chapter 22: Extra Practice · Light Algorithms
+Chương 23: Từ điển và dữ liệu dạng bảng	Chapter 23: Dictionaries and Table Data
+Chương 25: Tìm kiếm và sắp xếp cơ bản	Chapter 25: Basic Search and Sorting
+Chương 26: Chuỗi nâng cao và dữ liệu văn bản	Chapter 26: Advanced Strings and Text Data
+Chương 27: Danh sách 2 chiều và ma trận	Chapter 27: Two-Dimensional Lists and Matrices
+Chương 28: Đồ án nhỏ quản lý sinh viên	Chapter 28: Small Student Management Project
+Chương 29: Logic và điều khiển nâng cao	Chapter 29: Advanced Logic and Control
+Chương 30: Đọc code, đoán kết quả và sửa lỗi	Chapter 30: Reading Code, Guessing Results and Fixing Bugs
+Chương 31: Báo cáo dữ liệu dạng bảng	Chapter 31: Table Data Reports
+Chương 32: Trí tuệ nhân tạo cơ bản (CS311)	Chapter 32: Basic Artificial Intelligence (CS311)
+Chương 33: Cấu trúc dữ liệu	Chapter 33: Data Structures
+Chương 34: Thuật toán nâng cao	Chapter 34: Advanced Algorithms
+Chương 37: Đồ án tổng hợp nâng cao	Chapter 37: Advanced Synthesis Project
+Chương 38: Tư duy AI nhập môn — dữ liệu, đặc trưng và nhãn	Chapter 38: Introductory AI Thinking — Data, Features and Labels
+Chương 39: Hệ thống dựa trên luật và hệ chuyên gia	Chapter 39: Rule-Based Systems and Expert Systems
+Chương 40: Đo lường và đánh giá mô hình	Chapter 40: Measuring and Evaluating Models
+Chương 41: Học máy cổ điển viết tay	Chapter 41: Hand-Written Classical Machine Learning
+Chương 42: Ngôn ngữ, văn bản và hệ gợi ý	Chapter 42: Language, Text and Recommender Systems
+Chương 43: Tìm kiếm, lập kế hoạch và ra quyết định	Chapter 43: Search, Planning and Decision Making
+Chương 44: AI có trách nhiệm và đồ án tổng hợp	Chapter 44: Responsible AI and Synthesis Project
+{0} lượt truy cập, đánh giá {1}/5 từ {2} học viên	{0} visits, rated {1}/5 by {2} learners
+Lần nộp {0}, hệ số {1}%. Tiến độ chương: {2}/{3} bài đã đạt.	Submission {0}, factor {1}%. Chapter progress: {2}/{3} exercises completed.
+Theo dõi năng lực và tiến bộ thực tế	Track real ability and progress
+Đánh giá đầu vào và kiểm tra lại để đo mức tiến bộ	Entry assessment and re-checks to measure progress
+Kế hoạch học {0} ngày, lịch sử bài làm và báo cáo theo chủ đề	{0}-day study plan, submission history, and topic reports
+Vòng lặp	Loops
+Danh sách (list)	Lists
+Gợi ý tiếp theo: luyện thêm bài về danh sách trước khi học từ điển.	Next suggestion: practice more list exercises before learning dictionaries.
+Tất cả chương, mỗi chương có bài tập chấm tự động và một bài kiểm tra.	All chapters, each with auto-graded exercises and one test.
+Lượt truy cập	Visits
+Người đăng ký	Registered users
+Nhắn tin và nhận hỗ trợ trực tiếp	Message us and get direct support
+Cập nhật nhanh và trao đổi cùng cộng đồng	Quick updates and community discussion
+Chưa cấu hình	Not configured yet
+Đang chạy	Running
+(chương trình không in ra gì)	(the program printed nothing)
+{0} trên {1} sao	{0} out of {1} stars
+Tên bạn dùng để đăng nhập	The username you use to sign in
+Hệ thống ghi nhận yêu cầu. Giáo viên/quản trị sẽ hỗ trợ đặt lại (hoặc gửi token nếu đã cấu hình).	The system has recorded your request. A teacher or administrator will help reset it (or send a token if configured).
+Gửi yêu cầu đặt lại	Send reset request
+← Quay lại đăng nhập	← Back to sign in
+Quên mật khẩu	Forgot password
+Đăng ký tài khoản để dùng thử Pro và AI miễn phí trong {0} ngày. Không cần thanh toán.	Create an account to try Pro and AI free for {0} days. No payment needed.
+Đăng ký & dùng thử miễn phí {0} ngày	Sign up & try free for {0} days
+Ẩn	Hide
+Nhập tên đăng nhập để gửi yêu cầu đặt lại mật khẩu.	Enter your username to send a password reset request.
+Nhập tên đăng nhập.	Enter your username.
+Đang gửi…	Sending…
+Nếu tài khoản tồn tại, yêu cầu đã được ghi nhận. Liên hệ giáo viên/quản trị để nhận hướng dẫn đặt lại.	If the account exists, the request has been recorded. Contact a teacher or administrator for reset instructions.
+Hãy nhập tên đăng nhập và mật khẩu.	Please enter your username and password.
+Tên đăng nhập gồm {0} đến {1} ký tự: chữ không dấu, số, dấu _ . -	Username must be {0} to {1} characters: unaccented letters, digits, _ . -
+Mật khẩu cần tối thiểu {0} ký tự.	Password must be at least {0} characters.
+Đang tạo tài khoản	Creating account
+Đang đăng nhập	Signing in
+Dùng vòng lặp for tính tổng các số từ {0} đến {1}	Use a for loop to sum the numbers from {0} to {1}
+Viết hàm binh_phuong(x) rồi in binh_phuong({0})	Write the function binh_phuong(x), then print binh_phuong({0})
+Hỗ trợ AI	AI assistance
+Theo nội dung bài này	Based on this exercise
+Thu gọn	Collapse
+Giải thích bài	Explain the exercise
+Ví dụ dễ hiểu	Easy example
+Ôn tiếp	Keep reviewing
+Bạn đang vướng ở phần nào? Mình sẽ hướng dẫn dựa trên nội dung và tiến độ học của bạn.	Where are you stuck? I'll guide you based on this content and your learning progress.
+Nhập câu hỏi…	Type your question…
+{0}/{1} lượt hôm nay · {2}/{3} lượt tháng này	{0}/{1} turns today · {2}/{3} turns this month
+Còn {0}/{1} lượt hôm nay · {2}/{3} lượt tháng này	{0}/{1} turns left today · {2}/{3} turns left this month
+Gợi ý cho bài này	Hint for this exercise
+Cho ví dụ dễ hiểu	Give an easy example
+Ôn kiến thức tiếp theo	Review the next topic
+Giải thích bài này	Explain this exercise
+AI gợi ý cách nghĩ, không đưa ngay lời giải.	AI suggests ways to think, not the full solution right away.
+Code trong khung soạn sẽ được gửi kèm.	Code in the editor will be sent along.
+Thêm bài luyện	More practice
+lượt còn hôm nay · {0}/{1} lượt tháng này	turns left today · {0}/{1} turns this month
+Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.	Could not connect to the server. Check your network and try again.
+Máy chủ trả về dữ liệu không đọc được.	The server returned unreadable data.
+Có lỗi xảy ra.	An error occurred.
+Bạn thao tác quá nhanh. Hãy chờ một chút rồi thử lại.	You are acting too fast. Please wait a moment and try again.
+Có quá nhiều tài khoản được tạo từ mạng này trong {0} phút. Hãy chờ ít phút rồi thử lại.	Too many accounts were created from this network in {0} minutes. Please wait a few minutes and try again.
+Lỗi máy chủ khi tạo tài khoản. Hãy thử lại sau vài giây.	Server error while creating the account. Please try again in a few seconds.
+Dùng thử Pro và AI {0} ngày khi đăng ký tài khoản mới	Pro and AI trial for {0} days when registering a new account
+Dùng thử Pro {0} ngày	Pro trial for {0} days
+Bạn nhập sai quá nhiều lần. Hãy chờ khoảng {0} phút rồi thử lại.	You entered wrong information too many times. Please wait about {0} minutes and try again.
+Bạn thử code quá nhanh. Hãy chờ khoảng một phút.	You are trying code too fast. Please wait about a minute.
+Bạn chạy code quá nhanh. Hãy chờ khoảng một phút.	You are running code too fast. Please wait about a minute.
+event không hợp lệ.	Invalid event.
+sessionId bắt buộc.	sessionId is required.
+Chỉ admin/teacher.	Admins/teachers only.
+Lỗi khi đọc funnel.	Error reading the funnel.
+Bạn yêu cầu đặt lại mật khẩu quá nhiều lần. Hãy chờ khoảng {0} phút.	You requested password resets too many times. Please wait about {0} minutes.
+Nếu tài khoản tồn tại, yêu cầu đã được ghi nhận. Vui lòng liên hệ giáo viên hoặc quản trị viên để nhận hướng dẫn đặt lại mật khẩu.	If the account exists, the request has been recorded. Please contact a teacher or administrator for password reset instructions.
+Yêu cầu đặt lại mật khẩu	Password reset request
+Có yêu cầu đặt lại mật khẩu cho tài khoản này. Nếu không phải bạn, hãy đổi mật khẩu ngay sau khi vào được hệ thống.	There is a password reset request for this account. If it was not you, change your password as soon as you can sign in.
+Thử lại sau vài phút.	Try again in a few minutes.
+Liên kết đặt lại không hợp lệ.	Invalid reset link.
+Chức năng đặt lại mật khẩu chưa sẵn sàng. Hãy khởi động lại máy chủ sau khi cập nhật.	Password reset is not ready yet. Please restart the server after updating.
+Liên kết đã dùng hoặc không tồn tại.	The link has already been used or does not exist.
+Liên kết đã hết hạn. Hãy yêu cầu đặt lại mật khẩu mới.	The link has expired. Please request a new password reset.
+Không thể đặt lại mật khẩu cho tài khoản này.	Cannot reset the password for this account.
+Đã đổi mật khẩu	Password changed
+Mật khẩu tài khoản vừa được đặt lại thành công.	The account password has been reset successfully.
+Đã đặt mật khẩu mới. Hãy đăng nhập.	New password set. Please sign in.
+Học viên #{0}	Student #{0}
+Idempotency-Key chỉ được gồm chữ, số, dấu gạch ngang/gạch dưới và dài {0}–{1} ký tự.	Idempotency-Key may only contain letters, digits, hyphens/underscores and must be {0}–{1} characters long.
+Idempotency-Key đã được dùng cho nội dung nộp bài khác.	Idempotency-Key was already used for a different submission.
+Yêu cầu nộp bài này đang được xử lý. Vui lòng thử lại với cùng Idempotency-Key.	This submission is being processed. Please retry with the same Idempotency-Key.
+Bạn nộp bài quá nhanh. Hãy chờ khoảng một phút rồi nộp lại.	You are submitting too fast. Please wait about a minute and submit again.
+Máy chủ chấm bài đang bận.	The grading server is busy.
+Hãy nộp bài ít nhất {0} lần rồi mới xem đáp án mẫu.	Submit at least {0} times before viewing the sample answer.
+Đã quá hạn nộp bài.	Past the submission deadline.
+Đã quá thời lượng làm bài.	The time limit has passed.
+Event loop lag {0}s — máy chủ đang tải nặng.	Event loop lag {0}s — the server is under heavy load.
+AI có {0} lượt lỗi trong tổng {1} lượt.	AI has {0} failed turns out of {1} total.
+Không đăng xuất phiên của chính mình từ đây. Hãy dùng Đăng xuất.	You cannot sign out your own session from here. Use Sign out.
+Quản trị không cần trial Pro.	Administrators do not need a Pro trial.
+Admin cấp trial {0} ngày	Admin granted a {0}-day trial
+Được tặng Pro {0} ngày	You received Pro for {0} days
+Bạn có thể dùng bài học Pro và Rivo trong thời gian trial.	You can use Pro lessons and Rivo during the trial.
+Ôn nền tảng	Review the basics
+Luyện tập có hướng dẫn	Guided practice
+Củng cố kiến thức	Strengthen knowledge
+Thực hành trọng tâm	Focused practice
+Thử thách vận dụng	Application challenge
+Ôn tập tổng hợp	Comprehensive review
+Đánh giá lại	Re-assess
+Chờ dữ liệu học tập	Waiting for learning data
+Làm bài đánh giá lại các chủ đề đã học	Re-assess the topics you have studied
+Học lý thuyết và hoàn thành bài luyện tập được gợi ý	Study the theory and complete the suggested exercises
+Hoàn thành bài đánh giá đầu vào	Complete the entry assessment
+Bạn không có quyền xem dữ liệu lớp này.	You do not have permission to view this class's data.
+Câu hỏi và code dài quá (tối đa {0} ký tự). Hãy rút gọn, chỉ gửi phần code liên quan.	Question and code are too long (maximum {0} characters). Please shorten them and send only the relevant code.
+Rivo đang bận hoặc gặp lỗi. Lượt này không bị tính. Bạn thử lại sau ít phút nhé.	Rivo is busy or hit an error. This turn was not counted. Please try again in a few minutes.
+Hỏi về code	Ask about code
+Nhận xét code giúp mình	Review my code for me
+Gợi ý cho mình bài này	Give me a hint for this exercise
+Cho mình thêm bài luyện tập	Give me more practice exercises
+Mình nên học gì tiếp?	What should I learn next?
+Bạn cần hoàn thành đánh giá đầu vào trước.	You need to complete the entry assessment first.
+Bạn đã có kết quả đánh giá đầu vào. Hãy chọn đánh giá cuối tuần hoặc yêu cầu làm lại.	You already have an entry assessment result. Choose the weekly assessment or request a retake.
+Bạn đã bắt đầu quá nhiều lượt đánh giá. Hãy thử lại sau.	You have started too many assessment attempts. Please try again later.
+Chưa có ngân hàng câu hỏi đánh giá. Quản trị viên cần kiểm tra giáo trình.	No assessment question bank yet. An administrator needs to check the curriculum.
+Không tìm thấy lượt đánh giá.	Assessment attempt not found.
+Lượt đánh giá đã hết thời gian. Hãy bắt đầu lại.	The assessment attempt has run out of time. Please start over.
+Lượt đánh giá này đã kết thúc.	This assessment attempt has ended.
+Lượt đánh giá này đã được nộp hoặc đã hết hạn.	This assessment attempt has been submitted or has expired.
+Ngày học không hợp lệ.	Invalid study date.
+Bạn chưa có kế hoạch học tập đang hoạt động.	You do not have an active study plan.
+Không tìm thấy nhiệm vụ trong kế hoạch.	Task not found in the plan.
+Bạn cần hoàn thành bài đánh giá cuối tuần trước.	You need to complete the weekly assessment first.
+Hãy đạt bài tập được giao trước khi đánh dấu hoàn thành.	Complete the assigned exercises before marking this done.
+Viết phép tính trong code thay vì gõ kết quả.	Write the calculation in code instead of typing the result.
+Đơn này đã được kích hoạt.	This order has been activated.
+Đơn đã hết hạn hoặc bị hủy. Nếu bạn đã chuyển tiền, hãy liên hệ hỗ trợ kèm mã đơn.	The order has expired or been cancelled. If you already transferred money, contact support with the order code.
+Chỉ giáo viên và quản trị viên mới xem được giấy phép.	Only teachers and administrators can view licences.
+Chỉ giáo viên và quản trị viên mới cấp chỗ học được.	Only teachers and administrators can grant seats.
+Bạn không sở hữu giấy phép này.	You do not own this licence.
+Giấy phép đã hết hạn hoặc đã bị thu hồi.	The licence has expired or been revoked.
+Tên đăng nhập không hợp lệ.	Invalid username.
+Không tìm thấy tài khoản học viên này.	This student account was not found.
+Không thể cấp chỗ cho tài khoản quản trị.	Cannot grant a seat to an administrator account.
+Giấy phép đã hết chỗ. Hãy nâng cấp hoặc thu hồi chỗ không dùng.	The licence is out of seats. Upgrade or revoke unused seats.
+Không còn giấy phép còn hạn.	No valid licence left.
+Không cấp được chỗ học.	Could not grant a seat.
+Chỉ giáo viên và quản trị viên mới thu hồi chỗ học được.	Only teachers and administrators can revoke seats.
+Thiếu entitlementId.	Missing entitlementId.
+Không tìm thấy chỗ học đang active này.	Could not find this active seat.
+Chỗ học không thuộc giấy phép này.	This seat does not belong to this licence.
+Thu hồi bởi giáo viên	Revoked by teacher
+Sai mật khẩu xác nhận	Confirmation password is wrong
+Chưa có khóa API Gemini hoặc AI_PROVIDER=disabled.	No Gemini API key, or AI_PROVIDER=disabled.
+Số tiền giao dịch ({0}) nhỏ hơn giá đơn ({1}).	Transaction amount ({0}) is less than the order price ({1}).
+(không rõ)	(unknown)
+Mở khóa {0} bài học Pro ở Giai đoạn {1}–{2}, gồm {3} bộ thử thách thuật toán nâng cao	Unlock {0} Pro lessons in Stages {1}–{2}, including {3} advanced algorithm challenge sets
+Rivo {0} lượt/ngày, {1} lượt/tháng (Free: {2} lượt/ngày)	Rivo {0} turns/day, {1} turns/month (Free: {2} turns/day)
+Không tạo được mã lớp	Could not create a class code
+Giấy phép của giáo viên đã hết chỗ học sinh. Giáo viên cần nâng cấp giấy phép.	The teacher's licence is out of student seats. The teacher needs to upgrade the licence.
+Giấy phép của giáo viên đã hết hạn. Hãy báo giáo viên gia hạn.	The teacher's licence has expired. Please tell the teacher to renew it.
+Giấy phép Teacher của bạn đã hết hạn. Hãy gia hạn để tạo lớp mới.	Your Teacher licence has expired. Renew it to create a new class.
+Cần giấy phép Teacher còn hạn để tạo lớp.	A valid Teacher licence is required to create a class.
+Tự rời lớp	Left the class on their own
+Giáo viên xóa khỏi lớp	Removed from class by teacher
+Không tìm thấy lớp hoặc bạn không quản lý lớp này.	Class not found, or you do not manage this class.
+Nhập tiêu đề bài giao.	Enter the assignment title.
+Thang điểm phải lớn hơn {0} và không quá {1}.	The scale must be greater than {0} and at most {1}.
+Mỗi tiêu chí cần tên hợp lệ và điểm tối đa lớn hơn {0}.	Each criterion needs a valid name and a maximum score greater than {0}.
+Tổng điểm tiêu chí ({0}) không được vượt thang điểm {1}.	Total criterion score ({0}) must not exceed the scale {1}.
+Tổng điểm tiêu chí phải bằng thang điểm {0}.	Total criterion score must equal the scale {0}.
+Học viên không thuộc danh sách được giao bài.	The student is not on the assignment list.
+Học viên chưa nộp bài.	The student has not submitted yet.
+Bài giao chưa có rubric.	The assignment has no rubric yet.
+Cần chấm đủ từng tiêu chí rubric.	Every rubric criterion must be graded.
+Điểm mỗi tiêu chí phải nằm trong khoảng {0} đến điểm tối đa của tiêu chí.	Each criterion's score must be between {0} and the criterion's maximum score.
+Điểm phải từ {0} đến {1}.	Score must be between {0} and {1}.
+Định dạng xuất chỉ hỗ trợ CSV hoặc XLSX.	Export only supports CSV or XLSX format.
+Máy chấm: đạt	Auto-grader: passed
+Máy chấm: chưa đạt · nộp muộn	Auto-grader: not passed · late submission
+Giáo viên đã chấm bài	Teacher has graded the work
+Đã có nhận xét từ giáo viên	Teacher has left feedback
+Hết thời gian chờ phản hồi từ Gemini. Kiểm tra mạng máy chủ hoặc tăng AI_TIMEOUT_MS.	Timed out waiting for Gemini. Check the server network or increase AI_TIMEOUT_MS.
+Gói của bạn chưa có lượt AI.	Your plan has no AI turns.
+Rivo dành cho thành viên Pro.	Rivo is for Pro members.
+Bạn đã dùng hết {0} lượt hỏi AI hôm nay. Lượt mới mở lại vào {1} giờ.	You have used all {0} AI questions today. New turns open at {1}:00.
+Bạn đã dùng hết {0} lượt hỏi AI tháng này.	You have used all {0} AI questions this month.
+Vào Quản trị → Hệ thống → Rivo, dán khóa API Gemini rồi bấm Lưu. Hoặc đặt biến môi trường GEMINI_API_KEY trên máy chủ.	Go to Admin → System → Rivo, paste the Gemini API key, then click Save. Or set the GEMINI_API_KEY environment variable on the server.
+Khóa API không hợp lệ hoặc bị chặn. Tạo khóa mới tại aistudio.google.com/apikey, dán lại (không khoảng trắng), bật Gemini API cho project nếu Google yêu cầu.	The API key is invalid or blocked. Create a new key at aistudio.google.com/apikey, paste it again (no spaces), and enable the Gemini API for the project if Google requires it.
+Hết hạn mức Gemini. Đợi reset, bật billing Google, hoặc dùng khóa/project khác.	Gemini quota exhausted. Wait for reset, enable Google billing, or use another key/project.
+Model không khả dụng với khóa này. Đổi Model chính sang gemini-{0}-flash-lite hoặc gemini-{1}-flash-lite trong Quản trị → AI.	This model is not available with this key. Switch Main model to gemini-{0}-flash-lite or gemini-{1}-flash-lite in Admin → AI.
+Máy chủ không gọi được generativelanguage.googleapis.com. Kiểm tra DNS/firewall VPS (thử: curl -I https://generativelanguage.googleapis.com).	The server cannot reach generativelanguage.googleapis.com. Check the VPS DNS/firewall (try: curl -I https://generativelanguage.googleapis.com).
+Gemini trả về rỗng hoặc bị lọc an toàn. Thử câu hỏi khác hoặc model khác.	Gemini returned empty or safety-filtered output. Try another question or model.
+Kiểm tra khóa API, tên model, mạng máy chủ, rồi bấm Kiểm tra kết nối trong Quản trị → AI.	Check the API key, model name, and server network, then click Check connection in Admin → AI.
+Gói Pro sắp hết hạn trong hôm nay	Pro plan expires today
+Gói Pro còn khoảng {0} ngày	Pro plan has about {0} days left
+Gia hạn để giữ Rivo và toàn bộ bài học Pro.	Renew to keep Rivo and all Pro lessons.
+Vận dụng kiến thức	Apply knowledge
+Đánh giá tiến bộ	Progress assessment
+Làm bài đánh giá cuối tuần để đo mức tiến bộ so với đầu vào.	Take the weekly assessment to measure progress against the entry assessment.
+Đơn #{0}	Order #{0}
+Giao dịch tiền ra	Outgoing transaction
+Giao dịch vào tài khoản khác tài khoản nhận tiền đã cấu hình	Transaction to an account other than the configured receiving account
+Mã đơn không tồn tại	Order code does not exist
+Nội dung chuyển khoản không có mã đơn	Transfer content has no order code
+Đơn đã thanh toán trước đó (chuyển trùng?)	Order was already paid (duplicate transfer?)
+Đơn đã bị hủy	Order has been cancelled
+Chuyển thiếu: nhận {0}, cần {1}	Underpaid: received {0}, needed {1}
+Đơn đã hết hạn quá {0} ngày	Order expired more than {0} days ago
+Đã cấp giấy phép Teacher	Teacher licence granted
+{0} chỗ · {1} tháng	{0} seats · {1} months
+Chỗ học trong giấy phép #{0}	Seat in licence #{0}
+Gói Family #{0}	Family plan #{0}
+Gói đã đủ {0} thành viên. Hãy xóa bớt thành viên trước.	The plan already has {0} members. Remove some members first.
+Chương giáo trình	Curriculum chapter
+AI không trả JSON hợp lệ.	AI did not return valid JSON.
+Rivo: kết nối Google Gemini	Rivo: Google Gemini connection
+Khóa API lấy ở Google AI Studio (aistudio.google.com → Get API key). Đơn giá dùng để tính chi phí trong báo cáo; kiểm tra lại ở trang giá Gemini khi đổi model.	Get the API key from Google AI Studio (aistudio.google.com → Get API key). Unit prices are used to compute costs in reports; re-check the Gemini pricing page when changing models.
+Giới hạn cho mỗi lần chạy code. Có hiệu lực ngay cho lần chạy tiếp theo.	Limit for each code run. Takes effect immediately for the next run.
+Địa chỉ chính thức dùng cho liên kết chuẩn (canonical), sitemap, chia sẻ mạng xã hội.	Official address used for canonical links, sitemap, and social sharing.
+Nhà cung cấp AI	AI provider
+Tắt hẳn kết nối AI	Turn off AI connection entirely
+Khóa API Gemini	Gemini API key
+Dán nguyên khóa lấy từ Google AI Studio: dạng mới AQ.Ab… hoặc dạng cũ AIza…, không thêm dấu cách. Chỉ máy chủ dùng, không bao giờ gửi xuống trình duyệt.	Paste the key exactly as taken from Google AI Studio: new form AQ.Ab… or old form AIza…, no extra spaces. Only the server uses it; it is never sent to the browser.
+Model chính	Main model
+Ví dụ: gemini-{0}-flash-lite, gemini-{1}-flash-lite. Nếu lỗi model, thử gemini-{2}-flash-lite.	Example: gemini-{0}-flash-lite, gemini-{1}-flash-lite. If a model errors, try gemini-{2}-flash-lite.
+Model dự phòng	Fallback model
+Dùng khi model chính lỗi. Để trống nếu không cần.	Used when the main model fails. Leave empty if not needed.
+Giá token đầu vào (USD / {0} triệu token)	Input token price (USD / {0} million tokens)
+Giá token đầu ra (USD / {0} triệu token)	Output token price (USD / {0} million tokens)
+Trần chi phí AI mỗi tháng (USD)	Monthly AI cost cap (USD)
+Chạm trần thì AI tạm dừng tới đầu tháng sau. {0} USD ≈ {1}đ.	When the cap is reached, AI pauses until next month. {0} USD ≈ {1}đ.
+Thời gian chờ AI tối đa (ms)	Maximum AI wait time (ms)
+Số lần chạy song song	Parallel runs
+Mỗi lần chạy dùng tối đa RAM bên dưới. VPS {0} GB: {1}–{2}.	Each run uses at most the RAM below. VPS {0} GB: {1}–{2}.
+Thời gian tối đa mỗi test (ms)	Maximum time per test (ms)
+RAM tối đa mỗi lần chạy (MB)	Maximum RAM per run (MB)
+CPU tối đa mỗi lần chạy	Maximum CPU per run
+Địa chỉ website	Website address
+Ví dụ https://study.liferivo.com (không có / ở cuối).	Example https://study.liferivo.com (no trailing /).
+Bài này đang khóa	This lesson is locked
+Mở kênh hỗ trợ	Open support channel
+Tiếp tục bài đang học	Continue the lesson in progress
+(Chương trình chạy xong nhưng không in ra gì. Bạn đã có lệnh print chưa?)	(The program ran but printed nothing. Have you added a print statement?)
+(chưa đúng)	(not correct yet)
+(không có)	(none)
+(không in ra gì)	(prints nothing)
+(nộp muộn)	(submitted late)
+(đúng)	(correct)
+, bạn đang dẫn đầu!	, you're in the lead!
+Rivo đang tắt trong cấu hình hệ thống.	Rivo is turned off in the system settings.
+AI chú thích	AI annotations
+AI chưa được cấu hình khóa API trên máy chủ. Hãy báo quản trị viên.	AI has not been configured with an API key on the server. Please notify an administrator.
+AI hiện chưa bật hoặc chưa cấu hình.	AI is currently off or not configured.
+AI phân tích lỗi	AI error analysis
+AI tạm khóa khi bạn đang làm bài kiểm tra để bảo vệ tính công bằng.	AI is temporarily locked while you take a test to keep it fair.
+Bài học chuyên sâu	In-depth lesson
+Bài kiểm tra đang mở	Open test
+Bài kiểm tra, bài chưa đạt và nội dung đã lưu.	Tests, exercises not yet passed, and saved content.
+Bài nộp chưa đạt yêu cầu chấm tự động. Hãy đối chiếu đề bài, kết quả mong đợi và luồng xử lý của chương trình.	Your submission did not meet the automatic grading requirements. Compare the problem statement, the expected output, and your program's flow.
+Bài nộp sau hạn hoặc quá thời lượng được tính {0} điểm.	Submissions after the deadline or over the time limit score {0} points.
+Bài thực hành	Practice exercise
+Bài tiếp theo	Next exercise
+Bài trước	Previous exercise
+Bài tập cần củng cố	Exercises to reinforce
+Bài tập nên luyện lại	Exercises to practise again
+Bài tập được giao	Assigned exercises
+Bài đánh giá đầu vào giúp xác định kiến thức hiện tại và xây dựng lộ trình phù hợp.	The entry assessment helps identify your current knowledge and build a suitable learning path.
+Bạn chưa có bài nộp nào.	You have no submissions yet.
+Bạn chưa có lộ trình cá nhân.	You don't have a personal learning path yet.
+Bạn vẫn có thể ôn tập, làm bài kiểm tra hoặc chọn lộ trình khác.	You can still review, take tests, or choose a different path.
+Bạn đang gặp khó khăn khi học?	Are you struggling with your studies?
+Bạn đang tiến bộ từng ngày	You're improving every day
+Bạn đang xây nền tảng tốt. Học đều từng chương sẽ giúp kiến thức chắc hơn.	You're building a solid foundation. Studying each chapter steadily will strengthen your knowledge.
+Bạn đã có kết quả đầu vào. Hoàn thành kế hoạch học tập và làm bài đánh giá cuối tuần để đo mức tiến bộ.	You already have entry results. Complete your study plan and take the weekend assessment to measure your progress.
+Bạn đã hoàn thành các bài đang mở	You've completed the open exercises
+Bạn đã hoàn thành giáo trình!	You've completed the curriculum!
+Bạn đã hoàn thành toàn bộ bài tập trong giáo trình. Hãy thử thách bản thân với các bài nâng cao.	You've completed all exercises in the curriculum. Challenge yourself with advanced exercises.
+Bạn đã nộp bài kiểm tra này	You've submitted this test
+Bạn đã đi được một chặng đường dài. Tiếp tục luyện các chương còn lại để củng cố kiến thức.	You've come a long way. Keep practising the remaining chapters to reinforce your knowledge.
+Bạn đã đạt cấp cao nhất.	You've reached the highest level.
+Bạn đã ở cấp cao nhất	You're at the highest level
+BẢN ĐỒ KIẾN THỨC	KNOWLEDGE MAP
+Bảng cửu chương	Multiplication table
+Bảng xếp hạng sẽ có dữ liệu khi học viên bắt đầu nộp bài.	The leaderboard will show data once learners start submitting.
+Bắt đầu	Start
+Bắt đầu bài học đầu tiên	Start the first lesson
+Bắt đầu bằng bài đánh giá đầu vào	Start with the entry assessment
+Bắt đầu làm bài?	Start the exercise?
+Bắt đầu lộ trình	Start the path
+Bắt đầu một bài tập để biểu đồ ghi nhận tiến độ của bạn.	Start an exercise so the chart can record your progress.
+Chi tiết tiến độ	Progress details
+Chuỗi học liên tiếp, giữ lửa nhé!	Keep your learning streak going!
+Chuỗi ngày có hoạt động học tập	Days with learning activity in a row
+Chào buổi chiều	Good afternoon
+Chào buổi sáng	Good morning
+Chào buổi trưa	Good midday
+Chào buổi tối	Good evening
+Chính xác!	Correct!
+Chú thích các dòng cần sửa	Annotate the lines to fix
+Chú thích dòng code đang làm	Annotate the code line you're working on
+Chưa có chủ đề cần ưu tiên.	No topics need priority yet.
+Chưa có dữ liệu chương học	No chapter data yet
+Chưa có dữ liệu trong {0} ngày gần đây	No data in the last {0} days
+Chưa có hoạt động học tập	No learning activity yet
+Chưa có học viên nào	No learners yet
+Chưa có kế hoạch cá nhân	No personal plan yet
+Chưa có kết quả đánh giá	No assessment results yet
+Chưa có thông báo cá nhân.	No personal notifications.
+Chưa có thông báo lớp.	No class notifications.
+Chưa cấu hình kênh liên hệ hỗ trợ. Bạn hãy liên hệ giáo viên hoặc quản trị viên của hệ thống.	No support contact channel has been configured. Please contact your teacher or a system administrator.
+Chưa hiểu bài học	Don't understand the lesson yet
+Chưa hiểu kiến thức?	Don't understand the concept?
+Chưa học	Not studied yet
+Chưa lưu được — kiểm tra kết nối	Could not save — check your connection
+Chưa mở	Not open yet
+Chưa phát hiện bài đang bị vướng	No stuck exercise detected yet
+Chưa đạt	Not passed yet
+Chương hoàn thành	Chapters completed
+Chạy với dữ liệu ở tab Đầu vào.	Run with the data in the Input tab.
+Chạy xong	Run finished
+Chỉ bài được nộp và chấm thành công mới được ghi nhận là hoàn thành. Hãy kiểm tra trạng thái bài, tải lại trang Tiến độ học tập và xem Lịch sử nộp bài.	Only exercises submitted and graded successfully count as completed. Check the exercise status, reload the Learning Progress page, and view your Submission History.
+Chọn lộ trình phù hợp	Choose a suitable path
+Chọn lộ trình theo mục tiêu, đọc lý thuyết của từng chương, chạy ví dụ rồi hoàn thành bài tập. Tiến độ được lưu theo tài khoản và dùng chung giữa các lộ trình có chương trùng nhau.	Choose a path by goal, read each chapter's theory, run the examples, then complete the exercises. Progress is saved to your account and shared across paths with overlapping chapters.
+Chọn một chủ đề để luyện tập tiếp.	Choose a topic to keep practising.
+Chọn theo mục tiêu học tập; một số chương nền tảng có thể được dùng chung giữa các lộ trình.	Choose by learning goal; some foundational chapters may be shared across paths.
+Chọn đáp án phù hợp nhất. Hãy tự làm, không sử dụng AI hoặc tài liệu trong lúc đánh giá để kết quả phản ánh đúng kiến thức hiện tại. Có thể để trống câu chưa chắc. Khi hết giờ, bài sẽ tự động được nộp.	Choose the best answer. Do the assessment yourself, without AI or reference materials, so the result reflects your current knowledge. You may leave uncertain questions blank. When time runs out, the assessment is submitted automatically.
+Chọn đúng công cụ theo khó khăn bạn đang gặp.	Choose the right tool for the difficulty you're facing.
+Chủ đề	Topic
+Chủ đề đã đánh giá	Assessed topics
+Chứng nhận nhóm	Group certificate
+Code báo lỗi cú pháp hoặc lỗi khi chạy?	Is the code showing a syntax or runtime error?
+Code báo lỗi hoặc chưa ra kết quả?	Is the code showing an error or no result yet?
+Code chạy nhưng bị chấm chưa đạt?	Does the code run but fail grading?
+Code hiện tại trong khung soạn sẽ bị thay bằng code ban đầu của đề. Các lần đã nộp vẫn được giữ.	The current code in the editor will be replaced with the exercise's original code. Your previous submissions will be kept.
+Các bài bạn đã thực hành.	Exercises you have practised.
+Các bước học tập	Learning steps
+Các lần nộp bài gần đây, điểm số và thời điểm thực hiện.	Recent submissions, scores, and when they were made.
+Các lựa chọn được tự động lưu	Choices are saved automatically
+Các mục tiến độ	Progress items
+Các tình huống thường gặp	Common situations
+Cách học hiệu quả	Effective study methods
+Cách sử dụng lộ trình	How to use a path
+Có lỗi	Error
+Có thể bắt đầu	Can start
+Có thể học	Can study
+Cần giáo viên hướng dẫn?	Need a teacher's guidance?
+Cần giáo viên xem bài	Needs teacher review
+Cần hoàn thành	To complete
+Cần luyện thêm	Needs more practice
+Cần ôn	Needs review
+Cần ôn thêm	Needs more review
+Danh sách bài kiểm tra	Test list
+Dán token nếu có	Paste a token if you have one
+GIAI ĐOẠN HỌC	LEARNING STAGE
+Giáo trình	Curriculum
+Giáo viên cho phép làm lại, hệ giữ điểm cao nhất.	The teacher allows retakes; the system keeps the highest score.
+Giáo viên không tham gia xếp hạng.	Teachers are not included in the ranking.
+Giáo viên đang tắt mục này	The teacher has turned this off
+Gợi ý cải thiện	Improvement suggestions
+Gợi ý dựa trên các lần nộp chưa đạt. AI sẽ chú thích trực tiếp vào code khi bạn mở bài tập và yêu cầu hỗ trợ.	Suggestions based on failed submissions. AI will annotate your code directly when you open an exercise and request help.
+Hai lần nhập mật khẩu mới chưa khớp.	The two new passwords don't match.
+Hai mật khẩu không khớp.	The two passwords don't match.
+Hoàn thành bài trước	Complete the previous exercise
+Hoàn thành bài tập trước	Complete the exercise first
+Hoàn thành bài tập và kiểm tra	Complete exercises and tests
+Hoàn thành từng bài theo thứ tự để xây nền tảng vững chắc. Bản nháp và điểm số được lưu vào tài khoản.	Complete each exercise in order to build a solid foundation. Drafts and scores are saved to your account.
+Hãy chọn số sao.	Please choose a star rating.
+Hãy thử các bước dưới đây trước khi gửi yêu cầu hỗ trợ.	Try the steps below before sending a support request.
+Hãy tiếp tục học bài mới hoặc thử các bài nâng cao để mở rộng kỹ năng.	Keep learning new lessons or try advanced exercises to broaden your skills.
+Hãy tự bấm Nộp bài trước khi hết giờ.	Click Submit yourself before time runs out.
+Hướng dẫn	Guide
+Hết giờ · Đang tự nộp…	Time's up · Auto-submitting…
+Hết giờ, hệ đã tự nộp bài.	Time's up; the system has submitted your work.
+Hệ tự nộp khi còn vài giây.	The system auto-submits with a few seconds left.
+Học lần lượt từng chương. Bạn có thể xem lý thuyết trước khi làm bài tập.	Study each chapter in turn. You can review the theory before doing the exercises.
+Học từng khái niệm, thực hành bằng code và xem lại những phần cần củng cố. Mỗi bước đều được ghi nhận vào tiến độ của bạn.	Learn each concept, practise with code, and review the parts that need reinforcement. Every step counts toward your progress.
+Hỗ trợ khi học gặp vấn đề	Help when you hit a learning problem
+Khi bạn thực hành và nộp bài, lịch sử sẽ xuất hiện ở đây.	When you practise and submit, your history will appear here.
+Khi giáo viên bật lại trong phần cài đặt, mục này sẽ xuất hiện trong menu.	When the teacher turns it back on in settings, this item will appear in the menu.
+Khi liên hệ, hãy gửi kèm tên bài, mã bài tập, ảnh thông báo lỗi và các bước bạn đã thử. Không gửi mật khẩu hoặc khóa API.	When contacting support, include the lesson name, exercise code, a screenshot of the error message, and the steps you tried. Do not send passwords or API keys.
+Khung code đang trống.	The code editor is empty.
+Khung soạn sẽ trống.	The editor will be empty.
+Khá	Good
+Khám phá bài học	Explore lessons
+Khám phá bài học có hướng dẫn	Explore guided lessons
+Không biết nên học gì tiếp	Don't know what to study next
+Không biết nên học gì tiếp?	Don't know what to study next?
+Không biết phần nào đang yếu	Don't know which parts are weak
+Không chỉ đưa đáp án — giúp bạn hiểu cách giải	More than just answers — helping you understand how to solve it
+Không có chương nào khớp bộ lọc	No chapters match the filter
+Không lấy được chú thích AI.	Could not get AI annotations.
+Không mở được bài học Pro?	Can't open a Pro lesson?
+Không thay đổi	No change
+Không thấy AI hỗ trợ?	Can't see AI help?
+Không tải được lộ trình học	Could not load the learning path
+Không tải được tiến độ	Could not load progress
+Không vào được phòng thi	Can't enter the exam room
+Kiểm tra gói thành viên	Check your membership plan
+Kiểm tra lớp, bài được giao, hạn nộp và nhận xét của giáo viên.	Check your class, assigned exercises, deadlines, and teacher feedback.
+Kênh hỗ trợ:	Support channel:
+Kế hoạch học {0} ngày	{0}-day study plan
+Kế hoạch {0} ngày	{0}-day plan
+Kết quả bài kiểm tra	Test results
+Kết quả đánh giá năng lực	Skills assessment results
+Luyện lại	Practise again
+Làm bài kiểm tra	Take a test
+Làm lại đánh giá đầu vào	Retake the entry assessment
+Làm tốt lắm!	Well done!
+Làm đánh giá năng lực và nhận kế hoạch học cá nhân {0} ngày.	Take the skills assessment and get a personal {0}-day study plan.
+Làm đánh giá năng lực để nhận kế hoạch học phù hợp.	Take the skills assessment to get a suitable study plan.
+Làm đánh giá tuần	Take the weekly assessment
+Làm đánh giá đầu vào	Take the entry assessment
+Làm đánh giá đầu vào để tạo kế hoạch	Take the entry assessment to create a plan
+Làm đánh giá đầu vào để xem năng lực	Take the entry assessment to see your level
+Lý thuyết, ví dụ, bài luyện và câu hỏi nhanh	Theory, examples, practice exercises, and quick questions
+Lưu mật khẩu mới	Save new password
+Lượt thực hành	Practice attempts
+Lượt đạt	Passing attempts
+Lần nộp gần nhất	Most recent submission
+Lịch sử	History
+Lịch sử học	Learning history
+Lịch sử thực hành	Practice history
+Lỗi	Error
+Lộ trình học cá nhân	Personal learning path
+Lộ trình học tập	Learning path
+Lộ trình phù hợp với bạn	A path that fits you
+Lộ trình theo mục tiêu	Goal-based paths
+Máy chấm đang dùng	Grader in use
+Máy chủ bận	Server is busy
+Mã đặt lại	Reset code
+Mỗi bài tập hoàn thành là một bước tiến. Bắt đầu từ chương đang học và đi từng bước nhé.	Each completed exercise is a step forward. Start from the chapter you're studying and go step by step.
+Mỗi chủ đề được lấy mẫu một câu hỏi. Đây là tín hiệu định hướng, chưa phải kết luận thành thạo; cần kết hợp với kết quả thực hành.	Each topic is sampled with one question. This is a directional signal, not a mastery verdict; it should be combined with practice results.
+Mỗi lộ trình chia nội dung thành các bước nhỏ. Hãy học theo thứ tự, hoàn thành bài hiện tại rồi tiếp tục bước kế tiếp.	Each path breaks content into small steps. Learn in order, finish the current step, then move to the next.
+Mỗi lộ trình sắp xếp chương học theo mục tiêu và trình độ. Bạn có thể đổi lộ trình bất cứ lúc nào mà không mất tiến độ đã đạt.	Each path arranges chapters by goal and level. You can switch paths at any time without losing progress.
+Mở bài	Open lesson
+Mở bài học có hướng dẫn	Open guided lesson
+Mở bài tập	Open exercise
+Mở chương	Open chapter
+Mở giáo trình {0} chương	Open the {0}-chapter curriculum
+Mở kế hoạch	Open plan
+Mở lộ trình	Open path
+Mở lộ trình cá nhân	Open personal path
+Mở lớp học	Open class
+Mở lớp học để xem bài giao, nhận xét và thông tin lớp.	Open your class to see assigned exercises, feedback, and class information.
+Mở tiến độ học tập	Open learning progress
+Mục tiêu học mỗi ngày	Daily study goal
+Mức độ tiến bộ	Progress level
+Nhập lại mật khẩu	Re-enter password
+Nhập mật khẩu mới cho liên kết được cấp (hiệu lực {0} giờ).	Enter a new password for the issued link (valid for {0} hours).
+Nhịp độ học tập	Study pace
+Những nội dung nên luyện tiếp	Content to keep practising
+Nắm khái niệm và cú pháp	Grasp concepts and syntax
+Nội dung lộ trình	Path content
+Nộp bài kiểm tra?	Submit the test?
+Nộp bài đánh giá	Submit assessment
+Nộp một bài hôm nay để giữ chuỗi	Submit one exercise today to keep your streak
+Phân tích code và gắn nhận xét ngay dưới dòng cần sửa; không mở khung chat	Analyse code and attach comments right below the line to fix; do not open a chat window
+Phân tích và chú thích các dòng cần sửa dựa trên kết quả chấm bài. Không viết lại toàn bộ lời giải.	Analyse and annotate the lines to fix based on the grading result. Do not rewrite the whole solution.
+Quay lại	Go back
+Quay lại học tập	Back to learning
+Quay lại đăng nhập	Back to login
+Quá bộ nhớ	Out of memory
+Quá hạn	Overdue
+Quá thời gian	Timed out
+Sang bài tiếp theo	Move to the next exercise
+Sau chương này, bạn sẽ luyện được	After this chapter, you'll be able to practise
+Sau khi hoàn thành đánh giá đầu vào, hệ thống sẽ tạo kế hoạch theo kết quả và lịch sử thực hành của bạn. Kế hoạch được lưu trên máy chủ, không thay đổi khi tải lại trang.	After you complete the entry assessment, the system will create a plan based on your results and practice history. The plan is saved on the server and won't change when you reload the page.
+So sánh kết quả đánh giá đầu vào và gần nhất.	Compare the entry assessment with the most recent one.
+So sánh với lần đánh giá đầu vào	Compared with the entry assessment
+Sắp đến hạn	Due soon
+Sẵn sàng kiểm tra	Ready to check
+Số lượt thực hành mỗi ngày và số lượt có kết quả đạt.	Daily practice attempts and how many passed.
+Theo dõi kế hoạch học tập được xây dựng từ bài đánh giá năng lực.	Track the study plan built from your skills assessment.
+Theo dõi kết quả học tập thay vì chỉ đếm số lần truy cập.	Track learning results instead of just counting visits.
+Theo dõi phần kiến thức đã luyện tập và chọn chương bạn muốn tiếp tục.	Track the knowledge you've practised and choose the chapter you want to continue.
+Thoát	Exit
+Thông tin tài khoản và công cụ	Account information and tools
+Thời điểm nộp	Submission time
+Thử từ khóa hoặc trạng thái khác.	Try a different keyword or status.
+Thực hiện đánh giá đầu vào để hệ thống xác định điểm mạnh, nội dung cần bổ sung và đề xuất kế hoạch phù hợp.	Take the entry assessment so the system can identify your strengths, gaps, and a suitable plan.
+Thực hành	Practise
+Tin hệ thống (nộp bài, chấm điểm, giấy phép, hết hạn Pro) và thông báo lớp từ giáo viên.	System messages (submissions, grading, licences, Pro expiry) and class notifications from teachers.
+Tiến độ bài tập	Exercise progress
+Tiến độ giáo trình	Curriculum progress
+Tiến độ lộ trình cá nhân	Personal path progress
+Tiến độ theo từng chương	Progress by chapter
+Tiến độ và kiến thức cần củng cố	Progress and knowledge to reinforce
+Tiếp tục	Continue
+Tiếp tục học	Continue learning
+Tiếp tục làm bài	Continue the exercise
+Tiếp tục thi	Continue the exam
+Toàn bộ giáo trình	Full curriculum
+Trung tâm trợ giúp	Help centre
+Trắc nghiệm	Multiple choice
+Tìm theo tên chương	Search by chapter name
+Tín hiệu theo chủ đề từ bài đánh giá	Topic signals from the assessment
+Tạo lộ trình cá nhân	Create a personal path
+Tất cả lộ trình	All paths
+Tổng XP	Total XP
+Tổng quan học tập	Learning overview
+Tổng tích lũy	Cumulative total
+Tổng điểm	Total score
+Tổng điểm tích lũy từ trước tới nay: điểm cao nhất của mỗi bài tập cộng điểm cao nhất của mỗi bài kiểm tra.	Cumulative total score so far: the highest score of each exercise plus the highest score of each test.
+Tự đánh giá	Self-assessment
+Tỷ lệ nộp đạt	Passing submission rate
+Việc cần hoàn thành	Tasks to complete
+Vào Gói của tôi để kiểm tra trạng thái và thời hạn Pro. Nếu quyền vừa được cấp qua lớp học hoặc Family, hãy tải lại trang sau khi đăng nhập lại.	Go to My Plan to check your Pro status and expiry. If access was just granted via a class or Family, reload the page after logging in again.
+Vẫn chưa giải quyết được?	Still not resolved?
+Xem bài đã thử nhưng chưa đạt và các chủ đề nên luyện thêm.	View exercises you've tried but not passed, and topics to practise more.
+Xem chi tiết	View details
+Xem chứng nhận	View certificate
+Xem giáo trình	View curriculum
+Xem gợi ý cải thiện	View improvement suggestions
+Xem kết quả, theo dõi sự tiến bộ và biết mình nên học gì tiếp theo.	View results, track your progress, and see what to study next.
+Xem lý thuyết, ví dụ từng bước và bài luyện có hướng dẫn.	View theory, step-by-step examples, and guided practice exercises.
+Xem lớp học	View class
+Xem quyền lợi Pro	View Pro benefits
+Xem toàn bộ tiến độ	View full progress
+Xem và in	View and print
+Xem điểm	View scores
+Xem đáp án mẫu	View sample answer
+Xóa hết code?	Clear all code?
+bài trước	previous exercise
+bộ thông dịch dự phòng	fallback interpreter
+chưa đạt	not passed
+của chương trình	of the program
+của lộ trình	of the path
+hoàn thành	completed
+lần nộp	submissions
+mới	new
+phía dưới khung code.	below the code editor.
+so với đầu vào	vs. entry level
+tuần này	this week
+tổng	total
+{0} bài hướng dẫn theo chủ đề	{0} guided exercises by topic
+· Gói Free	· Free plan
+· Thành viên Pro	· Pro member
+· bài giáo viên thêm	· teacher-added exercises
+Ôn lý thuyết	Review theory
+Ôn lại	Review again
+Ôn tập	Review
+Ôn tập chủ đề	Review topic
+Ôn tập và nâng cao	Review and advance
+Ôn tập và thực hành	Review and practise
+Đang chấm	Grading
+Đang chấm kết quả…	Grading results…
+Đang chờ lưu…	Waiting to save…
+Đang củng cố	Reinforcing
+Đang làm	In progress
+Đang lưu lựa chọn…	Saving choice…
+Điều chỉnh theo kết quả đánh giá và bài làm của bạn.	Adjusted to your assessment results and work.
+ĐÁNH GIÁ NĂNG LỰC	SKILLS ASSESSMENT
+Đánh dấu đã đọc hết	Mark all as read
+Đánh giá cuối tuần	Weekend assessment
+Đánh giá gần nhất	Most recent assessment
+Đánh giá năng lực	Skills assessment
+Đánh giá năng lực và tạo lộ trình	Skills assessment and path creation
+Đánh giá năng lực · Kế hoạch {0} ngày · Theo dõi tiến bộ	Skills assessment · {0}-day plan · Progress tracking
+Đánh giá năng lực đầu vào	Entry skills assessment
+Đánh giá đầu vào	Entry assessment
+Đáp án mẫu đã mở khóa nếu bạn cần tham khảo.	The sample answer is unlocked if you need a reference.
+Đây là các bài đã thử nhưng chưa đạt điểm.	These are exercises you've tried but not passed.
+Đã bỏ đánh dấu.	Bookmark removed.
+Đã hoàn thành	Completed
+Đã hoàn thành bài tập	Exercise completed
+Đã hoàn thành bài tập chương	Chapter exercise completed
+Đã hoàn thành lộ trình	Path completed
+Đã hoàn thành đánh giá:	Assessment completed:
+Đã làm bài nhưng tiến độ chưa cập nhật?	Did the exercise but progress hasn't updated?
+Đã lưu	Saved
+Đã lưu lựa chọn	Choice saved
+Đã lưu tên mới.	New name saved.
+Đã lưu đánh giá. Cảm ơn bạn!	Assessment saved. Thank you!
+Đã lưu để xem lại	Saved for review
+Đã mở lại bản nháp lần trước của bạn. Bấm “Đặt lại” nếu muốn làm từ đầu.	Your previous draft has been reopened. Click “Reset” to start over.
+Đã mở lại code bạn nộp gần nhất cho bài này.	Your most recent submitted code for this exercise has been reopened.
+Đã quá hạn nộp	Past submission deadline
+Đã tự động nộp bài.	Submitted automatically.
+Đã đánh dấu bài này. Xem lại ở trang Tổng quan.	This exercise has been bookmarked. Review it on the Overview page.
+Đã đánh dấu đã đọc.	Marked as read.
+Đã đóng	Closed
+Đã đưa code cũ vào khung soạn.	Old code has been placed in the editor.
+Đã đưa đáp án mẫu vào khung soạn. Hãy đọc hiểu từng dòng trước khi nộp.	The sample answer has been placed in the editor. Read and understand each line before submitting.
+Đã đạt	Earned
+Đã đạt mục tiêu. Tuyệt vời!	Goal reached. Excellent!
+Đã đổi mật khẩu.	Password changed.
+Đã đổi mật khẩu. Các thiết bị khác đã bị đăng xuất.	Password changed. Other devices have been signed out.
+Đã đổi mục tiêu ngày.	Daily goal changed.
+Đúng	Correct
+Được phép	Allowed
+Đạt	Pass
+Đạt yêu cầu	Meets requirements
+Đặt lại code?	Reset code?
+ĐỀ XUẤT CỦNG CỐ	REINFORCEMENT SUGGESTIONS
+Đề xuất lộ trình cá nhân	Personal path suggestions
+Đọc hiểu	Reading comprehension
+Đọc kỹ định dạng đầu ra, thử cả trường hợp số {0}, số âm, dữ liệu trùng và dữ liệu biên. Nếu vẫn chưa rõ, mở AI chú thích trong bài tập để AI phân tích code và kết quả chấm.	Read the output format carefully, and try the number {0} case, negative numbers, duplicate data, and edge data. If still unclear, open AI annotations in the exercise so AI can analyse your code and grading result.
+Đọc lại mục tiêu, lý thuyết, ví dụ và lỗi thường gặp theo từng chủ đề.	Re-read the goals, theory, examples, and common mistakes for each topic.
+để AI chỉ ra dòng có vấn đề và gợi ý cách sửa ngay cạnh code.	so AI can point out the problem line and suggest a fix right next to your code.
+Ưu tiên bài đã thử nhiều lần nhưng chưa đạt.	Prioritise exercises tried many times but not yet passed.
+Ưu tiên hoàn thành bài có hạn gần nhất.	Prioritise completing exercises with the nearest deadline.
+Ở lại bài này	Stay on this exercise
+{0}/{1} bài	{0}/{1} exercises
+← Về đăng nhập	← Back to login
+Bạn cần đăng nhập lại. Code đang viết dở vẫn được lưu nháp trên trình duyệt này.	You need to log in again. Your unfinished code is still saved as a draft in this browser.
+chọn	select
+Chuỗi ngày học	Learning streak
+Chuỗi ngày học liên tiếp	Consecutive learning days
+Đang bảo trì	Under maintenance
+Đang mở…	Opening…
+Đăng nhập lại	Log in again
+đóng	close
+Hệ thống đang bảo trì.	The system is under maintenance.
+Hồ sơ và đổi mật khẩu	Profile and change password
+Hỗ trợ	Support
+Không mở được trang này	This page could not be opened
+Không tải được giáo trình	Curriculum could not be loaded
+Lộ trình cá nhân	Personal learning path
+Lộ trình học	Learning path
+mở	open
+Phiên đăng nhập đã hết hạn	Your login session has expired
+Tải lại	Reload
+Tải lại trang	Reload page
+Thử lại	Try again
+Thử từ khóa ngắn hơn, ví dụ “while”.	Try a shorter keyword, e.g. “while”.
+Thực hành code	Code practice
+Tiến độ học tập	Learning progress
+Tìm kiếm	Search
+Tìm nhanh	Quick search
+· được tặng	· gifted
+(đang tắt)	(currently off)
+(Không in ra gì)	(Prints nothing)
+AI chat đã chuyển sang chú thích trên code	AI chat has moved to code annotations
+AI hiện gắn chú thích trực tiếp trên code khi bạn làm bài luyện (nút «AI chú thích»).	AI now annotates directly on your code while you practise (the “AI annotate” button).
+Bài học này dành cho thành viên Pro	This lesson is for Pro members
+Bài học Pro	Pro lesson
+bài tập	exercises
+Bạn đã hoàn thành bài học này!	You have completed this lesson!
+Bạn đang dùng gói miễn phí.	You are on the free plan.
+Bạn đang dùng thử Pro miễn phí. Còn	You are on a free Pro trial. Remaining
+Bạn vẫn học được toàn bộ nội dung miễn phí.	You can still access all free content.
+Các kỳ thành viên	Membership periods
+Chờ quản trị xác nhận	Waiting for admin confirmation
+Chọn chương để học lý thuyết, xem ví dụ và luyện tập có chấm điểm. Các bài hướng dẫn chuyên sâu giúp bạn hiểu kỹ hơn những chủ đề quan trọng.	Choose a chapter to study theory, view examples, and do graded practice. In-depth guides help you understand key topics more thoroughly.
+Chủ tài khoản	Account holder
+Chú thích dòng code bài luyện	Practice code line annotations
+Chưa có gói loại này	No plan of this type yet
+Chưa đúng	Not correct yet
+Chưa đúng. Đáp án:	Not correct yet. Answer:
+chưa làm	not done
+Chưa nhận được thanh toán. Nếu đã chuyển, hãy tải lại trang sau ít phút hoặc liên hệ hỗ trợ kèm mã đơn.	Payment not received yet. If you have already transferred, reload the page in a few minutes or contact support with your order code.
+Chưa tạo được mã QR, hãy chuyển khoản theo thông tin bên cạnh.	Could not generate a QR code. Please transfer using the details shown beside it.
+Chuyển khoản ngân hàng bằng mã QR (VietQR). Hệ thống nhận thông báo từ ngân hàng và tự kích hoạt Pro trong khoảng {0} đến {1} phút khi số tiền và mã đơn khớp. Không cần gửi ảnh chụp màn hình.	Bank transfer via QR code (VietQR). The system receives the bank notification and automatically activates Pro within about {0} to {1} minutes when the amount and order code match. No need to send a screenshot.
+Chuyển xong, bấm	Once transferred, tap
+Đã báo chuyển, chờ xác nhận	Transfer reported, awaiting confirmation
+Đã báo quản trị viên. Pro sẽ được kích hoạt sau khi kiểm tra.	Admin notified. Pro will be activated after verification.
+Đã bật nhắc gia hạn.	Renewal reminders turned on.
+Đã hết hạn	Expired
+Đã học hết bài mở được	You have finished all unlocked lessons
+Đã hủy gia hạn. Pro vẫn dùng đến hết hạn.	Renewal cancelled. Pro remains active until expiry.
+Đã tắt nhắc gia hạn	Renewal reminders turned off
+Đã thu hồi	Revoked
+Đang chờ tiền về…	Waiting for payment to arrive…
+Đang hiệu lực	Active
+để không bị gián đoạn, thời gian được cộng nối tiếp.	so there is no interruption, the time is added consecutively.
+để quản trị viên kiểm tra và kích hoạt Pro. Không cần gửi ảnh chụp màn hình.	for the admin to verify and activate Pro. No need to send a screenshot.
+Đơn đã bị hủy hoặc hết hạn. Nếu bạn đã chuyển tiền, hãy liên hệ hỗ trợ kèm mã đơn.	This order has been cancelled or has expired. If you have already transferred money, please contact support with your order code.
+Đơn đã hết hạn hoặc bị hủy. Hãy tạo đơn mới.	This order has expired or been cancelled. Please create a new order.
+Đơn đang chờ thanh toán	Order awaiting payment
+Đúng.	Correct.
+Giáo trình {0} chương	Curriculum of {0} chapters
+Giáo trình {0} chương là đường học đầy đủ để thực hành. Các bài hướng dẫn dưới đây là những bài giảng chuyên sâu được biên soạn riêng, đi sâu vào khái niệm và cách tư duy. Hai phần bổ trợ cho nhau.	The {0}-chapter curriculum is the full learning path for practice. The guides below are in-depth lessons written separately, going deeper into concepts and ways of thinking. The two parts complement each other.
+giới hạn lượt mỗi ngày	daily attempt limit
+Gói Free	Free plan
+Hãy chọn đáp án cho tất cả câu hỏi.	Please choose an answer for all questions.
+Hiện chưa mở bán	Not on sale yet
+Học theo thứ tự từ nền tảng đến tư duy giải quyết vấn đề. Mỗi chương có lý thuyết, ví dụ và bài tập thực hành.	Learn in order, from foundations to problem-solving thinking. Each chapter has theory, examples, and hands-on exercises.
+Học tiếp	Continue
+Hủy đơn	Cancel order
+Hủy đơn này?	Cancel this order?
+Khác gì với {0} chương chính?	How is it different from the {0} main chapters?
+Không có dòng cần chú thích.	No lines need annotating.
+Không tìm thấy chương phù hợp. Hãy thử từ khóa hoặc bộ lọc khác.	No matching chapter found. Try a different keyword or filter.
+Kích hoạt Pro thành công. Cảm ơn bạn!	Pro activated successfully. Thank you!
+Lọc tiến độ	Filter by progress
+Mở app ngân hàng, chọn quét QR. Số tiền và nội dung đã điền sẵn (chuẩn VietQR, quét được bằng mọi app ngân hàng).	Open your banking app and choose scan QR. The amount and content are pre-filled (standard VietQR, scannable by any banking app).
+Mở một bài tập, bấm	Open an exercise, then tap
+Nâng cấp để mở bài học Pro Giai đoạn {0}–{1} và các thử thách thuật toán nâng cao.	Upgrade to unlock Pro lessons in Phase {0}–{1} and advanced algorithm challenges.
+Nếu bạn đã chuyển khoản cho đơn này thì đừng hủy, hãy chờ hệ thống kích hoạt.	If you have already transferred money for this order, do not cancel it — wait for the system to activate it.
+Ngân hàng	Bank
+Ôn lại chương	Review chapter
+quản trị viên	admin
+Quản trị viên chưa mở bán.	The admin has not opened sales yet.
+Sang {0} chương bài tập	Go to the {0} exercise chapters
+Số tài khoản	Account number
+Tài khoản quản trị có quyền Pro để xem trước nội dung.	Admin accounts have Pro access to preview content.
+Tài khoản quản trị luôn có quyền Pro để xem trước nội dung.	Admin accounts always have Pro access to preview content.
+Tắt nhắc	Turn off reminders
+Thực hành tự do	Free practice
+Tiến độ của bạn	Your progress
+Tìm chương học	Find a chapter
+Tìm nhanh chủ đề hoặc lọc theo tiến độ hiện tại.	Quickly find a topic or filter by your current progress.
+Tìm tên chương hoặc chủ đề…	Search chapter or topic names…
+Toàn bộ chương học	All chapters
+Tôi đã chuyển khoản	I have transferred
+và chuyển	and transfer
+Vào giáo trình	Go to curriculum
+Về danh sách bài học	Back to lesson list
+Xem gói Pro	View Pro plans
+— đặt tên lớp, lấy mã/join link gửi học sinh.	— name the class, then get the code/join link to send to students.
+— học sinh tự vào bằng mã, hoặc bạn tạo tài khoản tại	— students join by themselves with the code, or you create accounts at
+— vào lớp → tab Bài tập → giao bài có sẵn hoặc tự soạn.	— go to the class → Assignments tab → assign ready-made exercises or create your own.
+· chỉ nộp {0} lần	· only {0} submissions
+· có nhận xét	· has feedback
+· đã đóng	· closed
+· giao riêng	· assigned individually
+· muộn	· late
+(muộn)	(late)
+(sau hạn)	(after deadline)
+AI hỗ trợ	AI support
+Bài tự soạn	Self-written exercises
+Bấm tên học sinh để xem chi tiết nộp bài.	Click a student's name to see submission details.
+Bạn đã dùng hết lượt làm bài.	You have used up all your attempts.
+Bạn đang bị tạm khóa trong lớp	You are temporarily locked in this class
+Bạn sẽ không thấy bài được giao nữa. Quyền Pro có từ lớp này (nếu có) sẽ hết; Pro bạn tự mua hoặc từ gói Family vẫn giữ nguyên. Bài đã nộp vẫn được lưu.	You will no longer see assigned exercises. Pro access from this class (if any) will end; Pro you bought yourself or from a Family plan is kept. Submitted work is still saved.
+Báo cáo hiện khi lớp có học sinh và bài được giao.	The report appears when the class has students and assigned exercises.
+Bắt đầu trong {0} bước	Get started in {0} steps
+Bỏ	Skip
+Câu tự viết cần nội dung, ít nhất {0} lựa chọn và đáp án đúng hợp lệ.	Self-written questions need content, at least {0} options, and a valid correct answer.
+Chi tiết đúng/sai hiện sau hạn nộp của bài kiểm tra.	Correct/incorrect details appear after the test's submission deadline.
+Chờ duyệt	Awaiting approval
+Chờ giáo viên duyệt	Waiting for teacher approval
+Chọn bài từ thư viện {0} bài hoặc tự soạn đề có test chấm tự động.	Choose exercises from the library of {0} exercises, or write your own questions with auto-graded tests.
+Chủ đề cả lớp cần củng cố	Topics the whole class needs to strengthen
+Chưa có bài kiểm tra	No tests yet
+Chưa có bài kiểm tra.	No tests yet.
+Chưa có bài nào.	No exercises yet.
+Chưa có dữ liệu	No data yet
+Chưa có học sinh nào cần chú ý.	No students need attention yet.
+Chưa có học sinh nào nộp.	No students have submitted yet.
+Chưa có học sinh. Gửi mã lớp hoặc liên kết mời bên cạnh.	No students yet. Send the class code or invite link beside this.
+Chưa giao bài nào	No exercises assigned yet
+Chưa làm	Not started
+Chưa nộp lần nào.	Never submitted.
+Cuối tuần	Weekend
+Đã cập nhật.	Updated.
+Đã giao bài.	Exercise assigned.
+Đã gửi yêu cầu, chờ giáo viên duyệt.	Request sent, waiting for teacher approval.
+Đã lưu điểm và nhận xét.	Score and feedback saved.
+Đã nộp bài	Submitted
+Đã rời lớp.	Left the class.
+Đã tải file điểm.	Score file downloaded.
+Đã tạo bài kiểm tra.	Test created.
+Đã tạo lớp.	Class created.
+đã thêm	added
+Đã xóa lớp.	Class deleted.
+Đang bị tạm khóa	Currently locked
+Đang chờ giáo viên duyệt	Waiting for teacher approval
+Đang tham gia lớp…	Joining class…
+đạt	passed
+Điểm:	Score:
+Đổi mã lớp?	Change class code?
+Duyệt	Approve
+Giao cả lớp	Assign to whole class
+Giao cho một số học sinh	Assign to selected students
+Giấy phép Teacher của bạn đã hết hạn. Lớp cũ vẫn xem được nhưng học sinh không còn quyền Pro từ lớp và bạn không tạo được lớp mới.	Your Teacher licence has expired. Old classes are still viewable, but students no longer have Pro access from the class and you cannot create new classes.
+Hãy tạo lớp ở nút phía trên.	Create a class using the button above.
+Hết giờ — đã nộp bài	Time up — submitted
+Hoàn thành TB	Average completion
+Học sinh không còn thấy bài. Bài nộp vẫn lưu trong hệ thống.	Students no longer see the exercise. Submissions remain saved in the system.
+Học sinh không còn thấy bài. Kết quả đã làm vẫn lưu.	Students no longer see the exercise. Completed results remain saved.
+Học sinh mất quyền Pro có từ lớp này (nếu không còn ở lớp nào khác của bạn). Bài đã nộp vẫn lưu.	Students lose Pro access from this class (if they are not in any other class of yours). Submitted work remains saved.
+Hướng dẫn của giáo viên:	Teacher instructions:
+Khi được duyệt, bài được giao sẽ hiện ở đây.	Once approved, assigned exercises will appear here.
+không	no
+Không hạn nộp	No submission deadline
+Không mở được bài	Could not open the exercise
+Không mở được bài kiểm tra	Could not open the test
+Không mở được lớp	Could not open the class
+Không tham gia được	Could not join
+không trộn	not shuffled
+Không xuất được file.	Could not export the file.
+Lịch sử nộp gần đây	Recent submission history
+Liên hệ giáo viên để được mở lại.	Contact your teacher to be unlocked.
+Lớp chưa có học sinh.	The class has no students yet.
+Lớp có dữ liệu nên đã được lưu trữ.	The class has data, so it has been archived.
+Mã cũ sẽ không dùng được nữa. Học sinh đã trong lớp không bị ảnh hưởng.	The old code will no longer work. Students already in the class are not affected.
+Mở lại	Reopen
+Mở lại lớp	Reopen class
+Mua / gia hạn giấy phép	Buy / renew licence
+Nộp bài?	Submit?
+Nộp lúc	Submitted at
+phải duyệt	requires approval
+Rời lớp này?	Leave this class?
+Sau khi có lớp và bài giao, học sinh yếu sẽ hiện ở đây.	Once there is a class and assigned exercises, weaker students will appear here.
+Sau khi nộp không sửa được.	Cannot be edited after submitting.
+Sửa lớp	Edit class
+Tạo lớp đầu tiên	Create your first class
+Tên chưa khớp.	Name does not match.
+Thêm học viên	Add students
+Tổng hợp từ bài thực hành có dữ liệu; không tính học sinh chưa làm bài là yếu.	Compiled from practice exercises with data; students who have not done any exercises are not counted as weak.
+Trang dành cho giáo viên	Teacher page
+trộn câu	shuffle questions
+vào thẳng	go straight in
+Về Lớp của tôi	Back to My Classes
+Về trang giáo viên	Back to teacher page
+Xem gói Teacher	View Teacher plans
+Xóa bài giao này?	Delete this assignment?
+Xóa bài kiểm tra?	Delete this test?
+Xóa lớp?	Delete class?
+Xuất điểm Excel	Export scores to Excel
+· đang bị khóa	· is locked
+({0} gần nhất)	({0} most recent)
+(không in gì)	(prints nothing)
+Ảnh vẫn quá lớn sau khi thu nhỏ. Hãy chọn ảnh khác.	Image is still too large after resizing. Please choose another image.
+Bài thi đạt	Exam passed
+Bản dịch giao diện	Interface translation
+Cần có kết quả cần in hoặc ít nhất một test để máy chấm so khớp.	An expected output or at least one test is required for auto-grading to compare against.
+Cần có tiêu đề và đề bài.	A title and problem statement are required.
+Cảnh báo	Warning
+Cấp Pro {0} ngày?	Grant Pro for {0} days?
+Cấp Pro dùng thử {0} ngày	Grant {0}-day trial Pro
+Cấp quyền	Grant permission
+Cấp quyền quản trị?	Grant admin permission?
+Cấp trial	Grant trial
+Chặn đăng nhập ngay	Block sign-in immediately
+Chỉ tài khoản quản trị viên mới vào được.	Only admin accounts can enter.
+Cho phép đăng nhập lại	Allow re-sign-in
+Cho thi lại chương này	Allow retaking this chapter
+Cho thi lại?	Allow retake?
+Chưa	Not yet
+Chưa có đáp án mẫu để chạy.	No sample solution to run yet.
+Chưa có dòng nào.	No rows yet.
+Chưa làm bài kiểm tra nào.	No exams taken yet.
+Chưa nộp bài nào.	No submissions yet.
+Chứng nhận toàn bộ	All certificates
+Chuyển mục nhanh	Quick section jump
+Cơ sở dữ liệu	Database
+Code và điểm nộp gần đây	Recent code and submission scores
+Đã chạy. Bạn có thể chép phần in ra vào ô kết quả cần in.	Run complete. You can copy the output into the expected output field.
+Đã đổi tên.	Name changed.
+Đã đổi vai trò.	Role changed.
+Đã gửi thông báo.	Notification sent.
+Đã khóa tài khoản.	Account locked.
+Đã khôi phục mặc định.	Defaults restored.
+Đã lưu bài tập mới.	New exercise saved.
+Đã lưu cài đặt. Thay đổi có hiệu lực ngay cho mọi người.	Settings saved. Changes take effect immediately for everyone.
+Đã lưu thay đổi.	Changes saved.
+Đã mở khóa tài khoản.	Account unlocked.
+Đã sao chép code.	Code copied.
+Đã tải lại số liệu.	Stats reloaded.
+Đã tạo sẵn mật khẩu ngẫu nhiên, bạn có thể đổi.	A random password has been generated; you can change it.
+Đã xóa bài tập.	Exercise deleted.
+Đã xóa lượt thi. Học viên có thể thi lại.	Exam attempts deleted. The student can retake the exam.
+Đang ẩn	Hidden
+Đang có phiên	Has a session
+Đăng ký, bảo trì, thương hiệu	Sign-up, maintenance, branding
+Đang sửa bài. Lần nộp cũ của học viên vẫn giữ nguyên.	Editing exercise. The student's previous submissions remain unchanged.
+Đăng xuất khỏi mọi thiết bị, bắt đăng nhập lại	Sign out on all devices, require re-sign-in
+Đăng xuất mọi phiên	Sign out all sessions
+Đăng xuất mọi phiên?	Sign out all sessions?
+Danh sách và tài khoản giáo viên	Teacher list and accounts
+Đáp án mẫu CHƯA đạt. Sửa đáp án hoặc test trước khi lưu, nếu không học viên làm đúng cũng bị chấm sai.	Sample solution does NOT pass yet. Fix the solution or tests before saving, otherwise students who answer correctly will still be marked wrong.
+Đáp án mẫu in ra đúng kết quả cần in.	Sample solution prints the expected output.
+Đổi tên hiển thị	Change display name
+Đổi vai trò	Change role
+Đơn hàng, Pro, thống kê AI	Orders, Pro, AI stats
+Giám sát hệ thống	System monitoring
+Giáo viên (cần thêm giấy phép để tạo lớp)	Teacher (a licence is required to create classes)
+Hạn nộp phải sau giờ mở.	Deadline must be after the opening time.
+Hệ thống đang chạy bình thường.	System is running normally.
+Hết giờ, không nộp	Time's up, no submission
+Hồ sơ người dùng	User profile
+Học tập	Learning
+Học viên sẽ bị đăng xuất khỏi mọi thiết bị và phải đăng nhập lại bằng mật khẩu mới.	The student will be signed out on all devices and must sign in again with the new password.
+Học viên sẽ không còn thấy thông báo này.	The student will no longer see this notification.
+Học, làm bài, tham gia lớp	Learn, do exercises, join classes
+Hủy sửa	Cancel edit
+Khôi phục	Restore
+Khôi phục cài đặt mặc định?	Restore default settings?
+Không có ai khớp	No one matches
+Không có cảnh báo.	No alerts.
+Không đọc được ảnh.	Could not read image.
+Không mở được hồ sơ	Could not open profile
+Không tải được cài đặt	Could not load settings
+Không tải được dữ liệu quản trị	Could not load admin data
+Không tải được số liệu giám sát	Could not load monitoring stats
+Không tải lên được.	Upload failed.
+Không tạo được	Could not create
+Lần nộp	Submission
+Lọc menu quản trị	Filter admin menu
+Lọc menu…	Filter menu…
+Logo hiện tại	Current logo
+Lớp & giấy phép	Classes & licences
+Lớp học, giấy phép Teacher	Classes, Teacher licences
+Lưu thay đổi	Save changes
+Mật khẩu mới ({0} đến {1} ký tự)	New password ({0} to {1} characters)
+Menu quản trị	Admin menu
+Mở bài Pro và Rivo trong {0} ngày	Unlock Pro lessons and Rivo for {0} days
+Mở khóa tài khoản	Unlock account
+Mở/đóng bài kiểm tra chương	Open/close chapter exams
+Mọi cài đặt trong trang này quay về như lúc mới cài. Tài khoản, điểm, bài tập và lịch thi không bị ảnh hưởng.	All settings on this page return to their initial defaults. Accounts, scores, exercises, and exam schedules are unaffected.
+Mọi vai trò	All roles
+Nghiêm trọng	Critical
+Người dùng & lớp	Users & classes
+Nhóm chứng nhận	Certificate group
+Nộp muộn	Late submission
+Phiên	Session
+Quản lý gói Family, xem tiến độ được chia sẻ	Manage the Family plan, view shared progress
+Quản lý lớp của mình (cần giấy phép Teacher còn hạn để tạo lớp)	Manage own classes (a valid Teacher licence is required to create classes)
+Sao lưu, xuất, bảo trì DB	Back up, export, maintain DB
+Số liệu nhanh toàn hệ thống	System-wide quick stats
+Sửa	Edit
+Tải danh sách mật khẩu (CSV)	Download password list (CSV)
+Tài khoản đã tạo	Account created
+Tài khoản, vai trò, khóa, trial	Accounts, roles, locks, trials
+Tạo sẵn tài khoản rồi đưa tên đăng nhập và mật khẩu cho học viên.	Create accounts in advance, then give students their usernames and passwords.
+Tên A → Z	Name A → Z
+Tên cần ít nhất {0} ký tự.	Name must be at least {0} characters.
+Tên đăng nhập chưa khớp.	Username does not match.
+Tên hiện trên bảng xếp hạng và chứng nhận	Name shown on leaderboards and certificates
+Tên mới	New name
+Test ẩn	Hidden test
+Thanh toán · AI · máy chủ	Payments · AI · Server
+Thêm đề có test tự chấm	Add a question with auto-graded tests
+Thông báo toàn hệ thống	System-wide notification
+Thu hồi cookie đăng nhập trên mọi máy (không đổi mật khẩu)	Revoke sign-in cookies on all devices (password unchanged)
+Tìm người dùng	Find user
+Tìm tên hoặc username	Search by name or username
+Toàn quyền: tài khoản, doanh thu, khóa AI, cài đặt	Full access: accounts, revenue, AI keys, settings
+Token vào	Input tokens
+Tổng tài khoản	Total accounts
+Xóa bài	Delete exercise
+Xóa bài nộp, phiên, ghi chú của tài khoản này	Delete this account's submissions, sessions, and notes
+Xóa bài tập?	Delete exercise?
+Xóa các lượt thi của chương đã chọn để học viên làm lại từ đầu.	Delete attempts for the selected chapter so the student can start over.
+Xóa lượt thi	Delete exam attempts
+Xóa tài khoản vĩnh viễn?	Permanently delete account?
+Xóa test	Delete test
+Xóa thông báo	Delete notification
+Xóa thông báo?	Delete notification?
+Xóa vĩnh viễn	Delete permanently
+XP cao nhất	Highest XP
+append() — thêm vào cuối list	append() — add to the end of a list
+def …(): — định nghĩa hàm	def …(): — define a function
+Đổi Tab thành dấu cách	Convert Tabs to spaces
+đơn	single
+Dùng trình soạn cho điện thoại	Use the phone editor
+Dùng trình soạn đầy đủ	Use the full editor
+elif … : — điều kiện khác	elif … : — another condition
+else: — ngược lại	else: — otherwise
+float() — số thực	float() — decimal number
+for … in range(): — vòng lặp	for … in range(): — loop
+Gõ khó trên điện thoại?	Hard to type on a phone?
+if … : — điều kiện	if … : — condition
+int() — đổi sang số nguyên	int() — convert to integer
+kép	double
+len() — độ dài	len() — length
+range() — dãy số	range() — number sequence
+return — trả về giá trị	return — return a value
+str() — đổi sang chuỗi	str() — convert to string
+sum() — tổng một list	sum() — sum of a list
+Thêm ngoặc cho print	Add parentheses to print
+Thừa dấu đóng ngoặc ")" hoặc thiếu dấu mở "(".	Extra closing parenthesis ")" or missing opening "(".
+Trình soạn cho điện thoại	Phone editor
+True — đúng	True — true
+while … : — lặp theo điều kiện	while … : — loop while a condition holds
+Xem lại cặp ngoặc	Check the parentheses
+Đồng ý	Agree
+Bài học xong	Lessons completed
+Bạn chưa có gói Family	You don't have a Family plan yet
+Bạn mất quyền Pro từ gói này.	You will lose Pro access from this plan.
+Cho chủ gói xem tiến độ học của tôi	Let the plan owner see my learning progress
+chưa có	Not yet
+chưa học	Not started
+Có	Yes
+Đã gửi lời mời. Thành viên vào mục Gia đình để đồng ý.	Invitation sent. The member can accept it in the Family section.
+Đã tham gia gói Family. Bạn có quyền Pro.	You've joined the Family plan. You now have Pro access.
+Đã từ chối lời mời.	Invitation declined.
+Đã xóa.	Deleted.
+Không	No
+Một gói cho {0} tài khoản, ai cũng có Pro và tiến độ riêng.	One plan for {0} accounts — everyone gets Pro and their own progress.
+Rời gói	Leave plan
+Rời gói Family?	Leave the Family plan?
+Thành viên mất quyền Pro từ gói Family (Pro tự mua hoặc từ lớp học vẫn giữ). Dữ liệu học của họ không bị xóa.	The member will lose Pro access from the Family plan (Pro bought separately or from a class is kept). Their learning data will not be deleted.
+Xem gói Family	View Family plan
+· quản trị	· admin
+(chờ duyệt)	(pending approval)
+(mật khẩu bạn đã nhập)	(the password you entered)
+(tạm khóa)	(temporarily locked)
+(trống)	(empty)
+Bạn chưa có giấy phép còn hạn: chưa tạo được tài khoản học viên.	You don't have a valid license yet, so student accounts can't be created.
+chưa có giấy phép	No license yet
+chưa vào lớp	Not in a class yet
+Đã khóa	Locked
+Đã thêm vào lớp.	Added to the class.
+Đạt (nộp muộn)	Passed (late submission)
+Giáo viên bị đăng xuất và không đăng nhập được. Lớp học và học sinh vẫn giữ nguyên; nên chuyển lớp cho giáo viên khác nếu giáo viên nghỉ.	The teacher will be signed out and unable to sign in. Classes and students stay unchanged; transfer the classes to another teacher if this teacher leaves.
+Hệ thống tạo mật khẩu mới và đăng xuất học viên khỏi mọi thiết bị.	The system will generate a new password and sign the student out of all devices.
+Hoạt động	Activity
+Học viên bị đăng xuất và không đăng nhập được cho tới khi bạn mở khóa. Bài làm vẫn giữ nguyên.	The student will be signed out and unable to sign in until you unlock them. Their work stays unchanged.
+Học viên chiếm một chỗ trong giấy phép (nếu chưa chiếm).	The student takes up one license seat (if not already taken).
+Không mở được	Couldn't open
+Không tải được	Couldn't load
+Lớp:	Class:
+Lưu trữ	Archive
+Quá hạn chưa nộp	Overdue, not submitted
+quản trị	admin
+Thêm	Add
+Trình duyệt chặn sao chép, hãy bôi đen bảng để chép.	Your browser blocked copying — select the table to copy it.
+Bậc thầy	Master
+Cấp cao nhất	Highest level
+Chúc mừng	Congratulations
+Chuyên gia	Expert
+Giỏi giang	Talented
+Học trò	Pupil
+Huy hiệu mới	New badge
+Huyền thoại	Legend
+Lá non	Young Leaf
+Mầm xanh	Green Sprout
+Tập sự	Apprentice
+Thành thạo	Proficient
+Vững vàng	Steadfast
+Xuất sắc	Outstanding
+Chưa có tài khoản? Giáo viên sẽ tạo tài khoản cho bạn.	Don't have an account yet? Your teacher will create one for you.
+diem = {0}. Từ {1} trở lên in Giỏi, ngược lại in Cố gắng thêm	diem = {0}. From {1} upward, print Giỏi; otherwise print Cố gắng thêm
+Giáo viên cung cấp	Provided by teacher
+Hỏi giáo viên mã lớp để tạo tài khoản.	Ask your teacher for the class code to create an account.
+Theo dõi các kênh chính thức để cập nhật bài học, tính năng mới và nhận hỗ trợ.	Follow the official channels for lesson updates, new features, and support.
+Dòng {0}	Line {0}
+Thư viện	Library
+AI đã phân tích và gắn {0} nhận xét ngay tại dòng code cần chú ý.	AI analyzed and attached {0} comments right at the lines of code needing attention.
+Sau khi nộp không sửa được nữa.	Once submitted, you cannot edit it anymore.
+Bạn còn {0} câu trắc nghiệm chưa chọn. Sau khi nộp không sửa được nữa.	You still have {0} multiple-choice questions unanswered. Once submitted, you cannot edit it anymore.
+Đã dùng {0} lượt	Used {0} times
+Đã dùng {0}/{1} lượt	Used {0}/{1} times
+. Bỏ trống mật khẩu thì hệ tự tạo. Có thể dán thẳng từ Excel (cột cách nhau bằng dấu phẩy hoặc Tab).	. Leave the password blank and the system will generate one. You can paste directly from Excel (columns separated by commas or Tabs).
+Bấm “Xuất CSV” ở mục Người dùng	Click “Export CSV” in the Users section
+Chương trình của bạn in ra	Your program prints
+Chương trình in ra	The program prints
+Có nhiều cách đúng; đây chỉ là một cách.	There are many correct ways; this is just one of them.
+Danh sách	List
+Dữ liệu nhập:	Input data:
+Mỗi dòng một học viên theo dạng	Each line is one student in the format
+Nhập danh sách học viên	Import student list
+Đây là một cách làm. Cách của bạn khác vẫn được chấm đúng nếu kết quả và kỹ thuật đúng yêu cầu.	This is one way to do it. A different approach of yours will still be marked correct if the result and technique meet the requirements.
+Đưa code này vào khung soạn	Put this code into the editor
+Đưa vào khung soạn	Put into the editor
+Huy hiệu ghi nhận những cột mốc trên đường học: Số bài đạt, chuỗi ngày học, bài kiểm tra. Cấp độ tăng theo điểm tích lũy.	Badges mark milestones on your journey: exercises passed, study streaks, tests. Your level rises with total points.
+Còn {0} XP để lên cấp {1} · Hạt giống	{0} XP left to reach level {1} · Seedling
+Cấp {0} · Mầm xanh	Level {0} · Green Sprout
+Cấp {0} · Lá non	Level {0} · Young Leaf
+Còn {0} XP để lên cấp {1} · Lá non	{0} XP left to reach level {1} · Young Leaf
+Cấp {0} · Tập sự	Level {0} · Apprentice
+Còn {0} XP để lên cấp {1} · Tập sự	{0} XP left to reach level {1} · Apprentice
+Cấp {0} · Học trò	Level {0} · Pupil
+Còn {0} XP để lên cấp {1} · Học trò	{0} XP left to reach level {1} · Pupil
+Cấp {0} · Chăm chỉ	Level {0} · Diligent
+Còn {0} XP để lên cấp {1} · Chăm chỉ	{0} XP left to reach level {1} · Diligent
+Cấp {0} · Thành thạo	Level {0} · Proficient
+Còn {0} XP để lên cấp {1} · Thành thạo	{0} XP left to reach level {1} · Proficient
+Cấp {0} · Vững vàng	Level {0} · Steadfast
+Còn {0} XP để lên cấp {1} · Vững vàng	{0} XP left to reach level {1} · Steadfast
+Cấp {0} · Giỏi giang	Level {0} · Talented
+Còn {0} XP để lên cấp {1} · Giỏi giang	{0} XP left to reach level {1} · Talented
+Cấp {0} · Xuất sắc	Level {0} · Outstanding
+Còn {0} XP để lên cấp {1} · Xuất sắc	{0} XP left to reach level {1} · Outstanding
+Cấp {0} · Chuyên gia	Level {0} · Expert
+Còn {0} XP để lên cấp {1} · Chuyên gia	{0} XP left to reach level {1} · Expert
+Cấp {0} · Bậc thầy	Level {0} · Master
+Còn {0} XP để lên cấp {1} · Bậc thầy	{0} XP left to reach level {1} · Master
+Cấp {0} · Huyền thoại	Level {0} · Legend
+Còn {0} XP để lên cấp {1} · Huyền thoại	{0} XP left to reach level {1} · Legend
+Quản trị ·	Admin ·
+Để sau	Later
+Chọn một mục tiêu, hệ thống sẽ gợi ý lộ trình phù hợp nhất cho bạn. Bạn có thể đổi mục tiêu bất cứ lúc nào.	Pick a goal and we'll suggest the learning path that fits you best. You can change your goal anytime.
+Học nền tảng	Build foundations
+Đi từ con số 0, chắc từng khái niệm trước khi sang phần khó.	Start from zero and master each concept before moving on.
+Ôn thi	Prepare for exams
+Củng cố nhanh if, vòng lặp, list và hàm trước kỳ kiểm tra.	Quickly reinforce if, loops, lists and functions before your test.
+Đi làm	Use it at work
+Lộ trình gợi ý theo mục tiêu của bạn	Path suggested for your goal
+Đổi mục tiêu	Change goal
+Chọn mục tiêu	Choose a goal
+Chọn mục tiêu để nhận lộ trình gợi ý phù hợp với bạn.	Choose a goal to get a learning path that fits you.
+Tiếp tục lộ trình	Continue this path
+Trang chủ	Home
+Ngoại ngữ	Languages
+Đổi môn	Switch
+Đổi môn học	Switch subject
+Chọn môn học	Choose a subject
+Học môn này	Study this
+Tất cả	All
+🌏 Ngoại ngữ	🌏 Languages
+Tiếng Anh	English
+Tiếng Trung	Chinese
+Tiếng Nhật	Japanese
+Tiếng Hàn	Korean
+Tiếng Pháp	French
+CỔNG HỌC TẬP	LEARNING PORTAL
+Lộ trình cấp độ	Level path
+Xem toàn bộ khóa	View full course
+Làm gần đây	Recent activity
+Hoàn thành khóa	Course complete
+Từ vựng đã thuộc	Words learned
+Chuỗi ngày học 🔥	Day streak 🔥
+Lượt nộp bài	Submissions
+Ôn tập từ vựng	Vocabulary review
+Ôn ngay	Review now
+Học trước	Study first
+Từ vựng · quy tắc · mẫu câu	Vocabulary · rules · sample sentences
+Nghĩa từ vựng	Word meaning
+Chính tả	Spelling
+Phiên âm pinyin	Pinyin
+Cách đọc	Reading
+Ngữ pháp	Grammar
+Ghép câu	Sentence building
+Luyện nghe	Listening
+Luyện nói	Speaking
+Kiểm tra cấp độ	Level test
+Làm bài →	Start →
+Luyện tập	Practice
+Đang chấm…	Grading…
+Bài tiếp theo →	Next exercise →
+Về cấp độ	Back to level
+✓ Đúng	✓ Correct
+Chúc mừng, bạn đã đạt bài này!	Congratulations, you passed!
+Chưa đạt, xem lại đáp án và làm lại nhé.	Not passed yet — review the answers and try again.
+💬 Hỏi AI vì sao	💬 Ask AI why
+💬 AI nhận xét phát âm	💬 AI pronunciation feedback
+💬 Hỏi AI giải thích bài này	💬 Ask AI to explain this lesson
+🔊 Nghe	🔊 Listen
+Nghe và chọn từ bạn nghe được	Listen and choose the word you hear
+🎤 Bấm và đọc to câu	🎤 Tap and read aloud
+⏺ Đang nghe… nói ngay	⏺ Listening… speak now
+Bấm các từ bên dưới theo đúng thứ tự	Tap the words below in the right order
+Nhập câu trả lời	Type your answer
+📖 Từ vựng	📖 Vocabulary
+🧩 Quy tắc ngữ pháp	🧩 Grammar rules
+💬 Mẫu câu	💬 Sample sentences
+Từ	Word
+Nghĩa	Meaning
+😕 Chưa nhớ	😕 Not yet
+😀 Nhớ rồi	😀 Got it
+Bấm vào thẻ để lật	Tap the card to flip
+Về trang môn học	Back to subject
+Hôm nay không có từ nào cần ôn	Nothing to review today
+CHỨNG NHẬN HOÀN THÀNH	CERTIFICATE OF COMPLETION
+Chứng nhận học viên	This certifies that
+đã hoàn thành toàn bộ bài học và bài kiểm tra	has completed all lessons and the level test
+🖨 In / Lưu PDF	🖨 Print / Save PDF
+Theo số bài đã đạt.	By number of exercises passed.
+Nội dung dành cho thành viên Pro	Pro members only
+Về trang chủ	Back to home
+Bài giao của lớp.	Class assignment.
+Về lớp của tôi	My classes
+Quản lý ngoại ngữ	Language management
+Quản lý Ngoại ngữ	Language management
+Khóa học và cấp độ	Courses and levels
+Lưu hiển thị	Save visibility
+Câu học viên hay sai	Most-missed questions
+Phân quyền Pro	Pro access
+Lưu phân quyền	Save access
+Nhập từ vựng hàng loạt (CSV)	Bulk vocabulary import (CSV)
+Nhập và tạo bài học	Import and create lessons
+Bổ sung bài học	Add a lesson
+Lưu bài học	Save lesson
+Miễn phí toàn bộ	Free for all
+Bền bỉ	Persistent
+Đôi tai thính	Sharp ears
+Tự tin nói	Confident speaker
+Vững ngữ pháp	Grammar solid
+Hoàn hảo	Perfect
+Ôn đều tay	Steady reviewer
+Gia sư ngoại ngữ: giải thích quy tắc, cho ví dụ, mẹo nhớ — bám theo bài bạn đang học.	Language tutor: explains rules, gives examples and memory tips for the lesson you are on.
+Giải thích ngữ pháp bài này	Explain this lesson's grammar
+Cho mình thêm ví dụ	Give me more examples
+Mẹo nhớ từ vựng bài này	Memory tips for these words
+Hướng dẫn phát âm các từ khó	How to pronounce the hard words
+học viên đã học	students active
+điểm trung bình	average score
+Tiến độ từng học viên	Progress by student
+Cấp đã đạt	Level reached
+Chưa làm bài nào	No exercises yet
+Bài cả lớp hay sai	Exercises the class struggles with
+Chưa có bài nào nhiều học viên chưa đạt.	No exercise is causing trouble yet.
+Lớp chưa có học viên.	The class has no students yet.
+Học viên trong lớp chưa làm bài ngoại ngữ nào.	No student in this class has done a language exercise yet.
+Luyện viết	Writing practice
+Nhắc học hằng ngày	Daily study reminders
+Gửi lời nhắc ngay	Send reminders now
+Mỗi ngày sau 19h (giờ Việt Nam), hệ thống tự gửi thông báo cho học viên đã học trong 14 ngày qua nhưng hôm nay chưa học. Nếu đã cấu hình NOTIFY_WEBHOOK_URL, lời nhắc được gửi tiếp sang Zalo/email. Đổi giờ bằng LANG_REMIND_HOUR, tắt bằng LANG_REMIND=0.	Every day after 7 p.m. (Vietnam time) the system notifies students who studied in the last 14 days but not yet today. If NOTIFY_WEBHOOK_URL is set, reminders are forwarded to Zalo/email. Change the hour with LANG_REMIND_HOUR, disable with LANG_REMIND=0.
+Môn học	Subjects
+và ngoại ngữ bằng cách	and languages by
+thực hành.	practising.
+bài tập ngoại ngữ	language exercises
+ngoại ngữ	languages
+Chọn môn bạn muốn học	Choose what you want to learn
+Một tài khoản học được tất cả các môn. Tiến độ từng môn được lưu riêng.	One account covers every subject. Progress is kept separately for each.
+Từ lệnh in đầu tiên tới thuật toán	From your first print to algorithms
+Chọn môn và lộ trình	Pick a subject and a path
+Ngoại ngữ: đủ nghe, nói, đọc, viết	Languages: listening, speaking, reading and writing
+Mỗi bài học có từ vựng, ngữ pháp, ghép câu, luyện nghe và luyện nói bằng micro. Máy chấm ngay từng câu và giải thích vì sao sai. Từ hay quên được nhắc ôn lại đúng lúc.	Each lesson has vocabulary, grammar, sentence building, listening and speaking with your microphone. Every answer is graded instantly with an explanation. Words you forget come back for review at the right time.
+Bài đọc hiểu và bài kiểm tra cuối mỗi cấp, có chứng nhận	A reading passage and a level test at the end of each level, with a certificate
+Luyện viết chữ Hán, Kana, Hangul ngay trên màn hình	Practise writing Chinese characters, kana and Hangul on screen
+Gia sư AI giải thích theo đúng bài đang học	An Rivo that explains in the context of your current lesson
+Giống câu mẫu 96%	Match 96%
+Hôm nay có 7 từ cần ôn lại.	7 words to review today.
+Chương trình ngoại ngữ	Language programs
+Mỗi cấp gồm các bài học theo chủ đề, một bài đọc hiểu và một bài kiểm tra cấp độ.	Each level has themed lessons, a reading passage and a level test.
+Ở đây học được những môn gì?	What can I learn here?
+Luyện nói ngoại ngữ cần gì?	What do I need for speaking practice?
+Cần micro và trình duyệt Chrome hoặc Edge. Nếu không có micro, bạn vẫn gõ câu trả lời được.	A microphone and Chrome or Edge. Without a microphone you can still type your answer.
+Bắt đầu bài học đầu tiên của bạn hôm nay	Start your first lesson today
+và ngoại ngữ	and languages
+bằng	by
+Chương trình	Programs
+Xin chào! Hôm nay bạn muốn học gì?	Hi! What would you like to learn today?
+Học đều mỗi ngày,	Learn a little every day,
+tiến bộ	see your
+thấy được	progress
+.	.
+Nền tảng đào tạo trực tuyến với bài học theo lộ trình, bài tập được chấm ngay, bài kiểm tra theo cấp độ và chứng nhận khi hoàn thành. Học trên máy tính hoặc điện thoại, không cần cài đặt.	An online training platform with structured lessons, instantly graded exercises, level tests and certificates when you finish. Study on a computer or phone with nothing to install.
+môn học	subjects
+Đang đào tạo	Now teaching
+Chọn môn sau khi đăng ký	Pick a subject after signing up
+Chương trình đào tạo	Training programs
+Mỗi môn có lộ trình riêng từ cơ bản đến nâng cao. Một tài khoản học được tất cả, tiến độ từng môn lưu riêng.	Each subject has its own path from beginner to advanced. One account covers them all, with progress kept per subject.
+Học ở đây diễn ra thế nào	How learning works here
+Bài ngắn, làm xong là biết kết quả, bài kế tiếp tự mở.	Short lessons, instant results, and the next lesson unlocks automatically.
+Chọn môn và cấp độ	Choose a subject and level
+Chọn môn bạn cần, bắt đầu từ cấp phù hợp. Trang tổng quan chỉ hiện môn bạn đang học để tập trung.	Pick what you need and start at the right level. Your overview shows only the subject you're studying.
+Xem lý thuyết ngắn	Read a short explanation
+Mỗi bài có phần kiến thức cô đọng, ví dụ và các lỗi hay gặp.	Each lesson has concise notes, examples and common mistakes.
+Làm bài, nộp, chấm ngay	Practise, submit, get graded
+Làm bao nhiêu lần cũng được. Máy chấm từng câu, chỉ ra chỗ sai và giải thích vì sao.	Try as many times as you like. Every answer is graded with an explanation of what went wrong.
+Kiểm tra và nhận chứng nhận	Take the test, earn a certificate
+Hết mỗi chương hoặc cấp độ có bài kiểm tra. Đạt yêu cầu là nhận chứng nhận in được.	Each level ends with a test. Pass it and receive a printable certificate.
+Chấm điểm tức thì	Instant grading
+Không phải chờ giáo viên. Mỗi câu có đáp án đúng và giải thích ngay sau khi nộp; hệ thống giữ điểm cao nhất.	No waiting for a teacher. Every question shows the right answer and an explanation after you submit; your best score is kept.
+Nghe, nói, đọc, viết	Listening, speaking, reading, writing
+Luyện nghe với giọng đọc, luyện nói qua micro có chấm độ giống, bài đọc hiểu và luyện viết chữ trên màn hình.	Listening with spoken audio, speaking through your microphone with a match score, reading passages and on-screen character writing.
+Gia sư AI theo bài	An Rivo for each lesson
+Hỏi bất cứ lúc nào; gia sư bám đúng bài bạn đang học, gợi ý cách làm thay vì đưa sẵn đáp án.	Ask any time; the tutor follows your current lesson and gives hints instead of handing out answers.
+Ôn tập đúng lúc	Review at the right time
+Kiến thức hay quên được nhắc lại sau 1, 3, 7 ngày. Có nhắc học hằng ngày để giữ chuỗi ngày học.	Things you forget come back after 1, 3 and 7 days, with daily reminders to keep your streak.
+Theo dõi tiến bộ	Track your progress
+Biết rõ đã nắm phần nào, còn yếu phần nào; bảng xếp hạng, huy hiệu và chứng nhận tạo động lực.	See what you've mastered and what needs work; leaderboards, badges and certificates keep you motivated.
+Dành cho lớp học	Built for classes
+Giáo viên tạo lớp, giao bài có hạn nộp, xem kết quả và báo cáo từng học viên, xuất bảng điểm.	Teachers create classes, set assignments with deadlines, review each student's results and export grade sheets.
+Nội dung chi tiết	Detailed contents
+Các cấp độ và số bài của từng môn.	Levels and lesson counts for every subject.
+Ở đây đào tạo những gì?	What can I learn here?
+Tiếng Anh (CEFR A1–C1), tiếng Trung (HSK 1–5), tiếng Nhật (JLPT N5–N1), tiếng Hàn (TOPIK 1–5) và tiếng Pháp (DELF A1–C1). Sau khi đăng nhập bạn chọn môn; đổi môn được bất cứ lúc nào.	English (CEFR A1–C1), Chinese (HSK 1–5), Japanese (JLPT N5–N1), Korean (TOPIK 1–5) and French (DELF A1–C1). After signing in you pick a subject and can switch at any time.
+Có mất phí không?	Is it free?
+Tạo tài khoản miễn phí và học miễn phí các cấp cơ bản. Cấp nâng cao dành cho thành viên Pro.	Creating an account is free and the basic levels are free. Advanced levels are for Pro members.
+Chưa biết gì thì học được không?	Can complete beginners join?
+Được. Mỗi môn bắt đầu từ bài đầu tiên của cấp thấp nhất, có lý thuyết ngắn trước mỗi bài.	Yes. Every subject starts from the first lesson of the lowest level, with a short explanation before each lesson.
+Cần chuẩn bị gì?	What do I need?
+Chỉ cần trình duyệt trên máy tính hoặc điện thoại. Luyện nói cần micro và nên dùng Chrome hoặc Edge.	Just a browser on a computer or phone. Speaking practice needs a microphone; Chrome or Edge is recommended.
+Mỗi bài được chấm ngay khi nộp, hệ thống giữ điểm cao nhất. Bài đạt từ ngưỡng quy định sẽ mở bài tiếp theo; đủ bài và qua bài kiểm tra thì nhận chứng nhận.	Each exercise is graded on submission and your best score is kept. Passing unlocks the next lesson; finish the lessons and pass the test to get a certificate.
+Giáo viên dùng thế nào?	How do teachers use it?
+Tài khoản giáo viên do quản trị viên cấp. Giáo viên tạo lớp, gửi mã cho học viên, giao bài và theo dõi báo cáo của cả lớp.	Teacher accounts are granted by an administrator. Teachers create a class, share the code with students, assign work and follow class reports.
+Mật khẩu được mã hóa một chiều. Bài làm và điểm lưu trên máy chủ của hệ thống, không chia sẻ cho bên khác.	Passwords are one-way hashed. Your work and scores are stored on our servers and never shared.
+Theo dõi tin tức và hoạt động mới	Follow our news and updates
+Các kênh chính thức sẽ xuất hiện tại đây sau khi quản trị viên cấu hình liên kết.	Official channels will appear here once an administrator adds the links.
+Tính năng	Features
+Nền tảng học trực tuyến	Online learning platform
+theo lộ trình rõ ràng	on a clear path
+Bài học ngắn, bài tập được chấm ngay, luyện nói có chấm từng từ và bài kiểm tra theo cấp độ. Một tài khoản học được tất cả các môn, trên máy tính hoặc điện thoại.	Short lessons, instantly graded exercises, speaking practice scored word by word, and a test for every level. One account covers every subject, on a computer or a phone.
+Miễn phí các cấp cơ bản của mọi môn. Không cần cài đặt.	The basic levels of every subject are free. Nothing to install.
+Chương trình đang mở	Courses available
+Học, luyện và được chấm ngay	Learn, practise and get graded at once
+Mọi bài đều có phản hồi tức thì, để bạn biết mình đúng sai ở đâu trước khi học tiếp.	Every exercise gives instant feedback, so you know what was right or wrong before moving on.
+Chấm điểm ngay khi nộp	Graded the moment you submit
+Mỗi câu có đáp án và giải thích sau khi nộp. Làm lại bao nhiêu lần cũng được, hệ thống giữ điểm cao nhất.	Each question shows the answer and an explanation after you submit. Retry as often as you like; your best score is kept.
+Luyện nói và phát âm	Speaking and pronunciation
+Nghe giọng mẫu, đọc theo qua micro; máy chấm từng từ và cho nghe lại giọng của bạn. Mỗi ngoại ngữ có 20 chủ đề nói và 20 bài phát âm.	Listen to the model voice and read along into the microphone; every word is scored and you can replay your own voice. Each language has 20 speaking topics and 20 pronunciation lessons.
+Hội thoại và phỏng vấn với AI	AI conversations and interviews
+Nhập vai theo tình huống hoặc phỏng vấn thử theo ngành nghề; AI sửa câu của bạn và gợi ý câu trả lời tiếp theo.	Role-play everyday scenes or take a mock interview for your field; the AI corrects your sentences and suggests what to say next.
+Từ vựng hay sai được nhắc lại sau 1, 3, 7 ngày. Nhắc học hằng ngày giúp bạn giữ chuỗi ngày học.	Words you miss come back after 1, 3 and 7 days. Daily reminders help you keep your streak.
+Tiến độ và chứng nhận	Progress and certificates
+Biết rõ phần đã nắm và phần còn yếu. Hoàn thành một cấp độ là nhận chứng nhận in được.	See what you have mastered and what still needs work. Finish a level to get a printable certificate.
+Máy chấm từng câu, chỉ ra chỗ sai và giải thích vì sao. Có gia sư AI khi bạn cần gợi ý.	Each question is graded, with the mistake pointed out and explained. An Rivo is there when you need a hint.
+Hết mỗi chương hoặc cấp độ có bài kiểm tra. Đạt yêu cầu là nhận chứng nhận.	Every chapter or level ends with a test. Pass it to receive a certificate.
+Dành cho người tự học, lớp học và gia đình	For self-learners, classes and families
+Người tự học	Self-learners
+Học theo cấp độ với tốc độ của riêng bạn. Trang tổng quan cho biết nên học gì tiếp và từ nào cần ôn hôm nay.	Study level by level at your own pace. Your overview shows what to learn next and which words to review today.
+Giáo viên và lớp học	Teachers and classes
+Tạo lớp, giao bài có hạn nộp, xem kết quả và báo cáo của từng học viên, xuất bảng điểm.	Create classes, set assignments with deadlines, see each learner's results and reports, and export grades.
+Gói Family cho nhiều thành viên, mỗi người một tài khoản. Phụ huynh xem tiến độ khi thành viên đồng ý chia sẻ.	The Family plan covers several members, each with their own account. Parents see progress when a member agrees to share it.
+Tạo tài khoản và học các cấp cơ bản của mọi môn đều miễn phí. Các cấp nâng cao và hạn mức AI cao hơn thuộc gói Pro.	Creating an account and studying the basic levels of every subject is free. Advanced levels and higher AI limits are part of Pro.
+Chỉ cần trình duyệt trên máy tính hoặc điện thoại. Luyện nói cần micro và trình duyệt Chrome hoặc Edge.	All you need is a browser on a computer or phone. Speaking practice needs a microphone and Chrome or Edge.
+Điểm phát âm được chấm thế nào?	How is pronunciation scored?
+Trình duyệt chuyển giọng nói của bạn thành chữ, hệ thống so từng từ với câu mẫu rồi cho điểm chính xác, đầy đủ và trôi chảy. Điểm mang tính tham khảo để bạn luyện tập.	Your browser turns your speech into text, and the system compares each word with the model sentence to score accuracy, completeness and fluency. Scores are a guide for practice.
+Chứng nhận có giá trị thế nào?	What is a certificate worth?
+Chứng nhận xác nhận bạn đã hoàn thành nội dung trên nền tảng. Đây không phải chứng chỉ quốc tế như HSK, JLPT, TOPIK hay DELF.	A certificate confirms that you completed content on the platform. It is not an international certificate such as HSK, JLPT, TOPIK or DELF.
+Mật khẩu được băm một chiều. Bài làm và điểm lưu trên máy chủ của hệ thống; bản ghi âm giọng nói không được gửi lên hay lưu lại. Chi tiết có trong Chính sách bảo mật.	Passwords are one-way hashed. Your work and scores are stored on the platform's servers; voice recordings are never uploaded or stored. See the Privacy policy for details.
+Nền tảng	Platform
+Chính sách	Policies
+Chính sách bảo mật	Privacy policy
+Quy định gói thành viên	Membership rules
+Phòng luyện nói	Speaking studio
+CEFR A1 · Câu mẫu	CEFR A1 · Sentences
+Chính xác	Accuracy
+Đầy đủ	Completeness
+Trôi chảy	Fluency
+5/5 bộ test đạt	5/5 test cases passed
+Phỏng vấn thử với AI	Mock interview with AI
+13 lĩnh vực	13 fields
+Nội dung theo khung chuẩn	Content aligned with
+Đánh giá	Reviews
+Chưa thấy câu trả lời bạn cần? Hãy tạo tài khoản và hỏi gia sư AI ngay trong bài học.	Not finding your answer? Create an account and ask the Rivo inside any lesson.
+think · máy nghe thành “sink”	think · heard as “sink”
+Học	Learn
+thật dễ hiểu	made easy
+lý thuyết ngắn	short theory
+bài làm có chấm ngay	instantly graded exercises
+ôn tập giãn cách	spaced review
+Bắt đầu học miễn phí	Start learning for free
+Chơi thử ngay	Try it now
+Miễn phí các cấp cơ bản · Không cần cài đặt · Dùng được trên điện thoại	Basic levels are free · Nothing to install · Works on your phone
+Bài chơi thử.	Try a lesson.
+1. Lời chào	1. Greeting
+2. Xếp loại	2. Grading
+3. Tổng 1..10	3. Sum 1..10
+4. Hàm	4. Function
+Sửa code rồi bấm Chạy hoặc Ctrl+Enter	Edit the code, then press Run or Ctrl+Enter
+Kết quả sẽ hiện ở đây.	Your output will appear here.
+Chọn nghĩa đúng của câu: “Where are you from?”	Pick the right meaning of: “Where are you from?”
+Bạn đang ở đâu?	Where are you right now?
+Bạn đến từ đâu?	Which country are you from?
+Bạn đi đâu vậy?	Where are you going?
+「ありがとう」 (arigatou) nghĩa là gì?	What does 「ありがとう」 (arigatou) mean?
+Xin chào	Hello
+Tạm biệt	Goodbye
+Cảm ơn	Thank you
+Chữ 「水」 (shuǐ) nghĩa là gì?	What does the character 「水」 (shuǐ) mean?
+Nước	Water
+Lửa	Fire
+Cây	Tree
+「안녕하세요」 (annyeonghaseyo) dùng để làm gì?	When do you say 「안녕하세요」 (annyeonghaseyo)?
+Chào hỏi	To greet someone
+Xin lỗi	To apologise
+Chúc ngủ ngon	To say good night
+Chưa đúng.	Not quite.
+“be from” nghĩa là đến từ (quê quán, quốc gia).	“be from” means where someone comes from (home town or country).
+ありがとう là lời cảm ơn; trang trọng hơn là ありがとうございます.	ありがとう means thank you; the more polite form is ありがとうございます.
+水 là nước; 火 là lửa; 木 là cây.	水 is water; 火 is fire; 木 is tree.
+안녕하세요 là câu chào lịch sự, dùng được cả ngày.	안녕하세요 is a polite greeting you can use at any time of day.
+Không chỉ có mỗi bài tập.	More than just exercises.
+bài	exercises
+Từ cơ bản đến nâng cao	From beginner to advanced
+Anh, Trung, Nhật, Hàn, Pháp	English, Chinese, Japanese, Korean, French
+20 chủ đề	20 topics
+Chấm từng từ khi đọc	Scored word by word
+Nhiều ngành	Many fields
+Hội thoại AI	AI conversation
+Nhập vai, phỏng vấn thử	Role-play and mock interviews
+Hết chương là có bài thi	A test at the end of every chapter
+môn	subjects
+Theo cấp CEFR, HSK, JLPT	Levelled by CEFR, HSK, JLPT
+Vì sao tự làm bài thì nhớ lâu.	Why doing it yourself makes it stick.
+Chỉ đọc lướt	Skimming only
+Tự làm bài	Doing exercises
+Làm bài rồi ôn giãn cách	Exercises plus spaced review
+Lượt ôn	Review
+Mô hình minh họa theo dạng đường cong quên Ebbinghaus, không phải số đo người dùng.	Illustration based on the Ebbinghaus forgetting curve, not measured user data.
+Tự làm buộc não nhớ lại	Doing it forces your brain to recall
+Học theo thứ tự hợp lý	Learn in a sensible order
+Lý thuyết ngắn, rồi ví dụ, rồi bài làm có chấm. Làm đúng bài trước mới mở bài sau.	Short theory, then examples, then graded exercises. Pass one to unlock the next.
+Sai đâu được nhắc ôn đó	Review exactly what you got wrong
+Từ và bài hay sai được hẹn ôn lại sau 1, 3 rồi 7 ngày.	Words and exercises you miss come back after 1, 3 and then 7 days.
+Mỗi thẻ là một môn có thật trong hệ thống, bấm vào để bắt đầu học.	Each card is a real subject on the platform.
+Học viên nói gì.	What learners say.
+Câu hỏi thường gặp.	Frequently asked questions.
+Học có miễn phí không?	Is it free?
+Bắt đầu học bằng cách nào?	How do I get started?
+Tạo tài khoản, chọn một môn và bắt đầu từ bài đầu tiên. Đổi môn được bất cứ lúc nào, tiến độ từng môn lưu riêng.	Create an account, pick a subject and start from the first lesson. You can switch subjects any time; progress is saved per subject.
+Dùng trên điện thoại được không?	Does it work on my phone?
+Được. Chỉ cần trình duyệt trên máy tính hoặc điện thoại. Luyện nói cần micro và trình duyệt Chrome hoặc Edge.	Yes. All you need is a browser on a computer or phone. Speaking practice needs a microphone and Chrome or Edge.
+Mỗi ngày cần học bao lâu?	How long should I study each day?
+Một bài ngắn mỗi ngày là đủ để giữ chuỗi ngày học. Mỗi bài thường chỉ mất vài phút.	One short exercise a day keeps your streak going. Most take only a few minutes.
+Mất gốc thì bắt đầu từ đâu?	I'm a complete beginner. Where do I start?
+Mỗi môn bắt đầu từ bài đầu tiên của cấp thấp nhất, có lý thuyết ngắn trước mỗi bài.	Every subject starts from the first lesson of the lowest level, with short theory before each exercise.
+Dữ liệu học có an toàn không?	Is my data safe?
+Mật khẩu được băm một chiều. Bài làm và điểm lưu trên máy chủ của hệ thống; bản ghi âm giọng nói không được gửi lên hay lưu lại.	Passwords are one-way hashed. Your work and scores are stored on our server; voice recordings are never uploaded or kept.
+Bắt đầu hôm nay	Start today
+Sẵn sàng bắt đầu?	Ready to start?
+Tạo tài khoản, chọn môn, vào học ngay.	Create an account, pick a subject, start learning.
+Chứng nhận trên nền tảng không phải chứng chỉ quốc tế.	Platform certificates are not international qualifications.
+Quyền riêng tư	Privacy
+Mục trên trang	On this page
+Minh họa đường cong quên	Forgetting curve illustration
+Pháp lý	Legal
+Tài khoản nhận tiền	Receiving bank account
+đã cấu hình	configured
+Mã giao dịch ngân hàng	Bank transaction ID
+Xác nhận tay từ trang quản trị	Manual confirmation from admin panel
+Đã kích hoạt Pro cho đơn này.	Pro activated for this order.
+Đơn sẽ bị hủy và học viên thấy trạng thái Đã hủy. Chỉ làm khi đã kiểm tra kỹ sao kê. Ghi lý do:	This order will be cancelled and the student will see Cancelled status. Only proceed after carefully checking your bank statement. Enter reason:
+Đã hủy đơn.	Order cancelled.
+Gán giao dịch vào đơn	Assign transaction to order
+Dùng khi học viên ghi sai nội dung chuyển khoản. Nhập mã đơn (PL…) của học viên đó.	Use when a student entered the wrong transfer memo. Enter the student's order code (PL…).
+Đã gán và kích hoạt Pro.	Assigned and activated Pro.
+Số tháng ({0} đến {1}). Thời gian được cộng nối tiếp nếu đang còn hạn.	Number of months ({0} to {1}). Time is extended consecutively if still active.
+Số tháng (1 đến 36). Thời gian được cộng nối tiếp nếu đang còn hạn.	Number of months (1 to 36). Time is extended consecutively if still active.
+Ghi lý do để lưu nhật ký (ví dụ: học bổng, bù lỗi hệ thống).	Enter a reason for the audit log (e.g., scholarship, system error compensation).
+Đã tặng Pro.	Pro granted.
+Học viên mất quyền Pro ngay. Ghi lý do (ví dụ: đã hoàn tiền).	The student will lose Pro access immediately. Enter a reason (e.g., refunded).
+Đã thu hồi.	Revoked.
+Lưu thay đổi gói?	Save plan changes?
+Gói chuyển sang chế độ báo giá.	Plan switched to quote-only mode.
+Đã thêm gói.	Plan added.
+chưa có khóa API	no API key
+Ngân sách AI tháng	Monthly AI budget
+(đã xóa)	(deleted)
+Không xuất được.	Export failed.
+Đã tải thống kê AI.	AI statistics loaded.
+Bỏ qua	Skip
+Ví dụ: 0123456789	Example: 0123456789
+Zalo 09xx… hoặc email	Zalo 09xx… or email
+ID người nhận / nhóm	Recipient / group ID
+DON hoặc HT PL4Z2BW6	DON or HT PL4Z2BW6
+Mã QR thử	Test QR code
+Số tài khoản chỉ gồm 4–19 chữ hoặc số.	Account number must be 4–19 letters or digits.
+Đã lưu tài khoản nhận tiền.	Receiving account saved.
+Đã chép.	Copied.
+URL bot phải bắt đầu bằng http:// hoặc https://	Bot URL must start with http:// or https://
+Mã bí mật cần ít nhất {0} ký tự (bấm Tạo mã).	Secret key must be at least {0} characters (click Generate).
+Mã bí mật cần ít nhất 16 ký tự (bấm Tạo mã).	Secret key must be at least 16 characters (click Generate).
+Đã lưu cài đặt Zalo.	Zalo settings saved.
+Bot đã nhận tin thử. Kiểm tra Zalo của bạn.	Bot received the test message. Check your Zalo.
+{0} chờ xác nhận	{0} awaiting confirmation
+Chưa có doanh thu trong kỳ.	No revenue in this period.
+{0} giao dịch · {1}	{0} transactions · {1}
+Chưa có giao dịch.	No transactions yet.
+{0}Lọc	{0}Filter
+Báo đã chuyển	Reported paid
+Xác nhận đã nhận tiền	Confirm payment received
+Không thấy tiền	Payment not found
+Không có đơn.	No orders.
+Gán vào đơn	Assign to order
+{0}Tìm	{0}Search
+Không tìm thấy.	Not found.
+{0}Thêm gói	{0}Add plan
+Mã gói	Plan code
+Tên (tiếng Việt)	Name (Vietnamese)
+Tên (tiếng Anh)	Name (English)
+Số chỗ (Family/Teacher)	Seats (Family/Teacher)
+Chỉ báo giá (không bán trực tiếp)	Quote only (no direct sale)
+{0} ngày gần nhất · Model	Last {0} days · Model
+{0}Xuất Excel chi tiết	{0}Export detailed Excel
+Lượt gọi	Calls
+Thành công	Success
+Tổng token	Total tokens
+Chi phí kỳ này	Period cost
+Ngân sách tháng ({0}%)	Monthly budget ({0}%)
+Theo người dùng	By user
+{0} lượt · {1}	{0} calls · {1}
+Theo chế độ (mode)	By mode
+: {0} lượt · {1}	: {0} calls · {1}
+{0}: {1} lượt · {2}	{0}: {1} calls · {2}
+Lỗi gần đây	Recent errors
+Dữ liệu webhook #{0}	Webhook payload #{0}
+Chưa nhập đủ tài khoản nhận tiền.	Receiving account details are incomplete.
+Chỉ chữ và số, không dấu cách. Có thể là tài khoản cá nhân.	Letters and digits only, no spaces. Personal accounts are supported.
+Viết đúng như trên app ngân hàng (thường in hoa, không dấu).	Enter exactly as shown in your banking app (usually uppercase, no diacritics).
+Thời gian xác nhận hiển thị cho học viên	Confirmation time shown to students
+Đơn hết hạn sau (giờ)	Order expires after (hours)
+Đang mở bán gói Pro	Pro plans open for sale
+{0}Lưu tài khoản nhận tiền	{0}Save receiving account
+Xem trước mã QR	QR code preview
+Mã thử với số tiền {0}đ và nội dung PLTEST{1}. Quét bằng app ngân hàng để kiểm tra đúng tên chủ tài khoản (không cần chuyển tiền).	Test QR with amount {0}d and memo PLTEST{1}. Scan with your banking app to verify the account holder name (no need to transfer).
+Mã thử với số tiền 79.000đ và nội dung PLTEST01. Quét bằng app ngân hàng để kiểm tra đúng tên chủ tài khoản (không cần chuyển tiền).	Test QR with amount 79,000 VND and memo PLTEST01. Scan with your banking app to verify the account holder name (no need to transfer).
+Nhập ngân hàng và số tài khoản để xem mã.	Enter bank and account number to preview the QR code.
+💬 Báo đơn và xác nhận qua Zalo	💬 Order alerts & confirmation via Zalo
+Chưa bật	Disabled
+Khi học viên bấm “Tôi đã chuyển khoản”, hệ thống gửi đơn tới bot Zalo của bạn. Bạn kiểm tra tài khoản rồi nhắn cho bot	When a student clicks “I have transferred”, the system sends the order to your Zalo bot. Check your bank account, then message the bot
+để xem đơn đang chờ.	to view pending orders.
+Bật báo đơn qua Zalo	Enable Zalo order alerts
+Địa chỉ bot Zalo nhận tin (URL)	Zalo bot webhook URL
+Bot nhận POST JSON có trường	The bot receives a JSON POST with fields
+(tin cần gửi) và	(message text) and
+(ID Zalo bên dưới), kèm header	(Zalo ID below), with header
+ID Zalo của bạn (tùy bot)	Your Zalo ID (bot-dependent)
+Nếu nhập, chỉ lệnh có trường	If set, only commands whose
+trùng ID này mới được chấp nhận.	matches this ID will be accepted.
+Mã bí mật dùng chung	Shared secret key
+Tạo mã	Generate
+Ít nhất {0} ký tự. Dán mã này vào cấu hình bot.	At least {0} characters. Paste this key into your bot configuration.
+Ít nhất 16 ký tự. Dán mã này vào cấu hình bot.	At least 16 characters. Paste this key into your bot configuration.
+Địa chỉ bot gửi lệnh HT về (dán vào bot)	Callback URL for bot HT commands (paste into bot)
+{0}Chép	{0}Copy
+{0}Lưu cài đặt Zalo	{0}Save Zalo settings
+🔔 Gửi tin thử tới Zalo	🔔 Send test message to Zalo
+Thử lệnh ngay tại đây (giống khi nhắn cho bot)	Test command right here (same as messaging the bot)
+Giá đang bán	Active pricing
+{0}Sửa gói và giá	{0}Edit plans & pricing
+Thời hạn	Duration
+Giá	Price
+{0} tháng	{0} months
+Không tạo được mã.	Could not generate code.
+Đang học ({0} ngày)	Active ({0} days)
+Đang học (7 ngày)	Active (7 days)
+Bị khóa	Locked
+Xem giám sát	View monitoring
+Đối soát ngay	Reconcile now
+Gửi thông báo nhắc	Send reminder
+Xem danh sách	View list
+Xem đơn	View orders
+tạo tài khoản mới	created a new account
+{0}: {1} đạt, {2} chưa đạt	{0}: {1} passed, {2} failed
+· hạn	· due
+Khu quản trị	Admin Panel
+Về trang học	Back to learning
+{0}Hồ sơ của tôi	{0}My Profile
+{0}Về trang học	{0}Back to learning
+{0}Đăng xuất	{0}Log out
+không đổi	unchanged
+{0}Tải lại	{0}Reload
+{0}Gửi thông báo	{0}Send notification
+{0}Thêm học viên	{0}Add student
+Việc cần xử lý	Action items
+Mọi thứ đều ổn.	Everything looks good.
+Không có cảnh báo hệ thống, đơn chờ đối soát hay học viên cần nhắc.	No system alerts, pending orders, or students needing reminders.
+{0} lượt nộp	{0} submissions
+Tình trạng học viên	Student status
+{0} tài khoản học viên	{0} student accounts
+Lượt nộp	Submissions
+Chưa có bài nộp nào để thống kê.	No submissions to display yet.
+Từ {0} lượt nộp, tỉ lệ đạt thấp nhất	Min {0} submissions, lowest pass rate
+Từ 3 lượt nộp, tỉ lệ đạt thấp nhất	Min 3 submissions, lowest pass rate
+Chưa đủ dữ liệu.	Not enough data.
+Học viên cần nhắc	Students needing a reminder
+Lâu nhất chưa quay lại học	Longest inactive
+Nhắc →	Remind →
+Không có học viên nào nghỉ quá {0} ngày.	No students inactive for more than {0} days.
+Không có học viên nào nghỉ quá 7 ngày.	No students inactive for more than 7 days.
+Chưa có hoạt động.	No activity yet.
+Lịch kiểm tra sắp tới	Upcoming assessments
+Lịch →	Schedule →
+Chưa đặt lịch kiểm tra nào.	No assessments scheduled.
+Chi tiết →	Details →
+{0}Máy chủ	{0}Server
+Không rõ	Unknown
+Kết nối tốt	Connected
+Mất kết nối	Disconnected
+{0}Trợ lý AI	{0}AI Assistant
+{0}Đang online	{0}Online
+Đã duyệt	Approved
+Bản tiếng Việt đã sửa sau khi dịch	Vietnamese source changed after translation
+Mục tiêu	Objectives
+Vì sao cần học	Why it matters
+Khái niệm	Concept
+Giải thích từng dòng	Line-by-line explanation
+Lỗi thường gặp	Common mistakes
+Tóm tắt	Summary
+Câu hỏi nhanh	Quick quiz
+Lựa chọn	Options
+Giải thích	Explanation
+{0}Tạo bản nháp AI cho {1} mục chưa có	{0}Generate AI draft for {1} missing items
+Bản tiếng Việt đã thay đổi sau khi dịch, hãy rà lại.	The Vietnamese source changed after translation; please review.
+{0}Tạo bản nháp bằng AI	{0}Generate AI draft
+Tiếng Việt (bản gốc)	Vietnamese (source)
+Tiếng Việt	Vietnamese
+Đã phân công.	Assigned.
+{0}Cấp giấy phép	{0}Grant license
+Chưa có giấy phép nào.	No licenses yet.
+{0}Tạo lớp cho giáo viên	{0}Create class for teacher
+tạo {0}	created {0}
+Chưa có lớp nào.	No classes yet.
+Cấp giấy phép Teacher	Grant Teacher license
+Tên đăng nhập của giáo viên	Teacher username
+Tài khoản học viên/phụ huynh sẽ tự thành giáo viên.	Student/parent accounts will automatically be promoted to teacher.
+Giáo viên phụ trách	Assigned teacher
+Đổi giáo viên phụ trách	Change assigned teacher
+Học sinh giữ chỗ theo giấy phép của giáo viên mới khi tham gia hoặc được duyệt sau này.	Students will use seats from the new teacher's license when joining or approved later.
+Đặt trong Quản trị	Set in Admin
+Từ biến môi trường máy chủ	From server environment variable
+Mặc định	Default
+Tự động qua SePay	Automated via SePay
+Hãy lưu cấu hình trước khi kiểm tra.	Please save settings before testing.
+Xác nhận mật khẩu	Confirm password
+Thay đổi khóa bí mật cần nhập lại mật khẩu tài khoản quản trị của bạn.	Changing secret keys requires re-entering your admin account password.
+Xác nhận	Confirm
+Đã lưu cấu hình. Có hiệu lực ngay.	Configuration saved. Effective immediately.
+Không tải được cấu hình	Failed to load configuration
+{0} Đã đặt {1}	{0} Set {1}
+Sẽ xóa khi lưu	Will be cleared on save
+Theo biến môi trường / mặc định	Use environment variable / default
+Đang dùng:	Currently using:
+{0}Sao chép	{0}Copy
+Gửi một câu hỏi rất ngắn tới Gemini bằng khóa và model đã lưu. Lưu thay đổi trước khi kiểm tra. Chi phí vài phần nghìn xu, có ghi vào báo cáo chi phí.	Sends a tiny test prompt to Gemini using the saved key and model. Save changes before testing. Costs a fraction of a cent and is logged in cost reports.
+{0}Kiểm tra kết nối	{0}Test connection
+Chưa có khóa API	No API key
+trong thư mục hệ thống. Lệnh docker và quyền chạy Docker không chỉnh được từ web (vì an toàn).	in the project directory. The docker command and permissions cannot be changed from the web UI (for security).
+Webhook thông báo (Zalo / email / n{0}n)	Notification webhook (Zalo / email / n{0}n)
+Webhook thông báo (Zalo / email / n8n)	Notification webhook (Zalo / email / n8n)
+Đặt biến môi trường trên máy chủ:	Set server environment variables:
+(bắt buộc) và tùy chọn	(required) and optional
+. Mỗi thông báo (nộp bài, chấm điểm, quên mật khẩu…) sẽ POST JSON tới URL đó.	. Every notification (submission, grading, password reset…) will POST JSON to that URL.
+{0}Gửi bản tin thử	{0}Send test webhook
+nếu đã đặt secret. Dùng Make.com / n{0}n để chuyển sang Zalo OA hoặc email.	if a secret is set. Use Make.com / n{0}n to forward to Zalo OA or email.
+nếu đã đặt secret. Dùng Make.com / n8n để chuyển sang Zalo OA hoặc email.	if a secret is set. Use Make.com / n8n to forward to Zalo OA or email.
+Những gì không chỉnh ở đây	What cannot be changed here
+Cổng (PORT), địa chỉ nghe (HOST) và thư mục dữ liệu (DATA_DIR) cần có trước khi hệ thống khởi động nên vẫn đặt trong cấu hình PM{0}. Địa chỉ máy chủ Gemini cũng không cho đổi từ web để khóa AI không thể bị gửi tới máy chủ lạ.	Port (PORT), bind address (HOST), and data directory (DATA_DIR) are needed before startup and remain in the PM{0} configuration. The Gemini API host also cannot be changed from the web UI so your AI key can never be sent to an untrusted server.
+Cổng (PORT), địa chỉ nghe (HOST) và thư mục dữ liệu (DATA_DIR) cần có trước khi hệ thống khởi động nên vẫn đặt trong cấu hình PM2. Địa chỉ máy chủ Gemini cũng không cho đổi từ web để khóa AI không thể bị gửi tới máy chủ lạ.	Port (PORT), bind address (HOST), and data directory (DATA_DIR) are needed before startup and remain in the PM2 configuration. The Gemini API host also cannot be changed from the web UI so your AI key can never be sent to an untrusted server.
+Bộ thông dịch dự phòng	Fallback interpreter
+{0}Lưu cấu hình	{0}Save configuration
+{0} Kết nối được	{0} Connected
+Lỗi: {0}	Error: {0}
+Cách xử lý:	How to fix:
+Chưa cấu hình NOTIFY_WEBHOOK_URL	NOTIFY_WEBHOOK_URL is not configured
+Webhook lỗi: {0}	Webhook error: {0}
+Bảng điều khiển	Dashboard
+Việc cần xử lý và tình hình học tập	Action items and learning overview
+Học viên và lớp	Students & Classes
+Tài khoản người dùng	User Accounts
+Học viên, phụ huynh, khóa tài khoản, đặt lại mật khẩu	Students, parents, account lock, password reset
+Tài khoản và giấy phép giáo viên	Teacher accounts and licenses
+Lớp học và giấy phép Teacher	Classes and Teacher licenses
+Nội dung học	Learning Content
+Thêm đề có bộ test tự chấm	Add problems with auto-graded tests
+Lịch kiểm tra	Assessment Schedule
+Khóa ngoại ngữ	Language Courses
+Quản lý nội dung ngoại ngữ	Manage language course content
+Theo dõi học tập	Learning Progress
+Code, điểm và lượt nộp gần đây	Recent code, scores, and submissions
+Gửi thông báo tới học viên	Send notifications to students
+Doanh thu và gói Pro	Revenue & Pro Plans
+Đơn hàng, thanh toán, thống kê AI	Orders, payments, AI usage stats
+Thanh toán, AI, máy chủ	Payments, AI & Server
+Song ngữ Việt và Anh	Vietnamese & English localization
+Dữ liệu và sao lưu	Data & Backups
+Sao lưu, xuất, bảo trì cơ sở dữ liệu	Backup, export, database maintenance
+Giám sát	Monitoring
+In thông báo	Print a message
+Tính tổng hai số	Sum of two numbers
+Giới thiệu tên	Introduce yourself
+In dãy số	Print a number sequence
+Dùng for in các số {0}, {1}, {2}, {3}, {4} mỗi số một dòng.	Use a for loop to print {0}, {1}, {2}, {3}, {4}, one number per line.
+Dùng for in các số 1, 2, 3, 4, 5 mỗi số một dòng.	Use a for loop to print 1, 2, 3, 4, 5, one number per line.
+Đếm ngược	Countdown
+Tổng các phần tử	Sum of elements
+Hàm nhân đôi	Double function
+Viết hàm double(x) trả về {0}*x. In double({1}).	Write a function double(x) that returns {0}*x. Print double({1}).
+Viết hàm double(x) trả về 2*x. In double(9).	Write a function double(x) that returns 2*x. Print double(9).
+Tải lại Số liệu	Reload Metrics
+: `Đã điền mẫu “{0}”. Chỉnh lại cho lớp của bạn rồi bấm Lưu.`,	: `Filled template “{0}”. Adjust it for your class and click Save.`,
+an.nguyen, Nguyễn Văn An, matkhau{0} binh.tran, Trần Thị Bình	an.nguyen, Nguyen Van An, password{0} binh.tran, Tran Thi Binh
+an.nguyen, Nguyễn Văn An, matkhau1 binh.tran, Trần Thị Bình	an.nguyen, Nguyen Van An, password1 binh.tran, Tran Thi Binh
+{0}Tải lại số liệu	{0}Reload data
+{0}Thêm tài khoản	{0}Add account
+{0}Nhập danh sách	{0}Import list
+{0}Xuất CSV	{0}Export CSV
+{0}Danh sách học viên	{0}Student list
+{0}Đặt lại mật khẩu	{0}Reset password
+{0}Áp dụng	{0}Apply
+{0}Thêm test	{0}Add test
+tên_đăng_nhập, Tên hiển thị, mật khẩu	username, Display Name, password
+{0}Tải danh sách mật khẩu (CSV)	{0}Download password list (CSV)
+{0}Chọn ảnh…	{0}Choose image…
+{0}Dùng logo mặc định	{0}Use default logo
+{0}Lưu cài đặt	{0}Save settings
+{0}Tải bản sao lưu (.db)	{0}Download backup (.db)
+Trợ lý AI chưa bật hoặc chưa được cấu hình.	AI Assistant is not enabled or configured.
+Dòng	Line
+Ngoại ngữ ·	Languages ·
+Chọn bài ngoại ngữ.	Select a language lesson.
+Lưu dưới dạng PDF	Save as PDF
+{0}Trang giáo viên	{0}Teacher Dashboard
+{0}Tham gia lớp	{0}Join class
+{0}Rời lớp	{0}Leave class
+{0} Về lớp	{0} Back to class
+{0}Xuất điểm Excel	{0}Export grades to Excel
+{0}Xóa	{0}Delete
+{0}Học viên của tôi	{0}My students
+{0}Tạo lớp	{0}Create class
+{0}Mua / gia hạn giấy phép	{0}Buy / renew license
+{0}Tạo lớp đầu tiên	{0}Create first class
+{0}Tạo liên kết (7 ngày)	{0}Create link (7 days)
+{0}Giao bài mới	{0}New assignment
+Môn	Course
+Cấp độ	Level
+Ngôn ngữ	Language
+{0} ({1} câu)	{0} ({1} questions)
+{0}Tạo bài kiểm tra	{0}Create exam
+{0}Xuất Excel	{0}Export Excel
+{0}Bản in / Lưu PDF	{0}Print / Save PDF
+{0}In / Lưu PDF	{0}Print / Save PDF
+{0}Sửa thông tin	{0}Edit info
+{0}Xóa lớp	{0}Delete class
+Không tìm thấy khóa học	Course not found
+bài đã đạt	passed
+Ý chính	Key concept
+qua tất cả test	passed all tests
+Ví dụ	Example
+Nhập	Input
+Lớp chính phải tên là Main.	The main class must be named Main.
+Xem lời giải mẫu	View sample solution
+Đang biên dịch và chạy…	Compiling and running…
+Quá thời gian (chương trình chạy quá lâu hoặc lặp vô hạn)	Time limit exceeded (program ran too long or entered an infinite loop)
+Kết quả in ra	Output
+Lỗi biên dịch — chưa chấm được	Compilation error — could not grade
+Mở gia sư AI và chọn “Giải thích lỗi” nếu chưa hiểu thông báo lỗi.	Open the Rivo and select “Explain error” if you don't understand the error message.
+Lỗi biên dịch	Compilation error
+sai kết quả	wrong answer
+Sai kết quả	Wrong answer
+Lỗi khi chạy	Runtime error
+🎉 Chính xác! Qua tất cả test.	🎉 Correct! Passed all tests.
+Cần in	Expected
+Bạn in	Your output
+Code đang viết sẽ bị thay bằng code ban đầu.	Your current code will be replaced with the starter code.
+Bạn đã đạt bài này!	You passed this exercise!
+Chưa đạt, xem lại đáp án rồi làm lại nhé.	Not passed yet. Review the answers and try again.
+câu đúng	correct
+Đáp án	Answer
+Vẫn nộp	Submit anyway
+THÀNH TÍCH	ACHIEVEMENTS
+Không tìm thấy khóa học.	Course not found.
+bài đạt	passed
+Điểm kiểm tra cấp độ	Level exam scores
+Xếp theo số bài đã đạt, bằng nhau thì xét tổng điểm.	Ranked by exercises passed, then by total points.
+(bạn)	(you)
+Đạt {0} bài viết chương trình	Pass {0} coding exercises
+Đạt 10 bài viết chương trình	Pass 10 coding exercises
+Chiến binh code	Code Warrior
+Đạt 24 bài viết chương trình	Pass 24 coding exercises
+Thợ săn lỗi	Bug Hunter
+Sửa đúng {0} bài có lỗi	Fix {0} buggy exercises
+Sửa đúng 5 bài có lỗi	Fix 5 buggy exercises
+Đọc code siêu	Code Reader
+Đạt {0} bài trắc nghiệm và đoán kết quả	Pass {0} quiz and output-prediction exercises
+Đạt 6 bài trắc nghiệm và đoán kết quả	Pass 6 quiz and output-prediction exercises
+Vượt cấp	Level Up
+Đạt {0} bài kiểm tra cấp độ	Pass {0} level exams
+Đạt 1 bài kiểm tra cấp độ	Pass 1 level exam
+phút trước	minutes ago
+giờ trước	hours ago
+ngày trước	days ago
+Đổi giao diện sáng / tối	Toggle light / dark theme
+Sao chép câu trả lời	Copy response
+Đã sao chép câu trả lời.	Response copied.
+Trình duyệt không cho sao chép tự động. Hãy bôi đen rồi sao chép.	Browser blocked automatic copying. Please select the text and copy manually.
+).replace(/^Chương\s*\d+\s*:\s*/i,	).replace(/^Chương\s*\d+\s*:\s*/i,
+Không tải được dữ liệu	Failed to load data
+{0}Thử lại	{0}Retry
+{0}Rời gói	{0}Leave plan
+m.status === "invited").length}/{0} chỗ	m.status === "invited").length}/{0} seats
+{0}Gia hạn	{0}Renew
+{0}Mời	{0}Invite
+{0}Xem gói Family	{0}View Family plan
+Chưa lưu được cài đặt:	Could not save settings:
+Mở khóa học	Open course
+hạn	due
+Làm một bài để giữ chuỗi ngày học	Complete a lesson to keep your streak
+Học tiếp ngay	Continue learning
+Xem lộ trình môn	View course path
+ngày học liên tiếp	day streak
+Hôm nay bạn đã học. Làm thêm một bài để nhớ lâu hơn.	You practiced today! Do one more lesson for better retention.
+Hôm nay bạn chưa học. Một bài ngắn là đủ giữ chuỗi.	You haven't practiced today. One quick lesson keeps your streak alive.
+từ cần ôn hôm nay	words due for review today
+Môn của bạn	Your courses
+Thêm môn	Add course
+Bạn chưa bắt đầu môn nào	You haven't started any courses yet
+Chọn một môn bên dưới để bắt đầu.	Choose a course below to get started.
+Có thể bạn muốn học	Recommended for you
+Việc cần làm	To-do
+Gia sư AI	Rivo
+Giỏi	Great
+Chọn nghĩa đúng của câu: \u{0}cWhere are you from?\u{1}d	Choose the correct meaning of: \u{0}cWhere are you from?\u{1}d
+Chọn nghĩa đúng của câu: \u201cWhere are you from?\u201d	Choose the correct meaning of: \u201cWhere are you from?\u201d
+\u{0}cbe from\u{1}d nghĩa là đến từ (quê quán, quốc gia).	\u{0}cbe from\u{1}d means to come from (hometown, country).
+\u201cbe from\u201d nghĩa là đến từ (quê quán, quốc gia).	\u201cbe from\u201d means to come from (hometown, country).
+\u{0}cありがとう\u{1}d (arigatou) nghĩa là gì?	What does \u{0}cありがとう\u{1}d (arigatou) mean?
+\u300cありがとう\u300d (arigatou) nghĩa là gì?	What does \u300cありがとう\u300d (arigatou) mean?
+Chữ \u{0}c水\u{1}d (shuǐ) nghĩa là gì?	What does the character \u{0}c水\u{1}d (shuǐ) mean?
+Chữ \u300c水\u300d (shuǐ) nghĩa là gì?	What does the character \u300c水\u300d (shuǐ) mean?
+\u{0}c안녕하세요\u{1}d (annyeonghaseyo) dùng để làm gì?	What is \u{0}c안녕하세요\u{1}d (annyeonghaseyo) used for?
+\u300c안녕하세요\u300d (annyeonghaseyo) dùng để làm gì?	What is \u300c안녕하세요\u300d (annyeonghaseyo) used for?
+Mở {0} ở tab mới	Open {0} in new tab
+{0} chủ đề	{0} topics
+Từ lệnh in đầu tiên tới thuật toán, cấu trúc dữ liệu và tư duy AI.	From your first print statement to algorithms, data structures, and AI thinking.
+).replace(/^Tiếng /,	).replace(/^Tiếng /,
+bài học	lessons
+cấp độ	levels
+miễn phí	free
+Các cấp cơ bản miễn phí.	Basic levels are free.
+Chơi thử ngay {0}	Try now {0}
+{0}Miễn phí các cấp cơ bản · Không cần cài đặt · Dùng được trên điện thoại	{0}Free basic levels · No setup required · Mobile friendly
+{0}Chạy	{0}Run
+Từ và bài hay sai được hẹn ôn lại sau {0}, {1} rồi {2} ngày.	Frequently missed words and exercises are scheduled for review after {0}, {1}, and {2} days.
+Đọc chậm	Speak slowly
+Nghe đọc (bấm lần nữa để nghe chậm)	Listen (click again to listen slowly)
+Nghe đọc	Listen
+Trình duyệt này chưa hỗ trợ giọng đọc.	Speech synthesis is not supported in this browser.
+Cấp độ này dành cho thành viên Pro.	This level is for Pro members.
+Đổi nội dung học	Switch subject
+bạn	you
+).replace(/đ/g,	).replace(/đ/g,
+Tìm khóa học…	Search courses…
+Tìm khóa học	Search courses
+Nhóm môn	Category
+Lọc theo trạng thái	Filter by status
+Làm bài từ vựng để bắt đầu theo dõi từ cần ôn	Complete vocabulary lessons to start tracking words for review
+· bổ sung	· extra
+Làm thêm bài từ vựng, nghe hoặc phiên âm để có từ ôn tập.	Complete more vocabulary, listening, or pronunciation lessons to add review words.
+Lật thẻ	Flip card
+Đạt bài đầu tiên	Pass first lesson
+Vốn từ {0}	Vocabulary {0}
+Vốn từ 50	Vocabulary 50
+Vốn từ 150	Vocabulary 150
+Đạt {0} bài luyện nghe	Pass {0} listening lessons
+Đạt 5 bài luyện nghe	Pass 5 listening lessons
+Đạt {0} bài luyện nói	Pass {0} speaking lessons
+Đạt 5 bài luyện nói	Pass 5 speaking lessons
+Đạt {0} bài ngữ pháp	Pass {0} grammar lessons
+Đạt 10 bài ngữ pháp	Pass 10 grammar lessons
+Theo dõi {0} từ trong thẻ ôn tập	Track {0} words in flashcards
+Theo dõi 30 từ trong thẻ ôn tập	Track 30 words in flashcards
+Giải thích ngắn gọn các quy tắc ngữ pháp của bài này, mỗi quy tắc cho {0} ví dụ.	Briefly explain the grammar rules of this lesson, with {0} examples for each rule.
+Giải thích ngắn gọn các quy tắc ngữ pháp của bài này, mỗi quy tắc cho 2 ví dụ.	Briefly explain the grammar rules of this lesson, with 2 examples for each rule.
+Trợ lý AI chưa được bật.	AI Assistant is not enabled.
+á	á
+à	à
+é	é
+è	è
+í	í
+ì	ì
+ó	ó
+ò	ò
+ú	ú
+ù	ù
+ê	ê
+â	â
+ô	ô
+Bàn phím ký tự	Character keyboard
+Bạn chưa cho phép dùng micro. Bấm biểu tượng ổ khóa trên thanh địa chỉ → cho phép Micro, rồi thử lại.	Microphone access is blocked. Click the lock icon in the address bar → allow Microphone, then try again.
+Trình duyệt chặn dịch vụ nhận giọng nói. Hãy dùng Chrome/Edge bản mới.	Browser blocked speech recognition. Please use the latest Chrome or Edge.
+Không tìm thấy micro. Kiểm tra micro đã cắm và được chọn trong cài đặt máy.	No microphone found. Check that your microphone is plugged in and selected in system settings.
+Nhận giọng nói cần Internet (Chrome gửi âm thanh lên máy chủ nhận dạng). Kiểm tra mạng rồi thử lại.	Speech recognition requires an Internet connection (Chrome sends audio to a recognition server). Check your network and try again.
+Không nghe thấy tiếng nói. Nói to, gần micro hơn và thử lại.	No speech detected. Speak louder and closer to the microphone, then try again.
+Trình duyệt chưa hỗ trợ nhận giọng nói cho ngôn ngữ này. Bạn có thể gõ câu vào ô.	Speech recognition is not supported for this language in your browser. You can type the sentence instead.
+Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy dùng Chrome/Edge, hoặc gõ lại câu.	Speech recognition is not supported in this browser. Please use Chrome/Edge, or type the sentence.
+Micro chỉ dùng được khi trang chạy bằng https:// (hoặc localhost).	Microphone is only available over https:// (or localhost).
+Không nghe rõ, thử lại nhé.	Could not hear clearly, please try again.
+Không bật được micro:	Could not start microphone:
+· tốt, có thể nộp	· good, ready to submit
+· thử đọc lại chậm và rõ hơn	· try speaking more slowly and clearly
+Câu máy nghe được (có thể gõ nếu không có micro)	Recognized speech (or type here if you have no microphone)
+Bấm nút Nghe (nghe lại bao nhiêu lần cũng được) rồi chọn từ bạn nghe thấy.	Click Listen (as many times as you like) and select the word you hear.
+Bấm loa để nghe mẫu, rồi bấm micro và đọc to. Máy so câu bạn nói với câu mẫu, giống từ {0}% là đúng. Nên dùng Chrome hoặc Edge.	Click the speaker to listen, then click the microphone and read aloud. Your speech is compared with the sample; {0}%+ match passes. Chrome or Edge is recommended.
+Bấm loa để nghe mẫu, rồi bấm micro và đọc to. Máy so câu bạn nói với câu mẫu, giống từ 75% là đúng. Nên dùng Chrome hoặc Edge.	Click the speaker to listen, then click the microphone and read aloud. Your speech is compared with the sample; 75%+ match passes. Chrome or Edge is recommended.
+Đọc đoạn văn (có thể bấm loa để nghe), rồi trả lời các câu hỏi.	Read the passage (or click the speaker to listen), then answer the questions.
+Ghép các từ thành câu đúng với nghĩa tiếng Việt.	Arrange the words into a sentence matching the meaning.
+Chọn đáp án đúng cho mỗi câu.	Choose the correct answer for each question.
+(bỏ trống)	(empty)
+Tên bài mới	New lesson title
+từ|phiên âm|nghĩa từ {0}|phiên âm|nghĩa từ {1}|phiên âm|nghĩa từ {2}|phiên âm|nghĩa	word|phonetic|meaning word {0}|phonetic|meaning word {1}|phonetic|meaning word {2}|phonetic|meaning
+từ|phiên âm|nghĩa từ 2|phiên âm|nghĩa từ 3|phiên âm|nghĩa từ 4|phiên âm|nghĩa	word|phonetic|meaning word 2|phonetic|meaning word 3|phonetic|meaning word 4|phonetic|meaning
+Câu hỏi ___	Question ___
+các từ cách nhau dấu cách	words separated by spaces
+Nghĩa tiếng Việt	Meaning
+từ,phiên âm,nghĩa	word,phonetic,meaning
+từ,nghĩa	word,meaning
+words: mỗi dòng "từ|phiên âm|nghĩa" (Anh/Pháp: "từ|nghĩa"), ít nhất {0} từ · grammar: [câu, [{1} lựa chọn], vị trí đáp án tính từ {2}, giải thích] · sentences: [câu có các từ cách nhau bằng dấu cách, nghĩa].	words: each line "word|phonetic|meaning" (EN/FR: "word|meaning"), at least {0} words · grammar: [sentence, [{1} choices], answer index from {2}, explanation] · sentences: [space-separated words, meaning].
+words: mỗi dòng "từ|phiên âm|nghĩa" (Anh/Pháp: "từ|nghĩa"), ít nhất 4 từ · grammar: [câu, [4 lựa chọn], vị trí đáp án tính từ 0, giải thích] · sentences: [câu có các từ cách nhau bằng dấu cách, nghĩa].	words: each line "word|phonetic|meaning" (EN/FR: "word|meaning"), at least 4 words · grammar: [sentence, [4 choices], answer index from 0, explanation] · sentences: [space-separated words, meaning].
+Đã lưu phân quyền Pro.	Pro access settings saved.
+Chưa có dòng hợp lệ.	No valid lines found.
+Cần ít nhất {0} từ.	At least {0} words required.
+Cần ít nhất 4 từ.	At least 4 words required.
+Từ vựng	Vocabulary
+Đã lưu hiển thị.	Display settings saved.
+JSON chưa đúng cú pháp.	Invalid JSON syntax.
+Đã lưu bài học.	Lesson saved.
+Điểm học viên đã làm bài này vẫn được giữ trong cơ sở dữ liệu.	Scores of students who completed this lesson are preserved in the database.
+Khung luyện viết	Writing canvas
+Hãy viết chữ vào khung trước.	Please write in the canvas first.
+Đang tải…	Loading…
+{0} cấp Pro	{0} Pro levels
+Chọn một môn để trang tổng quan tập trung vào môn đó. Bạn có thể đổi môn bất cứ lúc nào bằng nút	Choose a course to focus your dashboard on it. You can switch courses anytime using the button
+Sắp xếp: mặc định	Sort: default
+Tên A–Z	Name A–Z
+🐍 Đang học	🐍 Learning
+{0}Đổi môn học	{0}Switch course
+Chọn lộ trình phù hợp với bạn.	Choose the learning path that fits you best.
+ĐANG HỌC · {0}	LEARNING · {0}
+Cấp hiện tại:	Current level:
+{0}Bạn đã hoàn thành toàn bộ khóa!	{0}You have completed the entire course!
+Đọc theo giọng mẫu, máy chấm từng từ và cho nghe lại giọng bạn	Read along with native audio, get word-by-word pronunciation feedback, and play back your recording
+Trò chuyện với AI	AI Conversation
+Hội thoại theo tình huống, AI sửa câu và gợi ý câu tiếp theo	Role-play real-life scenarios with AI sentence corrections and reply suggestions
+{0}Chứng nhận {1}	{0}Certificate {1}
+Xếp hạng {0}	Leaderboard {0}
+{0} — bài học	{0} — lessons
+Chưa có ai đạt bài nào. Hãy là người đầu tiên!	No one has passed any lessons yet. Be the first!
+{0} dành cho thành viên Pro	{0} is for Pro members
+Đọc theo từ, câu, đoạn văn của cấp này · chấm từng từ · trò chuyện với AI	Shadow words, sentences, and passages at this level · word-by-word grading · AI conversation
+Luyện viết chữ	Handwriting Practice
+Tô chữ trong khung, máy chấm độ khớp với hình chữ	Trace characters in the box; auto-graded by shape match
+Đọc một đoạn văn và trả lời {0} câu hỏi	Read a passage and answer {0} questions
+Khóa này chưa có cấp độ nào.	This course has no levels yet.
+{0} · {1} CẤP ĐỘ	{0} · {1} LEVELS
+ẩn	hidden
+{0} {1} · ÔN TẬP	{0} {1} · REVIEW
+Nhớ nghĩa trước, rồi bấm lật thẻ để kiểm tra. Tự đánh giá thật lòng nhé.	Recall the meaning first, then click to flip the card and check. Be honest with yourself!
+Chưa nhớ	Not yet
+Nhớ rồi	Got it
+Chưa đủ điều kiện nhận chứng nhận {0}	Not yet eligible for the {0} certificate
+Cần đạt tất cả {0} bài của cấp (đã đạt {1}).	Must pass all {0} lessons in this level ({1} passed).
+Theo khung {0} · Điểm kiểm tra cấp độ:	Aligned with {0} · Level test score:
+Mã: {0}	Code: {0}
+{0} {1} · THÀNH TÍCH	{0} {1} · ACHIEVEMENTS
+huy hiệu.	badges.
+{0} {1} · {2} · LÝ THUYẾT	{0} {1} · {2} · THEORY
+— gia sư biết bạn đang học bài này.	— the tutor knows you are studying this lesson.
+{0}Quy tắc nền tảng của {1}	{0}Foundational rules of {1}
+{0}Từ vựng ({1})	{0}Vocabulary ({1})
+{0}Quy tắc ngữ pháp	{0}Grammar rules
+{0}Hỏi AI giải thích bài này	{0}Ask AI to explain this lesson
+{0}Luyện đọc từ vựng bài này	{0}Practice pronouncing this lesson's vocabulary
+Giống câu mẫu {0}%	{0}% match with sample
+{0}AI nhận xét phát âm	{0}AI pronunciation feedback
+{0}Hỏi AI vì sao	{0}Ask AI why
+{0}Bài trước	{0}Previous lesson
+{0}/{1} câu đúng · điểm cao nhất {2}	{0}/{1} correct · best score {2}
+{0}Làm lại	{0}Retry
+{0}/{1} câu đã trả lời	{0}/{1} answered
+Chỉ quản trị viên	Admin only
+QUẢN TRỊ	ADMIN
+Thống kê học viên, bật/tắt khóa và cấp độ, bổ sung bài học mới.	Student statistics, enable/disable courses and levels, and add new lessons.
+Bỏ chọn để ẩn với học viên (quản trị viên vẫn thấy để xem trước).	Uncheck to hide from students (still visible to admins for preview).
+lượt nộp	submissions
+điểm TB	avg score
+{0} bài · {1} phần	{0} lessons · {1} sections
+Chưa đủ dữ liệu. Thống kê xuất hiện khi mỗi câu có ít nhất {0} lượt trả lời.	Not enough data yet. Statistics appear once each question has at least {0} responses.
+Chưa đủ dữ liệu. Thống kê xuất hiện khi mỗi câu có ít nhất 3 lượt trả lời.	Not enough data yet. Statistics appear once each question has at least 3 responses.
+Chọn từ cấp nào trở lên chỉ dành cho thành viên Pro. Cấp thấp hơn miễn phí.	Choose which level and above require Pro membership. Lower levels are free.
+Pro từ {0}	Pro from {0}
+Mỗi dòng:	Each line:
+(Anh/Pháp:	(English/French:
+). Hệ thống tự chia mỗi {0} từ thành một bài học mới ở cuối cấp đã chọn.	). The system automatically groups every {0} words into a new lesson at the end of the selected level.
+). Hệ thống tự chia mỗi 8 từ thành một bài học mới ở cuối cấp đã chọn.	). The system automatically groups every 8 words into a new lesson at the end of the selected level.
+{0} · {1} · Bài {2}	{0} · {1} · Lesson {2}
+{0}/{1} chưa đạt · TB {2}	{0}/{1} not passed · Avg {2}
+Điểm là điểm cao nhất mỗi bài; đạt từ {0} điểm. Xanh ≥ 80, vàng 50–79, đỏ &lt; 50.	Scores show the highest score per lesson; passing is {0}+. Green ≥ 80, yellow 50–79, red &lt; 50.
+Về khóa học	Back to course
+Tô theo chữ mờ trong khung, rồi bấm	Trace the faint character in the box, then click
+Chấm	Grade
+. Máy so nét bạn viết với hình chữ (không chấm thứ tự nét). Đạt từ 70 điểm. Đã đạt {0}/{1} chữ.	. Your strokes are compared against the character shape (stroke order is not graded). Passing score: 70+. Passed {0}/{1} characters.
+· phủ chữ {0}% · nét đúng chỗ {1}%	· coverage {0}% · accuracy {1}%
+← Chữ trước	← Previous
+Hoàn tác nét	Undo stroke
+Hiện chữ mờ	Show guide
+Chữ sau →	Next →
+Tên chủ đề (vd: Từ vựng HSK 1)	Topic name (e.g. HSK 1 Vocabulary)
+Khám phá	Explore
+Tổng quan cá nhân	Personal Overview
+Mở khóa toàn bộ khóa học, chứng nhận và nhiều hơn nữa.	Unlock all courses, certificates, and more.
+Nâng cấp ngay	Upgrade Now
+{0}Gói của tôi	{0}My Plan
+{0}Tiến độ học tập	{0}Learning Progress
+{0}Chứng nhận	{0}Certificates
+{0}Quản trị hệ thống	{0}System Admin
+Đi từ con số {0}, chắc từng khái niệm trước khi sang phần khó.	Start from {0} and master each concept before moving on to harder topics.
+Chọn mục tiêu học	Choose Learning Goal
+Kết quả chương trình gần nhất:	Latest program output:
+CHƯƠNG HỌC	CHAPTERS
+HỌC TẬP	LEARNING
+Tiếp tục làm	Continue
+Bạn đang làm dở	In progress
+Nên làm tiếp	Up next
+Tìm chương…	Search chapters…
+BÀI HỌC TIẾP THEO	NEXT LESSON
+Ôn tập chủ đề {0}	Review topic {0}
+Trung tâm trợ giúp {0}	Help Center {0}
+LỘ TRÌNH HỌC TẬP	LEARNING PATH
+{0}Đề xuất lộ trình cá nhân	{0}Suggested Personal Path
+{0}Hoàn thành	{0}Completed
+{0} · {1} CHƯƠNG	{0} · {1} CHAPTERS
+{0}Tiếp tục học	{0}Continue Learning
+{0}Xem chứng nhận	{0}View Certificate
+MỤC TIÊU HỌC TẬP	LEARNING GOALS
+{0}Chương {1}	{0}Chapter {1}
+{0} Bài này đang khóa	{0} This lesson is locked
+{0}Đưa code này vào khung soạn	{0}Insert code into editor
+{0}Sang bài tiếp theo	{0}Go to next lesson
+{0}Bài tiếp theo	{0}Next lesson
+KẾ HOẠCH HỌC CÓ THỨ TỰ	STRUCTURED STUDY PLAN
+{0}Tạo lộ trình cá nhân	{0}Create Personal Path
+{0}Đã hoàn thành lộ trình	{0}Path Completed
+Bạn đã đạt {0}/{1} bài kiểm tra	You have passed {0}/{1} tests
+{0} bài đang mở · {1} bài chưa làm	{0} unlocked · {1} not started
+Không có bài kiểm tra phù hợp	No matching tests found
+Thử bộ lọc hoặc từ khóa khác.	Try a different filter or keyword.
+{0}In chứng nhận	{0}Print Certificate
+{0}Xem và in	{0}View & Print
+{0}Làm đánh giá đầu vào	{0}Take Placement Assessment
+{0}Đánh giá cuối tuần	{0}Weekly Review
+HÀNH TRÌNH CỦA BẠN	YOUR JOURNEY
+HỌC THÔNG MINH HƠN	LEARN SMARTER
+Luyện lại {0}	Re-practice {0}
+TỔNG QUAN HỌC TẬP	LEARNING OVERVIEW
+{0} NGÀY GẦN NHẤT	LAST {0} DAYS
+7 NGÀY GẦN NHẤT	LAST 7 DAYS
+Chi tiết {0}	Details {0}
+Xem tất cả {0}	View all {0}
+HỒ SƠ HỌC TẬP	LEARNING PROFILE
+{0} Vào học	{0} Start Learning
+{0}Đổi mật khẩu	{0}Change Password
+{0} Mở kênh hỗ trợ	{0} Open Support
+TRUNG TÂM HỖ TRỢ	SUPPORT CENTER
+HỖ TRỢ THÔNG MINH	SMART SUPPORT
+Mở bài học có hướng dẫn {0}	Open guided lesson {0}
+Xem gợi ý cải thiện {0}	View improvement tips {0}
+Mở lộ trình cá nhân {0}	Open personal path {0}
+Mở lớp học {0}	Open classroom {0}
+đến	to
+Xem tiến độ thành viên đã đồng ý chia sẻ	View progress of members who opted in to share
+Học sinh trong lớp có quyền Pro trong thời hạn giấy phép	Students in the class receive Pro access for the license duration
+Giao bài, kiểm tra, chấm tự động	Assign lessons, tests, and auto-grade
+Nâng cấp	Upgrade
+⭐ Nâng cấp Pro	⭐ Upgrade to Pro
+👨‍👩‍👧 Gói Gia đình	👨‍👩‍👧 Family Plan
+🏫 Gói Giáo viên	🏫 Teacher Plan
+{0}Xem gói Pro	{0}View Pro Plans
+{0}Lộ trình cá nhân	{0}Personal Path
+{0}Thực hành tự do	{0}Free Practice
+CHƯƠNG TRÌNH CHÍNH	CORE CURRICULUM
+CHƯƠNG {0}	CHAPTER {0}
+BÀI GIẢNG CHUYÊN SÂU	IN-DEPTH LECTURE
+{0} Thành viên Pro	{0} Pro Member
+{0}Hỗ trợ AI	{0}AI Support
+{0}AI chú thích	{0}AI Annotations
+{0}Đáp án mẫu	{0}Sample Solution
+{0}Liên hệ báo giá	{0}Contact for Quote
+{0}Chọn gói	{0}Select Plan
+{0}Tôi đã chuyển khoản	{0}I Have Transferred
+{0} Hỏi Rivo	{0} Ask Rivo
+✅ Bạn đang có	✅ You currently have
+đến {0}. Mua thêm sẽ được cộng nối tiếp.	until {0}. Additional purchases will extend your current plan.
+Xuất sắc!	Excellent!
+Rất tốt!	Very good!
+Khá tốt	Good
+Thử lại nhé	Try again
+Giọng đọc	Voice
+AI · giọng nữ	AI · female voice
+AI · giọng nam	AI · male voice
+Nghe thử	Preview
+Trình duyệt chặn dịch vụ nhận giọng nói. Hãy dùng Chrome hoặc Edge bản mới.	Your browser blocked speech recognition. Please use the latest Chrome or Edge.
+Nhận giọng nói cần Internet. Kiểm tra mạng rồi thử lại.	Speech recognition requires an internet connection. Check your network and try again.
+Phát âm chuẩn từng từ, nghe và so với giọng mẫu.	Pronounce each word clearly, listen, and compare with the model voice.
+Câu mẫu	Sample Sentences
+Đọc theo cả câu: ngữ điệu, nối âm, tốc độ.	Shadow full sentences: intonation, linking, and pace.
+Đoạn văn	Passages
+Luyện đọc trôi chảy một đoạn văn, từng câu một.	Practice reading a passage fluently, sentence by sentence.
+dành cho thành viên Pro	is for Pro members
+Nâng cấp để luyện đọc theo và hội thoại AI ở mọi cấp độ.	Upgrade to practice shadowing and AI conversation at all levels.
+Khóa này chưa có nội dung luyện nói.	This course has no speaking practice content yet.
+Theo giáo trình	By Curriculum
+Luyện nói theo chủ đề	Topic-Based Speaking
+Luyện phát âm	Pronunciation Practice
+Hội thoại và phỏng vấn	Conversation & Interviews
+câu	sentences
+mục	items
+đã luyện	practiced
+PHÒNG LUYỆN NÓI	SPEAKING LAB
+Đọc theo giọng mẫu, sửa từng từ	Shadow the model voice, word-by-word correction
+Luyện tiếp	Continue Practice
+Hội thoại và phỏng vấn AI	AI Conversation & Interviews
+Điểm phát âm trung bình	Average pronunciation score
+mục đã luyện	items practiced
+đạt từ {0}	pass at {0}+
+đạt từ 85	pass at 85+
+lượt đọc	attempts
+Đọc theo	Shadowing
+Theo từng bài học	By lesson
+Điểm là trung bình điểm cao nhất của các mục bạn đã đọc.	Your score is the average of your best scores across practiced items.
+từ	words
+Mỗi chủ đề gồm các câu giao tiếp thường dùng. Nghe mẫu, đọc theo cả câu, máy chấm từng từ.	Each topic features everyday conversational sentences. Listen to the model, read the full sentence aloud, and get graded word by word.
+Phỏng vấn xin việc theo lĩnh vực	Industry Job Interviews
+AI đóng vai người phỏng vấn của đúng ngành: hỏi từng câu, sửa câu trả lời của bạn và nhận xét tổng kết sau khoảng {0} câu.	AI role-plays an interviewer in your field: asks questions one by one, refines your answers, and gives overall feedback after about {0} questions.
+AI đóng vai người phỏng vấn của đúng ngành: hỏi từng câu, sửa câu trả lời của bạn và nhận xét tổng kết sau khoảng 6 câu.	AI role-plays an interviewer in your field: asks questions one by one, refines your answers, and gives overall feedback after about 6 questions.
+Hội thoại với AI	AI Conversation
+Chọn một tình huống, nói hoặc gõ. AI đóng vai, sửa câu cho bạn và gợi ý câu tiếp theo.	Choose a scenario, then speak or type. AI plays the role, corrects your sentences, and suggests what to say next.
+Không tìm thấy cấp độ.	Level not found.
+Không còn mục nào dưới {0} điểm. Tuyệt vời!	No items left below {0} points. Great job!
+Không còn mục nào dưới 85 điểm. Tuyệt vời!	No items left below 85 points. Great job!
+Về phòng luyện nói	Back to Speaking Lab
+mục cần luyện lại	items to review
+Mẹo phát âm	Pronunciation tip
+Nghe cả đoạn	Listen to full passage
+Trước	Previous
+Phím tắt: Space thu âm · L nghe mẫu · ← →	Shortcuts: Space record · L listen · ← →
+Tiếp	Next
+Về phòng luyện	Back to Lab
+Xem kết quả	View Results
+Cao nhất	Best
+Nghe lại giọng của bạn	Listen to your recording
+Gõ lại câu bạn vừa đọc	Type the sentence you just read
+Máy nghe được	Recognized as
+chưa nghe thấy từ này	word not heard
+máy nghe thành	heard as
+Đọc lại	Try Again
+AI góp ý phát âm	AI Pronunciation Feedback
+Câu tiếp	Next Sentence
+Bạn chưa đọc mục nào	You haven't practiced any items yet
+Dừng thu	Stop Recording
+Thu âm	Record
+Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy dùng Chrome / Edge, hoặc gõ lại câu.	This browser does not support speech recognition. Please use Chrome / Edge, or type the sentence.
+Đang nghe… đọc to câu trên, bấm lần nữa để dừng	Listening… read the sentence above aloud, click again to stop
+AI đang phân tích…	AI is analyzing…
+Góp ý từ AI	AI Feedback
+Không phát được bản thu.	Could not play recording.
+Dừng đọc	Stop
+Câu tự nhiên, tốt lắm!	Natural sentence, great job!
+Nên nói	Suggested phrasing
+Gợi ý trả lời	Suggested replies
+Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy dùng Chrome / Edge, hoặc gõ câu trả lời.	This browser does not support speech recognition. Please use Chrome / Edge, or type your reply.
+hoặc	or
+Quản trị → Hệ thống → Rivo	Admin → System → Rivo
+để nhập khóa API.', 'Open	to enter an API key.', 'Open
+Không tạo được tài khoản nào:	Could not create any accounts:
+{0}Tạo tài khoản học viên	{0}Create Student Account
+{0}Tạo tài khoản giáo viên	{0}Create Teacher Account
+Chưa có giáo viên. Vào Quản trị → Tài khoản, chọn người dùng và đổi vai trò thành Giáo viên.	No teachers yet. Go to Admin → Accounts, select a user, and change their role to Teacher.
+Máy chưa cài giọng đọc cho ngôn ngữ này. Cài thêm giọng trong cài đặt hệ điều hành, hoặc dùng Chrome / Edge.	No voice installed for this language on your device. Install a voice in your OS settings, or use Chrome / Edge.
+Bật tính năng, nhập URL bot (http/https) và mã bí mật (ít nhất {0} ký tự) rồi lưu trước.	Enable the feature, enter the bot URL (http/https) and secret key (at least {0} characters), and save first.
+Bật tính năng, nhập URL bot (http/https) và mã bí mật (ít nhất 16 ký tự) rồi lưu trước.	Enable the feature, enter the bot URL (http/https) and secret key (at least 16 characters), and save first.
+Bot trả về mã lỗi HTTP {0}.	Bot returned HTTP status {0}.
+Chọn ngân hàng.	Please select a bank.
+Số tài khoản chỉ gồm 4–19 chữ hoặc số, không dấu cách.	Account number must be 4–19 alphanumeric characters with no spaces.
+Không chạy được pg_dump trên máy chủ (cần cài postgresql-client):	Failed to run pg_dump on the server (postgresql-client is required):
+Bạn đã làm đủ {0} lần.	You have reached the limit of {0} attempts.
+Ngôn ngữ không hỗ trợ.	Unsupported language.
+Hết thời gian chấm.	Grading timed out.
+Không khởi động được trình chấm:	Failed to start grader:
+Trình chấm lỗi:	Grader error:
+Chỉ quản trị viên.	Admin only.
+Từ không hợp lệ.	Invalid word.
+Thao tác quá nhanh.	Too many requests. Please slow down.
+Chọn ngôn ngữ và cấp độ hợp lệ.	Please select a valid language and level.
+Mã bài trùng với bài có sẵn. Hãy dùng mã khác (vd: {0}, {1}…).	Lesson ID already exists. Please use a different ID (e.g. {0}, {1}…).
+Mã bài trùng với bài có sẵn. Hãy dùng mã khác (vd: 5, 6…).	Lesson ID already exists. Please use a different ID (e.g. 5, 6…).
+Phương thức không hỗ trợ.	Method not allowed.
+Giọng đọc AI chưa được bật.	AI voice is not enabled.
+Bạn nghe quá nhanh, chờ một chút nhé.	You're playing audio too fast, please wait a moment.
+Đã hết lượt tạo giọng đọc AI hôm nay.	Daily AI voice generation limit reached.
+Không tạo được giọng đọc AI.	Failed to generate AI voice.
+💬 Hỏi AI về bài học này	💬 Ask AI about this lesson
+💬 Hỏi AI gợi ý	💬 Ask AI for a hint
+💬 Hỏi AI vì sao	💬 Ask AI why
+💬 Hỏi AI	💬 Ask AI
+💬 Hỏi gia sư AI	💬 Ask Rivo
+💬 Hỏi AI giải thích bài này	💬 Ask AI to explain this lesson
+💬 Hỏi AI mẹo nhớ & ví dụ	💬 Ask AI for memory tips & examples
+💬 Hỏi AI chữ này	💬 Ask AI about this character
+💬 AI hỗ trợ	💬 AI support
+✨ Cho thêm ví dụ	✨ More examples
+⚠️ Các lỗi biên dịch hay gặp	⚠️ Common compile errors
+Tóm tắt trọng tâm	Summarize key points
+Ví dụ thực tế	Real-world examples
+Mẹo nhớ từ vựng bài này	Vocabulary memory tips for this lesson
+Tóm tắt kiến thức	Summarize concepts
+Cho thêm ví dụ	Give more examples
+Các lỗi hay gặp	Common mistakes
+Giải thích câu hỏi	Explain the question
+Phân tích các lựa chọn	Analyze the options
+Ôn kiến thức liên quan	Review related concepts
+Hỏi AI về chương này	Ask AI about this chapter
+Hỏi Rivo về bài này	Ask Rivo about this exercise
+Gia sư AI đa môn học	Multi-subject Rivo
+Cuộc trò chuyện	Conversations
+Chưa có cuộc trò chuyện đã lưu.	No saved conversations yet.
+Hỏi bất kỳ điều gì về {0}… (Enter để gửi, Shift+Enter xuống dòng)	Ask anything about {0}… (Enter to send, Shift+Enter for new line)
+Bấm vào gợi ý bên trên hoặc nhập câu hỏi của bạn để bắt đầu.	Click a prompt above or type your question to get started.
+Đã xóa cuộc trò chuyện.	Conversation deleted.
+Xóa cuộc trò chuyện	Delete conversation
+AI đang suy nghĩ…	AI is thinking…
+Dán đoạn code cần giải thích hoặc tìm lỗi vào khung bên dưới nhé.	Paste the code snippet you want explained or debugged into the box below.
+Chơi thử	Try now
+tiếng Nhật	Japanese
+tiếng Anh	English
+tiếng Trung	Chinese
+tiếng Hàn	Korean
+tiếng Pháp	French
+Mỗi bài chỉ vài phút, có lý thuyết ngắn, làm xong chấm ngay, sai đâu sửa đó. Không cần biết gì trước.	Each lesson takes just a few minutes with concise theory, instant grading, and clear error feedback. No prior experience needed.
+Chơi thử ngay - Không cần tài khoản	Try it now — No account required
+Miễn phí cấp cơ bản · Không cần cài đặt · Dùng được trên điện thoại	Free beginner levels · No installation needed · Works on mobile
+✓ Chấm đúng · 10 điểm	✓ Correct · 10 points
+Tiếng Nhật N5	Japanese N5
+「おはよう」(Ohayo) nghĩa là gì?	What does 「おはよう」 (Ohayo) mean?
+✓ Chính xác!	✓ Correct!
+Trải nghiệm trực tiếp	Interactive trial
+Thử 2 phút là biết mình học được.	Try for 2 minutes and see how easy it is.
+Hai bài tập thực tế chạy được ngay trên trình duyệt, không cần tài khoản.	Two hands-on exercises running right in your browser, no account needed.
+Đề bài: In ra "Hello"	Task: Print "Hello"
+Đang chạy mã nguồn…	Running code…
+Đề bài: "Ohayo" nghĩa là gì?	Task: What does "Ohayo" mean?
+Chọn nghĩa tiếng Việt của từ	Choose the meaning of
+A. Chào buổi sáng	A. Good morning
+B. Cảm ơn	B. Thank you
+C. Tạm biệt	C. Goodbye
+D. Chúc ngủ ngon	D. Good night
+✓ Chính xác! 「おはよう」(Ohayo) dùng để chào buổi sáng trong tiếng Nhật.	✓ Correct! 「おはよう」 (Ohayo) means "Good morning" in Japanese.
+Chưa đúng. 「Cảm ơn」 trong tiếng Nhật là 「ありがとう」(Arigatou). Hãy chọn lại nhé!	Not quite. "Thank you" in Japanese is 「ありがとう」 (Arigatou). Try again!
+Chưa đúng. 「Tạm biệt」 trong tiếng Nhật là 「さようなら」(Sayounara). Hãy chọn lại nhé!	Not quite. "Goodbye" in Japanese is 「さようなら」 (Sayounara). Try again!
+Chưa đúng. 「Chúc ngủ ngon」 trong tiếng Nhật là 「おやすみなさい」(Oyasuminasai). Hãy chọn lại nhé!	Not quite. "Good night" in Japanese is 「おやすみなさい」 (Oyasuminasai). Try again!
+Lộ trình cá nhân hóa	Personalized paths
+Bạn là ai? Học gì cho đúng?	Who are you? Which path fits you best?
+Lộ trình được thiết kế sẵn cho từng mục tiêu cụ thể, bấm vào để học ngay.	Ready-made learning paths tailored to your goal — click any card to start right away.
+🎒 Học sinh	🎒 School Student
+Mình là học sinh lớp 6-12	I'm a grade 6–12 student
+Gợi ý:	Suggested:
+Học theo lộ trình học sinh →	Start Student Path →
+🎓 Sinh viên	🎓 University Student
+Mình là sinh viên, muốn đi thực tập	I'm a college student preparing for internships
+Nắm chắc thuật toán, cấu trúc dữ liệu và luyện phản xạ phỏng vấn xin việc cùng trợ lý AI.	Master algorithms, data structures, and practice job interviews with the Rivo.
+Học theo lộ trình sinh viên →	Start Intern Path →
+✈️ Xuất khẩu	✈️ Work Abroad
+Mình muốn đi Nhật / Hàn làm việc	I want to work in Japan or Korea
+Tiếng Nhật N5 hoặc Tiếng Hàn TOPIK 1	Japanese N5 or Korean TOPIK 1
+Thuộc lòng từ vựng giao tiếp thực tế và ngữ pháp trọng tâm để vượt qua kỳ thi chứng chỉ.	Master everyday vocabulary and core grammar to pass official language proficiency exams.
+Học theo lộ trình xuất khẩu →	Start Work-Abroad Path →
+Chương trình học	Curriculum
+Phân loại rõ ràng theo nhu cầu, chọn môn để bắt đầu học ngay.	Clearly organized by subject — pick a course to start learning immediately.
+Từ lệnh in đầu tiên tới làm đồ án nhỏ và tự động hóa.	From your first print statement to mini projects and automation.
+Vào học ngay →	Start learning →
+Tư duy OOP chặt chẽ, kiến trúc phần mềm và ứng dụng thực tế.	Solid OOP principles, software architecture, and real-world applications.
+Giao tiếp hằng ngày, ngữ pháp thực hành và tiếng Anh công sở.	Everyday communication, practical grammar, and workplace English.
+Nhận diện chữ Hán, phát âm chuẩn Pinyin và đàm thoại đời sống.	Hanzi recognition, accurate Pinyin pronunciation, and daily conversation.
+Bảng chữ cái, từ vựng, ngữ pháp N5 và phản xạ hội thoại.	Kana scripts, N5 vocabulary and grammar, and conversational reflexes.
+Chữ Hangul, cấu trúc câu căn bản và giao tiếp trong công việc.	Hangul script, essential sentence structures, and workplace communication.
+Phát âm chuẩn Pháp, chia động từ và các mẫu câu đối thoại thường nhật.	Authentic French pronunciation, verb conjugations, and daily dialogues.
+9 môn học · 1.881 bài tập có chấm	9 subjects · 1,881 auto-graded exercises
+Phương pháp ghi nhớ	Learning method
+Học như nào? Chỉ 3 bước.	How does it work? Just 3 steps.
+Phương pháp tinh gọn giúp bạn tiếp thu nhanh và giữ kiến thức trong trí nhớ dài hạn.	A streamlined method that helps you learn fast and retain knowledge in long-term memory.
+Bước 1	Step 1
+Học lý thuyết ngắn 2 phút	Read 2-minute bite-sized theory
+Đọc nội dung chắt lọc, đi thẳng vào bản chất vấn đề kèm ví dụ trực quan dễ hiểu.	Concise explanations that go straight to the core concept with clear visual examples.
+Bước 2	Step 2
+Làm bài, chấm ngay	Practice with instant grading
+Tự tay gõ mã hoặc chọn đáp án, hệ thống chấm tự động và chỉ ra điểm sai để sửa ngay.	Write code or answer questions yourself — get graded immediately and see exactly what to fix.
+Bước 3 · Độc quyền	Step 3 · Exclusive
+Ôn tập giãn cách, không quên	Spaced repetition so you never forget
+Thuật toán hẹn giờ nhắc bạn làm lại những câu hay sai sau 1, 3 và 7 ngày để nhớ mãi.	Smart scheduling reminds you to review tricky items after 1, 3, and 7 days for lasting retention.
+✨ Mỗi ngày 1 bài ngắn là đủ để giữ chuỗi ngày học.	✨ One short lesson a day is enough to keep your study streak alive.
+Góc trải nghiệm	Learner stories
+Người như bạn cũng học được.	Learners just like you are succeeding.
+Những chia sẻ thật từ học viên đang tiến bộ mỗi ngày cùng MyEvolve Study.	Real stories from learners making progress every day on MyEvolve Study.
+An, học sinh lớp 11 ở Phú Yên	An, 11th-grade student in Phu Yen
+Mai, sinh viên năm 2	Mai, 2nd-year university student
+Khóa học: Tiếng Anh giao tiếp & AI	Course: Conversational English & AI
+"Học tiếng Anh A2 để phỏng vấn thực tập, luyện nói với AI mỗi tối 10 phút."	"Studied English A2 for internship interviews, practicing speaking with AI 10 minutes every night."
+Hùng, muốn đi Nhật	Hung, preparing to work in Japan
+Khóa học: Tiếng Nhật N5	Course: Japanese N5
+"Từ không biết chữ Kanji nào, sau 3 tháng thuộc 100 từ N5."	"From knowing zero Kanji, after 3 months I memorized 100 N5 words."
+Giải đáp thắc mắc	Frequently Asked Questions
+Những thắc mắc phổ biến nhất của người mới bắt đầu học.	Common questions from new learners getting started.
+Có miễn phí không?	Is it free?
+Bắt đầu như nào?	How do I get started?
+Dùng điện thoại được không?	Can I use my phone?
+Được. Nền tảng tương thích hoàn toàn với trình duyệt trên điện thoại và máy tính bảng mà không cần cài đặt ứng dụng.	Yes. The platform works smoothly in mobile and tablet browsers with no app installation required.
+Mỗi ngày học bao lâu?	How long should I study each day?
+Mất gốc bắt đầu từ đâu?	Where should complete beginners start?
+Dữ liệu có an toàn không?	Is my data safe?
+Mật khẩu được băm một chiều. Thông tin và tiến độ học tập của bạn được lưu trữ an toàn, mật khẩu được mã hóa và bảo mật tuyệt đối.	Passwords are one-way hashed. Your profile and learning progress are stored securely with strict encryption.
+Chứng nhận trên web có phải chứng chỉ quốc tế không?	Are certificates on this website official international certificates?
+Không, chỉ là chứng nhận hoàn thành trên nền tảng.	No, they are certificates of completion issued on this platform.
+Bắt đầu hành trình	Start your journey
+Tạo tài khoản, chọn môn, vào học ngay. Miễn phí cấp cơ bản.	Create an account, pick a subject, and start learning right away. Beginner levels are free.
+Liên hệ:	Contact:
+© 2026 MyEvolve Study. Bản quyền thuộc về nền tảng.	© 2026 MyEvolve Study. All rights reserved.
+Bạn làm đúng rồi! Bạn có năng khiếu đấy. Tạo tài khoản để lưu tiến độ nhé?	You got it right! You have a knack for this. Create an account to save your progress?
+Trang này cần bật JavaScript để chạy.	This page requires JavaScript to run.

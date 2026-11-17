@@ -1,0 +1,58 @@
+Tìm học viên, bài tập, chương…	Search learners, exercises, chapters…
+Đang online	Online now
+phiên đăng nhập hiện tại	active sign-in sessions
+Học viên mới 14 ngày qua	New learners in the last 14 days
+Chậm lại (> 7 ngày)	Slowing down (> 7 days)
+Tài khoản mới	New accounts
+Máy chủ	Server
+Bài kiểm tra và chứng nhận hoàn thành.	Tests and completion certificates.
+1 buổi	1 session
+Số liệu hệ thống, chi phí AI, cảnh báo	System metrics, AI costs and alerts
+Học viên và lớp · Học viên, phụ huynh, khóa tài khoản, đặt lại mật khẩu	Learners & classes · Learners, parents, account locks, password resets
+Học viên và lớp · Tài khoản và giấy phép giáo viên	Learners & classes · Teacher accounts and licences
+Học viên và lớp · Lớp học và giấy phép Teacher	Learners & classes · Classes and Teacher licences
+Nội dung học · Quản lý nội dung ngoại ngữ	Learning content · Manage language content
+Theo dõi học tập · Gửi thông báo tới học viên	Learning progress · Send announcements to learners
+Kinh doanh · Đơn hàng, thanh toán, thống kê AI	Business · Orders, payments, AI statistics
+Học viên chưa thể thanh toán cho tới khi bạn điền ngân hàng, số tài khoản và tên chủ tài khoản bên dưới.	Learners cannot pay until you fill in the bank, account number and account holder name below.
+Lưu tài khoản nhận tiền	Save receiving account
+là gói được kích hoạt ngay;	activates the plan immediately;
+để từ chối;	to reject;
+Lưu cài đặt Zalo	Save Zalo settings
+Sửa gói và giá	Edit plans and prices
+Tài khoản nhận tiền, gói Pro, khóa và hạn mức AI, địa chỉ website nằm ở tab	Receiving account, Pro plans, AI keys and limits and the website address are in the tab
+Ẩn nút chân trang	Hide footer buttons
+Tick nút muốn ẩn khỏi chân trang (Điều khoản, Quyền riêng tư, Thanh toán, Hoàn tiền, Bảng giá). Bỏ tick để hiện lại.	Tick the buttons to hide from the footer (Terms, Privacy, Payments, Refunds, Pricing). Untick to show them again.
+Liên kết Facebook	Facebook link
+Dán URL Trang Facebook hoặc hồ sơ chính thức, ví dụ https://www.facebook.com/ten-trang. Để trống nếu chưa có.	Paste the Facebook Page or official profile URL, e.g. https://www.facebook.com/page-name. Leave empty if none.
+Liên kết Zalo	Zalo link
+Dán liên kết Zalo cá nhân hoặc Zalo Official Account, ví dụ https://zalo.me/oa-id. Để trống nếu chưa có.	Paste a personal Zalo or Zalo Official Account link, e.g. https://zalo.me/oa-id. Leave empty if none.
+Liên kết Threads	Threads link
+Dán liên kết hồ sơ Threads, ví dụ https://www.threads.com/@ten-tai-khoan. Để trống nếu chưa có.	Paste your Threads profile link, e.g. https://www.threads.com/@account-name. Leave empty if none.
+Hệ thống · SePay, Gemini, website	System · SePay, Gemini, website
+Báo đơn và xác nhận qua Zalo	Payment reports and confirmation via Zalo
+Gửi đơn học viên báo đã chuyển khoản tới bot Zalo; nhắn HT <mã đơn> để kích hoạt.	Learners' transfer reports are sent to the Zalo bot; send HT <order code> to activate.
+ID Zalo người nhận (tùy bot)	Zalo recipient ID (depends on bot)
+Mã bí mật dùng chung với bot Zalo	Shared secret with the Zalo bot
+Hệ thống · Song ngữ Việt và Anh	System · Vietnamese and English
+Tiếng Việt	Vietnamese
+Tiếng Anh	English
+Chưa ghi đè chuỗi nào. Gõ để tìm.	No strings overridden yet. Type to search.
+Hệ thống · Sao lưu, xuất, bảo trì cơ sở dữ liệu	System · Backup, export, database maintenance
+Tải về một bản sao đầy đủ của cơ sở dữ liệu (tài khoản, lớp học, cài đặt). Nên tải mỗi tuần và trước mỗi lần cập nhật.	Download a full copy of the database (accounts, classes, settings). Download weekly and before each update.
+Hệ thống · Số liệu hệ thống, chi phí AI, cảnh báo	System · System metrics, AI costs, alerts
+Đang xử lý	Processing
+Tổng request	Total requests
+Độ trễ trung bình	Average latency
+Tổng chi phí	Total cost
+Tổng lượt	Total uses
+Lượt lỗi	Failed uses
+Ngôn ngữ / Language	Language / Ngôn ngữ
+Language / Ngôn ngữ	Language
+tiếng Nhật, tiếng Anh, tiếng Trung, tiếng Hàn, tiếng Pháp, tiếng Tây Ban Nha	Japanese, English, Chinese, Korean, French, Spanish
+🇫🇷 Tiếng Pháp	🇫🇷 French
+🇪🇸 Tiếng Tây Ban Nha	🇪🇸 Spanish
+Hệ thống · Đăng ký, bảo trì, thương hiệu	System · Sign-up, maintenance, branding
+Gói Pro từ {0}đ mỗi tháng. Bạn không cần Pro để học. Nâng cấp khi muốn nhiều hơn.	Pro plans from {0} VND per month. You don't need Pro to learn. Upgrade if you want more.
+≈ {0}đ/month · save {1}%	≈ {0} VND/month · save {1}%
+E.g.: Nguyễn Văn An	E.g.: John Smith

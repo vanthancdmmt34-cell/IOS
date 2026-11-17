@@ -1,0 +1,121 @@
+// Chương 45: bài đọc input(), mỗi bài có test công khai và test ẩn.
+// Lời giải mẫu phải qua hết test khi chấm bằng interpreter.js.
+const pub = (input, expected) => ({ input, expected });
+const hid = (input, expected) => ({ input, expected, hidden: true });
+
+export const PY_HIDDEN_CHAPTER = {
+  id: "c45",
+  title: "Chương 45: Luyện với dữ liệu ẩn",
+  theory: "Các bài trước cho sẵn dữ liệu trong đề. Chương này đọc dữ liệu bằng input(), nên lời giải đúng phải chạy được với nhiều bộ số khác nhau. Khi nộp, máy chấm chạy thêm các test ẩn: số 0, số âm, một phần tử, và giá trị biên. Đừng in cứng đáp số của ví dụ.",
+  example: "n = int(input())\nif n % 2 == 0:\n    print(\"CHAN\")\nelse:\n    print(\"LE\")",
+  exercises: [
+    {
+      id: "c45e1", title: "Bài 45.1: Chẵn hay lẻ",
+      prompt: "Đọc một số nguyên n. In CHAN nếu n chẵn, LE nếu n lẻ. Bài có test ẩn.",
+      starter: "n = int(input())\n",
+      require: ["input", "if"],
+      tests: [pub("4", "CHAN"), pub("7", "LE"), hid("0", "CHAN"), hid("-3", "LE"), hid("100", "CHAN")],
+      sample: "n = int(input())\nif n % 2 == 0:\n    print(\"CHAN\")\nelse:\n    print(\"LE\")",
+    },
+    {
+      id: "c45e2", title: "Bài 45.2: Số lớn nhất trong ba số",
+      prompt: "Một dòng có đúng ba số nguyên, cách nhau bởi dấu cách. In số lớn nhất.",
+      starter: "p = input().split()\n",
+      require: ["input", "if"],
+      tests: [pub("1 5 3", "5"), pub("-2 -8 -1", "-1"), hid("9 9 1", "9"), hid("0 0 0", "0"), hid("-4 2 -4", "2")],
+      sample: "p = input().split()\na = int(p[0])\nb = int(p[1])\nc = int(p[2])\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c\nprint(m)",
+    },
+    {
+      id: "c45e3", title: "Bài 45.3: Tổng từ 1 đến n",
+      prompt: "Đọc số nguyên dương n (n ≤ 1000). In tổng 1 + 2 + … + n. Dùng vòng lặp, đừng in thẳng kết quả.",
+      starter: "n = int(input())\ntong = 0\n",
+      require: ["input", "for", "range"],
+      tests: [pub("5", "15"), pub("1", "1"), hid("10", "55"), hid("100", "5050")],
+      sample: "n = int(input())\ntong = 0\nfor i in range(1, n + 1):\n    tong = tong + i\nprint(tong)",
+    },
+    {
+      id: "c45e4", title: "Bài 45.4: Đếm số dương",
+      prompt: "Một dòng gồm các số nguyên cách nhau dấu cách (ít nhất một số). In số lượng số lớn hơn 0.",
+      starter: "ds = input().split()\ndem = 0\n",
+      require: ["input", "for", "if"],
+      tests: [pub("3 -1 0 5 -2", "2"), pub("0 0", "0"), hid("-4 -1", "0"), hid("8", "1"), hid("1 2 3", "3")],
+      sample: "ds = input().split()\ndem = 0\nfor x in ds:\n    if int(x) > 0:\n        dem = dem + 1\nprint(dem)",
+    },
+    {
+      id: "c45e5", title: "Bài 45.5: Đảo thứ tự các từ",
+      prompt: "Một dòng gồm các từ cách nhau một dấu cách. In các từ theo thứ tự ngược lại, cách nhau một dấu cách.",
+      starter: "tu = input().split()\n",
+      require: ["input", "string"],
+      tests: [pub("toi hoc python", "python hoc toi"), pub("a", "a"), hid("x y", "y x"), hid("mot hai ba bon", "bon ba hai mot")],
+      sample: "tu = input().split()\nprint(\" \".join(tu[::-1]))",
+    },
+    {
+      id: "c45e6", title: "Bài 45.6: Giai thừa bằng hàm",
+      prompt: "Viết hàm giai_thua(n) và gọi nó. Đọc n (0 ≤ n ≤ 10). Quy ước 0! = 1. In kết quả.",
+      starter: "def giai_thua(n):\n    pass\n\nn = int(input())\nprint(giai_thua(n))\n",
+      require: ["function", "input", "return"],
+      tests: [pub("5", "120"), pub("0", "1"), hid("1", "1"), hid("7", "5040")],
+      sample: "def giai_thua(n):\n    kq = 1\n    for i in range(1, n + 1):\n        kq = kq * i\n    return kq\n\nn = int(input())\nprint(giai_thua(n))",
+    },
+    {
+      id: "c45e7", title: "Bài 45.7: Xếp loại điểm",
+      prompt: "Đọc một số nguyên là điểm từ 0 đến 10. In Gioi nếu điểm ≥ 8, Kha nếu điểm ≥ 7, Trung binh nếu điểm ≥ 5, ngược lại in Yeu.",
+      starter: "diem = int(input())\n",
+      require: ["input", "if"],
+      tests: [pub("8", "Gioi"), pub("7", "Kha"), pub("5", "Trung binh"), pub("4", "Yeu"), hid("10", "Gioi"), hid("6", "Trung binh"), hid("0", "Yeu")],
+      sample: "diem = int(input())\nif diem >= 8:\n    print(\"Gioi\")\nelif diem >= 7:\n    print(\"Kha\")\nelif diem >= 5:\n    print(\"Trung binh\")\nelse:\n    print(\"Yeu\")",
+    },
+    {
+      id: "c45e8", title: "Bài 45.8: Đếm nguyên âm",
+      prompt: "Đọc một từ viết thường, không dấu cách. In số nguyên âm a, e, i, o, u trong từ.",
+      starter: "s = input()\ndem = 0\n",
+      require: ["input", "for", "if"],
+      tests: [pub("python", "1"), pub("aeiou", "5"), hid("xyz", "0"), hid("education", "5")],
+      sample: "s = input()\ndem = 0\nfor c in s:\n    if c == \"a\" or c == \"e\" or c == \"i\" or c == \"o\" or c == \"u\":\n        dem = dem + 1\nprint(dem)",
+    },
+    {
+      id: "c45e9", title: "Bài 45.9: Lớn thứ hai khác nhau",
+      prompt: "Một dòng có ít nhất hai số nguyên khác nhau. In số lớn thứ hai (khác số lớn nhất).",
+      starter: "raw = input().split()\n",
+      require: ["input", "for", "if"],
+      tests: [pub("7 2 9 9 5", "7"), pub("-8 -3 -10", "-8"), hid("4 4 2 1", "2"), hid("100 99", "99")],
+      sample: "raw = input().split()\nds = []\nfor t in raw:\n    ds.append(int(t))\nlon = ds[0]\nfor x in ds:\n    if x > lon:\n        lon = x\nnhi = ds[0]\nfor x in ds:\n    if x != lon and (nhi == lon or x > nhi):\n        nhi = x\nprint(nhi)",
+    },
+    {
+      id: "c45e10", title: "Bài 45.10: Ước chung lớn nhất",
+      prompt: "Một dòng có hai số nguyên dương a và b. In ước chung lớn nhất. Dùng vòng lặp while (thuật toán Euclid).",
+      starter: "p = input().split()\n",
+      require: ["input", "while"],
+      tests: [pub("12 18", "6"), pub("7 5", "1"), hid("100 25", "25"), hid("1 1", "1")],
+      sample: "p = input().split()\na = int(p[0])\nb = int(p[1])\nwhile b != 0:\n    r = a % b\n    a = b\n    b = r\nprint(a)",
+    },
+    {
+      id: "c45e11", title: "Bài 45.11: Chuỗi đối xứng",
+      prompt: "Đọc một từ viết thường, không dấu cách. In YES nếu đọc xuôi và ngược giống nhau, ngược lại in NO.",
+      starter: "s = input()\n",
+      require: ["input", "if", "slice"],
+      tests: [pub("radar", "YES"), pub("python", "NO"), hid("a", "YES"), hid("abba", "YES"), hid("ab", "NO")],
+      sample: "s = input()\nif s == s[::-1]:\n    print(\"YES\")\nelse:\n    print(\"NO\")",
+    },
+    {
+      id: "c45e12", title: "Bài 45.12: Đếm một từ",
+      prompt: "Dòng 1 là một câu gồm các từ cách nhau dấu cách. Dòng 2 là một từ cần đếm. In số lần từ đó xuất hiện.",
+      starter: "cau = input().split()\ntu = input()\n",
+      require: ["input", "for", "if"],
+      tests: [pub("toi hoc toi\ntoi", "2"), pub("xin chao\nxin", "1"), hid("a b a\nb", "1"), hid("mot mot mot\nhai", "0")],
+      sample: "cau = input().split()\ntu = input()\ndem = 0\nfor w in cau:\n    if w == tu:\n        dem = dem + 1\nprint(dem)",
+    },
+  ],
+  exam: {
+    code: {
+      prompt: "Cho nums = [4, -2, 0, 9, -5, 3]. Đếm số dương và in kết quả.",
+      expectedOutput: "3",
+      sample: "nums = [4, -2, 0, 9, -5, 3]\ndem = 0\nfor x in nums:\n    if x > 0:\n        dem = dem + 1\nprint(dem)",
+      require: ["for", "if"],
+    },
+    mcq: [
+      { id: "q1", q: "Vì sao bài có test ẩn?", options: ["Để giấu lời giải mẫu", "Để kiểm tra chương trình với dữ liệu khác ví dụ, kể cả trường hợp biên", "Để cấm dùng input()", "Để chấm bằng tay"], answer: 1 },
+      { id: "q2", q: "Khi test ẩn sai, học viên được biết gì?", options: ["Toàn bộ dữ liệu vào và ra của test ẩn", "Chỉ biết là sai ở test ẩn, không xem được dữ liệu", "Điểm tối đa của bài", "Lời giải mẫu ngay lập tức"], answer: 1 },
+    ],
+  },
+};

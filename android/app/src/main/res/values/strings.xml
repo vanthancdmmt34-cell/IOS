@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LifeRivo</string>
+    <string name="title_activity_main">LifeRivo</string>
+    <string name="package_name">vn.liferivo.study</string>
+    <string name="custom_url_scheme">vn.liferivo.study</string>
+</resources>

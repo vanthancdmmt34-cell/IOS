@@ -1,0 +1,13 @@
+node_modules/
+data/
+.env
+.env.*
+ecosystem.config.cjs
+*.log
+*.bak-*
+__pycache__/
+.DS_Store
+Thumbs.db
+
+# Cấu hình chạy thử trên máy phát triển
+.claude/

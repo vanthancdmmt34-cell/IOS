@@ -1,0 +1,23 @@
+# Sample Nginx configuration for the foreign language learning platform.
+# Usage: copy this file to /etc/nginx/sites-available/study.liferivo.com,
+# create a symlink in sites-enabled, run `nginx -t`, and reload nginx.
+# The backend listens on localhost port 8082 (override via the PORT env var).
+# Note: this sample only includes the port 80 block. When running
+# `certbot --nginx -d study.liferivo.com`, Certbot automatically adds the
+# port 443 (SSL) block while keeping `proxy_pass` pointed at port 8082.
+# If an older config on the VPS still has a placeholder `server_name`, update it
+# to `study.liferivo.com` before reloading so Nginx matches the domain instead
+# of falling back to the default server.
+server {
+    listen 80;
+    server_name study.liferivo.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

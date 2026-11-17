@@ -1,0 +1,294 @@
+Chọn khóa khác	Choose another course
+Chọn kiểu xác thực HMAC-SHA{0} khi tạo webhook ở SePay và dán đúng khóa đó vào đây (khuyên dùng).	Choose HMAC-SHA{0} authentication when creating the webhook in SePay and paste that exact key here (recommended).
+Chọn lộ trình	Choose a path
+Chọn ngân hàng	Choose bank
+Chọn phạm vi, tích những mục muốn thay đổi, rồi bấm Áp dụng. Mục không tích giữ nguyên.	Choose a scope, tick the items to change, then click Apply. Unticked items stay as they are.
+Chọn tất cả	Select all
+Chỗ	Seats
+Chỗ đã dùng	Seats used
+Chỗ giấy phép còn lại	License seats left
+chỗ học sinh · starter {0} chỗ đến {1}/{2}/{3}	student seats · starter {0} seats until {1}/{2}/{3}
+Chờ thanh toán	Awaiting payment
+Chủ đề: Hàm (def)	Topic: Functions (def)
+Chủ đề: List & xử lý mảng	Topic: Lists & array processing
+Chủ đề: Rẽ nhánh if/else	Topic: if/else branching
+Chủ đề: Thuật toán nhẹ	Topic: Light algorithms
+Chủ đề: Vòng lặp for/while	Topic: for/while loops
+Chủ gói	Plan owner
+Chủ gói không thể rời gói.	The plan owner cannot leave the plan.
+Chủ gói mời / xóa thành viên	The plan owner invites / removes members
+Chuỗi học liên tiếp	Study streak
+Chuỗi văn bản (bài kiểu SGK)	Text strings (textbook-style)
+Chuyển khoản rồi mà chưa được kích hoạt?	Transferred but not activated yet?
+Chữ ký quá cũ	Signature too old
+Chưa bắt đầu	Not started
+chưa cấu hình khóa	key not configured
+Chưa cấu hình SEPAY_WEBHOOK_SECRET hoặc SEPAY_API_KEY	SEPAY_WEBHOOK_SECRET or SEPAY_API_KEY is not configured
+Chưa chọn chương nào.	No chapter selected.
+Chưa chọn thay đổi nào để áp dụng.	No changes selected to apply.
+Chưa có ai làm.	Nobody has taken it yet.
+Chưa có bài nộp	No submissions yet
+Chưa có bài tùy chỉnh	No custom exercises yet
+Chưa có đơn hàng nào.	No orders yet.
+Chưa có khóa API Gemini hoặc đang tắt kết nối AI.	No Gemini API key, or the AI connection is turned off.
+Chưa có liên kết.	No link yet.
+Chưa có lượt nào.	No attempts yet.
+Chưa có thay đổi.	No changes yet.
+Chưa có thông báo nào	No announcements yet
+Chưa có.	None yet.
+Chưa đặt	Not set
+Chưa đủ dữ liệu	Not enough data
+Chưa đủ điều kiện	Not eligible yet
+Chưa gửi thông báo nào	No announcements sent yet
+Chưa nộp	Not submitted
+Chưa nộp lần nào	Never submitted
+Chưa nộp lần nào cho bài này trong phiên này.	No submissions for this exercise in this session yet.
+Chức năng đánh giá đang tắt.	Ratings are turned off.
+Chứng nhận	Certificates
+Chứng nhận hoàn thành	Certificate of completion
+Chứng nhận này được trao cho	This certificate is awarded to
+Chứng nhận theo nhóm	Course certificates
+chương	chapters
+Chương	Chapter
+Chương {0}	Chapter {0}
+Chương {0} trên {1}	Chapter {0} of {1}
+Chương {0}: {1}/{2} bài đã đạt	Chapter {0}: {1}/{2} exercises passed
+Chương bị ẩn không tính vào chứng nhận toàn bộ.	Hidden chapters don't count toward the full certificate.
+Chương còn yếu	Weak chapters
+Chương không hợp lệ.	Invalid chapter.
+Có câu hỏi không hợp lệ (thiếu nội dung, đáp án hoặc bài không tồn tại).	Some questions are invalid (missing text, answer, or the exercise doesn't exist).
+Có hai loại: chứng nhận toàn bộ chương trình, và chứng nhận riêng cho từng nhóm. Bài tập giáo viên thêm sau không tính vào chứng nhận.	There are two kinds: a certificate for the whole program and one for each course. Exercises added later by teachers don't count toward certificates.
+Có hoàn tiền không?	Are refunds available?
+Có thể là tài khoản cá nhân. Chỉ gồm chữ và số, không dấu cách.	Can be a personal account. Letters and digits only, no spaces.
+Có tự động trừ tiền gia hạn không?	Is renewal charged automatically?
+Code ban đầu (tùy chọn)	Starter code (optional)
+Code dài quá (tối đa {0} ký tự).	Code is too long (max {0} characters).
+Code khởi đầu	Starter code
+Code quá dài (tối đa {0} ký tự).	Code is too long (max {0} characters).
+Code quá dài.	Code is too long.
+Còn {0} lần nộp đạt nữa	{0} more passing submissions to go
+Còn {0} XP để lên cấp {1} · Mầm xanh	{0} XP to level {1} · Sprout
+Còn hạn	Active
+Còn thiếu để nhận chứng nhận toàn bộ	Remaining for the full certificate
+Cơ bản	Basics
+Cú đêm	Night owl
+Củng cố if · vòng lặp · list · hàm trước kiểm tra	Review if · loops · lists · functions before the test
+Dán khóa vào đây	Paste the key here
+Danh sách {0} chiều và ma trận	{0}-D lists and matrices
+Danh sách học viên và điểm	Learner list and scores
+Dãy số & vòng lặp (bài thi)	Number sequences & loops (exam)
+Doanh thu ({0} đơn đã thanh toán)	Revenue ({0} paid orders)
+Doanh thu theo ngày	Revenue by day
+Dòng {0}.	Line {0}.
+Dòng chữ chân trang	Footer text
+Dòng giới thiệu ngắn	Short tagline
+Dùng khi bài có input(). Mỗi test gồm dữ liệu đầu vào (mỗi dòng một lần input()) và kết quả cần in. Test ẩn không hiển thị cho học viên, dùng để kiểm tra trường hợp biên. Nếu có test, ô “Kết quả cần in” ở trên có thể để trống.	Use when the exercise has input(). Each test has input data (one line per input()) and the expected output. Hidden tests aren't shown to learners and check edge cases. With tests, the “Expected output” box above may be left empty.
+Dùng list và dict	Use lists and dicts
+Dung lượng dữ liệu	Data size
+Duyệt, min/max, lọc, tìm kiếm	Iterate, min/max, filter, search
+Duyệt, tổng, lọc	Iterate, sum, filter
+Dữ liệu	Data
+Dữ liệu của tôi được lưu ra sao?	How is my data stored?
+Dữ liệu gửi lên không hợp lệ.	Invalid data submitted.
+Dữ liệu không hợp lệ.	Invalid data.
+Đã dùng ${0} / trần ${1} · Model gemini-{2}-flash-lite ·	Used ${0} / cap ${1} · Model gemini-{2}-flash-lite ·
+Đã gửi	Sent
+Đã hủy	Cancelled
+Đã làm	Done
+Đã mời, chờ đồng ý	Invited, awaiting acceptance
+Đã nhận {0}/{1}	Earned {0}/{1}
+Đã nhận {0}/{1}.	Earned {0}/{1}.
+Đã nhận {0}/{1}. Những huy hiệu sắp đạt được hiện kèm tiến độ.	Earned {0}/{1}. Badges you're close to show their progress.
+Đã nộp	Submitted
+Đã quá hạn làm bài.	The deadline has passed.
+Đã quá hạn nộp bài kiểm tra này.	The deadline for this test has passed.
+Đã thanh toán	Paid
+Đã thêm	Added
+Đã xong bài tập	Exercises done
+Đại học · Học từ đầu	University · From scratch
+Đại học năm {0}–{1} · thuật toán & hàm	University years {0}–{1} · algorithms & functions
+Đang bán	On sale
+Đang bật	On
+Đang dùng	In use
+Đang học	Studying
+Đang mở	Open
+Đang tắt	Off
+Đánh dấu bài khó và ghi chú riêng, đồng bộ trên mọi thiết bị	Bookmark hard exercises and keep private notes, synced on all devices
+Đánh dấu bài này	Bookmark this exercise
+Đánh dấu để xem lại	Bookmark to review
+Đảo chuỗi	Reverse a string
+Đáp án mẫu	Sample solution
+Đáp án mẫu:	Sample solution:
+Đáp án: {0}	Answer: {0}
+Đạt {0} bài kiểm tra chương	Pass {0} chapter tests
+Đạt {0}/{1} một bài kiểm tra	Score {0}/{1} on a test
+Đạt một bài kiểm tra chương	Pass a chapter test
+Đăng ký	Sign up
+Đăng ký tài khoản đang đóng. Hãy nhờ giáo viên tạo tài khoản cho bạn.	Sign-up is closed. Ask a teacher to create an account for you.
+Đăng nhập	Log in
+Đăng nhập để tiếp tục bài đang học.	Sign in to continue where you left off.
+Đăng xuất	Sign out
+Đặt lại	Reset
+Đặt lịch hàng loạt	Bulk scheduling
+Đặt mục tiêu số bài mỗi ngày, giữ chuỗi ngày học liên tiếp, lên cấp từ “Hạt giống” tới “Huyền thoại” và sưu tầm {0} huy hiệu. Bảng xếp hạng tuần giúp cả lớp cùng thi đua.	Set a daily goal, keep your study streak, level up from “Seedling” to “Legend” and collect {0} badges. The weekly leaderboard lets the whole class compete.
+đầu tiên tới thuật toán, cấu trúc dữ liệu và tư duy AI.	to algorithms, data structures and AI thinking.
+Đầu vào	Input
+Đầu vào cho input()	Input for input()
+Đầu vào test {0}	Test input {0}
+Đầu vào test ẩn	Hidden test input
+Đề bài	Task
+để chạy	to run
+để máy chấm điểm.	to get graded.
+Để trống giờ mở hoặc hạn nộp nghĩa là không giới hạn. Giờ nhập theo đồng hồ trên máy bạn và được đổi sang mốc thời gian chuẩn trước khi lưu. Máy chủ tự chặn vào thi trước giờ mở và tính {0} điểm khi nộp quá hạn hoặc quá thời lượng.	Leaving the open time or deadline empty means no limit. Times use your device clock and are converted to a standard timestamp before saving. The server blocks entry before the open time and scores {0} for late or overtime submissions.
+Đề:	Task:
+Đếm – lọc – thống kê	Count – filter – statistics
+đến {0}/{1}/{2}	until {0}/{1}/{2}
+Địa chỉ webhook cho SePay	Webhook URL for SePay
+điểm	points
+Điểm	Score
+Điểm ({0}–{1})	Score ({0}–{1})
+Điểm cao nhất	Best score
+Điểm chấm rõ ràng như cô giáo chấm	Clear scoring, just like a teacher's
+Điểm được tính thế nào?	How is the score calculated?
+Điểm ghi được trong {0} ngày gần nhất: điểm cao nhất của từng bài bạn nộp trong tuần, cộng điểm bài kiểm tra trong tuần.	Points earned in the last {0} days: your best score on each exercise submitted this week, plus test scores this week.
+Điểm số & xếp loại học sinh	Student scores & grading
+Điểm TB	Avg. score
+Điểm TB bài tập	Avg. exercise score
+Điểm tích lũy	Total points
+Điểm tuyệt đối	Perfect score
+Điểm từ {0} đến {1}.	Score from {0} to {1}.
+Điều hướng chính	Main navigation
+Điều khoản	Terms
+Điều khoản sử dụng	Terms of use
+Điều kiện, xếp loại	Conditions, grading
+Điều kiện, xếp loại, năm nhuận, menu logic	Conditions, grading, leap years, menu logic
+Đỏ	Red
+Đo lường và đánh giá mô hình	Measuring and evaluating models
+Đoạn giới thiệu đầu trang	Header introduction
+Đọc đề và lý thuyết ngắn	Read the task and short theory
+Đóng	Close
+Đóng bài	Close assignment
+Đóng lớp	Close class
+Đóng lớp: học sinh vẫn xem được kết quả nhưng không nộp bài mới, chỗ giấy phép được trả lại. Xóa lớp đã có bài nộp: lớp chỉ được lưu trữ (ẩn), dữ liệu học tập giữ nguyên.	Closing a class: students can still see results but can't submit new work, and license seats are returned. Deleting a class that has submissions only archives (hides) it; learning data is kept.
+Đồ án nhỏ quản lý sinh viên	Mini project: student management
+Đồ án tổng hợp nâng cao	Advanced capstone project
+Đổi = thành == ở dòng {0}	Change = to == on line {0}
+Đổi giá chỉ áp dụng cho đơn tạo sau đó; đơn đang chờ giữ giá cũ. Gói "Báo giá" không bán trực tiếp, người dùng được hướng dẫn liên hệ. Mọi thay đổi được ghi nhật ký.	Price changes apply only to orders created afterwards; pending orders keep the old price. "Quote" plans aren't sold directly; users are asked to get in touch. All changes are logged.
+Đổi giao diện sáng/tối	Toggle light/dark theme
+Đổi giáo viên	Change teacher
+Đổi mã	New code
+Đổi mật khẩu	Change password
+Đổi mục tiêu ngày	Change daily goal
+Đối tượng	Who it is for
+Đồng hồ {0} phút bắt đầu chạy ngay khi bạn bấm “Bắt đầu làm bài”, kể cả khi bạn đóng trang.	The {0}-minute timer starts as soon as you click “Start the test”, even if you close the page.
+Đồng ý tham gia	Accept
+Đơn	Order
+Đơn được tạo	Orders created
+Đơn hàng	Orders
+Đơn hàng hết hạn sau (giờ)	Orders expire after (hours)
+Đơn học viên báo đã chuyển, chờ bạn xác nhận	Orders the learner reported as paid, awaiting your confirmation
+Đơn không còn ở trạng thái chờ.	The order is no longer pending.
+Đơn này đã thanh toán.	This order has been paid.
+Đủ chứng nhận toàn bộ	Full certificate earned
+Đủ điều kiện chứng nhận một nhóm	Qualify for a course certificate
+đủ số tiền	the full amount
+đúng nội dung mã đơn	the exact order code as the description
+Đưa code về như ban đầu	Reset code to the starter
+Được làm lại	Retake allowed
+Được. Chương {0} bắt đầu từ lệnh in đầu tiên. Lộ trình “Từ {1} đến nâng cao” và “Sinh viên · Học từ đầu” được viết riêng cho người chưa học gì.	Yes. Chapter {0} starts from your very first print statement. The “From {1} to advanced” and “University · From scratch” paths are written for complete beginners.
+Đường dẫn có thể đã cũ hoặc bài tập đã bị xóa.	The link may be outdated or the exercise was deleted.
+Email, Zalo hoặc số điện thoại. Hiện ở trang thanh toán và chính sách.	Email, Zalo or phone number. Shown on the payment and policy pages.
+Family {0} tháng ({1} thành viên)	Family {0} months ({1} members)
+File CSV mở được bằng Excel, có dấu tiếng Việt.	The CSV file opens in Excel with Vietnamese accents intact.
+Form trống	Empty form
+Game hóa và cộng đồng	Gamification and community
+Gán biến, + - * /	Assignment, + - * /
+Gán tay	Assign manually
+Ghi chú	Notes
+Ghi chú của bạn	Your notes
+Ghi chú quá dài.	The note is too long.
+Ghi chú và đánh dấu bài	Notes and bookmarks
+Ghi lại điều vừa học, lỗi hay mắc hoặc cách giải. Ghi chú tự lưu và đồng bộ trên mọi thiết bị bạn đăng nhập.	Write down what you learned, common mistakes or solutions. Notes save automatically and sync across every device you sign in on.
+Ghim lên đầu	Pin to top
+Giá (đồng)	Price (VND)
+Gia đình	Families
+Gia đình (Family)	Family
+Gia hạn	Renew
+Giá, số tháng, số chỗ đều chỉnh ở đây, không có giá nào viết cứng trong mã.	Price, months and seats are all edited here; no price is hardcoded.
+Giai đoạn {0} · {1} phút	Stage {0} · {1} minutes
+Giai đoạn {0}: Nền tảng	Stage {0}: Foundations
+Giải thích lỗi giúp mình	Explain my error
+Giao bài	Assign
+Giao bài mới	New assignment
+Giao bài, kiểm tra, chấm tự động và chấm tay	Assignments, tests, auto and manual grading
+Giao dịch do SePay gửi về qua webhook đã xác thực chữ ký. Giao dịch gửi trùng bị bỏ qua tự động.	Transactions sent by SePay through the signature-verified webhook. Duplicates are ignored automatically.
+Giao dịch ngân hàng	Bank transactions
+Giáo viên	Teacher
+Giáo viên ·	Teacher ·
+Giáo viên (Teacher)	Teacher
+Giáo viên đã đóng bài này.	The teacher has closed this assignment.
+Giáo viên đã tắt bảng xếp hạng.	The leaderboard has been turned off.
+Giáo viên đã tắt chức năng tự đổi tên.	Changing your own name has been turned off.
+Giáo viên đã tắt chức năng xem đáp án mẫu.	Sample solutions have been turned off.
+Giáo viên đã xóa bạn khỏi lớp này. Hãy liên hệ giáo viên nếu cần tham gia lại.	The teacher removed you from this class. Contact the teacher if you need to rejoin.
+Giáo viên đang tắt bài kiểm tra chương.	Chapter tests are turned off.
+Giáo viên không làm bài kiểm tra trong lớp mình quản lý.	Teachers can't take tests in their own class.
+Giáo viên không nộp bài trong lớp mình quản lý.	Teachers can't submit work in their own class.
+Giáo viên quản lý lớp trong một màn hình	Teachers manage the class from one screen
+Giáo viên: giaovien	Teacher: giaovien
+Giáo viên: tạo tài khoản rồi mua gói Teacher để mở lớp.	Teachers: create an account, then buy a Teacher plan to open classes.
+Giấy phép bị thu hồi	License revoked
+Giấy phép của giáo viên đã hết hạn, không mở lại lớp được.	The teacher's license has expired; the class can't be reopened.
+Giấy phép mua qua đơn hàng được cấp tự động. Cấp tay cho trường học/hợp đồng báo giá riêng (gói School).	Licenses bought through orders are issued automatically. Grant manually for schools / quoted contracts (School plan).
+Giấy phép Teacher	Teacher licenses
+Giấy phép: {0}/{1} chỗ đã dùng. Một học sinh ở nhiều lớp của bạn chỉ tính {2} chỗ.	License: {0}/{1} seats used. A student in several of your classes counts as {2} seat.
+Giấy phép: đã dùng	License: used
+Giờ mở	Opens at
+Giờ mở không hợp lệ.	Invalid open time.
+Giới hạn thành viên	Member limit
+Giới hạn:	Limits:
+Giữ đăng nhập (ngày)	Stay signed in (days)
+Gõ code ngay trên trình duyệt, máy chấm trả kết quả trong vài giây và chỉ đúng dòng sai bằng tiếng Việt. Đi từ lệnh	Type code right in the browser; the grader responds in seconds and points to the exact line that's wrong. Go from your first
+Gõ cứng đáp số thay vì dùng biến, vòng lặp như đề yêu cầu	Hardcoding the answer instead of using variables and loops as required
+Gói	Plan
+Gói cơ bản	Basic plan
+Gói của tôi	My plan
+Gói đã đủ thành viên.	The plan is full.
+Gói Family	Family plan
+Gói Family này đã hết hạn.	This Family plan has expired.
+Gói không tồn tại hoặc đã ngừng bán.	The plan doesn't exist or is no longer sold.
+Gói này cần liên hệ để nhận báo giá.	Please contact us for a quote for this plan.
+Gói Pro và thanh toán	Pro plans and payment
+Gói và giá	Plans and prices
+Gợi ý	Hint
+gợi ý lệnh	autocomplete
+Gửi đánh giá	Submit rating
+Gửi mã lớp để học sinh nhập ở mục	Send the class code for students to enter under
+Gửi thông báo	Send announcement
+Gửi thông báo cho cả lớp	Send an announcement to the whole class
+Hàm	Functions
+Hàm (def)	Functions (def)
+hàm def	def functions
+Hàm def	def functions
+Hàm gọi lại chính nó	A function that calls itself
+Hàm nâng cao (sinh viên)	Advanced functions (university)
+Hạn	Due
+Hạn {0}:{1} {2}/{3}/{4}	Due {0}:{1} {2}/{3}/{4}
+Hạn {0}:{1} {2}/{3}/{4} · đã nộp {5} lần	Due {0}:{1} {2}/{3}/{4} · submitted {5} times
+Hạn {0}:{1} {2}/{3}/{4} · Giao cả lớp · Đang mở	Due {0}:{1} {2}/{3}/{4} · Whole class · Open
+Hạn dùng đến {0}/{1}/{2} (nguồn: Lớp học (giấy phép giáo viên)). Mua thêm Pro cá nhân được cộng nối tiếp và không phụ thuộc lớp học hay gói gia đình.	Valid until {0}/{1}/{2} (source: Class (teacher license)). Personal Pro you buy is added on top and doesn't depend on classes or family plans.
+Hạn nộp	Deadline
+Hạn nộp không hợp lệ.	Invalid deadline.
+Hạng	Rank
+Hành động	Actions
+Hạt giống	Seedling
+Hãy chọn từ {0} đến {1} sao.	Choose from {0} to {1} stars.
+Hãy là người đánh giá đầu tiên.	Be the first to rate.
+Hãy nhập câu hỏi hoặc gửi kèm code.	Type a question or attach code.
+Hãy trả lời đủ tất cả câu hỏi.	Please answer all questions.
+Hệ số điểm theo lần nộp. Điểm tối đa mỗi bài vẫn là {0}, bài kiểm tra {1}.	Score multiplier by submission number. The maximum per exercise is still {0}, tests {1}.
+Hệ thống	System
+Hệ tự nộp khi còn vài giây. Nộp sau hạn hoặc quá thời lượng thì máy chủ tính {0} điểm.	The system auto-submits with a few seconds left. Late or overtime submissions score {0}.
+Hết hạn	Expired
+Hiện	Show
+Hiện cho học viên sau khi bấm Tôi đã chuyển khoản.	Shown to the learner after they click I have transferred.

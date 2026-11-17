@@ -1,0 +1,107 @@
+{0} phút trước	{0} minutes ago
+{0} giờ trước	{0} hours ago
+{0} ngày trước	{0} days ago
+vừa xong	just now
+{0}/{1} chỗ · đến {2}/{3}/{4}	{0}/{1} seats · until {2}/{3}/{4}
+Ảnh PNG, JPG hoặc WebP, tối đa {0} KB (ảnh lớn được tự thu nhỏ). Hiện ở góc trên, trang giới thiệu, trang công khai, chứng nhận và biểu tượng tab. Nên dùng ảnh vuông hoặc ngang, nền trong suốt.	PNG, JPG or WebP image, up to {0} KB (large images are shrunk automatically). Shown in the top corner, landing page, public pages, certificates and the browser tab icon. A square or wide image with a transparent background works best.
+Ảnh quá lớn (tối đa {0} KB) hoặc trống.	Image too large (max {0} KB) or empty.
+Bạn tạo tài khoản quá nhiều lần trong {0} giờ. Hãy chờ ít phút.	Too many account creations within {0} hour. Please wait a few minutes.
+Cách hiện logo	Logo display
+Cần giấy phép giáo viên còn hạn để tạo tài khoản học viên.	An active teacher license is required to create learner accounts.
+Cấp / gia hạn giấy phép	Grant / renew license
+Cấp giấy phép cần số tháng ({0}–{1}) và lý do / số hợp đồng.	A license needs months ({0}–{1}) and a reason / contract number.
+Chỉ logo	Logo only
+Chỉ nhận ảnh PNG, JPG hoặc WebP.	Only PNG, JPG or WebP images are accepted.
+Chọn ảnh…	Choose image…
+chỗ. Học viên được thêm vào lớp mới chiếm chỗ; tạo tài khoản không kèm lớp thì chưa chiếm chỗ.	seats. Learners added to a class use a seat; accounts created without a class don't use one yet.
+Chuyển lớp sang giáo viên khác	Moved to another teacher
+Chuyển lớp và học viên sang GV khác	Move classes and learners to another teacher
+Chưa có tài khoản nào để tạo.	No accounts to create.
+Chưa vào lớp	Not in a class
+Chưa vào lớp nào	Not in any class
+Có giấy phép còn hạn	With an active license
+Danh sách học viên	Learner list
+Do tôi tạo	Created by me
+Do GV tạo	Created by teacher
+Đang dùng logo mặc định	Using the default logo
+Dùng logo mặc định	Use default logo
+Đăng nhập gần nhất	Last sign-in
+Đặt lại mật khẩu	Reset password
+Để trống: hệ thống tự tạo	Leave empty to generate one
+Đưa vào lớp	Add to class
+Giấy phép	License
+Giấy phép (không bắt buộc)	License (optional)
+Hãy chọn giáo viên nhận khác giáo viên hiện tại.	Choose a receiving teacher other than the current one.
+Họ tên	Full name
+Học trong {0} ngày	Studied in {0} days
+Học viên của tôi	My learners
+Học viên trong các lớp bạn dạy và tài khoản bạn tạo. Bạn chỉ đặt lại mật khẩu hoặc khóa được tài khoản do chính bạn tạo; học viên tự đăng ký tự quản lý mật khẩu của mình.	Learners in the classes you teach and accounts you created. You can only reset passwords or lock accounts you created; self-registered learners manage their own passwords.
+Học viên tự đăng ký tài khoản: chỉ học viên hoặc quản trị viên đổi được thông tin này.	This learner registered themselves: only the learner or an administrator can change this.
+Khóa tài khoản	Lock account
+Mở khóa	Unlock
+Không đặt lại mật khẩu cho tài khoản quản trị khác từ đây. Dùng tools/reset-password.js trên máy chủ.	Other administrator passwords can't be reset here. Use tools/reset-password.js on the server.
+Không đưa vào lớp (chưa chiếm chỗ giấy phép)	No class (doesn't use a license seat yet)
+Không tìm thấy giáo viên.	Teacher not found.
+Không tìm thấy học viên.	Learner not found.
+Logo + tên hệ thống	Logo + site name
+Lý do / số hợp đồng	Reason / contract number
+Mọi lớp	All classes
+Mọi tài khoản	All accounts
+Mỗi giáo viên tự quản lý học viên và lớp của mình (Trang giáo viên → Học viên của tôi). Ở đây quản trị viên tạo tài khoản giáo viên, cấp giấy phép, xem lớp và học viên của từng người, khóa tài khoản, chuyển lớp khi giáo viên nghỉ.	Each teacher manages their own learners and classes (Teacher dashboard → My learners). Here administrators create teacher accounts, grant licenses, view each teacher's classes and learners, lock accounts and move classes when a teacher leaves.
+Số chỗ = {0} thì chỉ tạo tài khoản; giáo viên cần giấy phép mới tạo được lớp.	Seats = {0} creates the account only; the teacher needs a license to create classes.
+Số chỗ học sinh	Student seats
+Số tháng	Months
+Tải ảnh logo ở khung Logo phía trên. Chọn “Chỉ logo” nếu ảnh đã có sẵn tên.	Upload the logo in the Logo box above. Choose “Logo only” if the image already contains the name.
+Tài khoản bạn tạo	Accounts you created
+Tạo	Create
+Tạo tài khoản giáo viên	Create teacher account
+Tạo tài khoản học viên	Create learner accounts
+Tạo tài khoản	Create accounts
+Tên đăng nhập chỉ gồm chữ không dấu, số, dấu _ . - và dài {0} đến {1} ký tự.	Usernames contain only unaccented letters, digits, _ . - and are {0} to {1} characters long.
+Tên đăng nhập đã có người dùng.	This username is taken.
+Tìm giáo viên	Find a teacher
+Tìm theo tên hoặc tên đăng nhập	Search by name or username
+TK đã tạo	Accounts created
+Tối đa {0} dòng. Bỏ trống mật khẩu thì hệ thống tự tạo mật khẩu {1} ký tự. Tên đăng nhập: chữ không dấu, số, dấu _ . -	Up to {0} lines. Leave the password empty and an {1}-character password is generated. Username: unaccented letters, digits, _ . -
+Tự đăng ký	Self-registered
+Ví dụ: HĐ {0}/{1} Trường THPT A	E.g.: Contract {0}/{1} ABC High School
+Xem lớp và học viên	View classes and learners
+Xem tiến độ	View progress
+Thêm vào lớp	Add to class
+Sửa tên	Rename
+Sửa tên hiển thị	Edit display name
+Lớp	Class
+Bài đã đạt	Exercises passed
+Hoạt động gần nhất	Last activity
+Học trong 7 ngày	Active in 7 days
+Bài được giao	Assignments
+Bài tập luyện gần đây	Recent practice
+Chưa nộp bài luyện nào.	No practice submissions yet.
+Chưa có bài giao.	No assignments yet.
+Bài học hoàn thành	Lessons completed
+Mật khẩu mới	New password
+Mật khẩu chỉ hiện một lần. Hãy sao chép hoặc in và đưa cho học viên; học viên nên đổi mật khẩu sau khi đăng nhập.	Passwords are shown only once. Copy or print them for your learners; learners should change their password after signing in.
+Sao chép	Copy
+In	Print
+Xong	Done
+Đã sao chép.	Copied.
+Đã khóa.	Locked.
+Đã mở khóa.	Unlocked.
+Đã lưu.	Saved.
+Đã cập nhật logo.	Logo updated.
+Đã quay về logo mặc định.	Reverted to the default logo.
+Đã tạo tài khoản giáo viên	Teacher account created
+Gửi thông tin đăng nhập cho giáo viên; nên đổi mật khẩu sau lần đăng nhập đầu.	Send the sign-in details to the teacher; they should change the password after the first sign-in.
+Giáo viên nhận	Receiving teacher
+Chuyển	Move
+Đã cấp giấy phép.	License granted.
+Đã đặt lại mật khẩu.	Password reset.
+Chưa có học viên.	No learners yet.
+Chưa có lớp.	No classes yet.
+Không có học viên khớp bộ lọc.	No learners match the filter.
+Chưa có học viên. Tạo tài khoản hoặc gửi mã lớp cho học sinh.	No learners yet. Create accounts or send the class code to students.
+Chưa có giáo viên. Tạo tài khoản giáo viên hoặc giáo viên tự mua gói Teacher.	No teachers yet. Create a teacher account, or teachers can buy a Teacher plan themselves.
+Quản trị (không cần giấy phép)	Admin (no license needed)
+Chưa có / hết hạn	None / expired
+Cùng số chỗ với giấy phép đang có thì được cộng nối tiếp thời hạn.	With the same number of seats as the current license, the time is added on.
+Mỗi dòng một học viên: tên đăng nhập, Họ tên, mật khẩu (không bắt buộc) an.nguyen, Nguyễn Văn An binh.tran, Trần Thị Bình, matkhau{0}	One learner per line: username, Full name, password (optional) — e.g. an.nguyen, Nguyen Van An

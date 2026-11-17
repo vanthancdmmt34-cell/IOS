@@ -1,0 +1,117 @@
+/* Giao diện bên trong, đồng bộ với trang chủ (pf-): nền #F8FAFC, thẻ trắng viền mảnh, chữ slate, một màu thương hiệu.
+   Nạp sau user-dash.css và admin-dash.css để ghi đè. */
+body.in-app {
+  --iv: var(--tim, #5B3FD6); --iv-2: color-mix(in srgb, var(--iv) 82%, #000); --iv-soft: color-mix(in srgb, var(--iv) 8%, #fff);
+  --iv-ink: #0F172A; --iv-ink2: #334155; --iv-mut: #64748B; --iv-line: #E5E7EB; --iv-bg: #F8FAFC;
+  --ud: var(--iv); --ud-soft: var(--iv-soft); --ud-ink: var(--iv-ink); --ud-mut: var(--iv-mut); --ud-line: var(--iv-line);
+}
+body.in-app:not(.ax-on) { background: var(--iv-bg) !important; color: var(--iv-ink); }
+
+/* ---------- Khung: thanh bên + thanh trên sát mép, viền mảnh ---------- */
+@media (min-width: 1021px) {
+  body.in-app:not(.ax-on) .shell { grid-template-columns: 248px minmax(0, 1fr); gap: 0; padding: 0; }
+  body.in-app:not(.ax-on) .shell > .side { top: 0; height: 100vh; border-radius: 0; padding: 18px 14px 14px; }
+  body.in-app:not(.ax-on) .main > .topbar { top: 0; height: 64px; border-radius: 0; padding: 0 28px; box-shadow: none; }
+  body.in-app:not(.ax-on) #main.page:not(.full) { padding: 28px 32px 56px; max-width: 1360px; }
+}
+body.in-app:not(.ax-on) .shell > .side { background: #fff; border-right: 1px solid var(--iv-line) !important; }
+body.in-app:not(.ax-on) .main > .topbar { background: rgba(255, 255, 255, .92) !important; backdrop-filter: blur(10px) saturate(1.4) !important; border-bottom: 1px solid var(--iv-line) !important; }
+body.in-app:not(.ax-on) .side .brand { padding: 4px 10px 20px; }
+body.in-app:not(.ax-on) .side .nav { gap: 1px; }
+body.in-app:not(.ax-on) .side .nav a { position: relative; padding: 9px 12px; gap: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--iv-ink2); }
+body.in-app:not(.ax-on) .side .nav a svg { width: 18px; height: 18px; color: var(--iv-mut); }
+body.in-app:not(.ax-on) .side .nav a:hover { background: var(--iv-bg); color: var(--iv-ink); }
+body.in-app:not(.ax-on) .side .nav a.on { background: var(--iv-soft); color: var(--iv); font-weight: 600; }
+body.in-app:not(.ax-on) .side .nav a.on svg { color: var(--iv); }
+body.in-app:not(.ax-on) .side .nav a.on::before { content: ""; position: absolute; left: -14px; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: var(--iv); }
+body.in-app:not(.ax-on) .side .nav-sep { margin: 18px 12px 6px; font-size: 11px; font-weight: 700; letter-spacing: .07em; color: #94A3B8; }
+body.in-app:not(.ax-on) .side .bar { background: #F1F5F9; }
+.ud-prem { background: #0F172A !important; color: #fff; border-radius: 14px !important; padding: 16px !important; }
+.ud-prem svg.art { display: none !important; }
+.ud-prem b { color: #fff !important; font-size: 14.5px !important; }
+.ud-prem p { color: #CBD5E1 !important; margin: 6px 0 12px !important; }
+.ud-prem a { background: #fff !important; color: var(--iv-ink) !important; border-radius: 9px !important; }
+.ud-prem a:hover { background: #E2E8F0 !important; }
+.ud-greet b { font-size: 16px !important; color: var(--iv-ink) !important; }
+.ud-greet span { color: var(--iv-mut) !important; }
+body.in-app:not(.ax-on) .topbar .search-btn { height: 38px !important; border-radius: 9px !important; border-color: var(--iv-line) !important; background: var(--iv-bg) !important; color: var(--iv-mut) !important; }
+body.in-app:not(.ax-on) .topbar .icon-btn { border-radius: 9px; color: var(--iv-ink2); }
+body.in-app:not(.ax-on) .topbar .icon-btn:hover { background: var(--iv-bg); }
+.ud-bell i { background: #EF4444 !important; }
+.ud-user .avatar { width: 34px !important; height: 34px !important; font-size: 13px; }
+
+/* ---------- Thành phần chung của mọi trang học ---------- */
+body.in-app:not(.ax-on) .page-head h1 { font-size: clamp(24px, 2.6vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--iv-ink); }
+body.in-app:not(.ax-on) .page-head p { color: var(--iv-mut); }
+body.in-app .sheet, body.in-app .card { background: #fff; border: 1px solid var(--iv-line); border-radius: 14px; box-shadow: none; }
+body.in-app .btn { border-radius: 9px; font-weight: 600; }
+body.in-app .btn-primary { background: var(--iv); border-color: var(--iv); }
+body.in-app .btn-primary:hover { background: var(--iv-2); border-color: var(--iv-2); }
+body.in-app .input, body.in-app select.input, body.in-app textarea.input { border-radius: 9px; border-color: var(--iv-line); }
+body.in-app .input:focus { border-color: var(--iv); box-shadow: 0 0 0 3px color-mix(in srgb, var(--iv) 18%, transparent); }
+body.in-app .table-wrap { border-color: var(--iv-line); border-radius: 12px; }
+body.in-app th { color: var(--iv-mut); font-weight: 600; }
+
+/* ---------- Trang tổng quan học viên ---------- */
+.hm-card { border: 1px solid var(--iv-line) !important; border-radius: 14px !important; padding: 20px 22px !important; }
+.hm-card-head h2 { font-size: 15.5px !important; font-weight: 700 !important; color: var(--iv-ink); }
+.hm-pill { border-color: var(--iv-line) !important; border-radius: 99px !important; color: var(--iv-ink2) !important; }
+.hm-pill.pro, .hm-pill.lv { background: var(--iv-soft) !important; color: var(--iv) !important; }
+.hm-link.chip { background: none !important; padding: 0 !important; }
+.hm-big b { font-size: 30px !important; font-weight: 800 !important; letter-spacing: -.03em; }
+.hm-chart { background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(37.5px - 1px), #F1F5F9 calc(37.5px - 1px), #F1F5F9 37.5px) !important; background-size: 100% 150px !important; background-repeat: no-repeat !important; }
+.hm-col i { border-radius: 6px 6px 2px 2px !important; background: color-mix(in srgb, var(--iv) 28%, #fff) !important; }
+.hm-col.now i { background: var(--iv) !important; }
+.hm-donut { background: conic-gradient(var(--iv) calc(var(--p) * 1%), #F1F5F9 0) !important; }
+.hm-prow { border-top-color: var(--iv-line) !important; }
+.hm-q-ico { border-radius: 10px !important; }
+.hm-tabs { border-bottom-color: var(--iv-line) !important; }
+.hm-tabs button { font-weight: 600 !important; }
+.hm-cc { border-color: var(--iv-line) !important; border-radius: 12px !important; }
+.hm-cc:hover { border-color: color-mix(in srgb, var(--c) 45%, var(--iv-line)) !important; box-shadow: 0 14px 30px -24px rgba(15, 23, 42, .45) !important; }
+.hm-cc-cover { height: 92px !important; background: color-mix(in srgb, var(--c) 10%, #fff) !important; border-bottom: 1px solid var(--iv-line); }
+.hm-cc-flag { width: 52px !important; height: 52px !important; border-radius: 14px !important; background: #fff !important; box-shadow: 0 6px 16px -10px var(--c) !important; }
+.hm-cc-cover em { background: #fff !important; color: var(--iv-ink) !important; border: 1px solid var(--iv-line); }
+.hm-cc-body b { font-size: 14.5px !important; font-weight: 700 !important; }
+.hm-cc-foot .hm-bar { background: #F1F5F9 !important; }
+.hm-profile-top { height: 56px !important; background: linear-gradient(120deg, var(--iv-soft), color-mix(in srgb, var(--iv) 18%, #fff)) !important; border-radius: 10px !important; }
+.hm-profile > .avatar { border-color: #fff !important; }
+.hm-cal { border-color: var(--iv-line) !important; border-radius: 12px !important; }
+.hm-cal-grid span.today { background: var(--iv) !important; }
+.hm-plan .hm-row:hover { background: var(--iv-bg) !important; }
+.hm-ach-ico { background: var(--iv-soft) !important; color: var(--iv) !important; border-radius: 12px !important; }
+
+/* Thanh trên trên điện thoại: gọn lại để không tràn ngang */
+@media (max-width: 640px) {
+  body.in-app:not(.ax-on) .main > .topbar { gap: 6px; padding: 0 10px; }
+  body.in-app:not(.ax-on) .topbar .crumbs:has(.ud-greet) { min-width: 0 !important; flex: 1 1 0; }
+  body.in-app:not(.ax-on) .topbar .lang-switch, body.in-app:not(.ax-on) .topbar .theme-btn { display: none; }
+  body.in-app:not(.ax-on) .topbar .menu-btn { width: 38px; min-width: 38px; }
+  .ud-greet b { font-size: 14.5px !important; }
+  .ud-user > button > svg { display: none; }
+  body.in-app:not(.ax-on) #main.page:not(.full) { padding: 16px 12px 40px; }
+}
+
+/* ---------- Hai chế độ: đang học (menu ngang, không thanh bên) / tài khoản (thanh bên chi tiết) ---------- */
+.top-brand, .main > .topnav, .side-back { display: none; }
+body.lx-acct .side .nav [data-zone="learn"] { display: none; }
+body.lx-acct .side-back { display: flex; align-items: center; gap: 8px; margin: 0 2px 10px; padding: 9px 12px; border: 1px solid var(--iv-line); border-radius: 9px; font-size: 13.5px; font-weight: 600; color: var(--iv-ink2); text-decoration: none; }
+body.lx-acct .side-back:hover { border-color: var(--iv); color: var(--iv); }
+body.lx-acct .side-back svg { width: 16px; height: 16px; }
+@media (min-width: 1021px) {
+  body.lx-top:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
+  body.lx-top:not(.ax-on) .shell > .side { display: none !important; }
+  body.lx-top:not(.ax-on) .topbar .menu-btn { display: none; }
+  body.lx-top:not(.ax-on) .top-brand { display: flex; align-items: center; gap: 10px; flex: none; margin-right: 18px; color: var(--iv-ink); text-decoration: none; font-weight: 800; }
+  body.lx-top:not(.ax-on) .top-brand .me-word i { color: var(--iv); background: var(--iv-soft); }
+  body.lx-top:not(.ax-on) .main > .topbar { padding: 0 max(28px, calc((100vw - 1240px) / 2)); }
+  body.lx-top:not(.ax-on) .main > .topnav { display: flex; gap: 4px; position: sticky; top: 64px; z-index: 29; padding: 0 max(28px, calc((100vw - 1240px) / 2)); background: #fff; border-bottom: 1px solid var(--iv-line); overflow-x: auto; scrollbar-width: none; }
+  body.lx-top:not(.ax-on) .main > .topnav::-webkit-scrollbar { display: none; }
+  .main > .topnav a { display: flex; align-items: center; gap: 8px; padding: 13px 12px 12px; border-radius: 0; background: none !important; border-bottom: 2px solid transparent; margin-bottom: -1px; font-size: 14px; font-weight: 500; color: var(--iv-ink2); text-decoration: none; white-space: nowrap; }
+  .main > .topnav a svg { width: 17px; height: 17px; color: var(--iv-mut); opacity: 1; }
+  .main > .topnav a:hover { color: var(--iv-ink); }
+  .main > .topnav a.on { color: var(--iv); border-bottom-color: var(--iv); font-weight: 600; }
+  .main > .topnav a.on svg { color: var(--iv); }
+  .main > .topnav a .n { margin-left: 2px; }
+  body.lx-top:not(.ax-on) #main.page:not(.full) { max-width: 1240px; padding: 28px 28px 56px; }
+}

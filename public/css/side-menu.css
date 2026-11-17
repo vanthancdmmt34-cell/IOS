@@ -1,0 +1,465 @@
+/* ==========================================================================
+   LifeRivo — Menu bên trái sau đăng nhập (bản chỉ chữ: không biểu tượng, không khung, không nền thẻ)
+   Chỉ đổi giao diện. Mục, đường dẫn, id và hành vi (nhóm mở một lần, mục đang mở, thanh tiến độ,
+   nút hướng dẫn / đăng xuất) giữ nguyên trong main.js.
+   Nạp sau chibi-premium.css (xem BUNDLE_SOURCES trong tools/build-css.mjs) nên thắng các lớp cũ;
+   các quy tắc cũ có !important được ghi đè bằng !important cùng mức.
+   ========================================================================== */
+
+html body.in-app:not(.ax-on) .shell > .side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  padding: 22px 18px 18px 20px;
+  background: var(--cp-surface);
+  border-right: 1px solid var(--cp-border);
+  box-shadow: none;
+  color: var(--cp-ink);
+  font-family: var(--cp-font);
+  overflow: hidden;
+}
+
+/* Logo: chữ đậm, không biểu tượng */
+html body.in-app:not(.ax-on) .shell > .side > .brand {
+  padding: 0;
+  font: 800 18px/1.1 var(--cp-font);
+  letter-spacing: -.01em;
+  color: var(--cp-ink) !important;
+  text-decoration: none;
+}
+html body.in-app:not(.ax-on) .shell > .side > .brand svg,
+html body.in-app:not(.ax-on) .shell > .side > .brand .me-mark { display: none !important; }
+
+/* Môn đang học: dòng chữ, gạch màu bên trái là dấu duy nhất */
+html body.in-app:not(.ax-on) .shell > .side .side-subj {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 10px;
+  padding: 0 0 0 12px;
+  border: 0;
+  background: transparent;
+  box-shadow: inset 2px 0 0 var(--c, #6753E0);
+}
+html body.in-app:not(.ax-on) .shell > .side .side-subj-flag { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .side-subj-info { min-width: 0; grid-column: 1; }
+html body.in-app:not(.ax-on) .shell > .side .side-subj-info small { display: block; font: 700 10.5px/1.2 var(--cp-font); letter-spacing: .08em; text-transform: uppercase; color: var(--cp-ink-3); }
+html body.in-app:not(.ax-on) .shell > .side .side-subj-info b { display: block; font: 800 15px/1.3 var(--cp-font); color: var(--cp-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html body.in-app:not(.ax-on) .shell > .side .side-subj-swap {
+  grid-column: 2;
+  font: 700 12px/1 var(--cp-font);
+  color: var(--cp-primary-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+/* Khi chưa chọn môn: một dòng chữ liên kết */
+html body.in-app:not(.ax-on) .shell > .side .side-back {
+  display: block;
+  padding: 0 0 0 12px;
+  border: 0;
+  background: transparent;
+  box-shadow: inset 2px 0 0 var(--cp-primary-strong);
+  font: 800 14px/1.3 var(--cp-font);
+  color: var(--cp-primary-ink) !important;
+  text-decoration: none;
+}
+html body.in-app:not(.ax-on) .shell > .side .side-back svg { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .side-back:hover { text-decoration: underline; }
+
+/* Danh sách chức năng: chữ, khoảng trắng, cuộn riêng */
+html body.in-app:not(.ax-on) .shell > .side .nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 4px 6px 0;
+  scrollbar-width: none;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav::-webkit-scrollbar { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat { background: transparent; border: 0; border-radius: 0; }
+
+/* Tên nhóm: chữ nhỏ viết hoa, số lượng ở bên phải */
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--cp-ink-3);
+  cursor: pointer;
+  list-style: none;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head::-webkit-details-marker { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head::after { content: none; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head:hover { color: var(--cp-ink-2) !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head:focus-visible { outline: 2px solid var(--cp-primary); outline-offset: 3px; border-radius: 4px; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-ico { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-lbl {
+  flex: 1;
+  min-width: 0;
+  font: 800 11px/1.3 var(--cp-font);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--cp-ink-3) !important;
+  white-space: normal;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-meta { display: flex; align-items: baseline; gap: 6px; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-cnt {
+  display: inline-block !important;
+  font: 700 11px/1 var(--cp-font);
+  font-style: normal;
+  color: var(--cp-ink-3);
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-tog {
+  display: inline-block !important;
+  color: var(--cp-ink-3);
+  font: 600 14px/1 var(--cp-font);
+  transition: transform .2s var(--cp-ease);
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat[open] > .nav-cat-head .nav-cat-tog { transform: rotate(45deg); }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body { display: flex; flex-direction: column; gap: 1px; padding: 4px 0 0; }
+
+/* Mục: chỉ chữ. Đang mở: chữ màu nhấn và gạch dọc bên trái */
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a {
+  display: block;
+  padding: 6px 0 6px 12px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: inset 2px 0 0 transparent;
+  color: var(--cp-ink-2) !important;
+  text-decoration: none;
+  transition: color .15s var(--cp-ease), box-shadow .15s var(--cp-ease);
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a:hover {
+  transform: none !important;
+  background: transparent !important;
+  color: var(--cp-ink) !important;
+  box-shadow: inset 2px 0 0 var(--cp-border-strong) !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a:focus-visible { outline: 2px solid var(--cp-primary); outline-offset: 2px; }
+html body.in-app:not(.ax-on) .shell > .side .nav-ic { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-lbl { min-width: 0; display: block; }
+html body.in-app:not(.ax-on) .shell > .side .nav-lbl > :first-child {
+  font: 600 14.5px/1.35 var(--cp-font);
+  color: inherit !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-hint { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on {
+  background: transparent !important;
+  color: var(--cp-primary-ink) !important;
+  box-shadow: inset 2px 0 0 var(--cp-primary-strong) !important;
+  font-weight: 800;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on .nav-lbl > :first-child { color: var(--cp-primary-ink) !important; font-weight: 800; }
+
+/* Phần đáy: Pro, tiến độ, tài khoản. Không cuộn, chỉ chữ và một thanh tiến độ mảnh */
+html body.in-app:not(.ax-on) .shell > .side .side-foot {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+html body.in-app:not(.ax-on) .shell > .side .ud-prem {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html body.in-app:not(.ax-on) .shell > .side .ud-prem .art { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem > b { display: block; font: 800 13px/1.3 var(--cp-font); color: var(--cp-ink) !important; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem p { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem > a {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 0;
+  background: transparent;
+  color: var(--cp-primary-ink);
+  font: 700 12.5px/1.3 var(--cp-font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html body.in-app:not(.ax-on) .shell > .side .ud-prem > a:hover { background: transparent !important; text-decoration: none; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem > a svg { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .side-foot > div:not(.ud-prem):not(.sb-ring-card):not(.me-card) {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+html body.in-app:not(.ax-on) .shell > .side .xp-line { display: flex; justify-content: space-between; gap: 8px; font: 600 12px/1.3 var(--cp-font); color: var(--cp-ink-3) !important; }
+html body.in-app:not(.ax-on) .shell > .side .xp-line b { color: var(--cp-ink-2); font-weight: 700; }
+html body.in-app:not(.ax-on) .shell > .side .bar.thin { height: 3px; border-radius: 999px; background: var(--cp-border); overflow: hidden; }
+html body.in-app:not(.ax-on) .shell > .side .bar.thin i { display: block; height: 100%; border-radius: 999px; background: var(--cp-primary-strong); }
+/* Tiến độ hôm nay: chỉ một dòng chữ, không vòng tròn */
+html body.in-app:not(.ax-on) .shell > .side .sb-ring-card { display: block; padding: 0; }
+html body.in-app:not(.ax-on) .shell > .side .sb-ring { display: inline; width: auto; height: auto; background: none; }
+html body.in-app:not(.ax-on) .shell > .side .sb-ring b { display: inline; width: auto; height: auto; background: none; color: var(--cp-ink-2); font: 700 12px/1.3 var(--cp-font); }
+html body.in-app:not(.ax-on) .shell > .side .sb-ring-meta { display: inline; font: 600 12px/1.3 var(--cp-font); color: var(--cp-ink-3); }
+html body.in-app:not(.ax-on) .shell > .side .sb-ring-meta small { display: inline; font: 600 12px/1.3 var(--cp-font); color: var(--cp-ink-3); }
+html body.in-app:not(.ax-on) .shell > .side .sb-ring-meta span { display: none; }
+html body.in-app:not(.ax-on) .shell > .side .side-ver { margin: 0; font: 500 11px/1.2 var(--cp-font); color: var(--cp-ink-3); }
+
+/* Tài khoản: tên và vai trò, hai liên kết chữ */
+html body.in-app:not(.ax-on) .shell > .side .me-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  padding: 14px 0 0 !important;
+  border: 0 !important;
+  border-top: 1px solid var(--cp-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .me-card .avatar { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .me-card .who { display: grid !important; min-width: 0; gap: 1px; }
+html body.in-app:not(.ax-on) .shell > .side .me-card .who b { font: 800 14px/1.3 var(--cp-font); color: var(--cp-ink) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html body.in-app:not(.ax-on) .shell > .side .me-card .who span { font: 600 12px/1.3 var(--cp-font); color: var(--cp-ink-3); }
+html body.in-app:not(.ax-on) .shell > .side .side-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 2px 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--cp-ink-3) !important;
+  font: 600 12.5px/1.3 var(--cp-font) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+html body.in-app:not(.ax-on) .shell > .side .side-action svg { display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .side-action span { display: inline !important; }
+html body.in-app:not(.ax-on) .shell > .side .side-action:hover { color: var(--cp-primary-ink) !important; background: transparent !important; }
+html body.in-app:not(.ax-on) .shell > .side .side-action#logoutBtn:hover { color: var(--cp-bad) !important; background: transparent !important; }
+html body.in-app:not(.ax-on) .shell > .side .me-card #sbGuide,
+html body.in-app:not(.ax-on) .shell > .side .me-card #logoutBtn { grid-column: auto !important; flex: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .me-card #sbGuide { display: inline-flex !important; width: auto !important; }
+
+/* Các lớp cũ còn đặt viền, nền và bóng cho nhóm, khối Pro và liên kết Pro: xóa hết để giữ kiểu chỉ chữ */
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body { border-left: 0 !important; background: transparent !important; box-shadow: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body::before,
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body::after { content: none !important; display: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem { background: transparent !important; border: 0 !important; padding: 0 !important; box-shadow: none !important; }
+html body.in-app:not(.ax-on) .shell > .side .ud-prem > a { background: transparent !important; box-shadow: none !important; color: var(--cp-primary-ink) !important; border-radius: 0 !important; padding: 0 !important; }
+
+/* ---------- Sửa menu: tiêu đề, mục và mục đang mở cùng một lưới căn lề ----------
+   Không còn ô tô màu khi rê chuột vào tiêu đề nhóm, không còn cạnh cong ở mục đang mở.
+   Chữ của tiêu đề và của mục con thẳng hàng; mục đang mở là nền nhạt bo đều. */
+html body.in-app:not(.ax-on) .shell > .side .side-subj {
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  box-shadow: inset 3px 0 0 var(--c, #6753E0), 0 1px 2px rgba(48, 48, 71, .05) !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav { gap: 14px; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat,
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head,
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head:hover,
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head:focus-visible {
+  background: transparent !important;
+  min-height: 0 !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-head:hover { color: var(--cp-ink-2) !important; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body { gap: 2px; padding: 4px 0 0; }
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a {
+  margin: 0 !important;
+  min-height: 0 !important;
+  padding: 9px 10px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a:hover {
+  background: var(--cp-surface-2) !important;
+  color: var(--cp-ink) !important;
+  box-shadow: none !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on .nav-lbl > :first-child { font-weight: 800 !important; }
+
+/* Màn hình hẹp: menu vẫn là ngăn trượt; mục đủ cao để chạm */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a { padding-top: 10px; padding-bottom: 10px; }
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-head { padding-top: 8px; padding-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a,
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-tog { transition: none !important; }
+}
+
+/* ---------- Thanh điều hướng dưới: ẩn trên máy tính; trên điện thoại được định nghĩa ở khối bên dưới ---------- */
+html body.in-app .mtab { display: none; }
+
+/* ---------- Điện thoại: thanh dưới kiểu chibi và menu trượt từ dưới lên ----------
+   Thanh dưới: năm nút nổi (Trang học, Lộ trình, Ôn tập, Cá nhân, Thêm), icon chibi, mục đang mở có
+   bong bóng màu nhấn và đế 3D. Nút Thêm mở menu đầy đủ (chính khối #side) dưới dạng tấm trượt lên. */
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html body.in-app .shell > .main { padding-bottom: calc(108px + env(safe-area-inset-bottom)) !important; }
+  /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
+  html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
+
+  html body.in-app .mtab {
+    position: fixed;
+    z-index: 60;
+    display: grid;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 8px;
+    border-radius: 26px;
+    background: var(--cp-surface);
+    border: 1.5px solid var(--cp-border-strong);
+    box-shadow: 0 5px 0 var(--cp-border-strong), 0 14px 30px rgba(48, 48, 71, .12);
+  }
+  html body.in-app .mtab a,
+  html body.in-app .mtab .mtab-more {
+    appearance: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 58px;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
+    color: var(--cp-ink-3);
+    font: 800 11px/1.1 var(--cp-font);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, color .15s ease;
+  }
+  html body.in-app .mtab a:active,
+  html body.in-app .mtab .mtab-more:active { transform: translateY(2px); }
+  html body.in-app .mtab a:focus-visible,
+  html body.in-app .mtab .mtab-more:focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
+  html body.in-app .mtab .mtab-ic {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 32px;
+    border-radius: 999px;
+    transition: background .18s ease, box-shadow .18s ease;
+  }
+  html body.in-app .mtab .mtab-ic svg { width: 26px !important; height: 26px !important; }
+  html body.in-app .mtab a.on,
+  html body.in-app .mtab .mtab-more[aria-expanded="true"] { color: var(--cp-primary-ink); }
+  html body.in-app .mtab a.on .mtab-ic,
+  html body.in-app .mtab .mtab-more[aria-expanded="true"] .mtab-ic {
+    background: var(--cp-primary-soft);
+    box-shadow: 0 3px 0 var(--cp-primary);
+  }
+  html body.in-app .mtab a.on { font-weight: 900; }
+
+  /* Học tập ở giữa: nổi lên, nền màu nhấn có đế 3D, cân bằng với bốn mục còn lại */
+  html body.in-app .mtab a.mtab-center { transform: translateY(-12px); }
+  html body.in-app .mtab a.mtab-center:active { transform: translateY(-9px); }
+  html body.in-app .mtab a.mtab-center .mtab-ic,
+  html body.in-app .mtab a.mtab-center.on .mtab-ic {
+    width: 56px;
+    height: 44px;
+    border-radius: 18px;
+    background: var(--cp-primary-strong);
+    color: #FFFFFF;
+    box-shadow: 0 4px 0 var(--v4-btn-lip), 0 10px 22px rgba(103, 83, 224, .28);
+  }
+  html body.in-app .mtab a.mtab-center .mtab-ic svg { color: #FFFFFF; }
+  html body.in-app .mtab a.mtab-center .mtab-lbl { color: var(--cp-primary-ink); }
+
+  /* Bàn phím đang mở (đang nhập liệu): ẩn thanh điều hướng dưới để không che ô nhập */
+  html body.in-app.kb-open .mtab { display: none !important; }
+
+  /* Menu đầy đủ: tấm trượt từ dưới lên, có vạch kéo, mục cuộn bên trong */
+  html body.in-app:not(.ax-on) .shell > .side {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    max-height: 86dvh;
+    padding: 10px 18px calc(18px + env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1.5px solid var(--cp-border-strong);
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -18px 48px rgba(48, 48, 71, .22);
+    transform: translateY(105%);
+    transition: transform .28s cubic-bezier(.2, 1, .3, 1);
+    z-index: 90;
+  }
+  html body.in-app:not(.ax-on).nav-open .shell > .side { transform: none; }
+  html body.in-app:not(.ax-on) .shell > .side::before {
+    content: "";
+    display: block;
+    width: 46px;
+    height: 5px;
+    margin: 0 auto 10px;
+    border-radius: 999px;
+    background: var(--cp-border-strong);
+  }
+  html body.in-app:not(.ax-on) .shell > .side > .brand { display: block; padding: 2px 4px 0; }
+  html body.in-app:not(.ax-on) .shell > .side .nav { max-height: 46dvh; }
+
+}
+
+/* Điện thoại ngang (chiều cao ≤500px, ví dụ 812×375, 844×390): thanh dưới gọn hơn để còn chỗ cho nội dung */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html body.in-app .shell > .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .mtab {
+    left: 8px;
+    right: 8px;
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    padding: 4px 6px;
+    border-radius: 20px;
+    box-shadow: 0 3px 0 var(--cp-border-strong), 0 10px 22px rgba(48, 48, 71, .1);
+  }
+  html body.in-app .mtab a,
+  html body.in-app .mtab .mtab-more { min-height: 46px; gap: 1px; font-size: 10.5px; border-radius: 14px; }
+  html body.in-app .mtab .mtab-ic { width: 40px; height: 24px; }
+  html body.in-app .mtab .mtab-ic svg { width: 20px !important; height: 20px !important; }
+  html body.in-app .mtab a.mtab-center { transform: translateY(-8px); }
+  html body.in-app .mtab a.mtab-center .mtab-ic,
+  html body.in-app .mtab a.mtab-center.on .mtab-ic { width: 48px; height: 36px; border-radius: 14px; }
+  html body.in-app .daily-pro-notice,
+  html body.in-app .cp-follow { bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
+}

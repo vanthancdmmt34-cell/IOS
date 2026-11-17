@@ -1,0 +1,443 @@
+Xem lại hướng dẫn	Replay the guide
+Đọc hết	Mark all read
+Chưa có thông báo mới.	No new notifications.
+Vào trang thông báo chính	Open notifications page
+Không tải được thông báo.	Could not load notifications.
+Đang tải nội dung...	Loading content...
+Không tải được trang chính sách	Unable to load the policy page
+Không có nội dung chính sách	Policy content is missing
+Phỏng vấn thử	Mock interview
+Thử từ khóa ngắn hơn, ví dụ “từ vựng”.	Try a shorter keyword, for example “vocabulary”.
+Bạn cần đăng nhập lại. Tiến độ đã lưu trên hệ thống vẫn được giữ nguyên.	Please sign in again. Progress already saved on the system is kept.
+Máy chủ phản hồi chậm quá (hết thời gian chờ). Bạn thử gửi lại nhé.	The server took too long to respond (timed out). Please try again.
+Tiến độ cao nhất	Most progress
+Cuộn lên đầu trang	Scroll to top
+Lên đầu trang	Back to top
+Nội dung cần học	What to study
+Bấm để mèo lật trang	Tap and the cat turns the page
+Mèo lật trang tiêu đề nội dung học	Cat turning the study content title
+Bấm để mèo lật môn	Tap and the cat flips to another subject
+Mèo lật trang danh mục ngoại ngữ	Cat flipping through the language catalogue
+Bấm để mèo lấy chân cuộn sang môn tiếp theo	Tap and the cat scrolls to the next subject
+Bấm để mèo cuộn môn tiếp theo	Tap and the cat scrolls to the next subject
+Danh mục ngoại ngữ	Language catalogue
+{0}/{1} khóa học	{0}/{1} courses
+trên thanh trên cùng; tiến độ các môn luôn được giữ nguyên.	button in the top bar; your progress in every subject is kept.
+on thanh trên cùng; tiến độ các môn luôn được giữ nguyên.	button in the top bar; your progress in every subject is kept.
+trên thanh trên cùng.	in the top bar.
+on thanh trên cùng.	in the top bar.
+Bạn muốn học gì,	What would you like to learn,
+Chọn một môn để bắt đầu. Trang tổng quan sẽ chỉ hiện môn đó. Muốn đổi môn, bấm	Pick a subject to begin. The overview will show only that subject. To switch, press
+Có, tiếp tục học	Yes, continue
+Không, chọn môn khác	No, pick another subject
+Tiếp tục môn học gần đây	Continue your recent subject
+Từ vựng, phát âm, hội thoại	Vocabulary, pronunciation, conversation
+Đang tải các môn…	Loading subjects…
+Có gì	What's inside
+Giúp ích	How it helps
+100+ bài có chấm	100+ graded exercises
+{0}+ bài có chấm · {1} cấp độ	{0}+ graded exercises · {1} levels
+{0}+ bài có chấm	{0}+ graded exercises
+mở thêm	also unlocks
+cấp còn lại, hỏi AI nhiều hơn và báo cáo chi tiết bài hay sai, kỹ năng còn yếu.	remaining levels, more AI questions and detailed reports on missed exercises and weak skills.
+hỏi AI nhiều hơn, phỏng vấn có nhận xét AI và báo cáo học tập chi tiết.	more AI questions, interviews with AI feedback and detailed study reports.
+Chào hỏi, từ vựng, phát âm và luyện nói.	Greetings, vocabulary, pronunciation and speaking.
+Phát âm, chữ Hán và hội thoại cơ bản.	Pronunciation, Chinese characters and basic conversation.
+Hiragana, từ vựng và ngữ pháp N5.	Hiragana, vocabulary and N5 grammar.
+Hiragana, từ vựng và ngữ pháp N{0}.	Hiragana, vocabulary and N{0} grammar.
+Hangul, từ vựng và hội thoại cơ bản.	Hangul, vocabulary and basic conversation.
+Phát âm, từ vựng và giao tiếp hằng ngày.	Pronunciation, vocabulary and everyday communication.
+Phát âm chuẩn, từ vựng và hội thoại hằng ngày.	Accurate pronunciation, vocabulary and everyday conversation.
+Từ vựng theo chủ đề, ngữ pháp, nghe, phát âm từng âm khó (có chế độ chậm 0.6x) và luyện nói theo chuẩn CEFR A1–C1.	Topic vocabulary, grammar, listening, drills for each difficult sound (with 0.6x slow mode) and speaking practice aligned with CEFR A1–C1.
+Đọc hiểu, giao tiếp hằng ngày, luyện nói chấm từng từ và chuẩn bị phỏng vấn AI 30 ngành (AI, marketing, tài chính, y tế…).	Reading, everyday communication, word-by-word speaking feedback and AI interview practice across 30 fields (AI, marketing, finance, healthcare…).
+Phiên âm pinyin, chữ Hán, từ vựng, ngữ pháp, bài đọc, phát âm 0.6x và luyện viết chữ Hán (máy chấm độ khớp) theo cấp HSK.	Pinyin, Chinese characters, vocabulary, grammar, reading, 0.6x pronunciation and character writing practice (auto-scored) by HSK level.
+Giao tiếp với đối tác, luyện nói chấm từng từ, đọc hiểu tài liệu và chuẩn bị phỏng vấn AI 30 ngành, thi chứng chỉ HSK.	Talk with business partners, get word-by-word speaking feedback, read documents and prepare for AI interviews in 30 fields and the HSK exam.
+Hiragana, katakana, kanji cơ bản, từ vựng, ngữ pháp, bài đọc, phát âm 0.6x và luyện viết chữ (máy chấm độ khớp) theo cấp JLPT.	Hiragana, katakana, basic kanji, vocabulary, grammar, reading, 0.6x pronunciation and writing practice (auto-scored) by JLPT level.
+Học, làm việc ở Nhật, luyện nói chấm từng từ, hội thoại AI và chuẩn bị phỏng vấn AI 30 ngành, thi JLPT.	Study or work in Japan, get word-by-word speaking feedback, chat with AI and prepare for AI interviews in 30 fields and the JLPT.
+Hangul, phát âm 0.6x, từ vựng, ngữ pháp, bài đọc và luyện viết chữ (tô chữ trong khung, máy chấm độ khớp) theo cấp TOPIK.	Hangul, 0.6x pronunciation, vocabulary, grammar, reading and writing practice (trace inside the frame, auto-scored) by TOPIK level.
+Giao tiếp tự tin ở Hàn Quốc, luyện nói chấm từng từ, hội thoại AI và chuẩn bị phỏng vấn AI 30 ngành, thi TOPIK.	Communicate confidently in Korea, get word-by-word speaking feedback, chat with AI and prepare for AI interviews in 30 fields and TOPIK.
+Phát âm từng âm khó (có chế độ chậm 0.6x), từ vựng, ngữ pháp, bài đọc hiểu và giao tiếp hằng ngày theo cấp DELF.	Drills for each difficult sound (with 0.6x slow mode), vocabulary, grammar, reading comprehension and everyday communication by DELF level.
+Giao tiếp tự nhiên, luyện nói chấm từng từ, ôn từ bằng thẻ ghi nhớ và chuẩn bị phỏng vấn AI 30 ngành, thi DELF.	Speak naturally, get word-by-word speaking feedback, review with flashcards and prepare for AI interviews in 30 fields and the DELF.
+Phát âm chuẩn từng âm khó (có chế độ chậm 0.6x), từ vựng, ngữ pháp, ghép câu, bài đọc hiểu theo cấp DELE.	Accurate drills for each difficult sound (with 0.6x slow mode), vocabulary, grammar, sentence building and reading comprehension by DELE level.
+Giao tiếp tự tin bằng tiếng Tây Ban Nha, luyện nói chấm từng từ, hội thoại AI và phỏng vấn AI 30 ngành, thi DELE.	Communicate confidently in Spanish, get word-by-word speaking feedback, chat with AI and practise AI interviews in 30 fields and the DELE.
+Luyện nói chấm từng từ	Word-by-word speaking feedback
+Phát âm chậm 0.6x	0.6x slow pronunciation
+Phỏng vấn AI 30 ngành	AI interviews in 30 fields
+Phỏng vấn AI {0} ngành	AI interviews in {0} fields
+Ôn từ bằng thẻ	Flashcard review
+Chứng nhận & xếp hạng	Certificates & leaderboard
+& xếp hạng certificate	& leaderboard certificate
+Luyện viết chữ Hán	Chinese character writing
+Ôn từ & chứng nhận HSK	Review & HSK certificates
+Luyện viết chữ Nhật	Japanese writing practice
+Ôn từ & chứng nhận JLPT	Review & JLPT certificates
+Luyện viết Hangul	Hangul writing practice
+Ôn từ & chứng nhận TOPIK	Review & TOPIK certificates
+Bài đọc hiểu theo cấp	Reading comprehension by level
+Exercise đọc hiểu theo cấp	Reading comprehension by level
+Ôn từ & chứng nhận DELF	Review & DELF certificates
+Ôn từ & chứng nhận DELE	Review & DELE certificates
+Chào bạn đến LifeRivo	Welcome to LifeRivo
+Học ngoại ngữ bằng tiếng Việt. Mỗi bài khoảng	Learn languages step by step. Each lesson takes about
+{0} phút	{0} minutes
+Đọc phần lý thuyết ngắn.	Read the short theory.
+Làm bài và nộp để máy chấm ngay.	Do the exercise and submit for instant grading.
+Sai ở đâu, máy chỉ ra đúng dòng và cách sửa.	Where you slip, the system points to the exact spot and how to fix it.
+Cách học mỗi ngày	How to study each day
+Chọn môn.	Pick a subject.
+ở thanh trên cùng.	in the top bar.
+Làm từng bài.	Go lesson by lesson.
+Mỗi bài một chủ đề nhỏ, đi theo thứ tự.	Each lesson covers one small topic, in order.
+Học tiếp.	Continue.
+Nút	The button
+đưa bạn về đúng bài đang dở, code nháp vẫn còn.	takes you back to the lesson you left off, with your draft kept.
+Mỗi môn có hướng dẫn riêng	Every subject has its own guide
+Khi bạn chọn một môn, LifeRivo sẽ giới thiệu	When you pick a subject, LifeRivo introduces
+đúng các tính năng của môn đó	exactly the features of that subject
+, ví dụ:	, for example:
+Tiếng Anh: luyện nói chấm từng từ, luyện phát âm, phỏng vấn thử.	English: word-by-word speaking feedback, pronunciation drills, mock interviews.
+Bạn có thể mở lại hướng dẫn của từng môn ở trang tổng quan môn đó.	You can reopen each subject's guide from that subject's overview.
+Miễn phí có gì	What's free
+Học miễn phí, không cần thẻ. Bạn có:	Learn for free, no card needed. You get:
+{0} ngoại ngữ: Anh, Trung, Nhật, Hàn, Pháp.	{0} languages: English, Chinese, Japanese, Korean, French.
+Trợ lý AI hỏi bài	AI assistant for questions
+lượt mỗi ngày	uses per day
+buổi	session
+miễn phí.	free.
+Gói Pro giúp gì	What Pro adds
+Gói Pro	Pro plan
+Pro không mở thêm bài học. Pro giúp bạn	Pro does not add lessons. Pro lets you
+hỏi AI nhiều hơn	ask the AI more
+biết mình yếu ở đâu	see where you are weak
+Phỏng vấn không giới hạn, có nhận xét câu trả lời của bạn.	Unlimited interviews, with feedback on your answers.
+Báo cáo học tập chi tiết: bài hay sai, kỹ năng còn yếu.	Detailed study reports: exercises you often miss and skills to improve.
+Bạn không cần Pro để học. Nâng cấp khi muốn nhiều hơn.	You do not need Pro to learn. Upgrade when you want more.
+Sẵn sàng rồi	All set
+Chọn môn bạn muốn học để bắt đầu. Bạn có thể xem lại hướng dẫn này bất cứ lúc nào trong menu tài khoản.	Pick the subject you want to learn to begin. You can replay this guide any time from the account menu.
+Hướng dẫn LifeRivo	LifeRivo guide
+Các bước hướng dẫn	Guide steps
+Bước {0}	Step {0}
+Bước {0} / {1}	Step {0} / {1}
+BƯỚC {0} / {1}	STEP {0} / {1}
+mỗi tháng	per month
+Tiếng Anh · {0} / {1}	English · {0} / {1}
+Tiếng Trung · {0} / {1}	Chinese · {0} / {1}
+Tiếng Nhật · {0} / {1}	Japanese · {0} / {1}
+Tiếng Hàn · {0} / {1}	Korean · {0} / {1}
+Tiếng Pháp · {0} / {1}	French · {0} / {1}
+Tiếng Tây Ban Nha · {0} / {1}	Spanish · {0} / {1}
+Hướng dẫn Tiếng Anh	English guide
+Hướng dẫn Tiếng Trung	Chinese guide
+Hướng dẫn Tiếng Nhật	Japanese guide
+Hướng dẫn Tiếng Hàn	Korean guide
+Hướng dẫn Tiếng Pháp	French guide
+Hướng dẫn Tiếng Tây Ban Nha	Spanish guide
+Có {0} tính năng cần biết. Bấm	There are {0} features to know. Press
+tính năng cần biết. Bấm	features to know. Press
+để xem từng cái.	to see each one.
+Mở tính năng này →	Open this feature →
+Bạn đã xem xong hướng dẫn môn	You have finished the guide for
+. Hướng dẫn này sẽ không hiện lại.	. This guide will not show again.
+AI, marketing, tài chính, y tế…	AI, marketing, finance, healthcare…
+Đọc to câu mẫu	Read the sample sentence aloud
+, máy chấm từng từ như karaoke. Cần micro.	, scored word by word like karaoke. A microphone is needed.
+Phát âm từng âm khó	Difficult sounds, one by one
+Nghe mẫu, hướng dẫn chi tiết, có chế độ chậm 0.6x.	Listen to the model with detailed tips and a 0.6x slow mode.
+Phỏng vấn AI · 30 ngành	AI interview · 30 fields
+Phỏng vấn AI · {0} ngành	AI interview · {0} fields
+AI đóng vai nhà tuyển dụng	The AI plays the recruiter
+: hỏi từng câu, sửa lỗi và nhận xét tổng kết (	: asks one question at a time, corrects mistakes and gives a final review (
+Phỏng vấn thử có câu mẫu	Mock interview with sample answers
+Trả lời phỏng vấn bằng	Answer interview questions in
+rồi xem câu mẫu để tự đối chiếu.	then compare with the sample answer.
+Trò chuyện tình huống thực tế bằng	Role-play real situations in
+, AI sửa câu ngay khi nói.	, with the AI correcting you as you speak.
+Hoàn thành cấp để nhận chứng nhận của riêng cấp đó.	Complete a level to earn that level's certificate.
+Từ vựng, phát âm, nói và phỏng vấn AI, theo chuẩn CEFR từ A1 đến C1.	Vocabulary, pronunciation, speaking and AI interviews, aligned with CEFR from A1 to C1.
+Từ vựng, phát âm, nói và phỏng vấn AI, theo chuẩn CEFR từ A{0} đến C{1}.	Vocabulary, pronunciation, speaking and AI interviews, aligned with CEFR from A{0} to C{1}.
+Từ vựng, ngữ pháp, bài đọc và bài nghe đi theo từng cấp A1 → C1.	Vocabulary, grammar, reading and listening for each level, A1 → C1.
+Từ vựng, ngữ pháp, bài đọc và bài nghe đi theo từng cấp A{0} → C{1}.	Vocabulary, grammar, reading and listening for each level, A{0} → C{1}.
+Phát âm thanh điệu, chữ Hán, luyện nói và phỏng vấn AI, theo từng cấp HSK.	Tones, Chinese characters, speaking and AI interviews, by HSK level.
+Từ vựng, chữ Hán, Pinyin và ngữ pháp đi theo từng cấp.	Vocabulary, characters, Pinyin and grammar for each level.
+{0} bài phát âm thanh điệu, biến điệu và âm zh/ch/sh.	{0} pronunciation lessons on tones, tone changes and zh/ch/sh.
+Hiragana, Katakana, Kanji, luyện nói và phỏng vấn AI, theo từng cấp JLPT.	Hiragana, Katakana, Kanji, speaking and AI interviews, by JLPT level.
+Bảng chữ cái, từ vựng, chữ Hán và ngữ pháp N{0} → N{1}.	Kana, vocabulary, kanji and grammar, N{0} → N{1}.
+{0} bài trường âm, âm ngắt っ, cao độ và trợ từ.	{0} lessons on long vowels, the small っ, pitch and particles.
+Hangul, phát âm nối âm, luyện nói và phỏng vấn AI, theo từng cấp TOPIK.	Hangul, linking sounds, speaking and AI interviews, by TOPIK level.
+Bảng chữ Hangul, từ vựng và ngữ pháp đi theo từng cấp.	The Hangul alphabet, vocabulary and grammar for each level.
+{0} bài nguyên âm đôi, phụ âm căng và quy tắc nối âm.	{0} lessons on diphthongs, tense consonants and linking rules.
+Phát âm chuẩn Pháp, từ vựng, luyện nói và phỏng vấn AI, theo từng cấp DELF.	French pronunciation, vocabulary, speaking and AI interviews, by DELF level.
+Từ vựng, ngữ pháp, nối vần và bài đọc theo từng cấp.	Vocabulary, grammar, liaison and reading for each level.
+{0} bài âm mũi, âm /ʁ/, phụ âm cuối câm và liaison.	{0} lessons on nasal vowels, the /ʁ/ sound, silent final consonants and liaison.
+Phát âm chuẩn Tây Ban Nha, từ vựng, luyện nói và phỏng vấn AI, theo từng cấp DELE.	Spanish pronunciation, vocabulary, speaking and AI interviews, by DELE level.
+Từ vựng, ngữ pháp, ghép câu và bài đọc từ A{0} đến C{1}.	Vocabulary, grammar, sentence building and reading from A{0} to C{1}.
+{0} bài nguyên âm thuần, ñ, rr rung lưỡi, h câm và nối âm.	{0} lessons on pure vowels, ñ, the rolled rr, silent h and linking.
+PHỎNG VẤN THỬ	MOCK INTERVIEW
+Không có môn này	This subject is not available
+Về danh sách	Back to the list
+Không có vòng phỏng vấn này	This interview round does not exist
+Phỏng vấn & Phỏng vấn AI	Interview & AI interview
+Chọn ngoại ngữ để luyện phỏng vấn 2 chiều với AI theo 30 ngành nghề hoặc tự luyện theo bộ câu mẫu.	Pick a language to practise two-way interviews with the AI across 30 fields, or practise alone with sample answers.
+Chọn ngoại ngữ để luyện phỏng vấn {0} chiều với AI theo {1} ngành nghề hoặc tự luyện theo bộ câu mẫu.	Pick a language to practise {0}-way interviews with the AI across {1} fields, or practise alone with sample answers.
+Cả {0} ngoại ngữ đều có đầy đủ {1} ngành phỏng vấn với AI và {2} vòng câu hỏi mẫu ({3} câu).	All {0} languages include {1} AI interview fields and {2} rounds of sample questions ({3} questions).
+{0} ngành phỏng vấn AI · {1} vòng câu mẫu ({2} câu)	{0} AI interview fields · {1} sample rounds ({2} questions)
+{0} ngành phỏng vấn AI · {1} vòng câu mẫu ({2} questions)	{0} AI interview fields · {1} sample rounds ({2} questions)
+Đồng bộ đầy đủ {0} chế độ: Phỏng vấn {1} chiều với AI ({2} ngành) và Phỏng vấn tự luyện có câu mẫu.	Both modes included: {1}-way interviews with the AI ({2} fields) and self-practice interviews with sample answers.
+{0}/{1} câu đã xem đáp án	{0}/{1} answers viewed
+câu đã xem đáp án	answers viewed
+Phỏng vấn với AI theo lĩnh vực	AI interviews by field
+AI đóng vai nhà tuyển dụng của đúng ngành: hỏi từng câu, sửa lỗi câu trả lời và nhận xét tổng kết sau khoảng {0} câu.	The AI plays a recruiter from that field: it asks one question at a time, corrects your answers and gives a final review after about {0} questions.
+Mở trong Phòng luyện nói →	Open in the Speaking studio →
+Đang tải {0} ngành phỏng vấn AI…	Loading {0} AI interview fields…
+Phỏng vấn tự luyện có câu mẫu · {0} vòng ({1} câu)	Self-practice interview with sample answers · {0} rounds ({1} questions)
+Phỏng vấn tự luyện có câu mẫu · {0} vòng ({1} questions)	Self-practice interview with sample answers · {0} rounds ({1} questions)
+Trả lời trước rồi đối chiếu câu mẫu, không bắt buộc AI. Tiến độ được nhớ trên trình duyệt này.	Answer first, then compare with the sample; AI is optional. Progress is remembered in this browser.
+Bạn đã dùng lượt phỏng vấn AI miễn phí. Nâng cấp Pro để phỏng vấn AI không giới hạn.	You have used your free AI interview. Upgrade to Pro for unlimited AI interviews.
+Bạn đã dùng lượt phỏng vấn AI miễn phí. Nâng cấp Pro để phỏng vấn không giới hạn.	You have used your free AI interview. Upgrade to Pro for unlimited interviews.
+Tài khoản Free được {0} buổi phỏng vấn AI miễn phí. Chọn một lĩnh vực bên dưới để bắt đầu.	Free accounts get {0} free AI interview. Pick a field below to begin.
+Bạn đã xem đáp án	You have viewed the answers to
+Hết vòng này	End of this round
+Làm lại từ đầu nếu muốn nói theo cách khác. Câu mẫu chỉ là một cách trả lời đúng, không phải lời duy nhất.	Start over if you want to say it differently. The sample is one good answer, not the only one.
+Vòng khác	Another round
+Gợi ý cách nói:	Suggested wording:
+Nhờ AI nhận xét	Ask the AI for feedback
+Viết như khi đang nói. Câu ngắn, đủ ý.	Write as you would speak. Short sentences, complete ideas.
+Người phỏng vấn	Interviewer
+Nói to câu trả lời trước	Say your answer out loud first
+, như đang ngồi trước người phỏng vấn. Ghi lại vài ý nếu muốn, rồi xem câu mẫu để so.	, as if you were sitting in front of the interviewer. Jot down a few points if you like, then compare with the sample.
+Ghi chú (không bắt buộc)	Notes (optional)
+Tôi đã nói xong · xem câu mẫu	I have answered · show the sample
+Xong vòng này	Finish this round
+Câu tiếp theo	Next question
+Một cách trả lời	One way to answer
+Hãy viết câu trả lời trước.	Please write your answer first.
+Nghĩa:	Meaning:
+AI nhận xét	AI feedback
+Phỏng vấn xin việc	Job interview
+Sáu câu hay gặp. Trả lời bằng tiếng Anh, rồi đối chiếu câu mẫu.	Six common questions. Answer in English, then compare with the sample.
+Sáu câu hay gặp. Trả lời bằng tiếng Trung, rồi đối chiếu câu mẫu.	Six common questions. Answer in Chinese, then compare with the sample.
+Sáu câu hay gặp. Trả lời bằng tiếng Nhật, rồi đối chiếu câu mẫu.	Six common questions. Answer in Japanese, then compare with the sample.
+Sáu câu hay gặp. Trả lời bằng tiếng Hàn, rồi đối chiếu câu mẫu.	Six common questions. Answer in Korean, then compare with the sample.
+Sáu câu hay gặp. Trả lời bằng tiếng Pháp, rồi đối chiếu câu mẫu.	Six common questions. Answer in French, then compare with the sample.
+Sáu câu hay gặp. Trả lời bằng tiếng Tây Ban Nha, rồi đối chiếu câu mẫu.	Six common questions. Answer in Spanish, then compare with the sample.
+Câu hỏi về kinh nghiệm	Experience questions
+Làm việc nhóm, deadline và điểm yếu.	Teamwork, deadlines and weaknesses.
+Tình huống & Giải quyết vấn đề	Situations & problem solving
+Xử lý bất đồng, sai sót và ưu tiên công việc.	Handling disagreements, mistakes and priorities.
+Mục tiêu & Phong cách làm việc	Goals & working style
+Định hướng nghề nghiệp, tiếp nhận góp ý và học hỏi.	Career direction, taking feedback and learning.
+Văn hóa công ty & Đàm phán	Company culture & negotiation
+Môi trường phù hợp, động lực và kỳ vọng nhận việc.	The right environment, motivation and job expectations.
+AI đóng vai nhà tuyển dụng theo ngành nghề, hỏi và sửa từng câu trả lời	The AI plays a recruiter in your field, asking questions and correcting each answer
+{0} từ vựng · {1} bài tập	{0} words · {1} exercises
+{0} từ vựng · {1} bài tập · bổ sung	{0} words · {1} exercises · added
+Luyện ghép câu · {0} bài tập	Sentence building · {0} exercises
+Mẫu câu ghép · nghe trước	Sample sentences · listen first
+Từ vựng · quy tắc · mẫu câu	Vocabulary · rules · sample sentences
+{0} câu tổng hợp · đạt từ {1} điểm	{0} mixed questions · pass at {1} points
+Đọc một đoạn văn và trả lời {0} câu hỏi	Read a passage and answer {0} questions
+Lý thuyết bài {0}	Lesson {0} theory
+· Lý thuyết bài {0}	· Lesson {0} theory
+· LÝ THUYẾT	· THEORY
+Đọc và nghe trước, rồi làm {0} dạng bài tập bên dưới. Có thắc mắc, bấm	Read and listen first, then do the {0} exercise types below. If anything is unclear, press
+Từ vựng ({0})	Vocabulary ({0})
+Quy tắc ngữ pháp	Grammar rules
+Mẫu câu	Sample sentences
+Hỏi AI giải thích bài này	Ask the AI to explain this lesson
+Luyện đọc từ vựng bài này	Practise saying these words
+Đọc theo mẫu câu	Shadow the sentences
+Danh sách bài	Lesson list
+Điều hướng bài	Lesson navigation
+Chọn đáp án đúng cho mỗi câu. Đạt từ {0} điểm. Điểm cao nhất:	Choose the correct answer for each question. Pass at {0} points. Best score:
+Ghép các từ thành câu đúng với nghĩa tiếng Việt. Đạt từ {0} điểm. Điểm cao nhất:	Arrange the words into a sentence matching the Vietnamese meaning. Pass at {0} points. Best score:
+Bấm nút Nghe (nghe lại bao nhiêu lần cũng được) rồi chọn từ bạn nghe thấy. Đạt từ {0} điểm. Điểm cao nhất:	Press Listen (as many times as you like), then choose the word you hear. Pass at {0} points. Best score:
+Bấm loa để nghe mẫu, rồi bấm micro và đọc to. Máy so câu bạn nói với câu mẫu, giống từ {0}% là đúng. Nên dùng Chrome hoặc Edge. Đạt từ {1} điểm. Điểm cao nhất:	Press the speaker to hear the model, then press the microphone and read aloud. Your speech is compared with the model; {0}% similarity counts as correct. Chrome or Edge is recommended. Pass at {1} points. Best score:
+Bấm và đọc to câu	Press and read the sentence aloud
+Đang nghe… bấm để dừng	Listening… press to stop
+Giống câu mẫu	Match with the model
+AI nhận xét phát âm	AI pronunciation feedback
+Hỏi AI vì sao	Ask the AI why
+Kết quả lần nộp sẽ gửi cho giáo viên.	This submission's result will be sent to your teacher.
+(không nghe được)	(nothing heard)
+(câu nghe)	(listening item)
+✗ Đáp án:	✗ Answer:
+Bạn đã hoàn thành toàn bộ khóa!	You have completed the whole course!
+Ôn tập hôm nay:	Today's review:
+Từ chưa nhớ sẽ được nhắc lại ngay lần ôn sau; từ đã nhớ sẽ giãn dần {0}, {1}, {2}, {3}, {4} ngày.	Words you missed come back in the next review; words you know are spaced out over {0}, {1}, {2}, {3}, {4} days.
+· Ôn tập từ vựng	· Vocabulary review
+· ÔN TẬP	· REVIEW
+· THÀNH TÍCH	· ACHIEVEMENTS
+· Luyện viết	· Writing practice
+· Bắt đầu học	· Start learning
+CEFR · Bắt đầu học	CEFR · Start learning
+HSK · Bắt đầu học	HSK · Start learning
+JLPT · Bắt đầu học	JLPT · Start learning
+TOPIK · Bắt đầu học	TOPIK · Start learning
+DELF · Bắt đầu học	DELF · Start learning
+DELE · Bắt đầu học	DELE · Start learning
+Đạt toàn bộ bài tập và bài kiểm tra của một cấp để nhận chứng nhận cấp đó.	Pass every exercise and the test of a level to earn its certificate.
+Xếp theo số bài đã đạt (từ {0} điểm), bằng nhau thì xét tổng điểm.	Ranked by exercises passed (from {0} points); ties are broken by total score.
+Đạt {0} bài	Pass {0} exercises
+Thuộc {0} từ vựng	Learn {0} words
+{0} bài đạt {1} điểm	{0} exercises with {1} points
+Chuỗi {0} ngày	{0}-day streak
+Hoàn thành CEFR A{0}	Complete CEFR A{0}
+Hoàn thành CEFR B{0}	Complete CEFR B{0}
+Hoàn thành CEFR C{0}	Complete CEFR C{0}
+Đạt hết bài của CEFR A{0}	Pass every exercise in CEFR A{0}
+Đạt hết bài của CEFR B{0}	Pass every exercise in CEFR B{0}
+Đạt hết bài của CEFR C{0}	Pass every exercise in CEFR C{0}
+Không chỉ đưa đáp án — giúp bạn hiểu cách sử dụng	More than the answer: help understanding how to use it
+Khi phát âm chưa chuẩn, hãy nghe giọng mẫu rồi luyện nói lại. Trong màn hình luyện nói, bấm mic để AI chấm phát âm và gợi ý cách sửa.	When your pronunciation is off, listen to the model and try again. In the speaking screen, press the mic so the AI scores your pronunciation and suggests fixes.
+Luyện nói bị chấm thấp?	Low speaking scores?
+Nói to, rõ, gần micro và dùng Chrome hoặc Edge. Nhận giọng nói cần Internet để gửi âm thanh lên máy chủ Google. Sau khi nói xong, bấm lại nút mic để dừng và xem điểm.	Speak loudly and clearly, close to the microphone, and use Chrome or Edge. Speech recognition needs the Internet to send audio to Google's servers. When you finish, press the mic again to stop and see your score.
+Mic không nhận giọng nói?	Microphone not picking up your voice?
+Bấm biểu tượng ổ khóa trên thanh địa chỉ → cho phép Micro, rồi tải lại trang. Dùng Chrome hoặc Edge bản mới. Nói rõ từng từ, tránh ngừng quá lâu giữa câu, và kiểm tra micro đã được chọn trong cài đặt máy.	Click the padlock icon in the address bar → allow the Microphone, then reload the page. Use a recent Chrome or Edge. Speak each word clearly, avoid long pauses mid-sentence, and check the right microphone is selected in your device settings.
+Nếu AI chưa được cấu hình hoặc hệ thống đã chạm trần chi phí tháng, quản trị viên cần kiểm tra cấu hình máy chủ.	If AI has not been configured or the system has hit the monthly cost cap, the administrator needs to check the server configuration.
+AI chưa được cấu hình khóa API trên máy chủ. Hãy báo quản trị viên.	The AI API key has not been configured on the server. Please tell an administrator.
+Chỉ bài được nộp và chấm thành công mới được ghi nhận là hoàn thành. Hãy kiểm tra trạng thái bài và tải lại trang chủ học tập.	Only exercises that were submitted and graded successfully count as completed. Check the exercise status and reload the study home page.
+Khi liên hệ, hãy gửi kèm tên bài học	When you contact us, include the lesson name
+và các bước bạn đã thử. Không gửi mật khẩu hoặc khóa API.	and the steps you tried. Never send passwords or API keys.
+. Hãy sao chép thông tin này để liên hệ.	. Copy this information to get in touch.
+Rivo chưa được cấu hình	Rivo is not configured
+Rivo đang tắt	Rivo is turned off
+Quản trị viên có thể bật và cấu hình khóa API Gemini trong mục Quản trị hệ thống.	An administrator can enable it and set the Gemini API key under System administration.
+AI chưa được bật trên máy chủ nên chưa trả lời được. Hãy báo quản trị viên.	AI is not enabled on the server, so it cannot reply yet. Please tell an administrator.
+AI chưa được bật trên máy chủ nên chưa trả lời được.	AI is not enabled on the server, so it cannot reply yet.
+Hãy báo quản trị viên.	Please tell an administrator.
+Gia hạn để giữ Rivo và toàn bộ bài học Pro.	Renew to keep Rivo and every Pro lesson.
+Nhận xét bài viết	Review my writing
+Gợi ý {0} bài luyện từ vựng cho người mới	Suggest {0} vocabulary drills for beginners
+Tiêu chí chấm bài viết (thang {0})	Writing rubric (out of {0})
+Kế hoạch buổi học {0} phút về ngữ pháp	A {0}-minute grammar lesson plan
+Giải thích bài học này dễ hiểu hơn	Explain this lesson more simply
+Cho thêm ví dụ thực tế	Give more real-life examples
+Giải thích ngữ pháp và lỗi thường gặp	Explain the grammar and common mistakes
+Tóm tắt kiến thức chương này	Summarise this chapter
+Cho ví dụ minh họa dễ hiểu	Give easy examples
+Các lỗi hay gặp trong chương này	Common mistakes in this chapter
+Gợi ý cách làm bài tập chương này	Tips for this chapter's exercises
+Gửi kèm bài đang viết	Attach what I am writing
+Gia sư bài học: giải thích khái niệm, ví dụ và câu hỏi trong bài đang mở.	Lesson tutor: explains concepts, examples and questions in the open lesson.
+Gia sư chương học: tóm tắt lý thuyết, giải thích ví dụ và định hướng làm bài tập.	Chapter tutor: summarises theory, explains examples and guides you through exercises.
+Chào bạn! Mình là gia sư ngoại ngữ. Bạn đang vướng ở đâu?	Hi! I am your language tutor. Where are you stuck?
+Chào bạn! Mình là gia sư	Hi! I am your tutor for
+. Hỏi mình về từ vựng, ngữ pháp hay cách phát âm của bài này nhé.	. Ask me about this lesson's vocabulary, grammar or pronunciation.
+Chào bạn! Mình đang theo dõi nội dung	Hi! I am following
+. Bạn muốn giải thích phần nào hay cần thêm ví dụ?	. Which part should I explain, or do you need more examples?
+. Bạn đang vướng ở đâu?	. Where are you stuck?
+bài học này	this lesson
+Nhập câu hỏi hoặc dán câu ngoại ngữ cần giải thích, sửa lỗi…	Type a question or paste a sentence to explain or correct…
+Giọng của máy	Device voice
+Chọn giọng của máy	Choose the device voice
+Giọng AI tự nhiên, cần mạng; câu nghe lần đầu sẽ chậm một chút.	Natural AI voice, needs a connection; the first playback of a sentence is a little slow.
+Đang dùng giọng có sẵn của trình duyệt.	Using the browser's built-in voice.
+Micro đang bận (lần ghi trước chưa dừng hẳn). Đợi {0} giây rồi bấm lại.	The microphone is busy (the previous recording has not fully stopped). Wait {0} second and press again.
+Máy nghe thành	The device heard
+Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy mở bằng	This browser does not support speech recognition. Open the page in
+để được chấm phát âm; bạn vẫn nghe mẫu và gõ lại câu được.	to get pronunciation scoring; you can still listen to the model and type the sentence.
+Chấm chi tiết	Detailed scoring
+Ngữ điệu	Intonation
+Chưa có mục nào dưới {0} điểm. Tiếp tục luyện nhé!	Nothing below {0} points yet. Keep practising!
+Cần luyện lại	Needs more practice
+Trình duyệt này chưa hỗ trợ thông báo. Trên iPhone, hãy thêm trang vào màn hình chính rồi mở từ đó.	This browser does not support notifications. On iPhone, add the page to your Home Screen and open it from there.
+Bạn chưa cho phép thông báo.	You have not allowed notifications.
+Đã bật nhắc luyện lúc {0}:{1} mỗi ngày.	Daily practice reminder turned on for {0}:{1}.
+Bạn đã đạt mục tiêu hôm nay!	You hit today's goal!
+Tắt nhắc hằng ngày	Turn off the daily reminder
+Nhắc tôi mỗi ngày lúc {0}:{1}	Remind me every day at {0}:{1}
+Nghe lại	Listen again
+Đúng rồi!	Correct!
+Chưa đúng. Đáp án là “	Not quite. The answer is “
+Nghe và chọn từ đúng	Listen and choose the right word
+Máy đọc một trong hai từ. Nghe kỹ rồi chọn từ bạn nghe được. Luyện tai trước khi luyện miệng.	The device reads one of two words. Listen carefully and choose the one you hear. Train your ear before your mouth.
+Nghe phân biệt âm	Sound discrimination
+Nghe mẫu, bấm micro và đọc to. Máy chấm từng từ, cho điểm chính xác, đầy đủ và trôi chảy; bạn nghe lại giọng mình rồi luyện tới khi đạt.	Listen to the model, press the microphone and read aloud. Each word is scored for accuracy, completeness and fluency; replay your voice and practise until you pass.
+Mỗi bài tập trung một âm hoặc một quy tắc phát âm người Việt hay sai, kèm mẹo đặt lưỡi, môi.	Each lesson focuses on one sound or rule that Vietnamese speakers often get wrong, with tips for tongue and lip position.
+tất cả các bài	all lessons
+Bấm micro rồi đọc to, rõ từng từ	Press the microphone and read aloud, word by word
+Nghe mẫu, rồi gõ lại câu để kiểm tra	Listen to the model, then type the sentence to check
+Nghe từ này	Hear this word
+Máy nghe đúng tất cả các từ.	Every word was heard correctly.
+Nghe câu đúng	Hear the correct sentence
+Chào bạn! Rất vui được trò chuyện với bạn. Hôm nay của bạn thế nào?	Hello! Nice to talk with you. How is your day going?
+Lên cấp	Level up
+XP lên cấp	XP to level up
+Hoạt động gần nhất:	Latest activity:
+{0} ngày qua:	Last {0} days:
+Bạn sẽ có quyền Pro đến	You will have Pro access until
+Bạn đang ở gói Family của	You are in the Family plan of
+) mời bạn vào gói Family	) invited you to the Family plan
+Toàn bộ {0} ngoại ngữ, mọi cấp độ	All {0} languages, every level
+Liên hệ để nâng cấp	Contact us to upgrade
+Liên hệ nâng cấp	Contact to upgrade
+Không cần gửi ảnh chụp màn hình.	No screenshot is needed.
+Thử trước, không ràng buộc	Try first, no commitment
+Học thử miễn phí trước →	Try it free first →
+Rẻ hơn	Cheaper by
+% so với mua từng tháng	% compared with paying monthly
+Hạn dùng đến	Valid until
+Bạn đang có quyền	You currently have
+Email (không bắt buộc)	Email (optional)
+Dùng để nhận mã OTP khi quên mật khẩu.	Used to receive an OTP code if you forget your password.
+Quên mật khẩu?	Forgot password?
+Quên mật khẩu	Forgot password
+Nhập tên đăng nhập hoặc email đã lưu trong hồ sơ. Hệ thống sẽ gửi mã OTP về email đó.	Enter your username or the email saved in your profile. An OTP code will be sent to that email.
+Tên đăng nhập hoặc email	Username or email
+Tên đăng nhập hoặc email đã đăng ký	Your username or registered email
+Gửi mã OTP	Send OTP code
+Gửi lại mã	Resend code
+Nhập tên đăng nhập hoặc email.	Enter your username or email.
+Đang gửi…	Sending…
+Nhập mã OTP	Enter the OTP code
+Mã OTP gồm 6 số đã được gửi về email của tài khoản (nếu tài khoản có email). Mã có hiệu lực 10 phút.	A 6-digit OTP code was sent to the account's email (if the account has one). The code is valid for 10 minutes.
+Mã OTP gồm {0} số đã được gửi về email của tài khoản (nếu tài khoản có email). Mã có hiệu lực {1} phút.	A {0}-digit OTP code was sent to the account's email (if the account has one). The code is valid for {1} minutes.
+Mã OTP (6 số)	OTP code (6 digits)
+Mã OTP ({0} số)	OTP code ({0} digits)
+Mật khẩu mới	New password
+Nhập lại mật khẩu mới	Repeat the new password
+Đặt mật khẩu mới	Set new password
+Mã OTP gồm 6 chữ số.	The OTP code has 6 digits.
+Mã OTP gồm {0} chữ số.	The OTP code has {0} digits.
+Mật khẩu mới cần từ 6 đến 128 ký tự.	The new password must be 6 to 128 characters.
+Mật khẩu mới cần từ {0} đến {1} ký tự.	The new password must be {0} to {1} characters.
+Hai lần nhập mật khẩu mới chưa khớp.	The two new passwords do not match.
+Đã đặt mật khẩu mới. Hãy đăng nhập.	New password set. Please sign in.
+← Quay lại đăng nhập	← Back to sign in
+Email khôi phục	Recovery email
+Mã OTP đặt lại mật khẩu sẽ gửi về email này khi bạn quên mật khẩu.	The password reset OTP is sent to this email when you forget your password.
+Chưa có email. Thêm email để tự lấy lại mật khẩu khi quên.	No email yet. Add one so you can recover your password yourself.
+Email hiện tại:	Current email:
+Mật khẩu hiện tại	Current password
+Nhập mật khẩu hiện tại để xác nhận thay đổi.	Enter your current password to confirm the change.
+Lưu email	Save email
+Đã lưu email khôi phục.	Recovery email saved.
+Đã xóa email khôi phục.	Recovery email removed.
+Email chưa đúng định dạng.	The email address is not valid.
+Email này đã được dùng cho tài khoản khác.	This email is already used by another account.
+Mật khẩu hiện tại chưa đúng.	The current password is incorrect.
+Mã OTP không đúng hoặc đã hết hạn. Hãy kiểm tra lại hoặc yêu cầu mã mới.	The OTP code is wrong or has expired. Check it or request a new code.
+Bạn nhập sai mã quá nhiều lần. Hãy yêu cầu mã mới sau ít phút.	Too many wrong codes. Request a new code in a few minutes.
+Nếu tài khoản tồn tại và có email, mã OTP đã được gửi về email đó. Mã có hiệu lực 10 phút.	If the account exists and has an email, an OTP code was sent to it. The code is valid for 10 minutes.
+Nếu tài khoản tồn tại và có email, mã OTP đã được gửi về email đó. Mã có hiệu lực {0} phút.	If the account exists and has an email, an OTP code was sent to it. The code is valid for {0} minutes.
+Hệ thống chưa cấu hình gửi email. Hãy liên hệ giáo viên hoặc quản trị viên để được đặt lại mật khẩu.	Email sending is not configured yet. Please contact your teacher or an administrator to reset your password.
+Bạn yêu cầu đặt lại mật khẩu quá nhiều lần. Hãy chờ khoảng 10 phút.	Too many password reset requests. Please wait about 10 minutes.
+Bạn yêu cầu đặt lại mật khẩu quá nhiều lần. Hãy chờ khoảng {0} phút.	Too many password reset requests. Please wait about {0} minutes.
+Hoàn thành HSK {0}	Complete HSK {0}
+Đạt hết bài của HSK {0}	Pass every exercise in HSK {0}
+Hoàn thành JLPT N{0}	Complete JLPT N{0}
+Đạt hết bài của JLPT N{0}	Pass every exercise in JLPT N{0}
+Hoàn thành TOPIK {0}	Complete TOPIK {0}
+Đạt hết bài của TOPIK {0}	Pass every exercise in TOPIK {0}
+Hoàn thành DELF A{0}	Complete DELF A{0}
+Đạt hết bài của DELF A{0}	Pass every exercise in DELF A{0}
+Hoàn thành DELF B{0}	Complete DELF B{0}
+Đạt hết bài của DELF B{0}	Pass every exercise in DELF B{0}
+Hoàn thành DELF C{0}	Complete DELF C{0}
+Đạt hết bài của DELF C{0}	Pass every exercise in DELF C{0}
+Hoàn thành DELE A{0}	Complete DELE A{0}
+Đạt hết bài của DELE A{0}	Pass every exercise in DELE A{0}
+Hoàn thành DELE B{0}	Complete DELE B{0}
+Đạt hết bài của DELE B{0}	Pass every exercise in DELE B{0}
+Hoàn thành DELE C{0}	Complete DELE C{0}
+Đạt hết bài của DELE C{0}	Pass every exercise in DELE C{0}

@@ -1,0 +1,86 @@
+; phần chưa dịch hiện tiếng Việt. Bản do AI soạn luôn là bản nháp, cần bạn đọc kiểm tra rồi mới xuất bản. Code, ví dụ, kết quả cần in không bao giờ bị dịch.	; untranslated parts show in Vietnamese. AI translations are always drafts that you must read and check before publishing. Code, examples and expected output are never translated.
+· AI soạn · cập nhật {0}:{1} {2}/{3}/{4}	· AI drafted · updated {0}:{1} {2}/{3}/{4}
+{0} chuỗi mặc định · {1} chuỗi đã ghi đè	{0} default strings · {1} overridden
+{0} ngày gần nhất · Model gemini-{1}-flash-lite · đã cấu hình. Chi phí tính theo số token Google trả về và đơn giá đặt ở tab Thanh toán, AI, hệ thống.	Last {0} days · Model gemini-{1}-flash-lite · configured. Cost is based on the token counts Google returns and the unit prices set in the Payment, AI, system tab.
+← Danh sách bản dịch	← Translation list
+AI gợi ý cách nghĩ, không đưa ngay lời giải. Code trong khung soạn sẽ được gửi kèm.	The AI suggests how to think and won't hand you the answer. The code in the editor will be attached.
+AI không dịch được:	AI could not translate:
+AI soạn	AI drafted
+AI soạn, người sửa	AI drafted, human edited
+Người dịch	Human translated
+Bài giao đã nộp trong kỳ	Assignment submissions in period
+Bản dịch đang xuất bản. Gỡ xuất bản trước khi tạo bản nháp AI mới.	This translation is published. Unpublish it before creating a new AI draft.
+Bản gốc đã đổi ({0})	Source changed ({0})
+Bản gốc đã đổi	Source changed
+Bản nháp	Draft
+Bản nháp ({0})	Drafts ({0})
+Bạn thao tác quá nhiều lần. Hãy chờ ít phút.	Too many actions. Please wait a few minutes.
+Cập nhật	Updated
+Chỉ hỗ trợ bản dịch tiếng Anh.	Only English translations are supported.
+Chỗ giấy phép đã dùng	License seats used
+Chữ ký	Signature
+Chưa có	None
+Chưa có ({0})	None ({0})
+Chưa có bản dịch.	No translation yet.
+Chưa có cuộc trò chuyện.	No conversations yet.
+Chưa có lần gọi nào.	No calls yet.
+Cuộc trò chuyện mới	New conversation
+Đã dùng ${0} / trần ${1} · Model gemini-{2}-flash-lite · đã cấu hình	Used ${0} / cap ${1} · Model gemini-{2}-flash-lite · configured
+Đã xuất bản	Published
+Đã xuất bản ({0})	Published ({0})
+Giấy phép Teacher còn hạn	Active Teacher licenses
+Gói Family còn hạn	Active Family plans
+Gợi ý bài tập	Exercise hint
+Gợi ý: “Giải thích vòng lặp while bằng ví dụ đời thường”, “Code này sai ở đâu?”, “Mình vừa học xong list, nên học gì tiếp?”	Ideas: “Explain while loops with an everyday example”, “Where is this code wrong?”, “I just finished lists, what should I learn next?”
+Gửi kèm code (tùy chọn)	Attach code (optional)
+Hãy xác nhận đã đọc và kiểm tra bản dịch trước khi xuất bản.	Please confirm you have read and checked the translation before publishing.
+Hoặc gõ câu hỏi của bạn…	Or type your question…
+Học sinh trong lớp	Students in classes
+Hỏi tự do	Free question
+Không tìm thấy nội dung.	Content not found.
+Lớp đang mở	Open classes
+Lớp học và gói	Classes and plans
+Lưu bản nháp	Save draft
+Lưu và xuất bản	Save and publish
+Lưu và xuất bản lại	Save and republish
+Gỡ xuất bản	Unpublish
+Lý do	Reason
+Mọi lần SePay (hoặc bất kỳ ai) gọi địa chỉ webhook đều được ghi lại, kể cả lần bị từ chối vì sai chữ ký. Giao dịch trùng không cộng quyền hai lần. Chỉ quản trị viên xem được.	Every call to the webhook URL (from SePay or anyone else) is logged, including calls rejected for a bad signature. Duplicate transactions never grant access twice. Only administrators can see this.
+Mở	Open
+Người học chọn EN chỉ thấy bản	Learners who choose EN only see the version marked
+Nhật ký webhook	Webhook log
+Sửa cách dịch một chuỗi giao diện mà không cần sửa mã. Bản sửa có hiệu lực ngay cho người dùng mới tải trang. Xóa trắng ô để quay về bản dịch mặc định.	Change how an interface string is translated without editing code. Changes apply to users on their next page load. Clear the field to go back to the default translation.
+Tạo bản nháp bằng AI	Create AI draft
+Đang dịch…	Translating…
+Tất cả ({0})	All ({0})
+Thiếu chuỗi tiếng Việt gốc.	Missing the Vietnamese source string.
+Tìm chuỗi (tiếng Việt hoặc tiếng Anh)	Find a string (Vietnamese or English)
+Tôi đã đọc và kiểm tra toàn bộ bản dịch	I have read and checked the whole translation
+Ví dụ: Bảng giá	E.g.: Pricing
+Bản dịch nội dung học (tiếng Anh)	Learning content translations (English)
+Bài học	Lessons
+Không có mục nào.	No items.
+Khớp, đã kích hoạt	Matched, activated
+Trùng, bỏ qua	Duplicate, ignored
+Từ chối (chữ ký)	Rejected (signature)
+Lệch số tiền/đơn	Amount/order mismatch
+Dữ liệu lỗi	Bad data
+Hợp lệ	Valid
+Không hợp lệ	Invalid
+Dữ liệu	Data
+Quản trị · Giáo viên · Học viên · Phụ huynh	Admin · Teacher · Learner · Parent
+Đã lưu bản nháp. Người học chưa thấy bản này.	Draft saved. Learners can't see it yet.
+Đã xuất bản. Người học chọn EN sẽ thấy bản này.	Published. Learners who choose EN will see it.
+Đã gỡ xuất bản.	Unpublished.
+AI đã tạo bản nháp. Hãy đọc kiểm tra trước khi xuất bản.	The AI created a draft. Read and check it before publishing.
+Hãy tích xác nhận đã đọc và kiểm tra bản dịch.	Please tick the box confirming you have read and checked the translation.
+Đã lưu bản dịch.	Translation saved.
+Đã quay về bản dịch mặc định.	Reverted to the default translation.
+Dữ liệu đầu vào	Input data
+Điều bạn thích, hoặc điều cần cải thiện (không bắt buộc)	What you liked or what could be better (optional)
+Mô tả yêu cầu cho học viên	Describe the task for learners
+Mỗi dòng là một lần input()	Each line is one input()
+Nội dung chi tiết (không bắt buộc)	Details (optional)
+Ví dụ: Vì sao range({0}, {1}) không có số {2}?	E.g.: Why doesn't range({0}, {1}) include {2}?
+Tạo bản nháp AI cho {0} mục chưa có	Create AI drafts for {0} untranslated items
+Đã tạo {0} bản nháp. Hãy đọc kiểm tra từng bản trước khi xuất bản.	Created {0} drafts. Read and check each one before publishing.

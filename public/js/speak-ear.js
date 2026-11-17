@@ -1,0 +1,76 @@
+// Luyện tai: cặp từ dễ nhầm. Mỗi cặp: [từ A, từ B, nghĩa A, nghĩa B].
+// Máy đọc một trong hai từ, người học chọn từ nghe được. Số cặp tùy ngôn ngữ.
+export default {
+  en: [
+    ["ship", "sheep", "tàu thủy", "con cừu"],
+    ["bit", "beat", "mẩu nhỏ", "nhịp đánh"],
+    ["full", "fool", "đầy", "kẻ ngốc"],
+    ["live", "leave", "sống", "rời đi"],
+    ["cat", "cut", "con mèo", "cái cắt"],
+    ["think", "sink", "suy nghĩ", "chìm"],
+    ["light", "right", "ánh sáng", "đúng"],
+    ["pen", "pan", "cây bút", "cái chảo"],
+    ["bad", "bed", "xấu", "cái giường"],
+    ["sit", "seat", "ngồi", "chỗ ngồi"]
+  ],
+  fr: [
+    ["vie", "vite", "cuộc sống", "nhanh"],
+    ["tout", "tu", "tất cả", "bạn (tu)"],
+    ["rue", "roue", "đường phố", "bánh xe"],
+    ["chat", "chant", "con mèo", "tiếng hát"],
+    ["dessus", "dessous", "ở trên", "ở dưới"],
+    ["fou", "four", "điên", "lò nướng"],
+    ["loup", "loupe", "con sói", "kính lúp"],
+    ["mais", "mes", "nhưng", "của tôi (số nhiều)"],
+    ["bon", "beau", "tốt, ngon", "đẹp"],
+    ["père", "paire", "bố", "một đôi"]
+  ],
+  zh: [
+    ["妈", "马", "mẹ", "con ngựa"],
+    ["买", "卖", "mua", "bán"],
+    ["山", "三", "ngọn núi", "ba"],
+    ["请", "青", "mời", "xanh"],
+    ["哭", "苦", "khóc", "đắng"],
+    ["都", "多", "đều", "nhiều"],
+    ["白", "百", "trắng", "trăm"],
+    ["书", "树", "sách", "cây"],
+    ["花", "画", "hoa", "bức tranh"],
+    ["十", "四", "mười", "bốn"]
+  ],
+  ja: [
+    ["ビル", "ビール", "tòa nhà", "bia"],
+    ["ゆき", "ゆうき", "tuyết", "dũng khí"],
+    ["かき", "かぎ", "quả hồng", "chìa khóa"],
+    ["ちかい", "ちがい", "gần", "khác biệt"],
+    ["おじさん", "おじいさん", "chú/bác", "ông lão"],
+    ["おばさん", "おばあさん", "cô/dì", "bà lão"],
+    ["きて", "きって", "hãy đến", "tem thư"],
+    ["くつ", "くつう", "giày", "nỗi đau"],
+    ["ほし", "ほしい", "ngôi sao", "muốn có"],
+    ["へや", "へいや", "căn phòng", "đồng bằng"]
+  ],
+  ko: [
+    ["불", "풀", "lửa", "cỏ"],
+    ["밤", "방", "đêm", "căn phòng"],
+    ["발", "팔", "bàn chân", "cánh tay"],
+    ["살", "쌀", "da thịt", "gạo"],
+    ["감", "김", "quả hồng", "rong biển"],
+    ["달", "딸", "mặt trăng", "con gái"],
+    ["배", "뼈", "thuyền / quả lê", "xương"],
+    ["자다", "짜다", "ngủ", "mặn"],
+    ["공", "곰", "quả bóng", "con gấu"],
+    ["물", "문", "nước", "cánh cửa"]
+  ],
+  es: [
+    ["pero", "perro", "nhưng", "con chó"],
+    ["caro", "carro", "đắt", "xe hơi"],
+    ["año", "ano", "năm", "hậu môn (khác âm ñ/n)"],
+    ["casa", "caza", "ngôi nhà", "săn bắn"],
+    ["pelo", "perro", "tóc", "con chó"],
+    ["beso", "peso", "nụ hôn", "cân nặng"],
+    ["día", "tía", "ngày", "cô / dì"],
+    ["vino", "pino", "rượu vang", "cây thông"],
+    ["calló", "cayó", "đã im lặng", "đã ngã"],
+    ["lento", "viento", "chậm", "gió"]
+  ]
+};

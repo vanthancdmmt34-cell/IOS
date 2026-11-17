@@ -1,0 +1,1358 @@
+/* ==========================================================================
+   LifeRivo 2D Chibi Pastel Studio (Inspired by Prosto + Kiditorial + Pet Hub)
+   Soft frosted lavender canvas, vibrant color-blocked plan cards, emerald Hero CTA,
+   royal indigo sidebar with lime active pill, & studio Chibi companions. Zero 3D.
+   ========================================================================== */
+
+:root {
+  --chibi-lavender: #9B8AFB;
+  --chibi-pink-soft: #FFB9D0;
+  --chibi-mint: #A8E6CF;
+  --chibi-sky: #A8D8FF;
+  --chibi-cream: #FFF9F0;
+  --chibi-bg: #FAF9FF;
+  --chibi-ink: #303047;
+  --chibi-ink-soft: #645C7A;
+  --chibi-lav-bg: #F3EFFF;
+  --chibi-emerald: #16A34A;
+  --chibi-emerald-deep: #15803D;
+  --chibi-purple: #6D28D9;
+  --chibi-pink: #EC4899;
+  --chibi-lime: #84CC16;
+  --chibi-border: rgba(155, 138, 251, .20);
+  --chibi-shadow: 0 12px 30px rgba(48, 48, 71, .07);
+  --chibi-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ---------- Remove Old Sketchbook Grid & Tapes ---------- */
+body {
+  background-color: #F6F3FF;
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(167, 139, 250, .18) 0, transparent 36%),
+    radial-gradient(circle at 88% 12%, rgba(244, 114, 182, .14) 0, transparent 36%),
+    radial-gradient(circle at 50% 90%, rgba(56, 189, 248, .12) 0, transparent 40%);
+  background-size: auto;
+}
+
+body.in-app {
+  background: linear-gradient(135deg, #EFE9FE 0%, #FDF2F8 52%, #E8F4FF 100%) !important;
+}
+
+.aw {
+  background-color: #FFFFFF;
+  background-image:
+    radial-gradient(circle at 85% 15%, rgba(22, 163, 74, .06) 0, transparent 34%),
+    radial-gradient(circle at 10% 80%, rgba(139, 92, 246, .06) 0, transparent 36%);
+  color: var(--chibi-ink);
+}
+
+.sketch-tape,
+.clipboard-clip,
+.hero-doodle-stars,
+.sketch-underline-svg {
+  display: none !important;
+}
+
+/* ---------- Image 3 Style: Crisp White Hero + Emerald Green CTA + Chibi Tutor ---------- */
+.sec-hero,
+.sketch-hero,
+.obs-hero {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid rgba(124, 58, 237, .10);
+}
+
+.hero-highlight {
+  background: transparent !important;
+  color: var(--chibi-emerald) !important;
+}
+
+.hero-chip {
+  background: #ECFDF5 !important;
+  color: #15803D !important;
+  border: 1.5px solid rgba(22, 163, 74, .22) !important;
+  border-radius: 999px !important;
+  padding: 5px 14px 5px 8px !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, .08);
+}
+
+.hero-btn-primary,
+.hero-cta-btn {
+  background: linear-gradient(180deg, #22C55E 0%, #16A34A 100%) !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 22px rgba(22, 163, 74, .28) !important;
+  font-weight: 800 !important;
+}
+
+.hero-btn-primary:hover,
+.hero-cta-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 26px rgba(22, 163, 74, .34) !important;
+}
+
+.chibi-pro-stage {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.chibi-stage-canvas {
+  position: relative;
+  border-radius: 32px;
+  background: radial-gradient(circle at 50% 42%, #FCE7F3 0%, #FFFFFF 68%);
+  border: 1.5px solid rgba(124, 58, 237, .12);
+  padding: 18px 18px 16px;
+  display: grid;
+  justify-items: center;
+  box-shadow: 0 18px 42px rgba(99, 102, 241, .10);
+  overflow: hidden;
+}
+
+.chibi-hero-photo {
+  width: min(300px, 82%);
+  height: auto;
+  border-radius: 26px;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  animation: chibiFloatBob 3.6s ease-in-out infinite;
+}
+
+@keyframes chibiFloatBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.chibi-float-tag {
+  position: absolute;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(39, 34, 59, .12);
+}
+
+.chibi-float-tag.t1 { top: 20px; left: 18px; background: #EC4899; color: #FFFFFF; }
+.chibi-float-tag.t2 { top: 20px; right: 18px; background: #16A34A; color: #FFFFFF; }
+.chibi-float-tag.t3 { top: 124px; right: 14px; background: #FFFDF9; color: #27223B; border: 1.5px solid rgba(124, 58, 237, .16); }
+
+.chibi-stage-cta-card {
+  width: 100%;
+  margin-top: -12px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 10px 24px rgba(22, 163, 74, .24);
+}
+
+.chibi-stage-cta-card p {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1 1 200px;
+}
+
+.chibi-stage-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #15803D;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chibi-mini-dock {
+  background: rgba(255, 255, 255, .92) !important;
+  border: 1.5px solid var(--chibi-border) !important;
+  border-radius: 24px !important;
+  padding: 10px !important;
+  box-shadow: var(--chibi-shadow) !important;
+}
+
+.hero-metric.sticky-note {
+  border-radius: 22px !important;
+  border: 1.5px solid var(--chibi-border) !important;
+  transform: none !important;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, .08) !important;
+}
+.hero-metric.sticky-note.s1 { background: #FDF2F8 !important; }
+.hero-metric.sticky-note.s2 { background: #F0FDF4 !important; }
+.hero-metric.sticky-note.s3 { background: #F5F3FF !important; }
+
+.chibi-squad-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chibi-squad-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--chibi-border);
+  background: #FFFFFF;
+  color: var(--chibi-ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, .08);
+  transition: transform .2s var(--chibi-spring), box-shadow .2s ease;
+}
+
+.chibi-squad-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(99, 102, 241, .16);
+}
+
+/* ---------- Image 2 Style: Royal Indigo Sidebar + Lime Active Pill ---------- */
+body.in-app .side {
+  background: linear-gradient(180deg, #5B4FE8 0%, #4338CA 100%) !important;
+  color: #FFFFFF !important;
+  border-right: 0 !important;
+  box-shadow: 8px 0 28px rgba(67, 56, 202, .16);
+}
+
+body.in-app .side .brand,
+body.in-app .side .me-word b,
+body.in-app .side .nav-cat-lbl,
+body.in-app .side .nav a,
+body.in-app .side .side-back,
+body.in-app .side .side-action,
+body.in-app .side .xp-line {
+  color: rgba(255, 255, 255, .94) !important;
+}
+
+body.in-app .side .nav a {
+  border-radius: 999px !important;
+  border: 0 !important;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  transition: transform .2s var(--chibi-spring), background-color .18s ease;
+}
+
+body.in-app .side .nav a:hover {
+  background: rgba(255, 255, 255, .14) !important;
+  transform: translateX(3px);
+}
+
+body.in-app .side .nav a.on {
+  background: linear-gradient(90deg, #A3E635 0%, #4ADE80 100%) !important;
+  color: #14532D !important;
+  font-weight: 900 !important;
+  box-shadow: 0 6px 16px rgba(132, 204, 22, .35) !important;
+}
+
+body.in-app .side .side-subj,
+body.in-app .side .ud-prem,
+body.in-app .side .me-card {
+  background: rgba(255, 255, 255, .14) !important;
+  border: 1px solid rgba(255, 255, 255, .24) !important;
+  color: #FFFFFF !important;
+  border-radius: 22px !important;
+}
+
+.sb-ring-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 22px;
+  background: #FFFFFF;
+  color: #27223B;
+  box-shadow: 0 10px 22px rgba(30, 27, 75, .20);
+}
+
+.sb-ring {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: conic-gradient(#8B5CF6 calc(var(--pct, 0) * 1%), #EDE9FE 0);
+  display: grid;
+  place-items: center;
+}
+
+.sb-ring b {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+  color: #4F46E5;
+}
+
+.sb-ring-meta small {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #27223B;
+}
+
+.sb-ring-meta span {
+  font-size: 11px;
+  color: #645C7A;
+}
+
+/* ---------- Image 1 + Image 2 App Dashboard Workspace ---------- */
+.hm-chibi-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, .86);
+  border: 1.5px solid rgba(139, 92, 246, .16);
+  box-shadow: var(--chibi-shadow);
+  margin-bottom: 18px;
+}
+
+.hm-cb-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1 1 300px;
+}
+
+.hm-cb-copy {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+}
+
+.hm-cb-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hm-cb-row h1 {
+  font-size: clamp(20px, 2.2vw, 26px);
+  color: var(--chibi-ink);
+}
+
+.hm-lv-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.hm-cb-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--chibi-ink-soft);
+}
+
+.hm-cb-bar-wrap .bar {
+  flex: 1;
+  max-width: 240px;
+}
+
+.hm-cb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hm-star-pill {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #FEF9C3 0%, #FDE68A 100%);
+  color: #78350F;
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, .26);
+}
+
+.hm-studio-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+.hm-studio-grid.hm-studio-single {
+  grid-template-columns: 1fr;
+}
+
+.hm-plan-card,
+.hm-pet-card {
+  padding: 20px 22px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, .88);
+  border: 1.5px solid var(--chibi-border);
+  box-shadow: var(--chibi-shadow);
+}
+
+.hm-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.hm-plan-head h2 {
+  font-size: 19px;
+  color: var(--chibi-ink);
+}
+
+.hm-plan-head p {
+  font-size: 13px;
+  color: var(--chibi-ink-soft);
+}
+
+.hm-plan-go {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #EDE9FE;
+  color: #5B21B6;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.hm-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hm-plan-tile {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  color: #FFFFFF;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(39, 34, 59, .10);
+  transition: transform .22s var(--chibi-spring), box-shadow .22s ease;
+}
+
+.hm-plan-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(39, 34, 59, .16);
+}
+
+.hm-plan-tile.tile-wide {
+  grid-column: span 2;
+}
+
+.hm-plan-tile.tile-sky { background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%); }
+.hm-plan-tile.tile-pink { background: linear-gradient(135deg, #F472B6 0%, #DB2777 100%); }
+.hm-plan-tile.tile-violet { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+.hm-plan-tile.tile-peach { background: linear-gradient(135deg, #FB923C 0%, #EA580C 100%); }
+
+.hm-pt-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.hm-pt-copy small {
+  font-size: 11.5px;
+  font-weight: 700;
+  opacity: .9;
+}
+
+.hm-pt-copy b {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.hm-pt-copy span {
+  font-size: 12px;
+  opacity: .92;
+}
+
+.hm-pt-btn {
+  justify-self: start;
+  margin-top: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #27223B;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.hm-pt-ico .sk-ic {
+  width: 52px;
+  height: 52px;
+}
+
+/* Chibi Pet Companion Stage (Image 1 Style) */
+.hm-pet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hm-pet-head b {
+  display: block;
+  font-size: 18px;
+  color: var(--chibi-ink);
+}
+
+.hm-pet-head small {
+  font-size: 12.5px;
+  color: var(--chibi-ink-soft);
+}
+
+.hm-exp-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #EDE9FE;
+  color: #5B21B6;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.hm-pet-tabs {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  padding: 2px 2px 8px;
+  scrollbar-width: none;
+  margin-bottom: 12px;
+}
+.hm-pet-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.hm-pet-tab {
+  flex: 1 0 74px;
+  scroll-snap-align: start;
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border-radius: 16px;
+  border: 1.5px solid transparent;
+  background: #F5F3FF;
+  color: var(--chibi-ink);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .18s var(--chibi-spring), border-color .18s ease, background-color .18s ease;
+}
+
+.hm-pet-tab img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hm-pet-tab.on {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  transform: translateY(-2px);
+}
+
+.hm-pet-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 8px 0 12px;
+}
+.hm-pet-aura {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(155, 138, 251, .25), rgba(155, 138, 251, 0) 65%);
+  pointer-events: none;
+}
+.hm-pet-hero-img {
+  position: relative;
+  z-index: 1;
+}
+
+.hm-pet-hero-img {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 14px 32px rgba(139, 92, 246, .18);
+  animation: chibiFloatBob 3.4s ease-in-out infinite;
+}
+
+.hm-pet-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 18px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--chibi-ink);
+}
+
+.hm-pet-bars > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+  align-items: baseline;
+}
+.hm-pet-bars > div .bar {
+  grid-column: 1 / -1;
+  height: 10px;
+}
+
+.hm-pet-cheer-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: linear-gradient(90deg, #9333EA 0%, #EC4899 100%);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(168, 85, 247, .32);
+  transition: transform .2s var(--chibi-spring), box-shadow .2s ease;
+}
+
+.hm-pet-cheer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(168, 85, 247, .38);
+}
+
+.hm-pet-cheer-btn:active {
+  transform: translateY(2px) scale(.96);
+}
+
+/* ---------- Soft Pastel Chibi Cards, Buttons & Section Harmony ---------- */
+.chibi-ic,
+.sk-ic {
+  transition: transform .24s var(--chibi-spring);
+  transform-origin: center center;
+}
+
+button:hover .chibi-ic,
+a:hover .chibi-ic {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+.nav-ic .sk-ic { width: 24px; height: 24px; }
+.nav-cat-ico .sk-ic { width: 22px; height: 22px; }
+.db-tile .sk-ic, .hm-quick-tile .sk-ic { width: 38px; height: 38px; }
+.btn .chibi-ic, .icon-btn .chibi-ic, .search-btn .chibi-ic { width: 20px; height: 20px; flex: none; }
+.aiw-fab .sk-ic { width: 28px; height: 28px; }
+
+.chibi-pet-photo {
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, .16);
+}
+
+/* Clean rounded buttons matching Image 1 & Image 2 */
+.btn,
+button.btn,
+a.btn,
+.aw-pill,
+.hm-btn,
+.demo-send,
+.chip,
+.tab {
+  border-radius: 999px !important;
+  transition: transform .2s var(--chibi-spring), box-shadow .2s ease, background-color .18s ease;
+}
+
+.btn-primary,
+a.btn-primary,
+.hm-btn-primary,
+.aw-pill.dark,
+.demo-send {
+  background: linear-gradient(90deg, #8B5CF6 0%, #EC4899 100%) !important;
+  color: #FFFFFF !important;
+  border: 0 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 8px 18px rgba(139, 92, 246, .26) !important;
+}
+
+.btn:hover:not(:disabled),
+a.btn:hover,
+.aw-pill:hover,
+.hm-btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active:not(:disabled),
+a.btn:active,
+.aw-pill:active,
+.hm-btn:active {
+  transform: translateY(2px) scale(.96);
+}
+
+.card,
+.ex-card,
+.ad-kpi,
+.ad-panel,
+.lx-card,
+.lx-stat,
+.lx-row,
+.lx-ai-card,
+.modal-box,
+.purpose-card,
+.subj-card,
+.step-card,
+.story-card,
+.demo-workbench,
+.hm-focus,
+.hm-card,
+.hm-insights,
+.db-tile,
+.hm-quick-tile,
+.db-panel {
+  border-radius: 26px !important;
+  border: 1.5px solid var(--chibi-border) !important;
+  background: rgba(255, 255, 255, .92) !important;
+  box-shadow: var(--chibi-shadow) !important;
+}
+
+.sec-dark-band,
+.sec-cach-hoc,
+.sec-chot-cuoi .cta-box {
+  background: linear-gradient(135deg, #F3EFFF 0%, #FDF2F8 55%, #ECFDF5 100%) !important;
+  color: var(--chibi-ink) !important;
+  border-radius: 32px;
+}
+
+.sec-dark-band .sec-title,
+.sec-dark-band .sec-sub,
+.sec-dark-band .step-title,
+.sec-dark-band .step-desc,
+.sec-chot-cuoi .cta-title,
+.sec-chot-cuoi .cta-sub {
+  color: var(--chibi-ink) !important;
+}
+
+.aiw-fab {
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 10px 26px rgba(139, 92, 246, .35) !important;
+}
+
+.lx-flash {
+  border-radius: 28px;
+  border: 1.5px solid var(--chibi-border);
+  background: rgba(255, 255, 255, .94);
+  box-shadow: var(--chibi-shadow);
+}
+
+.lx-flash.flip,
+.chibi-pop {
+  animation: chibiBouncePop .34s var(--chibi-spring) both;
+}
+
+@keyframes chibiBouncePop {
+  0% { transform: scale(.92); }
+  55% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Balanced 3-Column Purpose Deck */
+.purpose-bento-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+}
+
+.purpose-bento-side { display: contents !important; }
+
+/* #/chon-mon: Chibi Starter Picker & End-to-End 4-Stage Beginner Roadmap */
+.sw-chibi-world {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 18px 54px;
+  display: grid;
+  gap: 26px;
+}
+
+.sw-chibi-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, .85fr);
+  gap: 22px;
+  align-items: center;
+  padding: 26px 28px;
+  border-radius: 30px;
+  border: 1.5px solid var(--chibi-border);
+  background: rgba(255, 255, 255, .92);
+  box-shadow: var(--chibi-shadow);
+}
+
+.sw-chibi-hero h1 { margin: 10px 0 8px; font-size: clamp(24px, 3vw, 34px); color: var(--chibi-ink); }
+.sw-chibi-hero h1 em { font-style: normal; color: #7C3AED; background: #EDE9FE; padding: 0 10px; border-radius: 999px; }
+.sw-chibi-hero p { color: var(--chibi-ink-soft); max-width: 58ch; }
+.sw-hero-perks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.sw-hero-perks span {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
+  border: 1.5px solid var(--chibi-border); background: #FFFFFF; font-size: 13px; font-weight: 800;
+}
+.sw-hero-perks .sk-ic { width: 22px; height: 22px; }
+.sw-chibi-hero-art { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+.sw-chibi-bubble {
+  padding: 8px 14px; border-radius: 999px; background: #EDE9FE; color: #5B21B6; font-size: 13px; font-weight: 800;
+}
+
+.sw-chibi-resume {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 18px 22px;
+  border-radius: 26px; border: 1.5px solid var(--chibi-border); background: rgba(255, 255, 255, .95); box-shadow: var(--chibi-shadow);
+}
+.sw-chibi-resume .sw-resume-copy { flex: 1 1 260px; display: grid; gap: 3px; }
+.sw-chibi-resume .sw-resume-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.sw-roadmap,
+.lx-beginner-track {
+  padding: 22px 24px;
+  border-radius: 28px;
+  border: 1.5px solid var(--chibi-border);
+  background: rgba(255, 255, 255, .90);
+  box-shadow: var(--chibi-shadow);
+}
+
+.sw-roadmap-head,
+.sw-picker-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 18px;
+}
+
+.sw-roadmap-track,
+.lx-beg-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sw-roadmap-step,
+.lx-beg-step {
+  padding: 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--chibi-border);
+  background: var(--tint, #F5F3FF);
+  text-decoration: none;
+  color: var(--chibi-ink);
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.lx-beg-step.cur { background: linear-gradient(135deg, #FEF9C3 0%, #FCE7F3 100%); }
+.lx-beg-step.done { background: #ECFDF5; }
+
+.sw-rm-top { display: flex; justify-content: space-between; align-items: center; }
+.sw-rm-badge { padding: 3px 10px; border-radius: 999px; background: #FFFFFF; font-size: 12px; font-weight: 800; }
+.sw-rm-num { font-size: 18px; font-weight: 900; color: rgba(109, 40, 217, .24); }
+.sw-rm-ico .sk-ic { width: 42px; height: 42px; }
+
+.sw-goal-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw-chibi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+
+.sw-chibi-card {
+  display: flex; flex-direction: column; text-decoration: none; color: var(--chibi-ink);
+  border-radius: 28px !important; border: 1.5px solid var(--chibi-border) !important;
+  background: rgba(255, 255, 255, .94) !important; overflow: hidden; box-shadow: var(--chibi-shadow) !important;
+  transition: transform .24s var(--chibi-spring), box-shadow .24s ease, opacity .2s ease;
+}
+
+.sw-chibi-card:hover { transform: translateY(-5px); box-shadow: 0 18px 36px rgba(99, 102, 241, .16) !important; }
+.sw-chibi-card.is-dimmed { opacity: .42; }
+.sw-chibi-card.is-highlighted { box-shadow: 0 14px 30px rgba(139, 92, 246, .22), 0 0 0 3px rgba(139, 92, 246, .35) !important; }
+
+.sw-chibi-stage {
+  background: var(--tint, #F5F3FF);
+  padding: 16px;
+  display: grid; gap: 8px; justify-items: center;
+}
+
+.sw-chibi-toprow { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sw-chibi-flag-pill, .sw-chibi-tag {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
+  background: #FFFFFF; font-size: 12px; font-weight: 800; box-shadow: 0 3px 10px rgba(39, 34, 59, .06);
+}
+.sw-chibi-tag { background: #FEF08A; color: #78350F; }
+.sw-flag-mini svg { width: 18px; height: 12px; border-radius: 3px; }
+.sw-chibi-mascot-wrap { transition: transform .26s var(--chibi-spring); }
+.sw-chibi-card:hover .sw-chibi-mascot-wrap { transform: translateY(-4px) scale(1.06); }
+.sw-chibi-buddy-name { font-size: 12.5px; color: var(--chibi-ink-soft); }
+.sw-chibi-body { flex: 1; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+.sw-chibi-title { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sw-chibi-title h3 { font-size: 20px; font-weight: 900; }
+.sw-chibi-desc { font-size: 13.5px; color: var(--chibi-ink-soft); }
+.sw-mini-steps {
+  margin: 2px 0 4px; padding: 10px 12px; list-style: none; border-radius: 16px;
+  background: #F8F7FF; display: grid; gap: 5px; font-size: 12.5px; font-weight: 700;
+}
+.sw-chibi-cta { margin-top: auto; justify-content: center; width: 100%; }
+
+/* Header Nav Chibi Links */
+.aw-nav a { display: inline-flex; align-items: center; gap: 6px; }
+.chibi-nav-ic { flex: none; transition: transform .22s var(--chibi-spring); }
+.aw-nav a:hover .chibi-nav-ic { transform: scale(1.18) rotate(-6deg); }
+
+@media (max-width: 960px) {
+  .hm-studio-grid, .sw-chibi-hero { grid-template-columns: 1fr; }
+  .purpose-bento-grid { grid-template-columns: 1fr !important; }
+  .purpose-bento-side { display: grid !important; grid-template-columns: 1fr !important; gap: 20px !important; }
+  .sw-roadmap-track, .lx-beg-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sw-chibi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .hm-plan-grid, .sw-roadmap-track, .lx-beg-steps, .sw-chibi-grid { grid-template-columns: 1fr; }
+  .hm-plan-tile.tile-wide { grid-column: span 1; }
+}
+
+/* Dark Theme Harmony */
+html[data-theme="dark"] .aw,
+html[data-theme="dark"] body,
+html[data-theme="dark"] body.in-app,
+body.dark,
+body.dark .aw {
+  background: #1B1826 !important;
+  color: #F5F3FF !important;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .hm-chibi-banner,
+html[data-theme="dark"] .hm-plan-card,
+html[data-theme="dark"] .hm-pet-card,
+html[data-theme="dark"] .sw-chibi-hero,
+html[data-theme="dark"] .sw-roadmap,
+html[data-theme="dark"] .sw-chibi-card,
+html[data-theme="dark"] .lx-beginner-track,
+html[data-theme="dark"] .cds-card,
+html[data-theme="dark"] .cds-mission,
+html[data-theme="dark"] .cds-ach,
+html[data-theme="dark"] .cds-game-card,
+html[data-theme="dark"] .cg-hero,
+html[data-theme="dark"] .cg-arena,
+html[data-theme="dark"] .cds-modal {
+  background: #252134 !important;
+  border-color: rgba(155, 138, 251, .24) !important;
+  color: #F5F3FF !important;
+}
+
+/* Che do toi: nhan pill tren the game (Ghép câu, Luyện nghe...) phai doc duoc:
+   nen tim mo + chu lavender sang, thay vi nen trang + chu bi ep sang. */
+html[data-theme="dark"] .cds-kicker {
+  background: rgba(155, 138, 251, .25) !important;
+  color: #EDE9FE !important;
+}
+
+/* Che do toi: dinh nghia lai bien mau (nhan, mo ta dung bien nay) + cac pill cung mau. */
+html[data-theme="dark"] {
+  --chibi-ink: #F5F3FF;
+  --chibi-ink-soft: #C9C4E0;
+  --chibi-cream: #2E2A44;
+  --chibi-lav-bg: #2E2A44;
+  --chibi-border: rgba(155, 138, 251, .30);
+}
+html[data-theme="dark"] .cds-pill.cds-xp,
+html[data-theme="dark"] .hm-exp-pill {
+  background: rgba(155, 138, 251, .25) !important;
+  color: #EDE9FE !important;
+  border-color: rgba(155, 138, 251, .35) !important;
+}
+html[data-theme="dark"] .cds-pill.cds-level {
+  background: rgba(52, 211, 153, .22) !important;
+  color: #D1FAE5 !important;
+  border-color: rgba(52, 211, 153, .35) !important;
+}
+html[data-theme="dark"] .cds-pill.cds-streak {
+  background: rgba(245, 158, 11, .22) !important;
+  color: #FEF3C7 !important;
+  border-color: rgba(245, 158, 11, .35) !important;
+}
+html[data-theme="dark"] .hm-star-pill {
+  background: rgba(250, 204, 21, .22) !important;
+  color: #FEF9C3 !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .hm-goal {
+  background: #252134 !important;
+  border-color: rgba(155, 138, 251, .24) !important;
+  color: #F5F3FF !important;
+}
+
+/* ==========================================================================
+   MASTER PROMPT DESIGN SYSTEM (ChibiMascot + 17 Components + Games Arcade)
+   ========================================================================== */
+.cm-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.cm-card {
+  padding: 10px 14px;
+  border-radius: 24px;
+  background: var(--chibi-cream);
+  border: 1.5px solid var(--chibi-border);
+  box-shadow: var(--chibi-shadow);
+}
+.cm-svg {
+  display: block;
+  flex: none;
+  filter: drop-shadow(0 6px 12px rgba(48, 48, 71, .08));
+}
+.cm-welcome .cm-svg,
+.cm-success .cm-svg,
+.cm-achievement .cm-svg {
+  animation: chibiFloatBob 3.2s ease-in-out infinite;
+}
+.cm-caption {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--chibi-ink);
+  max-width: 170px;
+  line-height: 1.35;
+}
+
+.cds-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  border: 1.5px solid transparent;
+}
+.cds-xp {
+  background: #F3EFFF;
+  color: #5B21B6;
+  border-color: rgba(155, 138, 251, .35);
+}
+.cds-streak {
+  background: var(--chibi-cream);
+  color: #B45309;
+  border-color: rgba(245, 158, 11, .28);
+}
+.cds-streak.on {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.cds-level {
+  background: #E6FAF1;
+  color: #065F46;
+  border-color: rgba(168, 230, 207, .65);
+}
+
+.cds-prog { display: grid; gap: 5px; width: 100%; }
+.cds-prog-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+.cds-prog-track { height: 9px; border-radius: 999px; background: rgba(155, 138, 251, .16); overflow: hidden; }
+.cds-prog-track i { display: block; height: 100%; border-radius: 999px; transition: width .35s ease; }
+
+.hm-missions-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.cds-mission-link { text-decoration: none; color: inherit; display: block; }
+.cds-mission {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 15px;
+  border-radius: 22px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--chibi-border);
+  box-shadow: var(--chibi-shadow);
+  transition: transform .18s var(--chibi-spring), border-color .18s ease;
+}
+.cds-mission:hover { transform: translateY(-2px); border-color: var(--chibi-lavender); }
+.cds-mission.done { background: #ECFDF5; border-color: #A8E6CF; }
+.cds-mission-ic { font-size: 20px; flex: none; }
+.cds-mission-copy { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.cds-mission-copy b { font-size: 13.5px; color: var(--chibi-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cds-mission-copy small { font-size: 11.5px; font-weight: 700; color: var(--chibi-ink-soft); }
+
+.cds-card,
+.cds-course-card,
+.cds-lesson-card,
+.cds-ach,
+.cds-game-card,
+.cds-flashcard {
+  border-radius: 24px;
+  border: 1.5px solid var(--chibi-border);
+  background: #FFFFFF;
+  box-shadow: var(--chibi-shadow);
+}
+
+.cds-ach {
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  transition: transform .2s var(--chibi-spring);
+}
+.cds-ach:hover { transform: translateY(-3px); }
+.cds-ach.ok { background: linear-gradient(180deg, #FFFFFF 0%, #FFF9F0 100%); border-color: #FCD34D; }
+.cds-ach-ico { font-size: 32px; }
+.cds-ach b { font-size: 15px; color: var(--chibi-ink); }
+.cds-ach > span { font-size: 12.5px; color: var(--chibi-ink-soft); }
+.cds-ach-done {
+  justify-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #E6FAF1;
+  color: #065F46;
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.lx-fav-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--chibi-border);
+  background: var(--chibi-cream);
+  color: #9CA3AF;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform .18s var(--chibi-spring), color .18s ease;
+}
+.lx-fav-btn:hover { transform: scale(1.1); }
+.lx-fav-btn.on { color: #F59E0B; background: #FEF3C7; border-color: #F59E0B; }
+.lx-flash { position: relative; }
+
+/* Adventure Path cards */
+.lx-path-premium {
+  position: relative;
+}
+
+/* 6 Mini Games Arcade (#/tro-choi) */
+.cg-page { display: grid; gap: 20px; }
+.cg-hero {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 28px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F3EFFF 55%, #FFEBF2 100%);
+  border: 1.5px solid var(--chibi-border);
+  box-shadow: var(--chibi-shadow);
+}
+.cg-hero h1 { font-size: clamp(22px, 3vw, 30px); margin: 4px 0 8px; }
+.cg-hero p { max-width: 58ch; color: var(--chibi-ink-soft); }
+.cg-lang-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.cg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.cds-game-card {
+  padding: 20px;
+  text-align: left;
+  cursor: pointer;
+  background: linear-gradient(160deg, #FFFFFF 0%, var(--tint, #F3EFFF) 100%);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  transition: transform .22s var(--chibi-spring), box-shadow .22s ease;
+}
+.cds-game-card:hover { transform: translateY(-4px); box-shadow: 0 18px 34px rgba(155, 138, 251, .20); }
+.cds-game-top { display: flex; justify-content: space-between; align-items: center; }
+.cds-game-ico { font-size: 30px; }
+.cds-kicker {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .9);
+  color: #5B21B6;
+  font-size: 11px;
+  font-weight: 800;
+}
+.cds-game-card b { font-size: 17px; color: var(--chibi-ink); }
+.cds-game-card p { font-size: 13px; color: var(--chibi-ink-soft); margin: 0; }
+.cds-game-foot {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(48, 48, 71, .14);
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #6D28D9;
+}
+
+.cg-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.cg-arena {
+  padding: 24px;
+  border-radius: 28px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--chibi-border);
+  box-shadow: var(--chibi-shadow);
+  display: grid;
+  gap: 16px;
+}
+.cg-match-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cg-col { display: grid; gap: 10px; }
+.cg-tile,
+.cds-quiz-opt {
+  padding: 13px 16px;
+  border-radius: 18px;
+  border: 1.5px solid var(--chibi-border);
+  background: var(--chibi-bg);
+  color: var(--chibi-ink);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+  transition: transform .16s var(--chibi-spring), border-color .16s ease, background-color .16s ease;
+}
+.cg-tile:hover:not(:disabled),
+.cds-quiz-opt:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--chibi-lavender); }
+.cg-tile.sel { background: #F3EFFF; border-color: #9B8AFB; }
+.cg-tile.done { background: #E6FAF1; border-color: #16A34A; opacity: .65; }
+.cg-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cg-prompt { padding: 18px; border-radius: 22px; background: var(--chibi-bg); display: grid; gap: 6px; text-align: center; justify-items: center; }
+.cg-prompt-w { font-size: clamp(22px, 3vw, 32px); color: var(--chibi-ink); }
+.cg-slots {
+  min-height: 56px;
+  padding: 12px;
+  border-radius: 18px;
+  border: 2px dashed rgba(155, 138, 251, .45);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cg-bank { display: flex; flex-wrap: wrap; gap: 8px; }
+.cg-tok {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--chibi-border);
+  background: #F3EFFF;
+  color: var(--chibi-ink);
+  font-weight: 800;
+  cursor: pointer;
+}
+.cg-spell-form { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.cg-spell-form input {
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 2px solid var(--chibi-border);
+  font-size: 16px;
+  min-width: 240px;
+}
+
+.cds-empty,
+.cds-loading {
+  padding: 28px;
+  border-radius: 24px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--chibi-border);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+/* 2D Confetti & Success Modal */
+.cds-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.cds-confetti i {
+  position: absolute;
+  top: -12px;
+  width: 10px;
+  height: 16px;
+  border-radius: 4px;
+  animation: cdsDrop 1.45s ease-in forwards;
+}
+@keyframes cdsDrop {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(320deg); opacity: 0; }
+}
+.cds-modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background: rgba(48, 48, 71, .42);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.cds-modal {
+  max-width: 400px;
+  width: 100%;
+  padding: 28px 24px;
+  border-radius: 30px;
+  background: #FFFFFF;
+  border: 2px solid var(--chibi-lavender);
+  box-shadow: 0 24px 48px rgba(48, 48, 71, .20);
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  .hm-missions-row,
+  .cg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .hm-missions-row,
+  .cg-grid,
+  .cg-match-cols,
+  .cg-opts { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chibi-ic, .sk-ic, .chibi-hero-photo, .hm-pet-hero-img, .btn, .hm-plan-tile, .sw-chibi-card,
+  .cm-svg, .cds-mission, .cds-ach, .cds-game-card, .cds-confetti i {
+    transition: none !important;
+    animation: none !important;
+  }
+}

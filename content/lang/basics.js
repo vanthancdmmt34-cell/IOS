@@ -1,0 +1,51 @@
+// Core rules for each foreign language (shown in Theory and sent to AI as context).
+export default {
+  zh: [
+    "Tiếng Trung có 4 thanh điệu và 1 thanh nhẹ: mā (ngang), má (lên), mǎ (xuống-lên), mà (xuống). Sai thanh là sai nghĩa.",
+    "Pinyin là cách ghi âm bằng chữ La-tinh; mỗi chữ Hán là một âm tiết.",
+    "Trật tự câu cơ bản: Chủ ngữ + (thời gian/nơi chốn) + Động từ + Tân ngữ. Ví dụ: 我 今天 在家 看书.",
+    "Danh từ đếm cần lượng từ: 一个人, 一本书, 三杯茶.",
+    "Động từ không chia theo thì; dùng 了, 过, 着, 在/正在 để chỉ thời và trạng thái.",
+    "Câu hỏi có/không: thêm 吗 cuối câu, hoặc dùng dạng 是不是, 去不去.",
+  ],
+  ja: [
+    "Tiếng Nhật có 3 bộ chữ: Hiragana (từ thuần Nhật, trợ từ), Katakana (từ ngoại lai), Kanji (chữ Hán).",
+    "Trật tự câu: Chủ ngữ + Tân ngữ + Động từ (động từ luôn ở cuối câu).",
+    "Trợ từ quyết định vai trò của từ: は (chủ đề), が (chủ ngữ), を (tân ngữ), に/へ (hướng, thời điểm), で (nơi hành động, phương tiện).",
+    "Thể lịch sự dùng です/ます; thể thường dùng với bạn bè và trong văn viết.",
+    "Trường âm (おう, えい, ー) và âm ngắt (っ) làm đổi nghĩa: おばさん (cô) khác おばあさん (bà).",
+    "Tính từ có 2 loại: tính từ い (おおきい) và tính từ な (きれいな), chia khác nhau.",
+  ],
+  ko: [
+    "Chữ Hangul ghép theo khối âm tiết: phụ âm đầu + nguyên âm (+ phụ âm cuối, gọi là patchim).",
+    "Trật tự câu: Chủ ngữ + Tân ngữ + Động từ (động từ ở cuối).",
+    "Tiểu từ chọn theo patchim: 은/는, 이/가, 을/를 — có patchim dùng dạng đầu, không có dùng dạng sau.",
+    "Đuôi câu thể hiện mức lịch sự: -아요/어요 (lịch sự thân mật), -ㅂ니다/습니다 (trang trọng).",
+    "Quá khứ: -았/었어요; tương lai: -(으)ㄹ 거예요.",
+    "Biến âm khi đọc: 감사합니다 đọc là gam-sa-ham-ni-da (ㅂ trước ㄴ đọc thành ㅁ).",
+  ],
+  fr: [
+    "Danh từ có giống đực/giống cái: le/un (đực), la/une (cái), les/des (số nhiều).",
+    "Động từ chia theo ngôi: je suis, tu es, il/elle est, nous sommes, vous êtes, ils/elles sont.",
+    "Phủ định đặt ne… pas quanh động từ: Je ne parle pas.",
+    "Tính từ hợp giống và số với danh từ: un ami content / une amie contente.",
+    "Dấu (é, è, ê, ç…) đổi cách đọc và có khi đổi nghĩa: a (có) khác à (ở, đến).",
+    "Nhiều phụ âm cuối không đọc (petit, vous); nối âm (liaison) khi từ sau bắt đầu bằng nguyên âm: vous_avez.",
+  ],
+  en: [
+    "Trật tự câu: Chủ ngữ + Động từ + Tân ngữ (S + V + O).",
+    "Ngôi thứ ba số ít ở hiện tại đơn thêm -s/-es: she works, he goes.",
+    "Mạo từ: a (trước phụ âm), an (trước nguyên âm), the (đã xác định).",
+    "Danh từ đếm được có số nhiều (books); danh từ không đếm được (water, information) không thêm -s.",
+    "Các thì chính: hiện tại đơn (thói quen), hiện tại tiếp diễn (đang), quá khứ đơn (đã xong), hiện tại hoàn thành (từ quá khứ tới nay).",
+    "Câu hỏi dùng trợ động từ đảo lên trước chủ ngữ: Do you…? Did she…? Have they…?",
+  ],
+  es: [
+    "Danh từ có giống đực/giống cái: el/un (đực), la/una (cái), los/las (số nhiều); phần lớn -o là đực, -a là cái.",
+    "Động từ chia theo ngôi (hablo, hablas, habla...) nên thường có thể lược bỏ đại từ chủ ngữ (yo, tú, nosotros).",
+    "Có hai động từ 'là/ở': ser (bản chất, nghề nghiệp, xuất xứ) và estar (trạng thái, vị trí, cảm xúc tạm thời).",
+    "Tính từ đứng sau danh từ và phải hợp giống, hợp số: un libro nuevo / una casa nueva / casas nuevas.",
+    "Phủ định đặt no ngay trước động từ: No hablo español; câu hỏi đặt cả ¿...? và ¡...! ở đầu và cuối.",
+    "Chữ h luôn câm (hola đọc ô-la), ñ đọc như nh (mañana), rr rung mạnh lưỡi và j đọc kh nhẹ.",
+  ],
+};

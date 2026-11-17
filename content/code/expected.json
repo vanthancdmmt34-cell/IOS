@@ -1,0 +1,354 @@
+{
+ "tong-hieu-tich": [
+  "8\n-2\n15",
+  "-5\n-9\n-14",
+  "2000000000\n0\n1000000000000000000",
+  "-9\n9\n0"
+ ],
+ "hinh-chu-nhat": [
+  "16 15",
+  "4 1",
+  "40000 100000000",
+  "18 14"
+ ],
+ "trung-binh-cong": [
+  "1.67",
+  "3.00",
+  "3.67",
+  "-1.00"
+ ],
+ "chan-le": [
+  "CHAN",
+  "LE",
+  "CHAN",
+  "LE"
+ ],
+ "xep-loai": [
+  "Gioi",
+  "Kha",
+  "Trung binh",
+  "Yeu",
+  "Gioi"
+ ],
+ "nam-nhuan": [
+  "YES",
+  "NO",
+  "YES",
+  "NO"
+ ],
+ "tong-1-n": [
+  "15",
+  "1",
+  "5050",
+  "500000500000"
+ ],
+ "giai-thua": [
+  "120",
+  "1",
+  "2432902008176640000",
+  "3628800"
+ ],
+ "dem-chu-so": [
+  "5",
+  "1",
+  "1",
+  "19"
+ ],
+ "tong-mang": [
+  "15",
+  "-8",
+  "3000000000",
+  "0"
+ ],
+ "max-vi-tri": [
+  "9 2",
+  "-5 1",
+  "-1 2",
+  "7 1"
+ ],
+ "dem-so-duong": [
+  "3",
+  "1",
+  "0",
+  "1"
+ ],
+ "dao-chuoi": [
+  "olleh",
+  "fed cba",
+  "a",
+  "6202 C hnirt paL"
+ ],
+ "dem-nguyen-am": [
+  "3",
+  "0",
+  "10",
+  "5"
+ ],
+ "palindrome": [
+  "YES",
+  "NO",
+  "YES",
+  "YES",
+  "NO"
+ ],
+ "ucln": [
+  "6 36",
+  "1 91",
+  "1 999999999000000000",
+  "5 5"
+ ],
+ "fibonacci": [
+  "1",
+  "55",
+  "12586269025",
+  "2880067194370816120"
+ ],
+ "tong-chu-so-de-quy": [
+  "10",
+  "0",
+  "9",
+  "162"
+ ],
+ "tong-hang": [
+  "6\n15",
+  "-7",
+  "2\n4\n6"
+ ],
+ "chuyen-vi": [
+  "1 4\n2 5\n3 6",
+  "9",
+  "1 2 3"
+ ],
+ "duong-cheo": [
+  "15 15",
+  "5 5",
+  "5 5",
+  "3 6"
+ ],
+ "sap-xep": [
+  "1 2 5 5 9",
+  "3",
+  "-5 -1 0 10"
+ ],
+ "tim-nhi-phan": [
+  "4 1 -1 -1",
+  "1 -1",
+  "1 3 2"
+ ],
+ "dem-khac-nhau": [
+  "3",
+  "1",
+  "1",
+  "6"
+ ],
+ "dao-mang": [
+  "5 4 3 2 1",
+  "42",
+  "1 0 -1"
+ ],
+ "tan-suat-tu": [
+  "an 3\ncom 2\npho 1",
+  "hello 1",
+  "a 2\nb 1\nc 1"
+ ],
+ "phan-tu-duy-nhat": [
+  "4\n1 2 3 5",
+  "1\n0",
+  "1\n-2"
+ ],
+ "phan-so": [
+  "5/6",
+  "1/1",
+  "0/1",
+  "1/2"
+ ],
+ "sinh-vien": [
+  "Binh 9.0",
+  "Mai 5.0",
+  "A 8.0"
+ ],
+ "khoang-cach": [
+  "5.00",
+  "0.00",
+  "5.00",
+  "1.41"
+ ],
+ "sang-nguyen-to": [
+  "4\n17",
+  "1\n2",
+  "25\n1060",
+  "78498\n37550402023"
+ ],
+ "tong-doan": [
+  "15\n5\n4",
+  "-9",
+  "4000000000\n2000000000"
+ ],
+ "so-hoan-hao": [
+  "YES",
+  "YES",
+  "NO",
+  "NO",
+  "YES"
+ ],
+ "leo-cau-thang": [
+  "1",
+  "2",
+  "8",
+  "37889062373143906"
+ ],
+ "day-con-tang": [
+  "4",
+  "1",
+  "1",
+  "5"
+ ],
+ "doi-tien": [
+  "3",
+  "-1",
+  "0",
+  "5"
+ ],
+ "predict:c:1:0": "3 1",
+ "predict:c:1:1": "3.0",
+ "predict:c:2:0": "A",
+ "predict:c:2:1": "FizzBuzz",
+ "predict:c:3:0": "25",
+ "predict:c:3:1": "10 6 2",
+ "predict:c:4:0": "1",
+ "predict:c:4:1": "4 16",
+ "predict:c:5:0": "5 e",
+ "predict:c:5:1": "Abc",
+ "predict:c:6:0": "120",
+ "predict:c:6:1": "5",
+ "predict:c:7:0": "4 3",
+ "predict:c:7:1": "15",
+ "predict:c:8:0": "3",
+ "predict:c:8:1": "2 4 5",
+ "predict:c:9:0": "15",
+ "predict:c:9:1": "21",
+ "predict:c:10:0": "2 3",
+ "predict:c:10:1": "3/4 1/4",
+ "predict:c:11:0": "6",
+ "predict:c:11:1": "18",
+ "predict:c:12:0": "13",
+ "predict:c:12:1": "2",
+ "predict:cpp:1:0": "2 1 2.25",
+ "predict:cpp:1:1": "10000000000",
+ "predict:cpp:2:0": "lon",
+ "predict:cpp:2:1": "dung",
+ "predict:cpp:3:0": "3",
+ "predict:cpp:3:1": "10",
+ "predict:cpp:4:0": "6 9",
+ "predict:cpp:4:1": "8",
+ "predict:cpp:5:0": "9 tri",
+ "predict:cpp:5:1": "edcba",
+ "predict:cpp:6:0": "15",
+ "predict:cpp:6:1": "1024",
+ "predict:cpp:7:0": "16",
+ "predict:cpp:7:1": "6",
+ "predict:cpp:8:0": "1 8",
+ "predict:cpp:8:1": "2",
+ "predict:cpp:9:0": "3 1",
+ "predict:cpp:9:1": "a1 b3",
+ "predict:cpp:10:0": "3",
+ "predict:cpp:10:1": "4 6",
+ "predict:cpp:11:0": "12 12",
+ "predict:cpp:11:1": "8",
+ "predict:cpp:12:0": "21",
+ "predict:cpp:12:1": "2",
+ "predict:java:1:0": "3 1",
+ "predict:java:1:1": "3345",
+ "predict:java:2:0": "chan",
+ "predict:java:2:1": "B",
+ "predict:java:3:0": "55",
+ "predict:java:3:1": "5 243",
+ "predict:java:4:0": "9 3",
+ "predict:java:4:1": "5",
+ "predict:java:5:0": "4 v JAVA",
+ "predict:java:5:1": "true 2",
+ "predict:java:6:0": "55",
+ "predict:java:6:1": "100",
+ "predict:java:7:0": "2 3 6",
+ "predict:java:7:1": "6",
+ "predict:java:8:0": "[2, 4, 7, 9]",
+ "predict:java:8:1": "2",
+ "predict:java:9:0": "[1, 2] 2",
+ "predict:java:9:1": "[buoi, cam, tao]",
+ "predict:java:10:0": "12",
+ "predict:java:10:1": "(2, 5)",
+ "predict:java:11:0": "91",
+ "predict:java:11:1": "6",
+ "predict:java:12:0": "8",
+ "predict:java:12:1": "2",
+ "hieu-tuyet-doi": [
+  "2",
+  "9",
+  "0",
+  "150"
+ ],
+ "so-sanh": [
+  "NHO_HON",
+  "BANG",
+  "LON_HON",
+  "LON_HON"
+ ],
+ "in-so-chan": [
+  "2\n4",
+  "",
+  "2",
+  "2\n4\n6"
+ ],
+ "dem-so-chan": [
+  "2",
+  "1",
+  "0",
+  "2"
+ ],
+ "luy-thua": [
+  "1024",
+  "1",
+  "81",
+  "-8"
+ ],
+ "tong-cheo": [
+  "5",
+  "7",
+  "6"
+ ],
+ "so-khac-nhau": [
+  "3",
+  "1",
+  "1",
+  "2"
+ ],
+ "ngan-xep": [
+  "2\n1",
+  "3",
+  "3\n2"
+ ],
+ "khoang-cach-diem": [
+  "25",
+  "0",
+  "25",
+  "25"
+ ],
+ "boi-chung": [
+  "12",
+  "15",
+  "7",
+  "8"
+ ],
+ "fibo-n": [
+  "1",
+  "1",
+  "8",
+  "55"
+ ],
+ "dao-mot-tu": [
+  "cba",
+  "a",
+  "radar",
+  "yx"
+ ]
+}

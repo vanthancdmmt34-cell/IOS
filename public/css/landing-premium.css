@@ -1,0 +1,487 @@
+/* ==========================================================================
+   LifeRivo — Premium Chibi cho trang chủ công khai (.landing-page)
+   Nạp sau landing.min.css và landing-modern.css. Cùng bảng màu với chibi-premium.css
+   (trang chủ không nạp bundle.min.css nên các biến được khai báo lại ở đây).
+   ========================================================================== */
+:root {
+  --cp-font: "Nunito", "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --cp-bg: #FAF9FF;
+  --cp-surface: #FFFFFF;
+  --cp-surface-2: #F3EFFF;
+  --cp-ink: #303047;
+  --cp-ink-2: #55536E;
+  --cp-ink-3: #7F7D98;
+  --cp-border: #E4DFF8;
+  --cp-border-strong: #CFC7F3;
+  --cp-primary: #9B8AFB;
+  --cp-primary-strong: #6753E0;
+  --cp-primary-hover: #5946CF;
+  --cp-primary-ink: #4B39BF;
+  --cp-primary-soft: #EFEBFF;
+  --cp-pink: #FFB9D0;
+  --cp-pink-soft: #FFEEF4;
+  --cp-mint: #A8E6CF;
+  --cp-mint-soft: #E8F9F1;
+  --cp-sky: #A8D8FF;
+  --cp-sky-soft: #EAF5FF;
+  --cp-cream: #FFF9F0;
+  --cp-shadow-sm: 0 1px 2px rgba(48, 48, 71, .05), 0 2px 8px rgba(103, 83, 224, .06);
+  --cp-shadow: 0 1px 2px rgba(48, 48, 71, .04), 0 10px 28px rgba(103, 83, 224, .09);
+  --cp-shadow-lg: 0 2px 4px rgba(48, 48, 71, .05), 0 22px 48px rgba(103, 83, 224, .16);
+}
+
+/* ---------- Nền và chữ ---------- */
+html body:has(.landing-page) {
+  background: var(--cp-bg) !important;
+  background-image: none !important;
+  color: var(--cp-ink);
+}
+html body:not(.in-app) .landing-page,
+html body:not(.in-app) .landing-page *:not(code):not(pre):not(kbd) {
+  font-family: var(--cp-font) !important;
+}
+html body:not(.in-app) .landing-page { background: var(--cp-bg) !important; color: var(--cp-ink); }
+html body:not(.in-app) .landing-page :is(h1, h2, h3, h4) { color: var(--cp-ink) !important; letter-spacing: -.015em !important; font-weight: 900 !important; }
+html body:not(.in-app) .landing-page :is(p, li, .sec-sub, .dim) { color: var(--cp-ink-2); }
+html body:not(.in-app) .landing-page .obs-hero-bg { background-image: none !important; }
+html body:not(.in-app) .landing-page :is(.sec-hero, .sketch-hero, .obs-hero) { background: var(--cp-bg) !important; }
+html body:not(.in-app) .landing-page .aw-sec { border-top: 0 !important; border-bottom: 0 !important; }
+html body:not(.in-app) .landing-page :is(.sec-surface-band, .sec-mon-hoc, .sec-demo-band) {
+  background: var(--cp-surface) !important;
+  background-image: none !important;
+}
+html body:not(.in-app) .landing-page .sec-dark-band {
+  background: var(--cp-surface-2) !important;
+  background-image: none !important;
+  color: var(--cp-ink) !important;
+}
+html body:not(.in-app) .landing-page :is(a, button, summary):focus-visible { outline: 3px solid rgba(155, 138, 251, .7) !important; outline-offset: 2px; }
+
+/* ---------- Tiêu đề hero ---------- */
+html body:not(.in-app) .landing-page .hero-title .rotator-word { color: var(--cp-primary-strong) !important; text-decoration: none !important; background: none !important; }
+html body:not(.in-app) .landing-page .hero-title .hero-highlight {
+  color: var(--cp-ink) !important;
+  background: linear-gradient(transparent 62%, var(--cp-pink) 62%) !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 .08em;
+}
+html body:not(.in-app) .landing-page .hero-chip {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+/* Nhãn đầu trang không tràn khỏi màn hình hẹp: chữ xuống dòng trong khung, không bị cắt */
+html body:not(.in-app) .landing-page .obs-eyebrow.hero-chip,
+html body:not(.in-app) .landing-page .hero-chip {
+  max-width: 100%;
+  white-space: normal !important;
+  line-height: 1.35;
+  text-align: left;
+}
+/* Logo đầu trang: mascot và chữ LifeRivo nằm cùng một hàng như trong ứng dụng */
+html body:not(.in-app) .landing-page .brand-lockup {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px;
+}
+
+/* ---------- Thanh đầu trang ---------- */
+html body:not(.in-app) .landing-page .aw-top {
+  background: color-mix(in srgb, var(--cp-surface) 92%, transparent) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--cp-border) !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page .aw-top a { color: var(--cp-ink-2); }
+html body:not(.in-app) .landing-page .aw-top a:hover { color: var(--cp-primary-ink); }
+html body:not(.in-app) .landing-page .aw-auth { border: 0 !important; box-shadow: none !important; background: transparent !important; }
+html body:not(.in-app) .landing-page .lang-switch { border: 1px solid var(--cp-border) !important; background: var(--cp-surface) !important; box-shadow: none !important; border-radius: 999px !important; }
+html body:not(.in-app) .landing-page .lang-switch .on { background: var(--cp-primary-soft) !important; color: var(--cp-primary-ink) !important; box-shadow: none !important; border: 0 !important; }
+
+/* ---------- Nút ---------- */
+html body:not(.in-app) .landing-page :is(.aw-pill, .chibi-stage-btn, .demo-audio-btn, .footer-social-btn) {
+  border-radius: 999px !important;
+  border: 1px solid var(--cp-border-strong) !important;
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  box-shadow: var(--cp-shadow-sm) !important;
+  font-weight: 800 !important;
+  transition: transform .14s ease, background-color .14s ease, box-shadow .14s ease;
+}
+html body:not(.in-app) .landing-page :is(.aw-pill, .chibi-stage-btn, .demo-audio-btn):hover { transform: translateY(-2px); background: var(--cp-surface-2) !important; }
+html body:not(.in-app) .landing-page :is(.aw-pill, .chibi-stage-btn):active { transform: scale(.97); }
+html body:not(.in-app) .landing-page :is(.aw-pill.dark, .aw-pill.hero-btn-primary, .mobile-drawer-inner .aw-pill.dark) {
+  background: var(--cp-primary-strong) !important;
+  border-color: var(--cp-primary-strong) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 20px rgba(103, 83, 224, .30) !important;
+}
+html body:not(.in-app) .landing-page :is(.aw-pill.dark, .aw-pill.hero-btn-primary):hover { background: var(--cp-primary-hover) !important; }
+html body:not(.in-app) .landing-page :is(.aw-pill.dark, .aw-pill.hero-btn-primary) svg { color: currentColor !important; }
+
+/* ---------- Thẻ ---------- */
+html body:not(.in-app) .landing-page :is(
+  .faq-item, .subj-card, .purpose-card, .step-card, .story-card, .mockup-card, .os-window, .os-win-body, .aw-try, .demo-rail,
+  .aw-link-box, .pcm-col, .cta-box, .demo-prompt-bar, .mockup-karaoke, .step-preview, .chibi-stage-canvas:not(.chibi-speak-stage),
+  [class$="-card"], [class*="-card "]
+) {
+  border: 1px solid var(--cp-border) !important;
+  border-radius: 22px !important;
+  box-shadow: var(--cp-shadow-sm) !important;
+  background-image: none !important;
+}
+html body:not(.in-app) .landing-page :is(.faq-item, .subj-card, .purpose-card, .step-card, .story-card, .mockup-card, .os-window, .os-win-body, .aw-try, .aw-link-box, .pcm-col, .demo-prompt-bar, .mockup-karaoke) {
+  background-color: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+}
+html body:not(.in-app) .landing-page :is(.subj-card, .purpose-card, .step-card, .story-card) { transition: transform .18s ease, box-shadow .18s ease; }
+html body:not(.in-app) .landing-page :is(.subj-card, .purpose-card, .step-card, .story-card):hover { transform: translateY(-4px) !important; box-shadow: var(--cp-shadow) !important; }
+html body:not(.in-app) .landing-page .step-card-featured { background-color: var(--cp-cream) !important; }
+html body:not(.in-app) .landing-page .pcm-col.pro { background-color: var(--cp-primary-soft) !important; border-color: var(--cp-primary) !important; }
+html body:not(.in-app) .landing-page .cta-box { background: var(--cp-primary-soft) !important; color: var(--cp-ink) !important; }
+html body:not(.in-app) .landing-page .cta-box :is(h2, h3, p) { color: var(--cp-ink) !important; }
+html body:not(.in-app) .landing-page .demo-rail { background: var(--cp-surface-2) !important; }
+html body:not(.in-app) .landing-page .chibi-stage-canvas { background: var(--cp-surface) !important; box-shadow: var(--cp-shadow) !important; }
+html body:not(.in-app) .landing-page .chibi-stage-cta-card {
+  background: var(--cp-primary-soft) !important;
+  background-image: none !important;
+  color: var(--cp-ink) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page .chibi-stage-cta-card p { color: var(--cp-ink) !important; }
+html body:not(.in-app) .landing-page .chibi-float-tag { box-shadow: var(--cp-shadow-sm) !important; border: 0 !important; color: var(--cp-ink) !important; }
+html body:not(.in-app) .landing-page .chibi-float-tag.t1 { background: var(--cp-pink) !important; }
+html body:not(.in-app) .landing-page .chibi-float-tag.t2 { background: var(--cp-mint) !important; }
+html body:not(.in-app) .landing-page .chibi-float-tag.t3 { background: var(--cp-sky) !important; }
+
+/* ---------- Nhãn, huy hiệu, biểu tượng ---------- */
+html body:not(.in-app) .landing-page :is(.sec-chip, .cta-badge, .demo-step-count, .purpose-popular, .step-badge, .purpose-badge, .step-srs-pills > span) {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font-weight: 800 !important;
+}
+html body:not(.in-app) .landing-page :is(.subj-flag, .step-icon, .story-avatar, .demo-dot) { border: 1px solid var(--cp-border) !important; box-shadow: none !important; }
+html body:not(.in-app) .landing-page .step-icon { background-color: var(--cp-primary-soft) !important; }
+html body:not(.in-app) .landing-page .step-icon.step-icon-green { background-color: var(--cp-mint-soft) !important; }
+html body:not(.in-app) .landing-page .step-icon.step-icon-yellow { background-color: var(--cp-cream) !important; }
+html body:not(.in-app) .landing-page .demo-dot.on { background: var(--cp-primary) !important; background-image: none !important; border-color: var(--cp-primary) !important; }
+html body:not(.in-app) .landing-page .aw-try-prog { border: 0 !important; background: var(--cp-surface) !important; border-radius: 999px; overflow: hidden; }
+html body:not(.in-app) .landing-page .aw-try-prog > i { background: var(--cp-primary) !important; }
+html body:not(.in-app) .landing-page .aw-quiz-opts > button {
+  border: 1.5px solid var(--cp-border-strong) !important;
+  border-radius: 16px !important;
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  box-shadow: none !important;
+  min-height: 48px;
+}
+html body:not(.in-app) .landing-page .aw-quiz-opts > button:hover { border-color: var(--cp-primary) !important; background: var(--cp-primary-soft) !important; }
+
+/* ---------- Ngăn kéo di động và chân trang ---------- */
+html body:not(.in-app) .landing-page :is(.mobile-drawer-links, .mobile-drawer-langs) > a {
+  border: 1px solid var(--cp-border) !important;
+  border-radius: 16px !important;
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page .aw-foot {
+  background: var(--cp-surface) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--cp-border) !important;
+  color: var(--cp-ink-2) !important;
+}
+html body:not(.in-app) .landing-page .aw-foot :is(strong, h3, h4) { color: var(--cp-ink) !important; }
+html body:not(.in-app) .landing-page .aw-foot a { color: var(--cp-ink-2) !important; }
+html body:not(.in-app) .landing-page .aw-foot a:hover { color: var(--cp-primary-ink) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html body:not(.in-app) .landing-page *, html body:not(.in-app) .landing-page *::before, html body:not(.in-app) .landing-page *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ---------- Hộp thoại đăng nhập / đăng ký trên trang chủ ---------- */
+html body:not(.in-app) #modalHost .modal,
+html body:not(.in-app) #modalHost .modal * { font-family: var(--cp-font) !important; }
+html body:not(.in-app) #modalHost .modal {
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  border: 1px solid var(--cp-border) !important;
+  border-radius: 26px !important;
+  box-shadow: var(--cp-shadow-lg) !important;
+}
+html body:not(.in-app) #modalHost .modal :is(input, select, textarea) {
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  border: 1.5px solid var(--cp-border-strong) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  min-height: 46px;
+}
+html body:not(.in-app) #modalHost .modal :is(input, select, textarea):focus {
+  border-color: var(--cp-primary) !important;
+  box-shadow: 0 0 0 3px rgba(155, 138, 251, .45) !important;
+  outline: 0 !important;
+}
+html body:not(.in-app) #modalHost .modal button {
+  border: 1px solid var(--cp-border-strong) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  font-weight: 800 !important;
+}
+html body:not(.in-app) #modalHost .modal .seg { background: var(--cp-surface-2) !important; border: 0 !important; border-radius: 999px !important; box-shadow: none !important; }
+html body:not(.in-app) #modalHost .modal .seg > button { border: 0 !important; background: transparent !important; color: var(--cp-ink-2) !important; }
+html body:not(.in-app) #modalHost .modal .seg > button.on,
+html body:not(.in-app) #modalHost .modal .seg > [aria-selected="true"] { background: var(--cp-surface) !important; color: var(--cp-primary-ink) !important; box-shadow: var(--cp-shadow-sm) !important; }
+html body:not(.in-app) #modalHost .modal .btn-primary,
+html body:not(.in-app) #modalHost .modal button.on:not(.seg > button) {
+  background: var(--cp-primary-strong) !important;
+  border-color: var(--cp-primary-strong) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 16px rgba(103, 83, 224, .28) !important;
+  min-height: 46px;
+}
+html body:not(.in-app) #modalHost .modal .btn-primary:hover { background: var(--cp-primary-hover) !important; }
+html body:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn) { background: var(--cp-surface-2) !important; border: 0 !important; }
+html body:not(.in-app) #modalHost .modal a { color: var(--cp-primary-ink) !important; }
+
+/* ---------- Hỏi đáp và thẻ môn học: bỏ bóng cứng, viền đứt nét, nền vàng ---------- */
+html body:not(.in-app) .landing-page.aw .aw-faq details.faq-item,
+html body:not(.in-app) .landing-page.aw details.faq-item,
+html body:not(.in-app) .landing-page.aw .faq-item {
+  border: 1px solid var(--cp-border) !important;
+  border-radius: 18px !important;
+  background: var(--cp-surface) !important;
+  box-shadow: var(--cp-shadow-sm) !important;
+}
+html body:not(.in-app) .landing-page.aw .faq-item[open] { border-color: var(--cp-primary) !important; }
+html body:not(.in-app) .landing-page.aw .faq-summary { color: var(--cp-ink) !important; background: transparent !important; min-height: 52px; }
+html body:not(.in-app) .landing-page.aw .faq-summary :is(span, i, em, svg):last-child,
+html body:not(.in-app) .landing-page.aw .faq-summary::after {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page.aw .faq-answer { color: var(--cp-ink-2) !important; border-top: 1px solid var(--cp-border) !important; background: transparent !important; }
+html body:not(.in-app) .landing-page.aw .faq-support-link { color: var(--cp-primary-ink) !important; text-decoration-color: var(--cp-primary) !important; }
+html body:not(.in-app) .landing-page.aw .subj-card { border-style: solid !important; outline: 0 !important; }
+html body:not(.in-app) .landing-page.aw .subj-card > * { border: 0 !important; box-shadow: none !important; outline: 0 !important; }
+html body:not(.in-app) .landing-page.aw .subj-card .chibi-mascot-corner { border: 0 !important; background: transparent !important; }
+html body:not(.in-app) .landing-page.aw .subj-card-head { border: 0 !important; }
+html body:not(.in-app) .landing-page.aw :is(.subj-level, .subj-skills > *, .bento-industry-strip > *) {
+  background: var(--cp-surface-2) !important;
+  color: var(--cp-ink-2) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page.aw :is(.purpose-card-title, .purpose-side-head) {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+html body:not(.in-app) .landing-page.aw .subj-enter { color: var(--cp-primary-ink) !important; }
+html body:not(.in-app) .landing-page.aw .subj-desc { color: var(--cp-ink-2) !important; }
+
+html body:not(.in-app) .landing-page.aw .mobile-menu-btn {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  min-width: 44px;
+  min-height: 44px;
+}
+html body:not(.in-app) .landing-page.aw .mobile-drawer-inner { background: var(--cp-surface) !important; border: 0 !important; box-shadow: var(--cp-shadow-lg) !important; }
+
+/* ---------- Sân khấu Gia sư Chibi Trò chuyện (Cân đối, đứng vững, không trồi lên/xuống) ---------- */
+html body:not(.in-app) .landing-page #hero .rotator {
+  height: 1.24em !important;
+  overflow: hidden !important;
+  clip-path: none !important;
+  contain: layout paint !important;
+}
+html body:not(.in-app) .landing-page .obs-hero-grid.hero-container {
+  align-items: center !important;
+  row-gap: 24px !important;
+}
+html body:not(.in-app) .landing-page .hero-copy {
+  padding-top: 0 !important;
+}
+html body:not(.in-app) .landing-page .hero-metric.sticky-note,
+html body:not(.in-app) .landing-page .sketch-pinned-card {
+  transform: none !important;
+}
+html body:not(.in-app) .landing-page .hero-mockup-row.os-studio-col {
+  margin-top: 0 !important;
+}
+html body:not(.in-app) .landing-page .hero-mockup-row.chibi-dock-strip {
+  display: block !important;
+  grid-template-columns: none !important;
+  grid-column: 1 / -1;
+  width: 100% !important;
+  margin-top: 4px !important;
+}
+html body:not(.in-app) .landing-page .chibi-dock-strip .chibi-mini-dock {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page .chibi-dock-strip .os-win-body {
+  width: 100% !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+html body:not(.in-app) .landing-page .chibi-stage-canvas.chibi-speak-stage {
+  position: relative;
+  padding: 6px 8px 8px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  overflow: visible !important;
+}
+html body:not(.in-app) .landing-page .chibi-live-speech {
+  position: relative;
+  z-index: 5;
+  width: min(390px, 100%);
+  min-height: 46px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--cp-border-strong);
+  box-shadow: var(--cp-shadow-sm);
+  color: var(--cp-ink);
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: none !important;
+}
+html body:not(.in-app) .landing-page .chibi-live-speech::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  background: #FFFFFF;
+  border-right: 1.5px solid var(--cp-border-strong);
+  border-bottom: 1.5px solid var(--cp-border-strong);
+  transform: translateX(-50%) rotate(45deg);
+}
+html body:not(.in-app) .landing-page .chibi-live-speech.is-typing .chibi-live-text {
+  color: var(--cp-primary-strong);
+  letter-spacing: 2px;
+}
+html body:not(.in-app) .landing-page .chibi-stage-cta-card p {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+html body:not(.in-app) .landing-page .chibi-hero-figure {
+  position: relative;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 2px 0 0 !important;
+  margin: 0 auto !important;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: min(260px, 74%);
+  transition: transform .22s cubic-bezier(.34, 1.56, .64, 1);
+}
+html body:not(.in-app) .landing-page .chibi-hero-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  mix-blend-mode: normal !important;
+  border-radius: 0 !important;
+  filter: drop-shadow(0 12px 20px rgba(103, 83, 224, .13));
+  transform-origin: 50% 92%;
+  animation: chibiAliveCalm 3.6s ease-in-out infinite;
+}
+html body:not(.in-app) .landing-page .chibi-hero-figure:hover {
+  transform: scale(1.03);
+}
+html body:not(.in-app) .landing-page .chibi-hero-figure.is-talking .chibi-hero-photo {
+  animation: chibiTalkSteady .72s ease-in-out infinite;
+}
+html body:not(.in-app) .landing-page .chibi-hero-figure.is-react .chibi-hero-photo {
+  animation: chibiSpeakNod .5s cubic-bezier(.34, 1.56, .64, 1);
+}
+@keyframes chibiAliveCalm {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.012) rotate(.9deg); }
+}
+@keyframes chibiTalkSteady {
+  0%, 100% { transform: scale(1) rotate(-.9deg); }
+  50% { transform: scale(1.018) rotate(1deg); }
+}
+@keyframes chibiSpeakNod {
+  0% { transform: scale(1) rotate(0deg); }
+  40% { transform: scale(1.04) rotate(-2deg); }
+  75% { transform: scale(1.02) rotate(1.4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@media (max-width: 820px) {
+  html body:not(.in-app) .landing-page .chibi-dock-strip .os-win-body {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 640px) {
+  html body:not(.in-app) .landing-page .chibi-hero-figure { width: min(200px, 64%); }
+  html body:not(.in-app) .landing-page .chibi-live-speech { font-size: 12.5px; padding: 7px 12px; min-height: 44px; }
+}
+
+/* Nút sáng / tối trên trang chủ: luôn hiện (bấm là đổi cả giao diện) */
+html body:not(.in-app) .landing-page .theme-btn.theme-btn { display: inline-flex !important; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px !important; border: 1px solid var(--cp-border) !important; background: var(--cp-surface) !important; color: var(--cp-ink-2) !important; box-shadow: var(--cp-shadow-sm) !important; font: 800 12.5px/1 var(--cp-font); cursor: pointer; }
+html body:not(.in-app) .landing-page .theme-btn.theme-btn svg { width: 17px; height: 17px; flex: none; }
+html[data-theme="light"] body:not(.in-app) .landing-page .theme-btn .t-sun, html[data-theme="dark"] body:not(.in-app) .landing-page .theme-btn .t-moon { display: none; }
+html[data-theme="light"] body:not(.in-app) .landing-page .theme-btn .tt-light, html[data-theme="dark"] body:not(.in-app) .landing-page .theme-btn .tt-dark { display: none; }
+@media (max-width: 560px) { html body:not(.in-app) .landing-page .theme-btn.theme-btn { width: 38px; padding: 0; justify-content: center; } html body:not(.in-app) .landing-page .theme-btn .theme-btn-txt { display: none; } }
+
+/* Menu trang chủ: link rõ ràng, cỡ chạm đủ lớn, có nền khi rê chuột hoặc dùng bàn phím */
+html body:not(.in-app) .landing-page .aw-nav a {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 12px;
+  border-radius: 999px; font: 700 14px/1 var(--cp-font); color: var(--cp-ink-2) !important; text-decoration: none;
+  transition: background-color .18s ease, color .18s ease;
+}
+html body:not(.in-app) .landing-page .aw-nav a:hover { background: var(--cp-primary-soft); color: var(--cp-primary-ink) !important; }
+html body:not(.in-app) .landing-page .aw-nav a:focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }

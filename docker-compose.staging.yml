@@ -1,0 +1,186 @@
+# docker-compose.staging.yml — Full staging stack: Backend + Redis + Judge API + Judge Worker
+#
+# Usage:
+#   cp .env.judge.example .env.staging
+#   # Set REDIS_PASSWORD, JUDGE_SERVICE_TOKEN, JUDGE_METRICS_TOKEN in .env.staging
+#   docker compose -f docker-compose.staging.yml --env-file .env.staging up -d
+#
+# Requirements:
+#   - Docker with socket access
+#   - Pre-built Python runner image: docker build -t pylab-python:3.12 runner/
+#   - Required variables: REDIS_PASSWORD, JUDGE_SERVICE_TOKEN, JUDGE_METRICS_TOKEN
+#
+# Host-bound ports (loopback only — NOT public):
+#   3000 -> Backend (Node)
+#   4101 -> Judge API (internal)
+#   6379 -> Redis (internal)
+#
+# Run smoke tests after startup:
+#   JUDGE_SERVICE_TOKEN=<token> node tools/smoke-test-judge.mjs
+
+services:
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.4-alpine
+    container_name: pythonlab-staging-redis
+    restart: unless-stopped
+    command:
+      - sh
+      - -c
+      - >
+        exec redis-server
+        --appendonly yes
+        --appendfsync everysec
+        --requirepass "$${REDIS_PASSWORD}"
+        --maxmemory-policy noeviction
+        --save 60 1
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env.staging}
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - pythonlab_staging_redis:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  # ── Judge API ─────────────────────────────────────────────────────────────────
+  # Accepts requests from the Backend and enqueues jobs into BullMQ.
+  # Does NOT mount the Docker socket — only Judge Worker may invoke Docker.
+  judge-api:
+    image: node:22-alpine
+    container_name: pythonlab-staging-judge-api
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+    command: ["node", "judge-service.js"]
+    environment:
+      # Judge API
+      JUDGE_HOST: "0.0.0.0"
+      JUDGE_PORT: "4101"
+      JUDGE_SERVICE_TOKEN: ${JUDGE_SERVICE_TOKEN:?Set JUDGE_SERVICE_TOKEN in .env.staging}
+      JUDGE_MAX_BODY_BYTES: "262144"
+      JUDGE_QUEUE_WAIT_MS: "55000"
+      JUDGE_METRICS_TOKEN: ${JUDGE_METRICS_TOKEN:?Set JUDGE_METRICS_TOKEN in .env.staging}
+      JUDGE_QUEUE_WARN_WAITING: "100"
+      JUDGE_WORKER_CONCURRENCY: "2"
+      # BullMQ / Redis
+      JUDGE_REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/0"
+      JUDGE_QUEUE_NAME: "pythonlab-judge"
+      JUDGE_QUEUE_PREFIX: "pylab"
+      JUDGE_JOB_ATTEMPTS: "2"
+      JUDGE_JOB_LOCK_MS: "60000"
+      JUDGE_STALLED_INTERVAL_MS: "30000"
+      JUDGE_REDIS_CONNECT_TIMEOUT_MS: "5000"
+      # Prevent Judge API from falling back to direct Docker execution
+      JUDGE_LOCAL_EXECUTION: "true"
+      NODE_ENV: staging
+    ports:
+      - "127.0.0.1:4101:4101"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4101/health').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 15s
+
+  # ── Judge Worker ─────────────────────────────────────────────────────────────
+  # Pulls jobs from BullMQ and runs isolated Python Docker containers.
+  # Requires the Docker socket and the pylab-python:3.12 image.
+  judge-worker:
+    image: node:22-alpine
+    container_name: pythonlab-staging-judge-worker
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+      - /var/run/docker.sock:/var/run/docker.sock  # Docker socket — required by worker only
+    command: ["node", "judge-worker.js"]
+    environment:
+      # Worker
+      JUDGE_WORKER_CONCURRENCY: "2"
+      JUDGE_REQUIRE_DOCKER: "true"
+      RUNNER: "docker"
+      RUNNER_IMAGE: "pylab-python:3.12"
+      RUN_WORKERS: "2"
+      RUN_TIMEOUT_MS: "3000"
+      RUN_MEMORY_MB: "128"
+      RUN_CPUS: "0.5"
+      # BullMQ / Redis
+      JUDGE_REDIS_URL: "redis://:${REDIS_PASSWORD}@redis:6379/0"
+      JUDGE_QUEUE_NAME: "pythonlab-judge"
+      JUDGE_QUEUE_PREFIX: "pylab"
+      JUDGE_JOB_LOCK_MS: "60000"
+      JUDGE_STALLED_INTERVAL_MS: "30000"
+      JUDGE_REDIS_CONNECT_TIMEOUT_MS: "5000"
+      # gVisor: uncomment after installing runsc and registering the Docker runtime
+      # RUNNER_RUNTIME: "runsc"
+      JUDGE_LOCAL_EXECUTION: "true"
+      NODE_ENV: staging
+    depends_on:
+      redis:
+        condition: service_healthy
+    # Worker needs Docker socket permissions — run with the host's docker group
+    # group_add:
+    #   - "${DOCKER_GID:-999}"
+
+  # ── Backend ───────────────────────────────────────────────────────────────────
+  # Main application server — does NOT need the Docker socket.
+  backend:
+    image: node:22-alpine
+    container_name: pythonlab-staging-backend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+      - pythonlab_staging_data:/app/data
+    command: ["node", "server.js"]
+    environment:
+      NODE_ENV: staging
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      DATA_DIR: "/app/data"
+      # Judge Service
+      JUDGE_SERVICE_URL: "http://judge-api:4101"
+      JUDGE_SERVICE_TOKEN: ${JUDGE_SERVICE_TOKEN}
+      JUDGE_REQUEST_TIMEOUT_MS: "60000"
+      # Metrics Backend
+      METRICS_TOKEN: ${METRICS_TOKEN:-}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      judge-api:
+        condition: service_healthy
+
+volumes:
+  pythonlab_staging_redis:
+  pythonlab_staging_data:
+
+# ── Smoke test guide ──────────────────────────────────────────────────────────
+# 1. Start the stack:
+#      docker compose -f docker-compose.staging.yml --env-file .env.staging up -d
+#
+# 2. View logs:
+#      docker compose -f docker-compose.staging.yml logs -f judge-worker
+#
+# 3. Run smoke tests:
+#      JUDGE_SERVICE_TOKEN=<token> node tools/smoke-test-judge.mjs
+#
+# 4. Verify gVisor (after installing runsc):
+#      docker info --format '{{json .Runtimes}}'
+#      # If "runsc" appears: uncomment RUNNER_RUNTIME=runsc in judge-worker
+#      JUDGE_SERVICE_TOKEN=<token> node tools/smoke-test-judge.mjs --runtime runsc
+#
+# 5. Health checks:
+#      curl http://127.0.0.1:4101/health
+#      npm run health:judge-queue

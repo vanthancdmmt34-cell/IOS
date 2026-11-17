@@ -1,0 +1,24 @@
+Trợ lý AI	AI assistant
+Gia sư	Tutor
+Trợ giảng	Teaching assistant
+Gợi ý cách nghĩ, chỉ lỗi theo dòng; không làm bài thay bạn.	Hints on how to think, errors pointed out by line; it won't do the work for you.
+Gợi ý đề bài, tiêu chí chấm, nhận xét, kế hoạch buổi học.	Ideas for tasks, grading criteria, feedback and lesson plans.
+Gợi ý bài này	Hint for this exercise
+Giải thích lỗi	Explain the error
+Nhận xét code	Review my code
+Nên học gì tiếp	What to learn next
+Gợi ý {0} bài tập vòng lặp cho người mới	Suggest {0} loop exercises for beginners
+Tiêu chí chấm bài hàm def (thang {0})	Grading criteria for a def function task (out of {0})
+Kế hoạch buổi học {0} phút về list	A {0}-minute lesson plan on lists
+Gửi kèm code đang viết	Attach the code I'm writing
+Gõ câu hỏi…	Type a question…
+Gửi	Send
+AI tạm khóa	AI is locked
+Bạn đang làm bài kiểm tra. AI mở lại sau khi bạn nộp bài.	You are taking a test. AI reopens after you submit.
+Chào thầy/cô! Mình có thể gợi ý đề bài, tiêu chí chấm hoặc kế hoạch buổi học.	Hello! I can suggest tasks, grading criteria or lesson plans.
+Chào bạn! Mình là Py. Bạn đang vướng ở đâu?	Hi! I'm Py. Where are you stuck?
+Còn {0}/{1} lượt hôm nay	{0}/{1} questions left today
+Chế độ Trợ giảng AI dành cho giáo viên có giấy phép còn hạn.	AI teaching assistant mode is for teachers with an active license.
+Bản dịch nội dung học (tiếng Anh)	Learning content translations (English)
+Chuỗi giao diện tiếng Anh	English interface strings
+lượt còn hôm nay ·	questions left today ·

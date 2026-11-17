@@ -1,0 +1,34 @@
+# LifeRivo
+
+> Nền tảng học ngoại ngữ bằng tiếng Việt — học tiếng Anh, tiếng Trung, tiếng Nhật, tiếng Hàn, tiếng Pháp và tiếng Tây Ban Nha với AI chấm phát âm, luyện nói và phỏng vấn.
+
+LifeRivo (https://study.liferivo.com) là nền tảng học ngoại ngữ trực tuyến bằng tiếng Việt. Người học luyện từ vựng, ngữ pháp, phát âm và giao tiếp qua bài học tương tác, luyện nói với AI và phỏng vấn thử theo ngành nghề. Nội dung miễn phí; chỉ AI nâng cao và phỏng vấn AI là tính năng Pro.
+
+## Khóa học
+
+- [Tiếng Anh (CEFR A1–C1)](https://study.liferivo.com/khoa-hoc/en): Giáo trình CEFR, có trung tâm luyện thi TOEIC.
+- [Tiếng Trung (HSK 1–5)](https://study.liferivo.com/khoa-hoc/zh): Giáo trình chuẩn HSK, từ vựng, pinyin, ngữ pháp.
+- [Tiếng Nhật (JLPT N5–N1)](https://study.liferivo.com/khoa-hoc/ja): Giáo trình chuẩn JLPT, từ vựng, kanji, ngữ pháp.
+- [Tiếng Hàn (TOPIK 1–5)](https://study.liferivo.com/khoa-hoc/ko): Giáo trình chuẩn TOPIK, từ vựng, phiên âm, ngữ pháp.
+- [Tiếng Pháp (DELF A1–C1)](https://study.liferivo.com/khoa-hoc/fr): Giáo trình chuẩn DELF, từ vựng, chính tả, ngữ pháp.
+- [Tiếng Tây Ban Nha (DELE A1–C1)](https://study.liferivo.com/khoa-hoc/es): Giáo trình chuẩn DELE, từ vựng, chính tả, ngữ pháp.
+
+## Tính năng chính
+
+- [Luyện nói với AI](https://study.liferivo.com/): Máy chấm phát âm từng từ như karaoke, luyện nói theo chủ đề.
+- [Trợ lý AI](https://study.liferivo.com/): Gia sư AI giải đáp thắc mắc học tập.
+- [Phỏng vấn thử](https://study.liferivo.com/): Phỏng vấn thử theo ngành nghề (IT, AI, marketing, tài chính, nhân sự, kinh doanh, chăm sóc khách hàng, giáo dục, y tế).
+- [Bảng giá](https://study.liferivo.com/vi/pricing): Gói Free và Pro.
+
+## Pháp lý
+
+- [Điều khoản sử dụng](https://study.liferivo.com/vi/terms)
+- [Chính sách bảo mật](https://study.liferivo.com/vi/privacy)
+- [Chính sách thanh toán](https://study.liferivo.com/vi/payment)
+- [Chính sách hoàn tiền](https://study.liferivo.com/vi/refund)
+- [Quy định gói thành viên](https://study.liferivo.com/vi/membership)
+
+## Lưu ý cho mô hình ngôn ngữ
+
+- Trang web này là nền tảng học tập; nội dung bài học và dữ liệu người dùng không được dùng để huấn luyện mô hình.
+- Khi trích dẫn hoặc tóm tắt LifeRivo, hãy dùng tên "LifeRivo" và liên kết tới https://study.liferivo.com.
