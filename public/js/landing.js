@@ -1999,7 +1999,7 @@ export function openAuth(mode = "login", onAuthed) {
     </div>
     <div class="lp-auth-body">
       <div class="lp-auth-mascot">
-        <img src="/img/kit/chibi-owl.webp" alt="Pippa" width="48" height="48" loading="eager" decoding="sync" />
+        <img data-mascot src="/img/kit/chibi-owl.webp" alt="Mascot" width="48" height="48" loading="eager" decoding="sync" />
       </div>
       <div class="lp-auth-head">
         <h2 data-title></h2>
@@ -2008,25 +2008,26 @@ export function openAuth(mode = "login", onAuthed) {
       <div class="lp-auth-card">
         <div data-auth-view="login">
           <form class="auth-form" method="post" action="/app/dang-nhap" autocomplete="on" novalidate>
+            <label class="field" data-reg>
+              <span class="lp-field-lbl">${en ? "FULL NAME" : "HỌ VÀ TÊN"}</span>
+              <input name="n" autocomplete="name" maxlength="40" placeholder="${en ? "Full name" : "Họ và tên"}">
+            </label>
+            <label class="field" data-reg>
+              <span class="lp-field-lbl">${en ? "EMAIL (OPTIONAL)" : "EMAIL"}</span>
+              <input name="e" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="${en ? "Email (optional)" : "Email (không bắt buộc)"}">
+            </label>
+            ${cfg("registerCodeRequired") ? `<label class="field" data-reg><span class="lp-field-lbl">${en ? "CLASS CODE" : "MÃ LỚP"}</span><input name="code" autocomplete="off" maxlength="40" placeholder="${en ? "Class code from teacher" : "Mã lớp (giáo viên cung cấp)"}"></label>` : ""}
             <label class="field">
               <span class="lp-field-lbl" data-u-lbl>${en ? "ACCOUNT" : "TÀI KHOẢN"}</span>
               <input name="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" required placeholder="${en ? "Username" : "Tên đăng nhập"}">
-              <small data-reg>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small>
-            </label>
-            ${cfg("registerCodeRequired") ? `<label class="field" data-reg><span class="lp-field-lbl">${en ? "CLASS CODE" : "MÃ LỚP"}</span><input name="code" autocomplete="off" maxlength="40" placeholder="Giáo viên cung cấp"><small>Hỏi giáo viên mã lớp để tạo tài khoản.</small></label>` : ""}
-            <label class="field" data-reg>
-              <span class="lp-field-lbl">${en ? "DISPLAY NAME" : "TÊN HIỂN THỊ"}</span>
-              <input name="n" autocomplete="name" maxlength="40" placeholder="Ví dụ: Nguyễn Văn An">
-            </label>
-            <label class="field" data-reg>
-              <span class="lp-field-lbl">${en ? "EMAIL (OPTIONAL)" : "EMAIL (KHÔNG BẮT BUỘC)"}</span>
-              <input name="e" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="ban@example.com">
-              <small>Dùng để nhận mã OTP khi quên mật khẩu.</small>
             </label>
             <label class="field">
               <span class="lp-field-lbl">${en ? "PASSWORD" : "MẬT KHẨU"}</span>
               <span class="pass-wrap"><input name="p" type="password" autocomplete="current-password" maxlength="128" required placeholder="••••••••••••"><button type="button" data-eye aria-pressed="false">${en ? "Show" : "Hiện"}</button></span>
-              <small data-reg>Tối thiểu 6 ký tự.</small>
+            </label>
+            <label class="field" data-reg>
+              <span class="lp-field-lbl">${en ? "CONFIRM PASSWORD" : "NHẬP LẠI MẬT KHẨU"}</span>
+              <input name="p2" type="password" autocomplete="new-password" maxlength="128" placeholder="${en ? "Confirm password" : "Nhập lại mật khẩu"}">
             </label>
             <div class="auth-meta-row" data-login-only>
               <label class="check auth-remember">
@@ -2037,6 +2038,7 @@ export function openAuth(mode = "login", onAuthed) {
             </div>
             <p class="form-msg" role="alert" data-msg></p>
             <button class="btn btn-primary btn-lg btn-block" data-submit></button>
+            <p class="lp-auth-terms" data-reg>${en ? "By signing up, you agree to the terms of use." : "Bằng cách đăng ký, bạn đồng ý với điều khoản sử dụng."}</p>
             ${allowReg ? `<div class="lp-auth-switch"><span data-switch-q></span> <button type="button" class="lp-auth-switch-btn" data-m="register"></button></div>` : `<p class="small muted" data-login-only style="margin:6px 0 0;text-align:center">Chưa có tài khoản? Giáo viên sẽ tạo tài khoản cho bạn.</p>`}
           </form>
         </div>
@@ -2075,6 +2077,12 @@ export function openAuth(mode = "login", onAuthed) {
   const el = m.el;
   const paint = () => {
     const isEn = currentLang() === "en";
+    el.querySelector(".lp-auth-sheet")?.classList.toggle("is-reg", reg);
+    const mascotImg = el.querySelector("[data-mascot]");
+    if (mascotImg) {
+      mascotImg.src = reg ? "/img/kit/chibi-fox.webp" : "/img/kit/chibi-owl.webp";
+      mascotImg.alt = reg ? "Rusty" : "Pippa";
+    }
     el.querySelectorAll("[data-reg]").forEach((x) => {
       x.style.display = reg ? "" : "none";
       x.querySelectorAll("input, select, textarea").forEach((inp) => { inp.disabled = !reg; });
@@ -2082,18 +2090,23 @@ export function openAuth(mode = "login", onAuthed) {
     el.querySelectorAll("[data-login-only]").forEach((x) => { x.style.display = reg ? "none" : ""; });
     const uLbl = el.querySelector("[data-u-lbl]");
     const uInp = el.querySelector("[name=u]");
+    const pInp = el.querySelector("[name=p]");
     if (uLbl) uLbl.textContent = reg ? (isEn ? "USERNAME" : "TÊN ĐĂNG NHẬP") : (isEn ? "ACCOUNT" : "TÀI KHOẢN");
-    if (uInp) uInp.placeholder = reg ? (isEn ? "3-30 chars (letters, numbers, _ . -)" : "3–30 ký tự không dấu") : (isEn ? "Username" : "Tên đăng nhập");
+    if (uInp) uInp.placeholder = isEn ? "Username" : "Tên đăng nhập";
+    if (pInp) {
+      pInp.placeholder = reg ? (isEn ? "Password (min 6 chars)" : "Mật khẩu") : "••••••••••••";
+      pInp.setAttribute("autocomplete", reg ? "new-password" : "current-password");
+    }
     const remSpan = el.querySelector(".auth-remember span");
     if (remSpan) remSpan.textContent = isEn ? "Remember me" : "Ghi nhớ đăng nhập";
     el.querySelector("[data-title]").textContent = reg
-      ? (isEn ? "Create learning account" : "Tạo tài khoản học")
+      ? (isEn ? "Create LifeRivo account" : "Tạo tài khoản LifeRivo")
       : (isEn ? "Welcome back!" : "Chào mừng trở lại!");
     el.querySelector("[data-lead]").textContent = reg
-      ? (isEn ? "Free to start. No credit card required." : "Đăng ký miễn phí để bắt đầu hành trình học.")
+      ? (isEn ? "Start with a learning path tailored for you." : "Bắt đầu với một lộ trình phù hợp với bạn.")
       : (isEn ? "Continue your language learning journey." : "Tiếp tục hành trình học ngoại ngữ của bạn.");
     el.querySelector("[data-submit]").textContent = reg
-      ? (isEn ? "Sign up" : "Đăng ký")
+      ? (isEn ? "Create account" : "Tạo tài khoản")
       : (isEn ? "Sign in" : "Đăng nhập");
     const sq = el.querySelector("[data-switch-q]");
     const sb = el.querySelector("[data-m]");
@@ -2102,7 +2115,6 @@ export function openAuth(mode = "login", onAuthed) {
       sb.dataset.m = reg ? "login" : "register";
       sb.textContent = reg ? (isEn ? "Sign in now" : "Đăng nhập ngay") : (isEn ? "Sign up now" : "Đăng ký ngay");
     }
-    el.querySelector("[name=p]").setAttribute("autocomplete", reg ? "new-password" : "current-password");
     el.querySelector("[data-msg]").textContent = "";
   };
   paint();
@@ -2119,7 +2131,7 @@ export function openAuth(mode = "login", onAuthed) {
     if (loginView) loginView.hidden = false;
     if (forgotView) forgotView.hidden = true;
     paint();
-    el.querySelector("[name=u]")?.focus();
+    el.querySelector(reg ? "[name=n]" : "[name=u]")?.focus();
   }));
 
   el.querySelector("[data-eye]").addEventListener("click", (e) => {
@@ -2227,12 +2239,13 @@ export function openAuth(mode = "login", onAuthed) {
       }
     }).catch(() => {});
   }
-  setTimeout(() => el.querySelector(last && !reg ? "[name=p]" : "[name=u]").focus(), 40);
+  setTimeout(() => el.querySelector(reg ? "[name=n]" : (last ? "[name=p]" : "[name=u]")).focus(), 40);
 
   el.querySelector("form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const u = el.querySelector("[name=u]").value.trim();
     const p = el.querySelector("[name=p]").value;
+    const p2 = el.querySelector("[name=p2]")?.value || "";
     const n = el.querySelector("[name=n]").value.trim();
     const remember = reg || !!el.querySelector("[name=remember]")?.checked;
     const msg = el.querySelector("[data-msg]");
@@ -2241,6 +2254,7 @@ export function openAuth(mode = "login", onAuthed) {
     if (!u || !p) return fail(t("Hãy nhập tên đăng nhập và mật khẩu."));
     if (reg && !/^[A-Za-z0-9_.-]{3,30}$/.test(u)) return fail(t("Tên đăng nhập gồm 3 đến 30 ký tự: chữ không dấu, số, dấu _ . -"));
     if (reg && p.length < 6) return fail(t("Mật khẩu cần tối thiểu 6 ký tự."));
+    if (reg && p !== p2) return fail(t("Hai lần nhập mật khẩu chưa khớp."));
     { const em = (el.querySelector("[name=e]")?.value || "").trim(); if (reg && em && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) return fail(t("Email chưa đúng định dạng.")); }
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span>' + (reg ? "Đang tạo tài khoản" : "Đang đăng nhập");
