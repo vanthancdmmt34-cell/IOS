@@ -67,7 +67,7 @@ async function fetchRealBank(langId) {
 
 export async function pageGamesHub(main, [paramLang], query, ctx) {
   let activeLang = ["en", "zh", "ja", "ko", "fr", "es"].includes(paramLang) ? paramLang : (getSubject() || "en");
-  ctx.setCrumbs([["Trang chủ", "/app/"], ["Trò chơi"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Trò chơi học tập"]]);
   main.innerHTML = `<div class="lh cg-page">${LoadingState({ label: "Đang tải từ vựng thật từ khóa học…" })}</div>`;
 
   let bank;
@@ -142,6 +142,10 @@ export async function pageGamesHub(main, [paramLang], query, ctx) {
     const c = bank.course;
     main.innerHTML = `
     <div class="lh cg-page">
+      <div class="cg-m-head">
+        <h1>Học mà chơi</h1>
+        <p>Chọn thử thách ngắn để ôn từ và phản xạ.</p>
+      </div>
       <section class="cg-hero">
         <div>
           <span class="edu-eyebrow">${c ? `${c.flag} ${esc(c.name)}` : ""} · MINI GAMES</span>
@@ -156,6 +160,10 @@ export async function pageGamesHub(main, [paramLang], query, ctx) {
       ${capReached() ? `<div class="cg-cap" role="status">${CAP_MSG}</div>` : ""}
       <div class="cg-grid">
         ${GAME_META.map((g) => GameCard({ ...g, best: scores[`${c?.id || activeLang}:${g.id}`] || 0 })).join("")}
+      </div>
+      <div class="sheet sheet-pad cg-m-streak-card">
+        <b>Chuỗi thử thách</b>
+        <p>Hoàn thành 3 trò chơi để nhận thưởng năng lượng và tri thức.</p>
       </div>
     </div>`;
     main.querySelectorAll("[data-game]").forEach((btn) => {

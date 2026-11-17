@@ -3,8 +3,8 @@
    /api/dashboard (streak, assignments, AI quota), /api/lang, /api/notifications.
    There is no "total study time" because the system does not track it. */
 import {  } from "./core.js";
-import { S, api, esc, icon, sketchIcon, CHIBI_PETS, subjectMascotSvg, fmtN, fmtDate, totalStats, skeleton, emptyState, errorState, avatar, roleLabel, cfg, isDone, toast } from "./core.js";
-import { ChibiMascot, StreakCounter, DailyMission, LevelBadge } from "./chibi-ds.js";
+import { S, api, esc, icon, lineIcon, sketchIcon, CHIBI_PETS, subjectMascotSvg, fmtN, fmtDate, totalStats, skeleton, emptyState, errorState, avatar, roleLabel, cfg, isDone, toast } from "./core.js";
+import { ChibiMascot, HeroBanner, StreakCounter, DailyMission, LevelBadge } from "./chibi-ds.js";
 import { currentLang, t as trUi } from "./i18n.js";
 import { getSubject } from "./lang.js";
 import { COMPANIONS, companionOf, companionSvg, activeCompanionId, refreshCompanion } from "./companion.js";
@@ -66,7 +66,7 @@ const SCRIPT_GLYPH = { en: "Aa", zh: "中", ja: "あ", ko: "한", fr: "É", es: 
 
 export async function pageStudentHome(main, params, query, ctx) {
   const cheer = !!(query && query.mode === "cheer");
-  ctx.setCrumbs([[cheer ? L("Cổ Vũ", "Cheer") : L("Tổng quan", "Overview")]]);
+  ctx.setCrumbs(cheer ? [[L("Học viên", "Student"), "/app/"], [L("Cổ Vũ · Kế hoạch ngày", "Daily Focus")]] : [[L("Tổng quan", "Overview")]]);
   main.innerHTML = `<div class="lh">${skeleton("hero")}${skeleton("block")}</div>`;
   let dash, lang, unread = 0, insightResponse = null;
   const requestedLang = (params && params[0]) || getSubject();
@@ -222,25 +222,34 @@ export async function pageStudentHome(main, params, query, ctx) {
   const miniGamesToday = Math.min(3, Number(dash.today && dash.today.miniGames) || 0);
 
   main.innerHTML = `
-  <div class="lh hm">
+  <div class="lh hm${cheer ? " hm-is-cheer" : ""}">
     <section class="hm-chibi-banner" aria-label="${L("Hồ sơ", "Overview")}">
       <div class="hm-cb-left">
-        ${ChibiMascot({ state: today ? "learning" : "welcome", size: 78 })}
+        <a class="hm-top-avatar-wrap" href="/app/ca-nhan" aria-label="${L("Hồ sơ của tôi", "My profile")}">
+          <img class="hm-top-avatar" src="/img/kit/chibi-bunny.webp" width="52" height="52" alt="" loading="lazy" decoding="async">
+        </a>
         <div class="hm-cb-copy">
           <div class="hm-cb-row">
-            <h1>${hello}, ${esc(S.me.displayName)}!</h1>
-            ${heroSub ? `<p class="hm-greet-sub">${L(`Hôm nay luyện ${esc(heroSub.name)} nhé!`, `Let's practice ${esc(trUi(heroSub.name))}!`)}</p>` : ""}
-            ${LevelBadge({ level: userLv, title: scoped ? trUi(scoped.name) : L("Học viên", "Learner") })}
-            ${StreakCounter({ days: streak, activeToday: today })}
+            <h1>${L("Chào bạn!", "Hello!")} <span class="hm-wave" aria-hidden="true">👋</span></h1>
+            <p class="hm-greet-sub">${heroSub ? L(`Hôm nay luyện ${esc(heroSub.name)} nhé!`, `Let's practice ${esc(trUi(heroSub.name))}!`) : L("Hôm nay luyện ngoại ngữ nhé!", "Let's practice a language today!")}</p>
+            <div class="hm-cb-badges">
+              ${LevelBadge({ level: userLv, title: scoped ? trUi(scoped.name) : L("Học viên", "Learner") })}
+              ${StreakCounter({ days: streak, activeToday: today })}
+            </div>
           </div>
           <div class="hm-cb-bar-wrap">
             <span>${scoped ? esc(trUi(scoped.name)) : L("Tiến độ học tập", "Learning progress")}</span>
-            ${bar(heroPctShown, "var(--chibi-lavender, #9B8AFB)")}
+            ${bar(heroPctShown, "var(--cp-primary-strong, #3F97D3)")}
             <b>${heroPctShown}%</b>
           </div>
         </div>
       </div>
       <div class="hm-cb-right">
+        <a class="hm-bell-btn" href="/app/thong-bao" aria-label="${L("Thông báo", "Notifications")}">
+          ${lineIcon("bell")}
+          <i class="hm-bell-pill${unread > 0 ? " has-unread" : ""}"></i>
+        </a>
+        <button type="button" class="hm-more-btn" data-open-nav aria-label="Menu">•••</button>
         <span class="hm-star-pill">⭐ <b>${fmtN(starCount)}</b> <small>SAO</small></span>
         ${scoped ? `<a class="hm-link" href="/app/chon-mon">${L("Đổi môn", "Switch subject")}</a>` : `<a class="hm-link" href="/app/chon-mon">${L("Chọn môn", "Pick subject")}</a>`}
       </div>
@@ -514,32 +523,24 @@ export async function pageStudentHome(main, params, query, ctx) {
     }
 
     // Nhãn trạng thái theo tỷ lệ bài đã đạt thật của môn (không phải đánh giá giả)
-    const statusWord = (pct) => pct >= 80 ? L("Xuất sắc", "Excellent")
-      : pct >= 40 ? L("Đang tiến bộ", "Making progress")
-      : pct > 0 ? L("Khởi đầu tốt", "Good start")
-      : L("Bắt đầu hôm nay", "Start today");
+    const statusWord = (pct) => pct >= 80 ? L("Học tập rất tốt!", "Doing great!")
+      : pct >= 40 ? L("Học tập rất tốt!", "Making great progress!")
+      : pct > 0 ? L("Khởi đầu rất tốt!", "Great start!")
+      : L("Bắt đầu hôm nay!", "Start today!");
     // Vòng tiến độ của môn đang học (tỷ lệ bài đã đạt thật từ /api/lang)
     const ringHtml = heroSub ? (() => {
-      const C = 2 * Math.PI * 26;
-      return `<div class="hm-ring" style="--c:${esc(heroSub.color)}" role="img" aria-label="${L("Tiến độ", "Progress")} ${heroSub.pct}%"><svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--cp-border)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="var(--c)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - heroSub.pct / 100)).toFixed(1)}" transform="rotate(-90 32 32)"/></svg><b>${heroSub.pct}%</b></div>`;
+      const C = 2 * Math.PI * 30;
+      const pctVal = Math.max(0, Math.min(100, Number(heroSub.pct) || 0));
+      return `<div class="hm-ring" style="--c:#3F97D3" role="img" aria-label="${L("Tiến độ", "Progress")} ${pctVal}%"><svg viewBox="0 0 76 76" width="76" height="76" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="#E6EEF6" stroke-width="7.5"/><circle cx="38" cy="38" r="30" fill="none" stroke="#3F97D3" stroke-width="7.5" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - pctVal / 100)).toFixed(1)}" transform="rotate(-90 38 38)"/></svg><b>${pctVal}%</b></div>`;
     })() : "";
     // Bốn loại bài trong mục "Bài học của bạn": đếm trên các bài thật của môn đang học (cấp không bị khóa)
     const passScoreSkills = Number(lang.pass) || 80;
     const SKILL_TYPES = [
-      { kind: "nghia", title: L("Từ vựng", "Vocabulary"), sub: L("Nghĩa và từ mới", "Meanings and new words"), color: "#6753E0", mouth: "smile" },
-      { kind: "ngu-phap", title: L("Ngữ pháp", "Grammar"), sub: L("Cấu trúc câu", "Sentence structure"), color: "#C97A1E", mouth: "flat" },
-      { kind: "doc", title: L("Đọc & gõ", "Read & type"), sub: L("Phát âm, chính tả", "Pronunciation, spelling"), color: "#1F9A72", mouth: "smile" },
-      { kind: "noi", title: L("Luyện nói", "Speaking"), sub: L("Đọc theo giọng mẫu", "Read along with the model"), color: "#C4417A", mouth: "talk" },
+      { kind: "noi", title: L("Phát âm", "Pronunciation"), sub: L("Âm thanh, phát âm", "Sounds, pronunciation"), color: "#8B3DFF", kit: "/img/kit/chibi-owl.webp" },
+      { kind: "ngu-phap", title: L("Ngữ pháp", "Grammar"), sub: L("Cấu trúc câu", "Sentence structure"), color: "#EA6A00", kit: "/img/kit/chibi-fox.webp" },
+      { kind: "doc", title: L("Đọc hiểu", "Reading"), sub: L("Đọc và hiểu", "Read and understand"), color: "#55A600", kit: "/img/kit/chibi-frog.webp" },
+      { kind: "nghia", title: L("Từ vựng", "Vocabulary"), sub: L("Từ và ý nghĩa", "Words and meanings"), color: "#E52B77", kit: "/img/kit/chibi-cat.webp" },
     ];
-    const skillFace = (mouth) => {
-      // Mặt có lông mày; biểu cảm theo loại bài: cười (từ vựng, đọc), tập trung (ngữ pháp), nói (luyện nói)
-      const m = mouth === "talk" ? '<ellipse cx="32" cy="30" rx="4.2" ry="3.4" fill="#2A2740"/>'
-        : mouth === "flat" ? '<path d="M26 30h12" stroke="#2A2740" stroke-width="2.4" stroke-linecap="round"/>'
-        : '<path d="M25 28q7 6 14 0" fill="none" stroke="#2A2740" stroke-width="2.4" stroke-linecap="round"/>';
-      const brows = mouth === "flat" ? '<path d="M15 9.5h17M32 9.5h17" stroke="#2A2740" stroke-width="2.2" stroke-linecap="round"/>'
-        : '<path d="M15 10q8-4 16-.5M32 9.5q8-3.5 16 .5" fill="none" stroke="#2A2740" stroke-width="2.2" stroke-linecap="round"/>';
-      return `<svg viewBox="0 0 64 40" width="64" height="40" aria-hidden="true"><ellipse cx="24" cy="18" rx="8.5" ry="9.5" fill="#FFFFFF"/><ellipse cx="40" cy="18" rx="8.5" ry="9.5" fill="#FFFFFF"/><circle cx="26" cy="19" r="3.6" fill="#2A2740"/><circle cx="42" cy="19" r="3.6" fill="#2A2740"/><circle cx="27.4" cy="17.6" r="1.1" fill="#FFFFFF"/><circle cx="43.4" cy="17.6" r="1.1" fill="#FFFFFF"/>${brows}${m}</svg>`;
-    };
     const skillExercises = heroSub ? heroSub.levels.filter((l) => !l.locked).flatMap((l) => l.units.flatMap((u) => u.exercises)) : [];
     const skillStat = (kind) => {
       const list = skillExercises.filter((e) => e.kind === kind);
@@ -548,12 +549,12 @@ export async function pageStudentHome(main, params, query, ctx) {
     };
     const skillsBlock = heroSub ? `
       <section class="hm-skills" aria-labelledby="hmSkillsTitle">
-        <div class="hm-skills-head"><h2 id="hmSkillsTitle">${L("Bài học của bạn", "Your lessons")}</h2><a class="hm-link" href="/app/ngoai-ngu/${esc(heroSub.id)}">${L("Xem tất cả", "View all")}</a></div>
+        <div class="hm-skills-head"><h2 id="hmSkillsTitle">${L("Bài học của bạn", "Your lessons")}</h2><a class="hm-link" href="/app/ngoai-ngu/${esc(heroSub.id)}">${L("Xem tất cả", "View all")} →</a></div>
         <div class="hm-skills-grid">${SKILL_TYPES.map((s) => {
           const st = skillStat(s.kind);
-          const href = st.next ? `/app/ngoai-ngu/bai/${esc(st.next.id)}` : `/app/ngoai-ngu/${esc(heroSub.id)}`;
+          const href = st.next ? `/app/ngoai-ngu/bai/${esc(st.next.id)}` : (s.kind === "noi" ? `/app/ngoai-ngu/luyen-noi/${esc(heroSub.id)}` : `/app/ngoai-ngu/${esc(heroSub.id)}`);
           return `<a class="hm-skill" href="${href}" style="--k:${s.color}">
-            <span class="hm-skill-band">${skillFace(s.mouth)}</span>
+            <span class="hm-skill-band"><img class="hm-skill-mascot" src="${s.kit}" width="84" height="84" alt="" loading="lazy" decoding="async"></span>
             <span class="hm-skill-body"><b>${esc(s.title)}</b><small>${esc(s.sub)}</small>
               <span class="hm-skill-bar"><i style="width:${st.pct}%"></i></span>
               <span class="hm-skill-foot"><span>${st.total ? `${fmtN(st.done)}/${fmtN(st.total)} ${L("bài", "lessons")}` : L("Chưa có bài", "No lessons yet")}</span><b>${st.pct}%</b></span>
@@ -567,14 +568,15 @@ export async function pageStudentHome(main, params, query, ctx) {
           ${ringHtml}
           <span class="hm-flag" style="--c:${esc(heroSub.color)}">${heroSub.flag}</span>
           <div class="hm-current-title">
-            <p class="hm-status">${statusWord(heroSub.pct)}${heroSub.meta ? ` · ${esc(heroSub.meta)}` : ""}</p>
-            <h2 class="hm-subject-name">${esc(trUi(heroSub.name))}</h2>
-            <p class="hm-focus-text">${esc(heroSub.plain || heroSub.next.label)}</p>
+            <h2 class="hm-status-title">${statusWord(heroSub.pct)}</h2>
+            <p class="hm-current-today">${L("Hôm nay đã hoàn thành", "Completed today")} <b>${fmtN(lessonsToday)} ${L("nhiệm vụ", "tasks")}</b></p>
+            <p class="hm-current-goal-sub">${L("Mục tiêu ngày", "Daily goal")} · ${fmtN(lessonsToday)}/${fmtN(goal)} ${L("bước", "steps")}</p>
+            <p class="hm-status hm-desk-only">${esc(trUi(heroSub.name))}${heroSub.meta ? ` · ${esc(heroSub.meta)}` : ""}</p>
+            <p class="hm-focus-text hm-desk-only">${esc(heroSub.plain || heroSub.next.label)}</p>
           </div>
         </div>
-        <p class="hm-current-goal">${L("Mục tiêu", "Goal")}: <b>${goalMeta ? esc(L(goalMeta.vi, goalMeta.en)) : L("chưa đặt", "not set yet")}</b></p>
-        <p class="hm-current-today">${L("Hôm nay đã làm", "Done today")}: <b>${fmtN(lessonsToday)}</b> ${L("bài", "lessons")}</p>
-        <div class="hm-progress">
+        <p class="hm-current-goal hm-desk-only">${L("Mục tiêu", "Goal")}: <b>${goalMeta ? esc(L(goalMeta.vi, goalMeta.en)) : L("chưa đặt", "not set yet")}</b></p>
+        <div class="hm-progress hm-desk-only">
           <div class="hm-progress-top"><span>${L("Tiến độ tổng thể", "Overall progress")} · ${fmtN(heroSub.done)} / ${fmtN(heroSub.total)} ${L("bài đã đạt", "exercises passed")}</span><b>${heroSub.pct}%</b></div>
           ${bar(heroSub.pct, heroSub.color)}
         </div>
@@ -622,11 +624,11 @@ export async function pageStudentHome(main, params, query, ctx) {
 
     const order = [
       ...take(":scope > .hm-chibi-banner"),
+      ...nodes(current),
+      ...nodes(skillsBlock),
       ...take(":scope > .hm-daily"),
       ...take(":scope > .hm-courses"),
       ...take(":scope > .hm-kpis"),
-      ...nodes(current),
-      ...nodes(skillsBlock),
       ...take(":scope > .hm-focus-empty"),
       ...take(":scope > .hm-studio-grid"),
       ...nodes(unfinished),
@@ -778,6 +780,65 @@ export async function pageStudentHome(main, params, query, ctx) {
     // Trang Cổ Vũ dừng ở thẻ bạn đồng hành (tặng sao, cổ vũ): bỏ mọi khối phía dưới
     let n = main.querySelector(".hm-studio-grid")?.nextElementSibling;
     while (n) { const nx = n.nextElementSibling; n.remove(); n = nx; }
+    // Thêm khối giao diện Cổ Vũ · Kế hoạch ngày theo thiết kế chuẩn (51-co-vu-ke-hoach-ngay.webp)
+    const rootCheer = main.querySelector(".lh.hm");
+    const bannerEl = rootCheer?.querySelector(".hm-chibi-banner");
+    if (rootCheer && bannerEl) {
+      const cheerHeroHtml = HeroBanner({
+        badge: "DAILY FOCUS",
+        title: L("Mỗi ngày tiến bộ một chút", "Progress a little every day"),
+        subtitle: L("Giữ nhịp học đều đặn cùng Rivo.", "Keep a steady study rhythm with Rivo."),
+        kit: "bunny",
+      });
+      const cheerWeekHtml = `
+      <section class="hm-cheer-week" aria-label="${L("Tuần của bạn", "Your week")}">
+        <div class="hm-cheer-week-head">
+          <h2>${L("Tuần của bạn", "Your week")}</h2>
+          <span>${fmtN(activeDays)}/7 ${L("ngày hoạt động", "active days")}</span>
+        </div>
+        <div class="hm-cheer-week-card">
+          ${week.map((w) => {
+            const dayNum = Number(w.iso.slice(8, 10)) || "";
+            return `<div class="hm-cw-day${w.n > 0 ? " is-done" : ""}${w.iso === todayStr ? " is-today" : ""}">
+              <span class="hm-cw-dot">${w.n > 0 ? "✓" : dayNum}</span>
+              <em>${esc(w.label)}</em>
+            </div>`;
+          }).join("")}
+        </div>
+      </section>
+      <section class="hm-cheer-tasks" aria-label="${L("Nhiệm vụ hôm nay", "Today's missions")}">
+        <h2>${L("Nhiệm vụ hôm nay", "Today's missions")}</h2>
+        <div class="hm-cheer-task-list">
+          <a class="hm-cheer-task${reviewedToday > 0 ? " is-done" : ""}" href="/app/ngoai-ngu/on-tap/${esc(planLang)}">
+            <span class="hm-ct-ic">${reviewedToday > 0 ? "✓" : lineIcon("clock")}</span>
+            <span class="hm-ct-body">
+              <b>${reviewDueShown ? L(`Ôn tập ${fmtN(reviewDueShown)} từ vựng`, `Review ${fmtN(reviewDueShown)} words`) : L("Ôn tập từ vựng", "Review vocabulary")}</b>
+              <small>${reviewedToday > 0 ? L("Đã hoàn thành hôm nay", "Completed today") : L("Thẻ ghi nhớ SRS · khoảng 8 phút", "SRS Flashcards · about 8 min")}</small>
+            </span>
+            <span class="hm-ct-arr" aria-hidden="true">›</span>
+          </a>
+          <a class="hm-cheer-task${lessonsToday >= 1 ? " is-done" : ""}" href="${heroSub ? esc(heroSub.next.href) : `/app/ngoai-ngu/${esc(planLang)}`}">
+            <span class="hm-ct-ic">${lessonsToday >= 1 ? "✓" : lineIcon("book")}</span>
+            <span class="hm-ct-body">
+              <b>${L("Học một bài ngữ pháp / từ vựng", "Complete one lesson")}</b>
+              <small>${lessonsToday >= 1 ? L(`Đã hoàn thành ${fmtN(lessonsToday)} bài`, `Completed ${fmtN(lessonsToday)} lessons`) : L("Còn 1 bài · khoảng 5 phút", "1 lesson left · about 5 min")}</small>
+            </span>
+            <span class="hm-ct-arr" aria-hidden="true">›</span>
+          </a>
+          <a class="hm-cheer-task" href="/app/ngoai-ngu/luyen-noi/${esc(planLang)}">
+            <span class="hm-ct-ic">${lineIcon("mic")}</span>
+            <span class="hm-ct-body">
+              <b>${L("Luyện nói 5 câu", "Practice speaking 5 sentences")}</b>
+              <small>${L("Speaking Lab · Luyện phát âm", "Speaking Lab · Pronunciation")}</small>
+            </span>
+            <span class="hm-ct-arr" aria-hidden="true">›</span>
+          </a>
+        </div>
+      </section>`;
+      const wrap = document.createElement("div");
+      wrap.innerHTML = cheerHeroHtml + cheerWeekHtml;
+      bannerEl.after(...wrap.children);
+    }
   }
   // Chọn bạn đồng hành (6 bạn, có Cú): lưu theo tài khoản, đổi hình động ngay
   main.querySelectorAll("[data-pet]").forEach((btn) => {

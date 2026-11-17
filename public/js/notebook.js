@@ -23,28 +23,48 @@ export function toggleWord({ lang, word, reading = "", meaning = "" }) {
 const notesMap = () => (S.prefs && S.prefs.notes && typeof S.prefs.notes === "object" ? S.prefs.notes : {});
 
 export function pageNotebook(main, _params, _query, ctx) {
-  ctx.setCrumbs([[EN ? "Notebook" : "Sổ tay từ vựng"]]);
+  ctx.setCrumbs([[EN ? "Student" : "Học viên", "/app/"], [EN ? "Notebook" : "Sổ tay từ vựng"]]);
+  let qFilter = "", langFilter = "all";
   const render = () => {
     const words = savedWords();
     const notes = Object.entries(notesMap());
+    const langs = [...new Set(words.map((w) => w.lang).filter(Boolean))];
+    const qNorm = qFilter.trim().toLowerCase();
+    const filtered = words.filter((w) => {
+      if (langFilter !== "all" && w.lang !== langFilter) return false;
+      if (!qNorm) return true;
+      return `${w.word || ""} ${w.reading || ""} ${w.meaning || ""}`.toLowerCase().includes(qNorm);
+    });
     const groups = {};
-    for (const w of words) (groups[w.lang] = groups[w.lang] || []).push(w);
+    for (const w of filtered) (groups[w.lang] = groups[w.lang] || []).push(w);
     main.innerHTML = `
       <div class="lx-notebook">
         <div class="page-head"><div><span class="edu-eyebrow">${EN ? "NOTEBOOK" : "SỔ TAY"}</span>
           <h1>${EN ? "Vocabulary notebook" : "Sổ tay từ vựng"}</h1>
           <p>${EN ? "Words you saved from lessons, and your own notes." : "Các từ bạn đã lưu trong bài học và ghi chú của riêng bạn."}</p></div></div>
+        <div class="lx-nb-search-wrap">
+          <span class="lx-nb-search-ic">🔍</span>
+          <input type="search" id="nbSearch" class="lx-nb-search" value="${esc(qFilter)}" placeholder="${EN ? "Search word or meaning..." : "Tìm từ hoặc nghĩa..."}" />
+        </div>
+        <div class="lx-nb-toolbar">
+          <span class="lx-ex-pill">${EN ? "Saved" : "Đã lưu"} ${filtered.length} ${EN ? "words" : "từ"}</span>
+          <select id="nbLangFilter" class="lx-nb-select" aria-label="${EN ? "Filter by language" : "Lọc theo ngoại ngữ"}">
+            <option value="all"${langFilter === "all" ? " selected" : ""}>${EN ? "All languages" : "Tất cả ngôn ngữ"}</option>
+            ${langs.map((l) => `<option value="${esc(l)}"${langFilter === l ? " selected" : ""}>${esc(LANG_NAME[l] || l)}</option>`).join("")}
+          </select>
+        </div>
         <section class="sheet sheet-pad lx-nb-sec">
-          <h2>${EN ? "Saved words" : "Từ đã lưu"} <small>(${words.length})</small></h2>
-          ${words.length ? Object.keys(groups).map((lang) => `
+          <h2>${EN ? "Saved words" : "Từ đã lưu"} <small>(${filtered.length})</small></h2>
+          ${filtered.length ? Object.keys(groups).map((lang) => `
             <h3 class="lx-nb-lang">${esc(LANG_NAME[lang] || lang)}</h3>
             <ul class="lx-nb-list">${groups[lang].map((w) => {
               const i = words.indexOf(w);
               return `<li class="lx-nb-word">
-                <div class="lx-nb-txt"><b>${esc(w.word)}</b>${w.reading ? ` <span class="lx-nb-read">${esc(w.reading)}</span>` : ""}<span class="lx-nb-mean">${esc(w.meaning || "")}</span></div>
+                <span class="lx-nb-ico" aria-hidden="true">🔖</span>
+                <div class="lx-nb-txt"><b>${esc(w.word)}</b>${w.reading ? `<span class="lx-nb-read">${esc(w.reading)}</span>` : ""}<span class="lx-nb-mean">${esc(w.meaning || "")}</span></div>
                 <div class="lx-nb-act">
-                  <button type="button" class="btn btn-sm" data-nb-say="${i}" aria-label="${EN ? "Listen" : "Nghe"}">🔊</button>
-                  <button type="button" class="btn btn-sm btn-ghost" data-nb-del="${i}">${EN ? "Remove" : "Xóa"}</button>
+                  <button type="button" class="btn btn-sm lx-nb-say-btn" data-nb-say="${i}" aria-label="${EN ? "Listen" : "Nghe"}">🔊</button>
+                  <button type="button" class="btn btn-sm btn-ghost lx-nb-del-btn" data-nb-del="${i}" aria-label="${EN ? "Remove" : "Xóa"}">×</button>
                 </div></li>`;
             }).join("")}</ul>`).join("") : `<p class="muted">${EN ? "No saved words yet. Open a lesson's vocabulary and tap Save." : "Chưa có từ nào. Mở phần từ vựng của bài học và bấm Lưu từ."}</p>`}
         </section>
@@ -57,6 +77,18 @@ export function pageNotebook(main, _params, _query, ctx) {
           ${notes.length ? `<ul class="lx-nb-list">${notes.reverse().map(([k, v]) => `<li class="lx-nb-note"><p>${esc(v)}</p><button type="button" class="btn btn-sm btn-ghost" data-nb-note-del="${esc(k)}">${EN ? "Delete" : "Xóa"}</button></li>`).join("")}</ul>` : ""}
         </section>
       </div>`;
+    const searchEl = main.querySelector("#nbSearch");
+    searchEl?.addEventListener("input", (e) => {
+      qFilter = e.target.value;
+      const pos = e.target.selectionStart;
+      render();
+      const nextEl = main.querySelector("#nbSearch");
+      if (nextEl) { nextEl.focus(); try { nextEl.setSelectionRange(pos, pos); } catch {} }
+    });
+    main.querySelector("#nbLangFilter")?.addEventListener("change", (e) => {
+      langFilter = e.target.value;
+      render();
+    });
     main.querySelectorAll("[data-nb-say]").forEach((b) => b.addEventListener("click", () => {
       const w = savedWords()[+b.dataset.nbSay]; if (w) speakText(w.word, w.lang);
     }));

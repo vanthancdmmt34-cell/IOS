@@ -284,8 +284,8 @@ describe('Milestone 3 Adversarial Verification (Challenger 1)', () => {
 
     it('C1-S8-03: Section 3 and 4 roadmap/subject cards navigate directly without auth interception', () => {
       const s3s4Snippet = ssrHtml.slice(ssrHtml.indexOf('id="muc-dich"'), ssrHtml.indexOf('id="cach-hoc"'));
-      assert.match(s3s4Snippet, /href="#\/ngoai-ngu\/ja"/, 'Section 3/4 must contain direct link to #/ngoai-ngu/ja');
-      assert.match(s3s4Snippet, /href="#\/ngoai-ngu\/en"/, 'Section 3/4 must contain direct link to #/ngoai-ngu/en');
+      assert.match(s3s4Snippet, /href="(?:#|\/app)\/ngoai-ngu\/ja"/, 'Section 3/4 must contain direct link to /app/ngoai-ngu/ja');
+      assert.match(s3s4Snippet, /href="(?:#|\/app)\/ngoai-ngu\/en"/, 'Section 3/4 must contain direct link to /app/ngoai-ngu/en');
       assert.doesNotMatch(s3s4Snippet, /openAuth\("register"\)/, 'Cards must not directly invoke openAuth');
     });
   });

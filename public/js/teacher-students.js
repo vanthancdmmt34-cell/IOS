@@ -31,7 +31,7 @@ function credentialsModal(title, rows, note) {
 
 /* =================== TEACHER: MY STUDENTS =================== */
 export async function pageMyStudents(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Trang giáo viên", "/app/giao-vien"], ["Học viên của tôi"]]);
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Học viên của tôi"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let j;
   try { j = await api("/api/teacher/students"); } catch (e) { main.innerHTML = `<div class="sheet sheet-pad empty"><b>Không mở được</b>${esc(e.message)}</div>`; return; }
@@ -39,7 +39,7 @@ export async function pageMyStudents(main, _p, _q, ctx) {
   const L = j.license;
   let q = "", cls = "", only = "";
   main.innerHTML = `
-    <div class="page-head"><div><h1>Học viên của tôi</h1><p>Học viên trong các lớp bạn dạy và tài khoản bạn tạo. Bạn chỉ đặt lại mật khẩu hoặc khóa được tài khoản do chính bạn tạo; học viên tự đăng ký tự quản lý mật khẩu của mình.</p></div>
+    <div class="page-head"><div><h1>Học viên của tôi</h1><p>Theo dõi hoạt động và kết quả của từng học viên.</p></div>
       <div class="row" style="gap:8px">${j.canCreate ? `<button class="btn btn-primary" id="mkStu">${icon("plus")}Tạo tài khoản học viên</button>` : `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">Mua / gia hạn giấy phép</a>`}<button class="btn" id="csv">${icon("download")}Xuất CSV</button></div></div>
     ${L ? `<div class="pay-warn" style="margin:0 0 14px">${L.licenses.length ? `Giấy phép: đã dùng <b>${L.used}/${L.seats}</b> chỗ. Học viên được thêm vào lớp mới chiếm chỗ; tạo tài khoản không kèm lớp thì chưa chiếm chỗ.` : "Bạn chưa có giấy phép còn hạn: chưa tạo được tài khoản học viên."}</div>` : ""}
     <div class="stats biz-stats">
@@ -50,7 +50,7 @@ export async function pageMyStudents(main, _p, _q, ctx) {
     </div>
     <section class="sheet sheet-pad" style="margin-top:16px">
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
-        <input class="input" id="q" placeholder="Tìm theo tên hoặc tên đăng nhập" style="flex:1;min-width:200px">
+        <input class="input" id="q" placeholder="🔍 Tìm học viên..." style="flex:1;min-width:200px">
         <select class="input" id="cls" style="max-width:220px"><option value="">Mọi lớp</option><option value="-">Chưa vào lớp</option>${j.classes.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select>
         <select class="input" id="only" style="max-width:200px"><option value="">Mọi tài khoản</option><option value="mine">Do tôi tạo</option><option value="self">Tự đăng ký</option></select>
       </div>
@@ -65,15 +65,19 @@ export async function pageMyStudents(main, _p, _q, ctx) {
     return true;
   });
   const ST = { active: "", pending: " (chờ duyệt)", suspended: " (tạm khóa)" };
+  const kits = ["cat", "fox", "bunny", "dragon", "owl", "frog"];
   const draw = () => {
     const rows = filtered();
-    $("#rows", main).innerHTML = rows.map((s) => `<tr>
-      <td><b>${esc(s.displayName)}</b><br><span class="small muted">@${esc(s.username)}</span></td>
+    $("#rows", main).innerHTML = rows.map((s, idx) => {
+      const recent = s.lastActive && Date.now() - Date.parse(s.lastActive) < 3 * 86400000;
+      return `<tr>
+      <td><div class="tc-m-stu-cell"><img class="tc-m-stu-av" src="/img/kit/chibi-${kits[idx % kits.length]}.webp" alt="" width="40" height="40" loading="lazy" /><div><b>${esc(s.displayName)}</b><br><span class="small muted">@${esc(s.username)}</span></div></div></td>
       <td class="small">${s.classes.map((c) => `<a href="/app/giao-vien/lop/${c.id}">${esc(c.name)}</a>${ST[c.status] || ""}`).join(", ") || `<span class="muted">Chưa vào lớp</span>`}</td>
       <td class="num">${fmtN(s.solved)}</td>
       <td class="small">${s.lastActive ? timeAgo(s.lastActive) : "—"}</td>
-      <td>${s.disabled ? `<span class="tag tag-do">Đã khóa</span>` : s.managed ? `<span class="tag tag-la">Do tôi tạo</span>` : `<span class="tag tag-line">Tự đăng ký</span>`}</td>
-      <td><select class="input input-sm" data-act="${s.id}" aria-label="Thao tác với ${esc(s.displayName)}"><option value="">Thao tác…</option><option value="view">Xem tiến độ</option>${j.classes.length ? `<option value="add">Thêm vào lớp</option>` : ""}${s.managed ? `<option value="pw">Đặt lại mật khẩu</option><option value="rename">Sửa tên</option><option value="${s.disabled ? "unlock" : "lock"}">${s.disabled ? "Mở khóa" : "Khóa tài khoản"}</option>` : ""}</select></td></tr>`).join("") || `<tr><td colspan="6" class="muted">${j.students.length ? "Không có học viên khớp bộ lọc." : "Chưa có học viên. Tạo tài khoản hoặc gửi mã lớp cho học sinh."}</td></tr>`;
+      <td>${s.disabled ? `<span class="tag tag-do">Đã khóa</span>` : recent ? `<span class="tag tag-la">Tốt</span>` : `<span class="tag tag-cam">Cần nhắc</span>`}</td>
+      <td><select class="input input-sm" data-act="${s.id}" aria-label="Thao tác với ${esc(s.displayName)}"><option value="">Thao tác…</option><option value="view">Xem tiến độ</option>${j.classes.length ? `<option value="add">Thêm vào lớp</option>` : ""}${s.managed ? `<option value="pw">Đặt lại mật khẩu</option><option value="rename">Sửa tên</option><option value="${s.disabled ? "unlock" : "lock"}">${s.disabled ? "Mở khóa" : "Khóa tài khoản"}</option>` : ""}</select></td></tr>`;
+    }).join("") || `<tr><td colspan="6" class="muted">${j.students.length ? "Không có học viên khớp bộ lọc." : "Chưa có học viên. Tạo tài khoản hoặc gửi mã lớp cho học sinh."}</td></tr>`;
     main.querySelectorAll("[data-act]").forEach((sel) => sel.addEventListener("change", () => { const v = sel.value; sel.value = ""; act(j.students.find((x) => String(x.id) === sel.dataset.act), v); }));
   };
   const reload = () => pageMyStudents(main, _p, _q, ctx);

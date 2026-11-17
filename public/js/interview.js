@@ -34,13 +34,54 @@ export async function pageInterview(main, [langId, trackId], _q, ctx) {
 }
 
 function renderHub(main, ctx) {
-  ctx.setCrumbs([["Phỏng vấn"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Luyện phỏng vấn"]]);
   const card = (l) => `<a class="lx-card" href="/app/phong-van/${l.id}" style="--c:${esc(l.color)}"><span class="lx-card-ico">${l.flag}</span><b>${esc(l.name)}</b><span class="lx-card-sub">30 ngành phỏng vấn AI · ${(INTERVIEW_TRACKS[l.id] || []).length} vòng câu mẫu (${(INTERVIEW_TRACKS[l.id] || []).reduce((n, t) => n + t.questions.length, 0)} câu)</span></a>`;
   const spoken = INTERVIEW_LANGS.filter((l) => l.group === "lang");
   const firstTracks = INTERVIEW_TRACKS[spoken[0]?.id] || [];
   const totalQ = firstTracks.reduce((n, t) => n + t.questions.length, 0);
   main.innerHTML = `${head("Phỏng vấn & Phỏng vấn AI", "Chọn ngoại ngữ để luyện phỏng vấn 2 chiều với AI theo 30 ngành nghề hoặc tự luyện theo bộ câu mẫu.")}
+    <div class="sheet sheet-pad iv-m-card">
+      <h2>Phỏng vấn thử cùng AI</h2>
+      <p>Chọn vị trí và ngành nghề để luyện câu trả lời chuẩn chuyên nghiệp.</p>
+      <label class="iv-m-field">
+        <span>Chọn lĩnh vực</span>
+        <select id="ivFieldSelect">
+          <option value="iv-it">Công nghệ thông tin</option>
+          <option value="iv-mkt">Tiếp thị & Truyền thông</option>
+          <option value="iv-fin">Tài chính & Ngân hàng</option>
+          <option value="iv-biz">Kinh doanh & Bán hàng</option>
+          <option value="iv-hr">Nhân sự & Hành chính</option>
+          <option value="sample">Phỏng vấn tổng quát (Câu mẫu)</option>
+        </select>
+      </label>
+      <label class="iv-m-field">
+        <span>Vị trí ứng tuyển</span>
+        <input type="text" id="ivRoleInput" value="Junior Developer" placeholder="VD: Junior Developer, Chuyên viên..." />
+      </label>
+      <label class="iv-m-field">
+        <span>Trình độ ngoại ngữ</span>
+        <select id="ivLangSelect">
+          ${spoken.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} — Trung cấp</option>`).join("")}
+        </select>
+      </label>
+      <button type="button" class="btn btn-primary btn-block iv-m-start" id="ivQuickStart">Bắt đầu phỏng vấn</button>
+    </div>
+    <div class="iv-m-kpis">
+      <div class="iv-m-kpi"><b>6</b><span>Câu hỏi dự kiến</span></div>
+      <div class="iv-m-kpi"><b>10 phút</b><span>Thời lượng</span></div>
+    </div>
     <section class="lx-sec"><div class="sec-head"><div><h2>Ngoại ngữ</h2><p>Cả 6 ngoại ngữ đều có đầy đủ 30 ngành phỏng vấn với AI và ${firstTracks.length} vòng câu hỏi mẫu (${totalQ} câu).</p></div></div><div class="lx-grid">${spoken.map(card).join("")}</div></section>`;
+  main.querySelector("#ivQuickStart")?.addEventListener("click", () => {
+    const langVal = main.querySelector("#ivLangSelect")?.value || "en";
+    const fieldVal = main.querySelector("#ivFieldSelect")?.value || "sample";
+    const tracks = INTERVIEW_TRACKS[langVal] || [];
+    if (fieldVal === "sample" || !aiOn()) {
+      const tr = tracks[0] ? tracks[0].id : "";
+      location.href = tr ? `/app/phong-van/${langVal}/${tr}` : `/app/phong-van/${langVal}`;
+    } else {
+      location.href = `/app/phong-van/${langVal}`;
+    }
+  });
 }
 
 async function renderTracks(main, lang, ctx) {

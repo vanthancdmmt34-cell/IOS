@@ -7,11 +7,39 @@
    ========================================================================== */
 
 html body.in-app:not(.ax-on) {
-  --v4-radius: 20px;
+  --cp-bg: #F8FAFC;
+  --cp-surface: #FFFFFF;
+  --cp-surface-2: #F3F6FA;
+  --cp-border: #E6EAF0;
+  --cp-border-strong: #DCE3EC;
+  --cp-ink: #162B3D;
+  --cp-ink-2: #334155;
+  --cp-ink-3: #64748B;
+  --cp-primary: #3F97D3;
+  --cp-primary-strong: #3F97D3;
+  --cp-primary-hover: #3385BE;
+  --cp-primary-soft: #EAF4FB;
+  --cp-primary-ink: #1E6FA8;
+  --cp-on-primary: #FFFFFF;
+  --v4-radius: 22px;
   --v4-radius-sm: 14px;
-  --v4-shadow: 0 1px 2px rgba(48, 48, 71, .04), 0 10px 28px rgba(48, 48, 71, .06);
-  --v4-shadow-btn: 0 8px 18px rgba(103, 83, 224, .22);
-  --v4-btn-lip: #4B3DB8;
+  --v4-shadow: 0 4px 16px rgba(22, 43, 61, .05);
+  --v4-shadow-btn: 0 6px 16px rgba(63, 151, 211, .22);
+  --v4-btn-lip: #2A78B0;
+}
+
+html[data-theme="dark"] body.in-app:not(.ax-on),
+html body.dark.in-app:not(.ax-on) {
+  --cp-bg: #0F172A;
+  --cp-surface: #1E293B;
+  --cp-surface-2: #273549;
+  --cp-border: #334155;
+  --cp-border-strong: #475569;
+  --cp-ink: #F8FAFC;
+  --cp-ink-2: #CBD5E1;
+  --cp-ink-3: #94A3B8;
+  --cp-primary-soft: rgba(63, 151, 211, .18);
+  --cp-primary-ink: #7DD3FC;
 }
 
 /* Khung nội dung: thẻ trắng, viền mảnh, bo lớn, bóng nhẹ */
@@ -616,74 +644,418 @@ html body.in-app:not(.ax-on) .tag {
    Thẻ đang mở trải rộng cả hàng. Dưới 360px chuyển thành một cột. Desktop giữ bản đồ chặng. */
 html:root body.in-app:not(.ax-on) #main .lx-unit-mascot,
 html:root body.in-app:not(.ax-on) #main .lx-unit-pct { display: none; }
+html:root body.in-app:not(.ax-on) #main .sw-m-view,
+html:root body.in-app:not(.ax-on) #main .lx-course-m-head,
+html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero,
+html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none; }
+
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  /* 09-danh-sach-khoa-hoc.webp: danh sách chặng học dạng thẻ ngang 1 cột */
+  html:root body.in-app:not(.ax-on) #main .lx-course-m-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-m-head h1 {
+    margin: 0;
+    font: 900 24px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-m-head p {
+    margin: 2px 0 0;
+    font: 600 13.5px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-pct-pill {
+    flex: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #1E6FA8;
+    font: 800 14px/1 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner,
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero {
+    display: block;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-hero.lx-hero-sm {
+    display: none !important;
+  }
   html:root body.in-app:not(.ax-on) #main .lx-map {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
     padding-left: 0 !important;
     max-width: none;
     align-items: start;
   }
   html:root body.in-app:not(.ax-on) #main .lx-map::before,
   html:root body.in-app:not(.ax-on) #main .lx-map-goal::before { display: none !important; }
-  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit { grid-column: auto !important; min-width: 0; }
-  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit[open] { grid-column: 1 / -1 !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit {
+    grid-column: 1 / -1 !important;
+    min-width: 0;
+    border-radius: 20px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
+  }
   html:root body.in-app:not(.ax-on) #main .lx-map > .lx-unit > .lx-unit-head {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 6px 8px;
-    padding: 12px !important;
+    grid-template-columns: 52px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 4px 12px !important;
+    padding: 14px 16px !important;
+    background: var(--cp-surface, #FFFFFF) !important;
   }
-  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-state {
-    position: static !important;
-    grid-column: 1 / -1;
-    font-size: 10.5px;
-    line-height: 1.3;
-  }
-  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-here { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-state,
+  html:root body.in-app:not(.ax-on) #main .lx-map .lx-map-here,
+  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot { display: none !important; }
   html:root body.in-app:not(.ax-on) #main .lx-map .lx-unit-no {
     position: static !important;
     grid-column: 1;
-    grid-row: 2;
-    width: 34px !important;
-    height: 34px !important;
-    font-size: 14px;
+    grid-row: 1 / span 2;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+    background: color-mix(in srgb, var(--uc, #3F97D3) 14%, #FFFFFF) !important;
+    color: var(--uc, #3F97D3) !important;
+    font: 900 18px/1 var(--cp-font) !important;
     box-shadow: none !important;
     margin: 0;
   }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot {
-    display: block !important;
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t {
     grid-column: 2;
-    grid-row: 2;
-    justify-self: end;
-    align-self: center;
-    width: 46px;
-    height: 46px;
+    grid-row: 1;
+    display: grid;
+    gap: 2px;
+    min-width: 0;
   }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot :is(.cm-wrap, .cm-card) { margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-mascot svg { display: block; width: 46px !important; height: 46px !important; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-t { grid-column: 1 / -1; grid-row: 3; display: grid; gap: 2px; min-width: 0; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-t b { white-space: normal; overflow: visible; font-size: 15px; line-height: 1.25; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-t span { white-space: normal; font-size: 12px; line-height: 1.35; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t b {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font: 800 16px/1.25 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-t span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font: 600 12.5px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
   html:root body.in-app:not(.ax-on) #main .lx-unit-prog {
-    grid-column: 1 / -1;
-    grid-row: 4;
+    grid-column: 2 / span 2;
+    grid-row: 2;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 4px 8px;
-    width: auto;
-    justify-items: stretch;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
   }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-prog b { grid-column: 1; grid-row: 1; font-size: 12.5px; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-pct { display: block; grid-column: 2; grid-row: 1; font-style: normal; font-size: 12px; font-weight: 800; color: var(--uc); font-variant-numeric: tabular-nums; }
-  html:root body.in-app:not(.ax-on) #main .lx-unit-prog .lx-bar { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-prog b { display: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-prog .lx-bar {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    background: #E2E8F0;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-unit-pct {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    font-style: normal;
+    font: 700 13px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+    font-variant-numeric: tabular-nums;
+  }
   html:root body.in-app:not(.ax-on) #main .lx-unit-chev,
   html:root body.in-app:not(.ax-on) #main details.lx-unit > summary::after { display: none !important; }
   html:root body.in-app:not(.ax-on) #main .lx-map-goal { grid-column: 1 / -1; }
-}
-@media (max-width: 359px) {
-  html:root body.in-app:not(.ax-on) #main .lx-map { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* 07-chon-mon-hoc.webp: "Ngoại ngữ của bạn" */
+  html:root body.in-app:not(.ax-on) #main .sw-m-view {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-view h1 {
+    margin: 0;
+    font: 900 24px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-sub {
+    margin: -4px 0 4px;
+    font: 600 14px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-list {
+    display: grid;
+    gap: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 22px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    box-shadow: var(--v4-shadow);
+    color: var(--cp-ink, #162B3D);
+    text-decoration: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-flag {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: var(--tint, #EAF4FB);
+    font-size: 28px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-flag img { width: 32px; height: 32px; }
+  html:root body.in-app:not(.ax-on) #main .sw-m-info {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-info b {
+    font: 800 16.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-info small {
+    font: 600 12.5px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-bar {
+    display: block;
+    height: 7px;
+    margin-top: 4px;
+    border-radius: 999px;
+    background: #E2E8F0;
+    overflow: hidden;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+  }
+  html:root body.in-app:not(.ax-on) #main .sw-m-pct {
+    font: 700 14px/1 var(--cp-font);
+    font-style: normal;
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 04-chon-ngoai-ngu.webp & 05-muc-tieu-va-trinh-do.webp: Luồng Onboarding */
+  html:root body.in-app:not(.ax-on) #main .ob-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 2px 12px;
+    border-bottom: 1px solid var(--cp-border, #E6EAF0);
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-brand {
+    font: 800 22px/1 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+    letter-spacing: -.02em;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-brand b { color: #3F97D3; font-weight: 900; }
+  html:root body.in-app:not(.ax-on) #main .ob-step-pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #F1F5F9;
+    color: var(--cp-ink-2, #334155);
+    font: 700 12.5px/1 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-progress { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .ob-card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-step-banner {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2577B0;
+    font: 700 13px/1.2 var(--cp-font);
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-grid-courses {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-course {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    padding: 20px 12px !important;
+    border-radius: 22px !important;
+    border: 1.5px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-course.on {
+    border-color: #3F97D3 !important;
+    background: #EAF4FB !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-course-flag { font-size: 36px !important; }
+  html:root body.in-app:not(.ax-on) #main .ob-course-txt { display: grid; gap: 3px; }
+  html:root body.in-app:not(.ax-on) #main .ob-course-txt b { font: 800 16px/1.25 var(--cp-font); color: var(--cp-ink, #162B3D); }
+  html:root body.in-app:not(.ax-on) #main .ob-course-txt small { font: 600 12.5px/1.2 var(--cp-font); color: var(--cp-ink-3, #64748B); }
+
+  html:root body.in-app:not(.ax-on) #main .ob-grid-goals {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-grid-goals .ob-opt {
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    border-radius: 18px !important;
+    border: 1.5px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    text-align: left !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-grid-goals .ob-opt .ob-opt-ico { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .ob-grid-goals .ob-opt.on {
+    border-color: #3F97D3 !important;
+    background: #EAF4FB !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-radio {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid #CBD5E1;
+    background: #FFFFFF;
+    display: grid;
+    place-items: center;
+    font: 800 13px/1 var(--cp-font);
+    color: #162B3D;
+  }
+  html:root body.in-app:not(.ax-on) #main .ob-opt-copy { display: grid; gap: 2px; min-width: 0; }
+  html:root body.in-app:not(.ax-on) #main .ob-opt-copy b { font: 800 15.5px/1.25 var(--cp-font); color: var(--cp-ink, #162B3D); }
+  html:root body.in-app:not(.ax-on) #main .ob-opt-copy small { font: 600 13px/1.35 var(--cp-font); color: var(--cp-ink-3, #64748B); }
+
+  /* 08-lo-trinh-hoc.webp: Timeline "Lộ trình chuẩn 4 bước" */
+  html:root body.in-app:not(.ax-on) #main .lx-beg-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-head p { display: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-total {
+    font: 600 13.5px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main ol.lx-beg-steps {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 28px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main ol.lx-beg-steps::before {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: #E2E8F0;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-item {
+    position: relative;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-dot {
+    position: absolute;
+    left: -28px;
+    top: 18px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid #FFFFFF;
+    background: #CBD5E1;
+    box-shadow: 0 0 0 1px #E2E8F0;
+    z-index: 2;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-item.done .lx-beg-dot { background: #22B573; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-item.cur .lx-beg-dot { background: #3F97D3; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-step {
+    display: block !important;
+    padding: 16px !important;
+    border-radius: 20px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
+    text-decoration: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ico { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-body {
+    display: grid;
+    gap: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-top b {
+    font: 800 15.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font: 700 11.5px/1.2 var(--cp-font);
+    font-style: normal;
+    background: #F1F5F9;
+    color: #64748B;
+    white-space: nowrap;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-pill.done {
+    background: #E7F6EC;
+    color: #1F9D55;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-pill.cur {
+    background: #EAF4FB;
+    color: #1E6FA8;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-body > span {
+    font: 600 13px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-bar {
+    height: 7px;
+    margin-top: 4px;
+    border-radius: 999px;
+    background: #E2E8F0;
+    overflow: hidden;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #3F97D3;
+  }
 }
 
 /* ---------- Giai đoạn 14: màn 320–360px ----------
@@ -970,248 +1342,2337 @@ html:root body.in-app:not(.ax-on) #main .lx-due-list { display: none; }
   }
 }
 
-/* ---------- Giai đoạn 26: thanh điều hướng dưới chỉ có chữ, nút viên nhỏ ----------
-   Bỏ icon; mỗi mục là một viên nhỏ. Mục đang mở có nền nhạt và đế 2D; nút Học tập nổi bật bằng nền đậm.
-   Áp dụng cho điện thoại dọc và ngang. */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) .shell > .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
-  html:root body.in-app:not(.ax-on) .mtab {
-    left: 10px;
-    right: 10px;
-    bottom: calc(10px + env(safe-area-inset-bottom));
-    grid-template-columns: repeat(5, auto);
-    justify-content: space-between;
-    gap: 3px;
-    padding: 5px;
-    border-radius: 999px;
-    border: 1px solid var(--cp-border);
-    background: var(--cp-surface);
-    box-shadow: 0 8px 22px rgba(48, 48, 71, .10);
-  }
-  html:root body.in-app:not(.ax-on) .mtab a,
-  html:root body.in-app:not(.ax-on) .mtab .mtab-more {
-    min-height: 44px;
-    gap: 0;
-    padding: 0 6px;
-    border-radius: 999px;
-    background: transparent;
-    color: var(--cp-ink-3);
-    font: 800 12.5px/1 var(--cp-font);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  html:root body.in-app:not(.ax-on) .mtab .mtab-lbl {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-  }
-  html:root body.in-app:not(.ax-on) .mtab a.on {
-    background: var(--cp-primary-soft);
-    color: var(--cp-primary-ink);
-    box-shadow: 0 2px 0 var(--cp-primary);
-  }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center {
-    transform: none;
-    background: var(--cp-primary-strong);
-    color: #FFFFFF;
-    box-shadow: 0 3px 0 var(--v4-btn-lip);
-  }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-lbl { color: #FFFFFF; }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center.on { background: var(--cp-primary-strong); color: #FFFFFF; box-shadow: 0 3px 0 var(--v4-btn-lip); }
-}
-@media (max-width: 360px) {
-  html:root body.in-app:not(.ax-on) .mtab { gap: 2px; }
-  html:root body.in-app:not(.ax-on) .mtab a,
-  html:root body.in-app:not(.ax-on) .mtab .mtab-more { font-size: 10.5px; padding: 0 3px; }
+/* ---------- Giai đoạn 26: Mobile UI/UX Redesign — Header, Bottom Nav, Chibi Mascots, Hero Banner, Dashboard (06, 51, 59) ---------- */
+
+/* Ẩn các phần tử header di động trên máy tính */
+html body.in-app .topbar .m-top-back,
+html body.in-app .topbar .m-top-titles,
+html body.in-app .topbar .m-top-more,
+html body.in-app #main .hm-bell-btn,
+html body.in-app #main .hm-more-btn {
+  display: none;
 }
 
-/* ---------- Giai đoạn 27: tương thích trình duyệt và WebView trên điện thoại ----------
-   Ô nhập tối thiểu 16px: iOS Safari và Android WebView không tự phóng to khi chạm vào ô nhập,
-   nên bố cục không bị lệch sau khi nhập. Áp dụng cho điện thoại dọc và ngang. */
+/* Chibi Mascot Kit (.cm-kit) & Reusable Sky-Blue Hero Banner (.lr-hero-banner) */
+html body .cm-wrap.cm-kit {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+html body .cm-wrap.cm-kit .cm-img {
+  display: block;
+  width: var(--cm-size, 64px);
+  height: var(--cm-size, 64px);
+  object-fit: contain;
+}
+html body .cm-wrap.cm-kit .cm-img.is-circle {
+  border-radius: 50%;
+  background: var(--cm-bg, #EAF4FB);
+  padding: 2px;
+}
+
+html body #main .lr-hero-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #4B9CD3 0%, #68B4E5 100%);
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(63, 151, 211, .22);
+  margin-bottom: 16px;
+}
+html body #main .lr-hero-pill {
+  background: rgba(255, 255, 255, .92);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+html body #main .lr-hero-pill span {
+  font: 800 11.5px/1.2 var(--cp-font);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #2A78B0;
+}
+html body #main .lr-hero-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+html body #main .lr-hero-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+html body #main .lr-hero-copy h2 {
+  margin: 0;
+  font: 900 22px/1.2 var(--cp-font) !important;
+  color: #FFFFFF !important;
+}
+html body #main .lr-hero-copy p {
+  margin: 0;
+  font: 600 13.5px/1.4 var(--cp-font);
+  color: rgba(255, 255, 255, .92);
+}
+html body #main .lr-hero-art img {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(15, 36, 56, .16));
+}
+
+/* Hộp tìm kiếm nhanh (59-menu-tim-kiem.webp) */
+html body .modal.palette {
+  max-width: 520px;
+  width: calc(100vw - 24px);
+  padding: 18px !important;
+  border-radius: 24px !important;
+  background: var(--cp-surface, #FFFFFF) !important;
+}
+html body .modal.palette .pal-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--cp-border, #E6EAF0);
+}
+html body .modal.palette .pal-titles {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+html body .modal.palette .pal-titles b {
+  font: 800 18px/1.2 var(--cp-font);
+  color: var(--cp-ink, #162B3D);
+}
+html body .modal.palette .pal-titles small {
+  font: 600 12.5px/1.2 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+}
+html body .modal.palette .pal-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+html body .modal.palette .pal-search-ic {
+  position: absolute;
+  left: 14px;
+  color: var(--cp-ink-3, #64748B);
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+html body .modal.palette .pal-search-ic svg { width: 18px; height: 18px; }
+html body .modal.palette .pal-search-box input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px 0 42px !important;
+  border-radius: 16px !important;
+  border: 1.5px solid #59A9DF !important;
+  background: var(--cp-surface, #FFFFFF) !important;
+  font: 600 15px/1.3 var(--cp-font) !important;
+  color: var(--cp-ink, #162B3D) !important;
+}
+html body .modal.palette .pal-sec-lbl {
+  font: 800 11.5px/1.2 var(--cp-font);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cp-ink-3, #64748B);
+  margin: 4px 0 10px;
+}
+html body .modal.palette .pal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  max-height: 44dvh;
+  overflow-y: auto;
+}
+html body .modal.palette .pal-card {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--cp-border, #E6EAF0) !important;
+  background: var(--cp-surface, #FFFFFF) !important;
+  color: var(--cp-ink, #162B3D) !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 8px rgba(22, 43, 61, .03);
+}
+html body .modal.palette .pal-card .ico-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: #EAF4FB;
+  color: #1E6FA8;
+}
+html body .modal.palette .pal-card .ico-box svg { width: 22px; height: 22px; }
+html body .modal.palette .pal-card .t { display: grid; gap: 2px; min-width: 0; }
+html body .modal.palette .pal-card .t b {
+  font: 800 15px/1.25 var(--cp-font);
+  color: var(--cp-ink, #162B3D);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html body .modal.palette .pal-card .t span {
+  font: 600 12.5px/1.3 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html body .modal.palette .pal-arr {
+  font: 700 20px/1 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+}
+html body .modal.palette .pal-explore {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+html body .modal.palette .pal-explore h3 {
+  margin: 0 0 2px;
+  font: 800 18px/1.2 var(--cp-font);
+  color: var(--cp-ink, #162B3D);
+}
+
+/* Cổ Vũ · Kế hoạch ngày (51-co-vu-ke-hoach-ngay.webp) */
+html body #main .hm-cheer-week,
+html body #main .hm-cheer-tasks {
+  margin-top: 16px;
+}
+html body #main .hm-cheer-week-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+html body #main .hm-cheer-week-head h2,
+html body #main .hm-cheer-tasks > h2 {
+  margin: 0;
+  font: 800 18px/1.25 var(--cp-font) !important;
+  color: var(--cp-ink, #162B3D) !important;
+}
+html body #main .hm-cheer-week-head span {
+  font: 600 13px/1.2 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+}
+html body #main .hm-cheer-week-card {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  padding: 16px 12px;
+  border-radius: 22px;
+  border: 1px solid var(--cp-border, #E6EAF0);
+  background: var(--cp-surface, #FFFFFF);
+  box-shadow: var(--v4-shadow);
+}
+html body #main .hm-cw-day {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+html body #main .hm-cw-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #F1F5F9;
+  color: #64748B;
+  font: 800 12px/1 var(--cp-font);
+}
+html body #main .hm-cw-day.is-done .hm-cw-dot {
+  background: #E7F6EC;
+  color: #1F9D55;
+  font-size: 14px;
+}
+html body #main .hm-cw-day.is-today .hm-cw-dot {
+  box-shadow: 0 0 0 2px #3F97D3;
+}
+html body #main .hm-cw-day em {
+  font: 600 12px/1 var(--cp-font);
+  font-style: normal;
+  color: var(--cp-ink-3, #64748B);
+}
+html body #main .hm-cheer-task-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+html body #main .hm-cheer-task {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--cp-border, #E6EAF0);
+  background: var(--cp-surface, #FFFFFF);
+  box-shadow: var(--v4-shadow);
+  color: var(--cp-ink, #162B3D);
+  text-decoration: none;
+}
+html body #main .hm-ct-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: #EAF4FB;
+  color: #162B3D;
+  font: 900 18px/1 var(--cp-font);
+}
+html body #main .hm-ct-ic svg { width: 22px; height: 22px; }
+html body #main .hm-ct-body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+html body #main .hm-ct-body b {
+  font: 800 15.5px/1.25 var(--cp-font);
+  color: var(--cp-ink, #162B3D);
+}
+html body #main .hm-ct-body small {
+  font: 600 12.5px/1.3 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+}
+html body #main .hm-ct-arr {
+  font: 700 20px/1 var(--cp-font);
+  color: var(--cp-ink-3, #64748B);
+}
+
+/* ---------- Bố cục Điện thoại Chuẩn Tham Chiếu (<= 760px) ---------- */
+html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
   html body.in-app:not(.ax-on) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]), select, textarea) {
     font-size: 16px;
   }
-}
-/* Mục tiêu chạm tối thiểu 44px trên thanh trên và chip môn học (chuẩn iOS; Android khuyến nghị 48dp) */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) .topbar :is(button, a) { min-width: 44px; min-height: 44px; }
-  html:root body.in-app:not(.ax-on) .topbar .lx-subj,
-  html:root body.in-app:not(.ax-on) .topbar a.side-subj-swap { min-height: 44px; }
-}
-
-/* Mục tiêu chạm 44px: nút điều hướng dưới, nút trò chuyện AI và nút nhỏ trong bài học */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 44px; }
+  html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 42px; }
   html:root body.in-app:not(.ax-on) #main .sp-back,
   html:root body.in-app:not(.ax-on) #main .sp-tool,
-  html:root body.in-app:not(.ax-on) #main .sp-round { min-width: 44px; min-height: 44px; }
-}
-/* Chấm chỉ vị trí cuộn ngang: hình chấm giữ 10px nhưng vùng chạm 44px (đệm trong, lề âm để không đổi bố cục) */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) #main .hdots button,
-  html:root body.in-app:not(.ax-on) #main .hdots > * {
-    padding: 20px;
-    margin: -20px 0;
-    background-clip: content-box;
-  }
+  html:root body.in-app:not(.ax-on) #main .sp-round,
   html:root body.in-app:not(.ax-on) #main .sp-mini { min-width: 44px; min-height: 44px; }
-}
-/* Nút đóng bong bóng bạn đồng hành: hình 22px, vùng chạm 44px */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
   html:root body.in-app:not(.ax-on) .cp-follow-x { box-sizing: content-box; width: 22px; height: 22px; padding: 11px; margin: -11px; background-clip: content-box; }
+
+  /* 1. Thanh Header Di Động trên các trang trong (07–59):
+     Trái: Nút < tròn (#F3F6FA) · Giữa: Tiêu đề đậm + Phụ đề vai trò · Phải: Chuông + Nút ••• tròn */
+  html:root body.in-app:not(.ax-on) .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 62px;
+    padding: 8px 14px;
+    background: var(--cp-surface, #FFFFFF);
+    border-bottom: 1px solid var(--cp-border, #E6EAF0);
+    box-shadow: none;
+  }
+  html:root body.in-app:not(.ax-on) .topbar > :is(#menuBtn, .top-brand, #crumbs, .spacer, #searchBtn, #streakBadge, .theme-btn, #udUserWrap) {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) .topbar .m-top-back,
+  html:root body.in-app:not(.ax-on) .topbar .m-top-more {
+    display: inline-grid !important;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid #E6EAF0;
+    background: #F4F7FA;
+    color: var(--cp-ink, #162B3D);
+    padding: 0;
+  }
+  html:root body.in-app:not(.ax-on) .topbar .m-top-titles {
+    display: grid !important;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 1px;
+  }
+  html:root body.in-app:not(.ax-on) .topbar #mTopTitle {
+    font: 800 17.5px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app:not(.ax-on) .topbar #mTopSub {
+    font: 600 12px/1.25 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app:not(.ax-on) .topbar #udBellWrap .ud-bell {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    border: 1px solid #E6EAF0;
+    background: #F4F7FA;
+  }
+
+  /* Trên trang Tổng quan học viên (06-tong-quan-hoc-vien.webp): ẩn topbar chung vì lời chào + avatar + chuông nằm ngay đầu trang */
+  html:root body.in-app.is-student-home:not(.ax-on) .topbar {
+    display: none !important;
+  }
+
+  /* 2. Trang Tổng quan Học viên (06-tong-quan-hoc-vien.webp) */
+  html:root body.in-app:not(.ax-on) #main .hm-desk-only,
+  html:root body.in-app:not(.ax-on) #main .hm-cb-badges,
+  html:root body.in-app:not(.ax-on) #main .hm-cb-right > .hm-star-pill,
+  html:root body.in-app:not(.ax-on) #main .hm-cb-right > .hm-link {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-is-cheer .hm-chibi-banner,
+  html:root body.in-app:not(.ax-on) #main .hm-is-cheer .hm-missions-row {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--cp-border, #E6EAF0) !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 6px 0 14px !important;
+    margin-bottom: 4px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner .hm-cb-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-top-avatar-wrap {
+    flex: none;
+    display: block;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #F1F5F9;
+    border: 1.5px solid #E2E8F0;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-top-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 {
+    margin: 0;
+    font: 900 22px/1.2 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-greet-sub {
+    margin: 2px 0 0 !important;
+    font: 600 13.5px/1.35 var(--cp-font) !important;
+    color: var(--cp-ink-3, #64748B) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-cb-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-bell-btn,
+  html:root body.in-app:not(.ax-on) #main .hm-more-btn {
+    position: relative;
+    display: inline-grid !important;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #F3F6FA;
+    border: 1px solid #E6EAF0;
+    color: var(--cp-ink, #162B3D);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    font: 800 14px/1 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-bell-btn svg {
+    width: 20px;
+    height: 20px;
+    margin-top: -4px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-bell-pill {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 5px;
+    border-radius: 999px;
+    background: #F472B6;
+  }
+
+  /* Thẻ tiến độ hôm nay với vòng tròn 82% bên phải (06-tong-quan-hoc-vien.webp) */
+  html:root body.in-app:not(.ax-on) #main .hm-current {
+    padding: 18px 20px !important;
+    border-radius: 24px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    border-left: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current-head > .hm-flag {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current-title {
+    order: 1;
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-status-title {
+    margin: 0;
+    font: 900 19px/1.25 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current-today {
+    margin: 2px 0 0;
+    font: 600 14px/1.35 var(--cp-font);
+    color: var(--cp-ink-2, #334155);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-current-goal-sub {
+    margin: 0;
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-ring {
+    order: 2;
+    width: 76px !important;
+    height: 76px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-ring svg {
+    width: 76px !important;
+    height: 76px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-ring b {
+    font: 900 15px/1 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D) !important;
+  }
+
+  /* Lưới 2x2 "Bài học của bạn" với 4 nhân vật Chibi (06-tong-quan-hoc-vien.webp) */
+  html:root body.in-app:not(.ax-on) #main .hm-skills {
+    margin-top: 8px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skills-head h2 {
+    font: 900 22px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skills-head .hm-link {
+    font: 700 14px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+    text-decoration: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill {
+    border-radius: 22px !important;
+    border: 1px solid color-mix(in srgb, var(--k) 14%, #E6EAF0) !important;
+    background: color-mix(in srgb, var(--k) 4%, #FFFFFF) !important;
+    box-shadow: 0 4px 14px rgba(22, 43, 61, .04) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-band {
+    height: 96px !important;
+    background: var(--k) !important;
+    padding: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-mascot {
+    width: 82px !important;
+    height: 82px !important;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .14));
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-body {
+    text-align: center;
+    padding: 12px 12px 14px !important;
+    gap: 2px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-body > b {
+    font: 900 16px/1.25 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-body > small {
+    font: 600 12px/1.3 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-bar {
+    height: 7px !important;
+    margin-top: 10px !important;
+    background: #E2E8F0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-skill-foot {
+    text-align: left;
+    flex-direction: row !important;
+    margin-top: 8px !important;
+    font: 700 12.5px/1.2 var(--cp-font) !important;
+  }
 }
 
-/* ---------- Giai đoạn 28: trang chủ và thanh dưới theo ảnh mẫu (điện thoại) ----------
-   Lời chào không nằm trong thẻ, mascot bên phải; thẻ Mục tiêu hằng ngày và Khóa học dùng số liệu thật;
-   thanh dưới có icon, nút Học tập nổi ở giữa. Desktop không đổi. */
-html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: block; }
-  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner { background: transparent; border: 0; box-shadow: none; padding: 4px 2px 0; }
-  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner .hm-cb-left { flex-direction: row-reverse; justify-content: space-between; align-items: flex-start; }
-  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 { font-size: 26px; line-height: 1.15; font-weight: 900; }
-  html:root body.in-app:not(.ax-on) #main .hm-streak .hm-week { display: none; }
+/* ---------- Giai đoạn 27 (Phase 3): Lý thuyết (10), Bài tập (11), Luyện nói (12, 13), Hội thoại AI (14, 15), Luyện viết (52), AI Tutor (57) ---------- */
+html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-studio-kicker, .sp-m-tip-card, .sp-m-score-btn, .sp-listen-pill, .sp-chat-coach, .ai-m-top, .lx-say-pill, .lx-say-sent, .lx-rev-m-head, .lx-flash-top, .lx-flash-reveal, .cg-m-head, .cg-m-streak-card, .iv-m-card, .iv-m-kpis, .toeic-m-hero, .toeic-m-kpis, .toeic-m-struct, .lx-cert-featured, .lx-cert-next, .lx-lb-hero, .lx-lb-av, .nt-m-toolbar, .pf-m-hero, .pf-m-kpis, .pf-m-nav, .plan-m-top, .plan-m-perks, .cl-m-head, .cl-m-card-top, .cl-m-quick, .cl-m-hero, .cl-m-kpis, .tc-m-head, .tc-m-actions, .tc-m-stu-av, .fam-m-head, .fam-m-card, .fam-m-recent) {
+  display: none;
+}
 
-  html:root body.in-app:not(.ax-on) #main .hm-daily,
-  html:root body.in-app:not(.ax-on) #main .hm-courses {
-    margin-top: 14px;
-    padding: 18px;
-    background: var(--cp-surface);
-    border: 1.5px solid var(--cp-border);
-    border-radius: 22px;
-    box-shadow: 0 3px 0 var(--cp-border);
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  /* 10-chi-tiet-bai-hoc.webp: Lý thuyết bài học */
+  html:root body.in-app:not(.ax-on) #main .lx-theory > .page-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-th-hero {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-head,
-  html:root body.in-app:not(.ax-on) #main .hm-courses-head {
+  html:root body.in-app:not(.ax-on) #main .lx-th-kicker,
+  html:root body.in-app:not(.ax-on) #main .sp-m-studio-kicker span {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2577B0;
+    font: 800 12px/1.2 var(--cp-font);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-th-hero h1 {
+    margin: 4px 0 0;
+    font: 900 26px/1.2 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-th-sub {
+    margin: 0;
+    font: 600 14px/1.45 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-vocab-sec {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab tbody tr {
+    padding: 16px !important;
+    border-radius: 22px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
+    row-gap: 6px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ipa-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #F1F5F9;
+    color: #475569;
+    font: 600 12.5px/1.2 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-say-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 0;
+    background: #EAF4FB;
+    color: #1E6FA8;
+    font: 800 13px/1 var(--cp-font);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main table.lx-vocab td:last-child > .lx-say { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-sent-sec .lx-sent {
+    display: grid;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    margin-top: 8px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-sent-sec .lx-sent > .lx-say { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-say-sent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 0 16px;
+    margin-top: 8px;
+    border-radius: 999px;
+    border: 1px solid var(--cp-border-strong, #DCE3EC);
+    background: var(--cp-surface, #FFFFFF);
+    color: var(--cp-ink, #162B3D);
+    font: 700 13.5px/1 var(--cp-font);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-note-card {
+    background: #FFF9EB !important;
+    border: 1px solid #FDE68A !important;
+    border-radius: 22px !important;
+    padding: 16px 18px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-note-p {
+    margin: 6px 0 0;
+    font: 600 14px/1.45 var(--cp-font);
+    color: var(--cp-ink-2, #334155);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-th-cta-wrap {
+    margin: 14px 0;
+  }
+
+  /* 11-bai-tap-tuong-tac.webp: Bài tập tương tác */
+  html:root body.in-app:not(.ax-on) #main .lx-ex-top-meta {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-ex-top-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-head h2,
-  html:root body.in-app:not(.ax-on) #main .hm-courses-head h2 { font-size: 18px; font-weight: 800; margin: 0; }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-streak {
-    font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: var(--cp-warm, #FFF4D6);
+  html:root body.in-app:not(.ax-on) #main .lx-ex-pill {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2577B0;
+    font: 800 12px/1 var(--cp-font);
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-row {
-    display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px;
-    font-size: 16px; color: var(--cp-ink-3);
+  html:root body.in-app:not(.ax-on) #main .lx-ex-cnt {
+    font: 700 13.5px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-row b { color: var(--cp-primary-ink); font-weight: 800; }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-bar {
-    height: 10px; margin-top: 10px; border-radius: 999px; background: var(--cp-surface-2); overflow: hidden;
+  html:root body.in-app:not(.ax-on) #main .lx-ex-prog {
+    height: 7px;
+    border-radius: 999px;
+    background: #E2E8F0;
+    overflow: hidden;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-bar i {
-    display: block; height: 100%; border-radius: inherit; background: var(--cp-primary);
+  html:root body.in-app:not(.ax-on) #main .lx-ex-prog i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #3F97D3;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-daily .hm-week { margin-top: 16px; }
-
-  html:root body.in-app:not(.ax-on) #main .hm-courses-add {
-    display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 12px;
-    background: var(--cp-ink); color: #FFFFFF; font-weight: 800; font-size: 15px; text-decoration: none;
+  html:root body.in-app:not(.ax-on) #main .lx-q {
+    padding: 18px !important;
+    border-radius: 24px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: var(--v4-shadow) !important;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-course-row {
-    display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center;
-    padding: 12px 0; border-top: 1px solid var(--cp-border); color: var(--cp-ink); text-decoration: none;
+  html:root body.in-app:not(.ax-on) #main .lx-q-kicker {
+    font: 800 11.5px/1.2 var(--cp-font);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--cp-ink-3, #64748B);
+    margin-bottom: 6px;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-course-row:first-of-type { border-top: 0; margin-top: 10px; }
-  html:root body.in-app:not(.ax-on) #main .hm-course-flag {
-    width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center;
-    background: color-mix(in srgb, var(--c, #6753E0) 16%, var(--cp-surface)); font-size: 22px;
+  html:root body.in-app:not(.ax-on) #main .lx-opts,
+  html:root body.in-app:not(.ax-on) #main .lx-opts.lx-opts-short {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-top: 12px;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-course-t { display: grid; gap: 2px; min-width: 0; }
-  html:root body.in-app:not(.ax-on) #main .hm-course-t b { font-size: 16px; font-weight: 800; }
-  html:root body.in-app:not(.ax-on) #main .hm-course-t small { font-size: 13px; color: var(--cp-ink-3); }
-  html:root body.in-app:not(.ax-on) #main .hm-course-go { font-size: 22px; color: var(--cp-ink-3); }
-  html:root body.in-app:not(.ax-on) #main .hm-courses-empty { margin: 10px 0 0; color: var(--cp-ink-3); font-size: 14px; }
-
-  /* Thanh dưới: icon, nút Học tập tròn nổi ở giữa */
-  html:root body.in-app:not(.ax-on) .mtab {
-    background: var(--cp-surface);
-    border-radius: 28px;
-    padding: 6px 8px;
-    box-shadow: 0 8px 22px rgba(48, 48, 71, .12);
+  html:root body.in-app:not(.ax-on) #main .lx-opt {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-height: 54px !important;
+    padding: 12px 14px !important;
+    border-radius: 18px !important;
+    border: 1.5px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    box-shadow: none !important;
+    font: 700 15px/1.3 var(--cp-font) !important;
   }
-  html:root body.in-app:not(.ax-on) .mtab a,
-  html:root body.in-app:not(.ax-on) .mtab .mtab-more {
-    gap: 3px;
-    font-size: 11px;
-    min-height: 52px;
+  html:root body.in-app:not(.ax-on) #main .lx-opt.sel {
+    border-color: #3F97D3 !important;
+    background: #EAF4FB !important;
+    color: var(--cp-ink, #162B3D) !important;
   }
-  html:root body.in-app:not(.ax-on) .mtab .mtab-ic {
+  html:root body.in-app:not(.ax-on) #main .lx-opt-let {
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: 50%;
+    border: 1.5px solid #CBD5E1;
+    background: #F8FAFC;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 28px;
+    font: 800 13px/1 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-opt.sel .lx-opt-let {
+    border-color: #3F97D3;
+    background: #FFFFFF;
+    color: #1E6FA8;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-opt-txt {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* 12-luyen-noi-hub.webp & 14-hoi-thoai-ai.webp: Speaking Lab & Rivo AI Coach */
+  html:root body.in-app:not(.ax-on) #main .sp-m-hub,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach,
+  html:root body.in-app:not(.ax-on) #main .ai-m-top {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-hero { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .sp-m-hub h1 {
+    margin: 0;
+    font: 900 24px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-sub {
+    margin: -6px 0 2px;
+    font: 600 14px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-card {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 24px;
+    border: 1px solid #DCE8F3;
+    background: #F2F8FD;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-top,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-img,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    object-fit: contain;
+    background: #EAF4FB;
+    padding: 4px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-copy,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach-copy {
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    gap: 3px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-copy b,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach-copy b {
+    font: 900 19px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lab-copy span,
+  html:root body.in-app:not(.ax-on) #main .sp-m-coach-copy span {
+    font: 600 13.5px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-lv-pill {
+    padding: 8px 16px;
     border-radius: 999px;
-    background: transparent;
-    box-shadow: none;
+    background: #EAF4FB;
+    color: #2577B0;
+    font: 800 14px/1 var(--cp-font);
+    font-style: normal;
   }
-  html:root body.in-app:not(.ax-on) .mtab .mtab-ic svg { width: 22px !important; height: 22px !important; }
-  html:root body.in-app:not(.ax-on) .mtab a.on { background: transparent; box-shadow: none; }
-  html:root body.in-app:not(.ax-on) .mtab a.on .mtab-ic { background: var(--cp-primary-soft); }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center { transform: translateY(-18px); background: transparent; box-shadow: none; }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic {
-    width: 60px;
-    height: 60px;
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-list {
+    display: grid;
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-row {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    box-shadow: var(--v4-shadow);
+    color: var(--cp-ink, #162B3D);
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-ic,
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-ic {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: #EAF4FB;
+    color: #162B3D;
+    font-size: 20px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-txt,
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-txt {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-txt b,
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-txt b {
+    font: 800 15.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-mode-txt small,
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-txt small {
+    font: 600 12.5px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-arr {
+    font: 700 20px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-card {
+    padding: 18px;
+    border-radius: 24px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    box-shadow: var(--v4-shadow);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-card h2 {
+    margin: 0 0 10px;
+    font: 900 19px/1.25 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-row {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--cp-border, #E6EAF0);
+    color: var(--cp-ink, #162B3D);
+    text-decoration: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-scene-row:first-of-type { border-top: 0; }
+  html:root body.in-app:not(.ax-on) #main .sp-m-goal-card,
+  html:root body.in-app:not(.ax-on) #main .ai-m-welcome {
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: #F2F8FD;
+    border: 1px solid #DCE8F3;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-goal-card b,
+  html:root body.in-app:not(.ax-on) #main .ai-m-welcome h2 {
+    display: block;
+    margin: 0 0 4px;
+    font: 900 18px/1.25 var(--cp-font) !important;
+    color: var(--cp-ink, #162B3D) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-goal-card p,
+  html:root body.in-app:not(.ax-on) #main .ai-m-welcome p {
+    margin: 0;
+    font: 600 13.5px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .ai-m-quick h3 {
+    margin: 0 0 8px;
+    font: 800 18px/1.25 var(--cp-font) !important;
+  }
+
+  /* 13-luyen-noi-studio.webp: Phòng luyện phát âm */
+  html:root body.in-app:not(.ax-on) #main .sp-m-studio-kicker {
+    display: block;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-studio .sp-card {
+    text-align: center;
+    padding: 24px 18px !important;
+    border-radius: 24px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-listen-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 22px;
+    margin: 12px auto 6px;
+    border-radius: 999px;
+    border: 0;
+    background: #EAF4FB;
+    color: #1E6FA8;
+    font: 800 14px/1 var(--cp-font);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-studio .sp-mic {
+    width: 82px;
+    height: 82px;
     border-radius: 50%;
-    background: var(--cp-primary-strong);
-    color: #FFFFFF;
-    box-shadow: 0 6px 16px rgba(103, 83, 224, .35), 0 3px 0 var(--v4-btn-lip);
+    background: #3F97D3 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 0 0 8px #EAF4FB, 0 8px 20px rgba(63, 151, 211, .28) !important;
   }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic svg { color: #FFFFFF; }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-lbl {
-    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  html:root body.in-app:not(.ax-on) #main .sp-m-tip-card {
+    display: grid;
+    gap: 4px;
+    padding: 16px 18px !important;
+    margin-top: 12px;
+    border-radius: 22px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
   }
-}
-/* Lời chào trên điện thoại: không có khung, ghi đè các lớp thẻ chung */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner { background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
-}
-/* Thanh dưới theo ảnh mẫu: icon nét đơn, mục đang mở chỉ đổi màu (không có nền) */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) .mtab .mtab-ic { background: transparent !important; }
-  html:root body.in-app:not(.ax-on) .mtab a.on .mtab-ic { background: transparent !important; color: var(--cp-primary-ink); }
-  html:root body.in-app:not(.ax-on) .mtab .mtab-ic .line-ic { width: 24px !important; height: 24px !important; color: inherit; }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic .line-ic { color: #FFFFFF; width: 26px !important; height: 26px !important; }
-  html:root body.in-app:not(.ax-on) .mtab a.mtab-center .mtab-ic { background: var(--cp-primary-strong) !important; }
-}
+  html:root body.in-app:not(.ax-on) #main .sp-m-tip-card b {
+    font: 800 17px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-tip-card p {
+    margin: 0;
+    font: 600 13.5px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-m-score-btn {
+    display: inline-flex !important;
+    margin-top: 12px;
+  }
 
-/* ---------- Giai đoạn 29: cỡ chữ và số liệu trên trang chủ điện thoại ----------
-   Cỡ chữ vừa màn 375px: tiêu đề 22px, mục 17px, nội dung 15px, nhãn 12px; số liệu học tập dạng lưới 2 cột. */
-@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html:root body.in-app:not(.ax-on) #main h1 { font-size: 22px; line-height: 1.2; font-weight: 800; }
-  html:root body.in-app:not(.ax-on) #main h2 { font-size: 17px; line-height: 1.3; font-weight: 800; }
-  html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 { font-size: 22px; line-height: 1.2; font-weight: 800; }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-head h2,
-  html:root body.in-app:not(.ax-on) #main .hm-courses-head h2 { font-size: 17px; }
-  html:root body.in-app:not(.ax-on) #main .hm-daily-row { font-size: 15px; }
-  html:root body.in-app:not(.ax-on) #main .hm-greet-sub { font-size: 14px; }
-  html:root body.in-app:not(.ax-on) #main .hm-course-t b { font-size: 15px; }
-  html:root body.in-app:not(.ax-on) #main .hm-course-t small { font-size: 12px; }
+  /* 15-ong-chat-ai.webp: Màn hình chat AI */
+  html:root body.in-app:not(.ax-on) #main .sp-chat-coach {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat-coach-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #EAF4FB;
+    border: 1.5px solid #DCE8F3;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat-coach-info {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat-coach-info b {
+    font: 900 18px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat-coach-info span {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-msg.ai .sp-bub {
+    background: #F1F5F9 !important;
+    border-radius: 18px !important;
+    border: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-msg.me .sp-bub {
+    background: #EAF4FB !important;
+    color: #162B3D !important;
+    border-radius: 18px !important;
+    border: 0 !important;
+  }
 
-  html:root body.in-app:not(.ax-on) #main .hm-kpis {
+  /* 52-luyen-viet.webp: Luyện viết chữ */
+  html:root body.in-app:not(.ax-on) #main .lx-write > .page-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-write-info {
+    display: grid !important;
+    justify-items: center;
+    text-align: center;
+    padding: 18px;
+    border-radius: 22px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-write-ch {
+    font-size: 64px !important;
+    line-height: 1.1;
+    color: #3F97D3 !important;
+    font-weight: 800;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-write-sec-h {
+    margin: 8px 0;
+    font: 800 18px/1.25 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-canvas-wrap {
+    border: 1.5px dashed #CBD5E1 !important;
+    border-radius: 22px !important;
+    background: #F8FAFC !important;
+    overflow: hidden;
+  }
+
+  /* ---------- PHASE 4: Ôn tập, Sổ tay, Trò chơi, Phỏng vấn, TOEIC, Thành tích, Cá nhân ---------- */
+  /* 16-on-tap.webp: Ôn tập SRS */
+  html:root body.in-app:not(.ax-on) #main .lx-review-page > .page-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-m-head {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-m-head h1 {
+    margin: 0;
+    font: 900 26px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+    letter-spacing: -0.02em;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-m-head p {
+    margin: 0 0 8px;
+    font: 500 14.5px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-kpis,
+  html:root body.in-app:not(.ax-on) #main .iv-m-kpis,
+  html:root body.in-app:not(.ax-on) #main .toeic-m-kpis,
+  html:root body.in-app:not(.ax-on) #main .pf-m-kpis {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
-    margin-top: 14px;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-kpi {
+  html:root body.in-app:not(.ax-on) #main .lx-rev-kpi,
+  html:root body.in-app:not(.ax-on) #main .iv-m-kpi,
+  html:root body.in-app:not(.ax-on) #main .toeic-m-kpi,
+  html:root body.in-app:not(.ax-on) #main .pf-m-kpi {
     display: grid;
     gap: 4px;
-    padding: 14px;
-    background: var(--cp-surface);
-    border: 1.5px solid var(--cp-border);
+    padding: 14px 16px;
     border-radius: 18px;
-    box-shadow: 0 3px 0 var(--cp-border);
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    box-shadow: 0 2px 10px rgba(22, 43, 61, 0.03);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-kpi b,
+  html:root body.in-app:not(.ax-on) #main .iv-m-kpi b,
+  html:root body.in-app:not(.ax-on) #main .toeic-m-kpi b,
+  html:root body.in-app:not(.ax-on) #main .pf-m-kpi b {
+    font: 900 24px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-rev-kpi span,
+  html:root body.in-app:not(.ax-on) #main .iv-m-kpi span,
+  html:root body.in-app:not(.ax-on) #main .toeic-m-kpi span,
+  html:root body.in-app:not(.ax-on) #main .pf-m-kpi span {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-flash {
+    display: grid !important;
+    gap: 10px;
+    padding: 18px !important;
+    border-radius: 22px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    text-align: center;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-flash-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-flash-reading {
+    font: 600 15px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-flash-reveal {
+    min-height: 48px !important;
+    border-radius: 16px !important;
+    background: #3F97D3 !important;
+    color: #FFFFFF !important;
+    font: 800 15.5px/1 var(--cp-font) !important;
+    margin-top: 8px;
+  }
+
+  /* 17-so-tay.webp: Sổ tay từ vựng */
+  html:root body.in-app:not(.ax-on) #main .lx-notebook > .page-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    min-height: 48px;
+    border-radius: 16px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-search {
+    flex: 1 1 0;
+    border: 0 !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 10px 0 !important;
+    font: 600 15px/1.3 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-select {
+    max-width: 180px;
+    padding: 6px 12px !important;
+    border-radius: 999px !important;
+    font: 700 13px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-word {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    margin-bottom: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #EAF4FB;
+    font-size: 20px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-txt {
+    display: grid !important;
+    gap: 2px;
+    flex: 1 1 0;
     min-width: 0;
   }
-  html:root body.in-app:not(.ax-on) #main .hm-kpi b {
-    font-size: 22px; font-weight: 800; color: var(--cp-ink); font-variant-numeric: tabular-nums;
+  html:root body.in-app:not(.ax-on) #main .lx-nb-txt b {
+    font: 800 17px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
   }
-  html:root body.in-app:not(.ax-on) #main .hm-kpi span { font-size: 12px; color: var(--cp-ink-3); line-height: 1.3; }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-read {
+    font: 600 13px/1.25 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-nb-mean {
+    font: 600 14.5px/1.35 var(--cp-font);
+    color: var(--cp-ink-2, #334155);
+  }
+
+  /* 18-tro-choi.webp: Trò chơi học tập */
+  html:root body.in-app:not(.ax-on) #main .cg-page > .cg-hero { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .cg-m-head {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-head h1 {
+    margin: 0;
+    font: 900 26px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-head p {
+    margin: 0;
+    font: 500 14.5px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-game-card {
+    padding: 14px !important;
+    border-radius: 20px !important;
+    background: var(--tint, #F3EFFF) !important;
+    border: 1px solid rgba(22, 43, 61, 0.06) !important;
+    text-align: left;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-game-foot em {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: var(--cp-ink, #162B3D);
+    font: 800 12.5px/1 var(--cp-font);
+    font-style: normal;
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card {
+    display: grid;
+    gap: 4px;
+    margin-top: 14px;
+    border-radius: 20px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card b {
+    font: 800 16.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card p {
+    margin: 0;
+    font: 500 14px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 19-phong-van.webp: Luyện phỏng vấn */
+  html:root body.in-app:not(.ax-on) #main .iv-m-card {
+    display: grid;
+    gap: 12px;
+    padding: 18px !important;
+    border-radius: 22px !important;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-card h2 {
+    margin: 0;
+    font: 900 22px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-card > p {
+    margin: -4px 0 4px;
+    font: 500 14px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-field {
+    display: grid;
+    gap: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-field span {
+    font: 600 12.5px/1.2 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-start {
+    min-height: 50px !important;
+    border-radius: 16px !important;
+    background: #3F97D3 !important;
+    font: 800 16px/1 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-kpis {
+    margin-bottom: 14px;
+  }
+
+  /* 20-luyen-thi-toeic.webp: Luyện thi TOEIC */
+  html:root body.in-app:not(.ax-on) #main .toeic-m-hero {
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-kpis {
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-stats { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct h2 {
+    margin: 0;
+    font: 800 18px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-list {
+    display: grid;
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    text-decoration: none;
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 20px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-ico.is-listen { background: #EAF4FB; }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-ico.is-read { background: #F3EFFF; }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-ico.is-mock { background: #FFF3E8; }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-copy {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-copy b {
+    font: 800 15.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-copy span {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .toeic-m-struct-arr {
+    font: 700 20px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 21-chung-nhan.webp, 22-xep-hang.webp, 23-huy-hieu.webp: Thành tích */
+  html:root body.in-app:not(.ax-on) #main .lx-cert-featured {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 8px;
+    padding: 22px 18px;
+    border-radius: 22px;
+    border: 1.5px solid #F3D9A4;
+    background: #FFFBF2;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-ico { font-size: 40px; line-height: 1; }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-featured h2 {
+    margin: 0;
+    font: 900 20px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-featured p {
+    margin: 0;
+    font: 500 14px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-tag {
+    display: inline-flex;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2B7CB8;
+    font: 800 12px/1 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-tag.is-done {
+    background: #E7F8EF;
+    color: #169C5D;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-btn {
+    min-height: 46px !important;
+    border-radius: 16px !important;
+    background: #3F97D3 !important;
+    color: #FFFFFF !important;
+    margin-top: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-next {
+    display: grid;
+    gap: 6px;
+    border-radius: 20px !important;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 20px;
+    border: 1.5px solid #F3D9A4;
+    background: #FFFBF2;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-hero-ico { font-size: 32px; flex: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-hero b {
+    display: block;
+    font: 800 16px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-hero span {
+    font: 500 13.5px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-av {
+    display: block;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #EAF4FB;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-badges {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-ach {
+    display: grid !important;
+    justify-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 16px 12px !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(22, 43, 61, 0.06) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-t0 { background: #FFF3E8 !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-t1 { background: #EAF4FB !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-t2 { background: #FFEBF2 !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-t3 { background: #F3EFFF !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-done {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font: 800 11.5px/1 var(--cp-font);
+    font-style: normal;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-done.is-ok {
+    background: #E7F8EF;
+    color: #169C5D;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-ach-done.is-lock {
+    background: rgba(255, 255, 255, 0.85);
+    color: #64748B;
+  }
+
+  /* 24-thong-bao.webp: Thông báo */
+  html:root body.in-app:not(.ax-on) #main .nt-m-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .nt-m-readall {
+    border: 0;
+    background: transparent;
+    color: #3F97D3;
+    font: 800 13.5px/1.2 var(--cp-font);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .nt-m-row {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    margin-bottom: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .nt-m-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 20px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .nt-m-ico.is-blue { background: #EAF4FB; }
+  html:root body.in-app:not(.ax-on) #main .nt-m-ico.is-purple { background: #F3EFFF; }
+  html:root body.in-app:not(.ax-on) #main .nt-m-ico.is-orange { background: #FFF3E8; }
+  html:root body.in-app:not(.ax-on) #main .nt-m-ico.is-green { background: #E7F8EF; }
+  html:root body.in-app:not(.ax-on) #main .nt-m-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3F97D3;
+    flex: none;
+    margin-top: 6px;
+  }
+
+  /* 25-ca-nhan.webp: Cá nhân */
+  html:root body.in-app:not(.ax-on) #main .pf-desk-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .pf-m-hero {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 20px 16px !important;
+    border-radius: 22px !important;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-av img {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #EAF4FB;
+    border: 2px solid #DCE8F3;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-hero h1 {
+    margin: 4px 0 0;
+    font: 900 22px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-hero p {
+    margin: 0;
+    font: 600 13.5px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-badge {
+    display: inline-flex;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2B7CB8;
+    font: 800 12.5px/1 var(--cp-font);
+    margin-top: 4px;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-kpis {
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-nav {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-nav h2 {
+    margin: 0;
+    font: 800 18px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-links {
+    display: grid;
+    gap: 8px;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    text-decoration: none;
+    text-align: left;
+    color: var(--cp-ink, #162B3D);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #F4F7FA;
+    font-size: 18px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-link b {
+    flex: 1 1 0;
+    font: 800 15px/1.25 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .pf-m-arr {
+    font: 700 20px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 26-bang-gia-pro.webp, 27-goi-cua-toi.webp: Bảng giá & Gói của tôi */
+  html:root body.in-app:not(.ax-on) #main .plan-m-card {
+    border-radius: 22px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-active {
+    display: inline-flex;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #E7F8EF;
+    color: #169C5D;
+    font: 800 12px/1 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-perks {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-perks h2 {
+    margin: 0;
+    font: 800 18px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-perk {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 20px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-ico.is-blue { background: #EAF4FB; }
+  html:root body.in-app:not(.ax-on) #main .plan-m-ico.is-green { background: #E7F8EF; }
+  html:root body.in-app:not(.ax-on) #main .plan-m-ico.is-orange { background: #FFF3E8; }
+  html:root body.in-app:not(.ax-on) #main .plan-m-perk b {
+    display: block;
+    font: 800 15.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .plan-m-perk span {
+    font: 500 13px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 28-ho-tro.webp & 58-dat-lai-mat-khau.webp */
+  html:root body.in-app:not(.ax-on) #main .edu-help-hero {
+    display: grid !important;
+    gap: 10px;
+    border-radius: 22px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .edu-help-mascot {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #EAF4FB;
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-card {
+    border-radius: 22px !important;
+    padding: 22px 18px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-mascot {
+    display: grid;
+    place-items: center;
+    margin-bottom: 8px;
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-mascot img {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-card h1 {
+    text-align: center;
+    margin: 0 0 4px;
+    font: 900 22px/1.2 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-card > p {
+    text-align: center;
+    margin: 0 0 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .rst-m-lbl {
+    display: block;
+    font: 800 11px/1.2 var(--cp-font);
+    letter-spacing: 0.08em;
+    color: var(--cp-ink-3, #64748B);
+    margin-bottom: 4px;
+  }
+
+  /* ---------- PHASE 5: Lớp học (29–31, 53), Gia đình (32), Giáo viên (33–35) ---------- */
+  /* 29-lop-cua-toi.webp, 30-chi-tiet-lop.webp, 31-bai-giao-va-kiem-tra.webp, 53-kiem-tra-lop.webp */
+  html:root body.in-app:not(.ax-on) #main .cl-m-head,
+  html:root body.in-app:not(.ax-on) #main .fam-m-head {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-head h1,
+  html:root body.in-app:not(.ax-on) #main .fam-m-head h1 {
+    margin: 0;
+    font: 900 26px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+    letter-spacing: -0.02em;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-head p,
+  html:root body.in-app:not(.ax-on) #main .fam-m-head p {
+    margin: 0;
+    font: 500 14.5px/1.4 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-head + .page-head,
+  html:root body.in-app:not(.ax-on) #main .fam-m-card + .page-head,
+  html:root body.in-app:not(.ax-on) #main .tc-m-head + .page-head {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .class-card {
+    padding: 18px !important;
+    border-radius: 22px !important;
+    border: 1px solid var(--cp-border, #E6EAF0) !important;
+    background: var(--cp-surface, #FFFFFF) !important;
+    gap: 8px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-code {
+    font: 600 12.5px/1.2 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-quick,
+  html:root body.in-app:not(.ax-on) #main .fam-m-recent,
+  html:root body.in-app:not(.ax-on) #main .tc-m-actions {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-recent h2,
+  html:root body.in-app:not(.ax-on) #main .tc-m-actions h2 {
+    margin: 0;
+    font: 800 18px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qrow,
+  html:root body.in-app:not(.ax-on) #main .tc-m-act {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    text-decoration: none;
+    text-align: left;
+    color: var(--cp-ink, #162B3D);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qico,
+  html:root body.in-app:not(.ax-on) #main .tc-m-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #F4F7FA;
+    font-size: 20px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qcopy,
+  html:root body.in-app:not(.ax-on) #main .tc-m-copy {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qcopy b,
+  html:root body.in-app:not(.ax-on) #main .tc-m-copy b {
+    font: 800 15.5px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qcopy span,
+  html:root body.in-app:not(.ax-on) #main .tc-m-copy span {
+    font: 500 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-qarr,
+  html:root body.in-app:not(.ax-on) #main .tc-m-arr {
+    font: 700 20px/1 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-hero {
+    display: flex !important;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-kpi {
+    display: grid;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-kpi b {
+    font: 900 24px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-kpi span {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-intro h1 {
+    margin: 8px 0 4px;
+    font: 900 24px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-m-req-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid #EEF2F6;
+    font: 600 14.5px/1.3 var(--cp-font);
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-opts {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-opt {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px !important;
+    border-radius: 16px;
+    border: 1px solid var(--cp-border, #E6EAF0);
+    background: var(--cp-surface, #FFFFFF);
+    cursor: pointer;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-opt input[type="radio"] {
+    display: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) {
+    border-color: #3F97D3;
+    background: #EAF4FB;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) .lx-opt-let {
+    background: #3F97D3;
+    border-color: #3F97D3;
+    color: #FFFFFF;
+  }
+
+  /* 32-gia-dinh.webp: Gia đình / phụ huynh */
+  html:root body.in-app:not(.ax-on) #main .fam-m-card {
+    display: grid;
+    border-radius: 22px !important;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-av {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    object-fit: cover;
+    background: #FFEBF2;
+    border: 1.5px solid #FBCFE8;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-info {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-info b {
+    font: 900 18px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .fam-m-info span {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+
+  /* 33-giao-vien-dashboard.webp, 34-hoc-vien-cua-toi.webp, 35-quan-ly-lop-giao-vien.webp */
+  html:root body.in-app:not(.ax-on) #main .tc-m-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app:not(.ax-on) #main .tc-m-head h1 {
+    margin: 0;
+    font: 900 26px/1.15 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html:root body.in-app:not(.ax-on) #main .tc-m-head p {
+    margin: 4px 0 0;
+    font: 500 14px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .tc-m-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .tc-stat-desk { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .tc-m-stu-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  html:root body.in-app:not(.ax-on) #main .tc-m-stu-av {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #EAF4FB;
+    border: 1px solid #DCE8F3;
+    flex: none;
+  }
+
+  /* Không để các nút nổi (Pippa, 10 phút dùng thử Pro) che thanh điều hướng dưới và nút bài học trên mobile */
+  html:root body.in-app .daily-pro-notice,
+  html:root body.in-app .cp-follow,
+  html:root body.in-app .aiw-fab {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on #mTab,
+  html:root body.in-app.ax-on .mtab {
+    display: none !important;
+  }
+}
+
+/* ---------- Bố cục Quản trị Di Động (36–45, 48, 54–56) ---------- */
+html body .ad-m-drawer-head,
+html body .ad-m-back,
+html body .ad-m-titles,
+html body .ad-m-more,
+html body .ad-m-tab,
+html body .ad-m-dash-head,
+html body .ad-m-quick {
+  display: none;
+}
+
+@media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
+  html:root body.in-app.ax-on .ad {
+    --p: #3F97D3;
+    --ps: #EAF4FB;
+    --line: #E6EAF0;
+    --ink: #162B3D;
+    --ink2: #334155;
+    --mut: #64748B;
+    background: #F8FAFC !important;
+  }
+  html:root body.in-app.ax-on .ad-top {
+    height: auto !important;
+    min-height: 62px !important;
+    padding: 8px 14px !important;
+    gap: 10px !important;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid #E6EAF0 !important;
+    box-shadow: none !important;
+  }
+  html:root body.in-app.ax-on .ad-top > :is(.ad-menu, .ad-search, .ad-sp, .ad-user) {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on .ad-m-back,
+  html:root body.in-app.ax-on .ad-m-more {
+    display: inline-grid !important;
+    place-items: center;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-radius: 50% !important;
+    border: 1px solid #E6EAF0 !important;
+    background: #F4F7FA !important;
+    color: #162B3D !important;
+    font: 800 14px/1 Inter, system-ui, sans-serif;
+    padding: 0 !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    flex: none;
+  }
+  html:root body.in-app.ax-on .ad-m-back svg {
+    width: 18px;
+    height: 18px;
+  }
+  html:root body.in-app.ax-on .ad-m-titles {
+    display: grid !important;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 1px;
+  }
+  html:root body.in-app.ax-on .ad-m-titles b {
+    font: 800 17.5px/1.2 Inter, system-ui, sans-serif;
+    color: #162B3D;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app.ax-on .ad-m-titles span {
+    font: 500 12px/1.2 Inter, system-ui, sans-serif;
+    color: #64748B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app.ax-on .ad-side {
+    width: min(312px, 86vw) !important;
+    padding: 16px 14px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    border-radius: 0 26px 26px 0 !important;
+    background: #FFFFFF !important;
+    border-right: 1px solid #E6EAF0 !important;
+    z-index: 95 !important;
+  }
+  html:root body.in-app.ax-on .ad.nav .ad-scrim {
+    z-index: 90 !important;
+  }
+  html:root body.in-app.ax-on .ad-side > :is(.ad-brand, .ad-badge) {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-head {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #E6EAF0;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-av {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #EAF4FB;
+    border: 1.5px solid #DCE8F3;
+    flex: none;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-user {
+    display: grid;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-user b {
+    font: 800 17px/1.2 Inter, system-ui, sans-serif;
+    color: #162B3D;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-user span {
+    font: 500 12.5px/1.2 Inter, system-ui, sans-serif;
+    color: #64748B;
+  }
+  html:root body.in-app.ax-on .ad-m-drawer-close {
+    display: inline-grid !important;
+    place-items: center;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #475569;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  html:root body.in-app.ax-on .ad-nav a {
+    min-height: 44px !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    font: 600 14.5px/1.25 Inter, system-ui, sans-serif !important;
+  }
+  html:root body.in-app.ax-on .ad-nav a.on {
+    background: #EAF4FB !important;
+    color: #1E6FA8 !important;
+    font-weight: 800 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  html:root body.in-app.ax-on .ad-nav a.on svg {
+    color: #2B84C2 !important;
+  }
+  html:root body.in-app.ax-on .ad-nav a.on::before {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on .ad-m-tab {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: #FFFFFF !important;
+    border-top: 1px solid #E6EAF0 !important;
+    box-shadow: 0 -4px 18px rgba(22, 43, 61, 0.05) !important;
+  }
+  html:root body.in-app.ax-on .ad-m-tab-it {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 50px !important;
+    padding: 4px 2px !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #64748B !important;
+    font: 600 11.5px/1.15 Inter, system-ui, sans-serif !important;
+    cursor: pointer;
+  }
+  html:root body.in-app.ax-on .ad-m-tab-ic {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 28px;
+    border-radius: 10px;
+  }
+  html:root body.in-app.ax-on .ad-m-tab-ic svg {
+    width: 20px;
+    height: 20px;
+  }
+  html:root body.in-app.ax-on .ad-m-tab-it.on {
+    color: #2B84C2 !important;
+    font-weight: 700 !important;
+  }
+  html:root body.in-app.ax-on .ad-m-tab-it.on .ad-m-tab-ic {
+    background: #EAF4FB !important;
+    color: #2B84C2 !important;
+  }
+  html:root body.in-app.ax-on .ad-content {
+    padding: 16px 14px calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html:root body.in-app.ax-on .ad-hello {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on .ad-m-dash-head {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  html:root body.in-app.ax-on .ad-m-dash-head h1 {
+    font: 900 26px/1.15 Inter, system-ui, sans-serif;
+    color: #162B3D;
+    letter-spacing: -0.02em;
+  }
+  html:root body.in-app.ax-on .ad-m-dash-head p {
+    margin-top: 4px;
+    font: 500 14px/1.35 Inter, system-ui, sans-serif;
+    color: #64748B;
+  }
+  html:root body.in-app.ax-on .ad-m-role-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #EAF4FB;
+    color: #2B7CB8;
+    font: 800 12px/1 Inter, system-ui, sans-serif;
+    letter-spacing: 0.04em;
+    flex: none;
+  }
+  html:root body.in-app.ax-on .ad-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+  html:root body.in-app.ax-on .ad-kpi {
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    border: 1px solid #E6EAF0 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 2px 10px rgba(22, 43, 61, 0.03) !important;
+  }
+  html:root body.in-app.ax-on .ad-kpi b {
+    font-size: 23px !important;
+  }
+  html:root body.in-app.ax-on .ad-kpi-ic {
+    display: none !important;
+  }
+  html:root body.in-app.ax-on .ad-m-quick {
+    display: grid !important;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  html:root body.in-app.ax-on .ad-m-quick h2,
+  html:root body.in-app.ax-on .ad-sh h2 {
+    font: 800 18px/1.25 Inter, system-ui, sans-serif;
+    color: #162B3D;
+  }
+  html:root body.in-app.ax-on .ad-m-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  html:root body.in-app.ax-on .ad-m-qcard {
+    display: grid;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 20px !important;
+    border: 1px solid #E6EAF0 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 2px 10px rgba(22, 43, 61, 0.03) !important;
+  }
+  html:root body.in-app.ax-on .ad-m-qic {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #EAF4FB;
+    color: #2B7CB8;
+    margin-bottom: 4px;
+  }
+  html:root body.in-app.ax-on .ad-m-qic svg {
+    width: 20px;
+    height: 20px;
+  }
+  html:root body.in-app.ax-on .ad-m-qcard b {
+    font: 800 15.5px/1.25 Inter, system-ui, sans-serif;
+    color: #162B3D;
+  }
+  html:root body.in-app.ax-on .ad-m-qcard span {
+    font: 500 13px/1.3 Inter, system-ui, sans-serif;
+    color: #64748B;
+  }
+  html:root body.in-app.ax-on .ad-card,
+  html:root body.in-app.ax-on .ad-content .sheet,
+  html:root body.in-app.ax-on .ad-content .card {
+    border-radius: 20px !important;
+    border: 1px solid #E6EAF0 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 2px 10px rgba(22, 43, 61, 0.03) !important;
+    padding: 16px !important;
+  }
+  html:root body.in-app.ax-on .ad-task {
+    border-radius: 18px !important;
+    border: 1px solid #E6EAF0 !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+  }
 }

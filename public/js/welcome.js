@@ -173,8 +173,31 @@ function renderClassicPicker(main, lang, ctx) {
   };
 
   const rmEn = currentLang() === "en", RH = ROADMAP_HEAD[rmEn ? "en" : "vi"];
+  const mobileRows = list.map((x) => {
+    const meta = CHIBI_COURSE_META[x.id] || CHIBI_COURSE_META.ja;
+    const subTxt = x.done > 0
+      ? `${x.framework || "A1"} · ${L("Đang học", "In progress")}`
+      : `${L("Khám phá", "Explore")} · ${x.framework || ""}`;
+    return `<a class="sw-m-row" href="/app/?mon=${esc(x.id)}" style="--c:${esc(x.color || "#3F97D3")};--tint:${meta.tint}" data-subject="${esc(x.id)}">
+      <span class="sw-m-flag" aria-hidden="true">${x.flag}</span>
+      <span class="sw-m-info">
+        <b>${esc(x.name)}</b>
+        <small>${esc(subTxt)}</small>
+        <span class="sw-m-bar"><i style="width:${Math.max(0, Math.min(100, x.pct))}%;background:${esc(x.color || "#3F97D3")}"></i></span>
+      </span>
+      <em class="sw-m-pct">${x.pct}%</em>
+    </a>`;
+  }).join("");
+
   main.innerHTML = `
   <div class="sw sw-chibi-world">
+    <section class="sw-m-view" aria-label="${L("Ngoại ngữ của bạn", "Your languages")}">
+      <h1>${L("Ngoại ngữ của bạn", "Your languages")}</h1>
+      <p class="sw-m-sub">${L("Chọn môn đang học hoặc khám phá một ngôn ngữ mới.", "Select a language you are learning or explore a new one.")}</p>
+      <div class="sw-m-list">${mobileRows}</div>
+      <button type="button" class="btn btn-primary btn-block sw-m-add" id="swOpenOnboard">${L("Thêm ngoại ngữ", "Add language")}</button>
+    </section>
+
     <section class="sw-chibi-hero">
       <div class="sw-chibi-hero-copy">
         <span class="sw-eyebrow">${sketchIcon("sparkle")}<span>Bắt đầu hành trình mới</span></span>
@@ -256,6 +279,9 @@ function renderClassicPicker(main, lang, ctx) {
       main.querySelector("#swResume")?.remove();
     });
   }
+  main.querySelector("#swOpenOnboard")?.addEventListener("click", () => {
+    runOnboarding(main, lang, ctx);
+  });
 
   // Chọn bạn đồng hành: lưu theo tài khoản, cập nhật ngay các thẻ môn và bạn nói lời chào
   const paintCompanion = () => {
@@ -325,8 +351,12 @@ async function runOnboarding(main, lang, ctx) {
   };
   const STEPS = STEP_NAMES();
 
-  const shell = (body, nav) => `<div class="ob">
-    <div class="ob-progress"><span>${esc(L(`Bước ${st.step + 1}/${STEPS.length}`, `Step ${st.step + 1} of ${STEPS.length}`))} · ${esc(STEPS[st.step])}</span>
+  const shell = (body, nav, stepBadge = "") => `<div class="ob">
+    <div class="ob-top-bar">
+      <span class="ob-brand">life<b>rivo</b></span>
+      <span class="ob-step-pill">${esc(stepBadge || L(`Bước ${st.step + 1}/${STEPS.length}`, `Step ${st.step + 1}/${STEPS.length}`))}</span>
+    </div>
+    <div class="ob-progress"><span>${esc(stepBadge || L(`Bước ${st.step + 1}/${STEPS.length}`, `Step ${st.step + 1} of ${STEPS.length}`))} · ${esc(STEPS[st.step])}</span>
       <div class="ob-bar" aria-hidden="true"><i style="width:${Math.round(((st.step + 1) / STEPS.length) * 100)}%"></i></div></div>
     <section class="ob-card" aria-live="polite">${body}</section>
     ${nav ? `<div class="ob-nav">${nav}</div>` : ""}
@@ -360,26 +390,30 @@ async function runOnboarding(main, lang, ctx) {
         </div>`, `${nextBtn(L("Bắt đầu", "Start"))}${classicLink}`);
     } else if (st.step === 1) {
       main.innerHTML = shell(`
-        <h2>${L("Bạn học tiếng để làm gì?", "What do you want the language for?")}</h2>
-        <p class="ob-sub">${L("Chọn mục gần nhất. Bạn có thể bỏ qua và đổi sau.", "Pick the closest one. You can skip and change it later.")}</p>
-        <div class="ob-grid" role="radiogroup" aria-label="${L("Mục tiêu học", "Learning goal")}">
+        <span class="ob-step-banner">${L("Bước 2/3", "Step 2/3")}</span>
+        <h2>${L("Mục tiêu học tập", "What do you want the language for?")}</h2>
+        <p class="ob-sub">${L("Chọn điều bạn muốn đạt được.", "Pick the closest one. You can skip and change it later.")}</p>
+        <div class="ob-grid ob-grid-goals" role="radiogroup" aria-label="${L("Mục tiêu học", "Learning goal")}">
           ${LEARNING_GOALS.map((g) => {
             const on = st.goal && st.goal.id === g.id;
             return `<button type="button" class="ob-opt${on ? " on" : ""}" role="radio" aria-checked="${on}" data-goal="${g.id}">
-              <span class="ob-opt-ico" aria-hidden="true">${sketchIcon(g.ic)}</span><b>${esc(L(g.vi, g.en))}</b></button>`;
+              <span class="ob-radio" aria-hidden="true">${on ? "✓" : ""}</span>
+              <span class="ob-opt-ico" aria-hidden="true">${sketchIcon(g.ic)}</span>
+              <span class="ob-opt-copy"><b>${esc(L(g.vi, g.en))}</b><small>${esc(g.desc || L("Dùng trong đời sống và học tập hằng ngày.", "For daily life and study."))}</small></span>
+            </button>`;
           }).join("")}
-        </div>`, `${back}${st.goal ? nextBtn(L("Tiếp tục", "Continue")) : skipBtn(L("Bỏ qua", "Skip"))}`);
+        </div>`, `${back}${st.goal ? nextBtn(L("Tiếp tục", "Continue")) : skipBtn(L("Bỏ qua", "Skip"))}`, L("Bước 2/3", "Step 2/3"));
     } else if (st.step === 2) {
       if (!courses.length) { renderClassicPicker(main, lang, ctx); return; }
       main.innerHTML = shell(`
-        <h2>${L("Bạn muốn học ngoại ngữ nào?", "Which language do you want to learn?")}</h2>
-        <p class="ob-sub">${L("Bắt buộc. Chỉ hiện các ngôn ngữ đã có bài học thật.", "Required. Only languages with real lessons are shown.")}</p>
+        <h2>${L("Bạn muốn học ngôn ngữ nào?", "Which language do you want to learn?")}</h2>
+        <p class="ob-sub">${L("Chọn một ngoại ngữ để LifeRivo xây dựng lộ trình phù hợp.", "Required. Only languages with real lessons are shown.")}</p>
         <div class="ob-grid ob-grid-courses" role="radiogroup" aria-label="${L("Ngoại ngữ", "Language")}">
           ${courses.map((c) => {
             const on = st.course && st.course.id === c.id;
-            return `<button type="button" class="ob-course${on ? " on" : ""}" role="radio" aria-checked="${on}" data-course="${esc(c.id)}" style="--c:${esc(c.color || "#5B3FD6")}">
+            return `<button type="button" class="ob-course${on ? " on" : ""}" role="radio" aria-checked="${on}" data-course="${esc(c.id)}" style="--c:${esc(c.color || "#3F97D3")}">
               <span class="ob-course-flag" aria-hidden="true">${c.flag}</span>
-              <span class="ob-course-txt"><b>${esc(c.name)}</b><small>${esc(c.framework || "")} · ${fmtN(c.levels.length)} ${L("cấp", "levels")} · ${fmtN(c.total)} ${L("bài", "lessons")}</small></span>
+              <span class="ob-course-txt"><b>${esc(c.name)}</b><small>${esc(c.framework || "A1–C1")}</small></span>
             </button>`;
           }).join("")}
         </div>
@@ -387,16 +421,17 @@ async function runOnboarding(main, lang, ctx) {
           <b>${L("Bạn đồng hành (tùy chọn)", "Study buddy (optional)")}</b>
           ${companionPickerHtml(S.prefs && S.prefs.companion || "")}
           <p class="cp-picker-say" aria-live="polite"></p>
-        </div>`, `${back}${nextBtn(L("Tiếp tục", "Continue"), !st.course)}${classicLink}`);
+        </div>`, `${back}${nextBtn(L("Tiếp tục", "Continue"), !st.course)}${classicLink}`, L("Bước 1/3", "Step 1/3"));
     } else if (st.step === 3) {
       const c = st.course;
       const contentIdx = c.levels.map((l, i) => ({ l, i })).filter((x) => (x.l.total || 0) > 0);
       main.innerHTML = shell(`
-        <h2>${L(`Bạn đã biết ${esc(c.name)} đến đâu?`, `How much do you already know ${esc(c.name)}?`)}</h2>
-        <p class="ob-sub">${L("Chọn gần đúng. Bạn có thể bỏ qua, hệ thống sẽ bắt đầu từ chỗ bạn chưa học xong.", "Pick the closest one. You can skip; the system will start where you have not finished.")}</p>
-        <div class="ob-grid" role="radiogroup" aria-label="${L("Trình độ", "Level")}">
-          ${[["new", sketchIcon("sparkle"), L("Người mới", "Beginner"), L(`Bắt đầu từ ${levelCopy(c, "new")}`, `Start from ${levelCopy(c, "new")}`)],
-             ["basic", sketchIcon("book"), L("Đã có nền tảng", "Some basics"), L(`Bắt đầu từ ${levelCopy(c, "basic")}`, `Start from ${levelCopy(c, "basic")}`)],
+        <span class="ob-step-banner">${L("Bước 2/3", "Step 2/3")}</span>
+        <h2>${L("Trình độ hiện tại", `How much do you already know ${esc(c.name)}?`)}</h2>
+        <p class="ob-sub">${L(`Bạn đã biết ${esc(c.name)} đến đâu? Chọn gần đúng để bắt đầu.`, "Pick the closest one. You can skip; the system will start where you have not finished.")}</p>
+        <div class="ob-grid ob-grid-levels" role="radiogroup" aria-label="${L("Trình độ", "Level")}">
+          ${[["new", sketchIcon("sparkle"), L("Mới bắt đầu", "Beginner"), L("Chưa có nền tảng", `Start from ${levelCopy(c, "new")}`)],
+             ["basic", sketchIcon("book"), L("Cơ bản", "Some basics"), L("Đã biết một ít", `Start from ${levelCopy(c, "basic")}`)],
              ["known", sketchIcon("award"), L("Đã biết trình độ", "I know my level"), L("Chọn cấp bên dưới", "Pick a level below")]]
             .map(([key, ic, title, sub]) => {
               const on = st.choice === key;
@@ -407,7 +442,7 @@ async function runOnboarding(main, lang, ctx) {
         ${st.choice === "known" ? `<div class="ob-levels" role="radiogroup" aria-label="${L("Chọn cấp", "Choose a level")}">
           ${contentIdx.map(({ l, i }) => `<button type="button" class="ob-chip${st.lvIdx === i ? " on" : ""}" role="radio" aria-checked="${st.lvIdx === i}" data-lv="${i}" title="${esc(l.desc || "")}">${esc(l.title)}</button>`).join("")}
         </div>` : ""}`,
-        `${back}${st.choice && (st.choice !== "known" || Number.isInteger(st.lvIdx)) ? nextBtn(L("Tiếp tục", "Continue")) : skipBtn(L("Bỏ qua", "Skip"))}`);
+        `${back}${st.choice && (st.choice !== "known" || Number.isInteger(st.lvIdx)) ? nextBtn(L("Tạo lộ trình của tôi", "Build my roadmap")) : skipBtn(L("Bỏ qua", "Skip"))}`, L("Bước 2/3", "Step 2/3"));
     } else if (st.step === 4) {
       const c = st.course;
       const minutes = st.choice === "new" ? 15 : 25;
@@ -512,7 +547,7 @@ async function runOnboarding(main, lang, ctx) {
 }
 
 export async function pageSubjectWelcome(main, params, query, ctx) {
-  ctx.setCrumbs([["Chọn môn học"]]);
+  ctx.setCrumbs([[L("Danh sách ngoại ngữ", "Languages")]]);
   document.body.classList.add("sw-focus");
   ctx.onLeave(() => { document.body.classList.remove("sw-focus"); if (main) main.onclick = null; });
   main.innerHTML = `<div class="sw-loading"><span class="spin"></span> Đang chuẩn bị biệt đội…</div>`;

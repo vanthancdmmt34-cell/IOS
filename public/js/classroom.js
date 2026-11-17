@@ -4,6 +4,7 @@
 import { setAppHash } from "./core.js";
 import { S, api, esc, icon, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, promptBox, $, cfg, avatar, aiOn, aiAuto } from "./core.js";
 import { openAiInline } from "./pro.js";
+import { HeroBanner } from "./chibi-ds.js";
 
 const isMgr = () => S.me && (S.me.role === "teacher" || S.me.role === "admin");
 const due = (iso) => (iso ? `${Date.parse(iso) < Date.now() ? "Đã hết hạn" : "Hạn"} ${fmtDate(iso)}` : "Không hạn nộp");
@@ -14,21 +15,30 @@ const empty = (title, text, action = "") => `<div class="sheet sheet-pad empty">
 
 /* =================== STUDENT: MY CLASSES =================== */
 export async function pageMyClasses(main, _p, query, ctx) {
-  ctx.setCrumbs([["Lớp của tôi"]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Lớp của tôi"]]);
   main.innerHTML = `<div class="skel" style="height:240px"></div>`;
   const j = await api("/api/classes");
   if (!ctx.isCurrent()) return;
   const ST = { active: ["Đang học", "tag-la"], pending: ["Chờ giáo viên duyệt", "tag-cam"], suspended: ["Đang bị tạm khóa", "tag-do"] };
+  const firstClass = j.joined && j.joined[0];
   main.innerHTML = `
+    <div class="cl-m-head">
+      <h1>Lớp học của bạn</h1>
+      <p>Theo dõi lớp, giáo viên và bài tập được giao.</p>
+    </div>
     <div class="page-head"><div><h1>Lớp của tôi</h1><p>Tham gia lớp bằng mã do giáo viên gửi. Học trong lớp có giấy phép của giáo viên thì bạn được dùng quyền Pro trong thời gian học.</p></div>
       ${isMgr() ? `<a class="btn" href="/app/giao-vien">${icon("settings")}Trang giáo viên</a>` : ""}</div>
-    <section class="sheet sheet-pad" style="margin-bottom:16px">
+    ${j.joined.length ? `<div class="class-grid">${j.joined.map((c) => `<a class="class-card" href="/app/lop/${c.id}"><div class="cl-m-card-top"><span class="lx-ex-pill">${c.myStatus === "active" ? "ĐANG THAM GIA" : esc(ST[c.myStatus][0])}</span><span class="cl-m-code">${c.joinCode ? `Mã lớp: ${esc(c.joinCode)}` : ""}</span></div><b>${esc(c.name)}</b><span class="small muted">Giáo viên: ${esc(c.teacherName)}${c.members ? ` · ${c.members} học viên` : ""}</span>${c.description ? `<span class="small">${esc(c.description)}</span>` : ""}<span class="tag ${ST[c.myStatus][1]}" style="margin-top:auto;align-self:flex-start">${ST[c.myStatus][0]}</span>${c.status !== "active" ? `<span class="small muted">Lớp đã đóng</span>` : ""}</a>`).join("")}</div>`
+      : empty("Bạn chưa tham gia lớp nào", "Nhập mã lớp ở dưới, hoặc mở liên kết mời giáo viên gửi.")}
+    <div class="cl-m-quick">
+      <a class="cl-m-qrow" href="${firstClass ? `/app/lop/${firstClass.id}` : "/app/ngoai-ngu"}"><span class="cl-m-qico">📘</span><div class="cl-m-qcopy"><b>Bài tập được giao</b><span>${firstClass ? `Xem bài tập lớp ${esc(firstClass.name)}` : "Xem bài tập đang mở"}</span></div><span class="cl-m-qarr">›</span></a>
+      <a class="cl-m-qrow" href="/app/thong-bao"><span class="cl-m-qico">🔔</span><div class="cl-m-qcopy"><b>Thông báo lớp</b><span>Tin nhắn và nhắc nhở từ giáo viên</span></div><span class="cl-m-qarr">›</span></a>
+    </div>
+    <section class="sheet sheet-pad cl-m-join-sec" style="margin-top:14px">
       <form id="joinF" class="row" style="gap:10px"><label class="field" style="flex:1;min-width:200px;margin:0">Mã lớp<input name="code" maxlength="12" placeholder="Ví dụ: K7M3PQR" autocomplete="off" style="text-transform:uppercase" value="${esc(query.ma || "")}"></label>
-        <button class="btn btn-primary" style="align-self:flex-end">${icon("plus")}Tham gia lớp</button></form>
+        <button class="btn btn-primary" style="align-self:flex-end">${icon("plus")}Tham gia lớp bằng mã</button></form>
       <p class="form-msg err" id="joinMsg"></p>
-    </section>
-    ${j.joined.length ? `<div class="class-grid">${j.joined.map((c) => `<a class="class-card" href="/app/lop/${c.id}"><b>${esc(c.name)}</b><span class="small muted">Giáo viên: ${esc(c.teacherName)}</span>${c.description ? `<span class="small">${esc(c.description)}</span>` : ""}<span class="tag ${ST[c.myStatus][1]}" style="margin-top:auto;align-self:flex-start">${ST[c.myStatus][0]}</span>${c.status !== "active" ? `<span class="small muted">Lớp đã đóng</span>` : ""}</a>`).join("")}</div>`
-      : empty("Bạn chưa tham gia lớp nào", "Nhập mã lớp ở trên, hoặc mở liên kết mời giáo viên gửi.")}`;
+    </section>`;
   $("#joinF", main).addEventListener("submit", async (e) => {
     e.preventDefault();
     const code = e.target.code.value.trim();
@@ -46,20 +56,35 @@ export async function pageJoinLink(main, [token], _q, ctx) {
 }
 
 export async function pageClass(main, [id], _q, ctx) {
-  ctx.setCrumbs([["Lớp của tôi", "/app/lop"], ["…"]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Chi tiết lớp học"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let j;
   try { j = await api(`/api/classes/${id}`); } catch (e) { main.innerHTML = empty("Không mở được lớp", e.message, `<a class="btn" href="/app/lop">Về Lớp của tôi</a>`); return; }
   if (!ctx.isCurrent()) return;
   if (j.manage) { location.replace(`/app/giao-vien/lop/${id}`); return; }
-  ctx.setCrumbs([["Lớp của tôi", "/app/lop"], [j.class.name]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], [j.class.name]]);
   const pend = j.myStatus !== "active";
+  const doneAsg = (j.assignments || []).filter((a) => a.mine && (a.mine.passed || a.mine.attempts > 0)).length;
+  const totalAsg = (j.assignments || []).length;
+  const pctClass = totalAsg ? Math.round((doneAsg / totalAsg) * 100) : 100;
+  const heroHtml = HeroBanner({
+    badge: j.class.joinCode || "LỚP HỌC",
+    title: j.class.name,
+    subtitle: `Giáo viên ${j.class.teacherName}${j.class.description ? " · " + j.class.description : ""}`,
+    kit: "fox",
+    cls: "cl-m-hero",
+  });
   main.innerHTML = `
+    ${heroHtml}
+    <div class="cl-m-kpis">
+      <div class="cl-m-kpi"><b>${fmtN(totalAsg)}</b><span>Bài được giao</span></div>
+      <div class="cl-m-kpi"><b>${pctClass}%</b><span>Tiến độ lớp</span></div>
+    </div>
     <div class="page-head"><div><h1>${esc(j.class.name)}</h1><p>Giáo viên: ${esc(j.class.teacherName)}${j.class.description ? " · " + esc(j.class.description) : ""}</p></div>
       <button class="btn btn-ghost" id="leave">${icon("logout")}Rời lớp</button></div>
     ${pend ? empty(j.myStatus === "pending" ? "Đang chờ giáo viên duyệt" : "Bạn đang bị tạm khóa trong lớp", j.myStatus === "pending" ? "Khi được duyệt, bài được giao sẽ hiện ở đây." : "Liên hệ giáo viên để được mở lại.") : `
     <div class="two-col">
-      <section class="sheet sheet-pad"><h2>Bài được giao</h2>
+      <section class="sheet sheet-pad"><h2>Bài tập lớp</h2>
         ${j.assignments.length ? `<ul class="list">${j.assignments.map((a) => `<li><a class="list-row" href="/app/bai-giao/${a.id}">${scoreTag(a.mine)}<span class="t"><b>${esc(a.title)}</b><span>${due(a.dueAt)}${a.mine.attempts ? ` · đã nộp ${a.mine.attempts} lần` : ""}${a.mine.feedback ? " · có nhận xét" : ""}${a.status === "closed" ? " · đã đóng" : ""}</span></span>${icon("right")}</a></li>`).join("")}</ul>` : `<p class="muted">Chưa có bài nào.</p>`}
       </section>
       <section class="sheet sheet-pad"><h2>Bài kiểm tra</h2>
@@ -114,7 +139,7 @@ function teacherAssignment(main, j, ctx) {
 
 /* =================== CLASS EXAMS =================== */
 export async function pageClassTest(main, [id], _q, ctx) {
-  ctx.setCrumbs([["Lớp", "/app/lop"], ["Bài kiểm tra"]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Kiểm tra lớp học"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let j;
   try { j = await api(`/api/tests/${id}`); } catch (e) { main.innerHTML = empty("Không mở được bài kiểm tra", e.message); return; }
@@ -130,14 +155,25 @@ export async function pageClassTest(main, [id], _q, ctx) {
     $("#del", main).addEventListener("click", async () => { if (!(await confirmBox("Xóa bài kiểm tra?", "Học sinh không còn thấy bài. Kết quả đã làm vẫn lưu.", "Xóa", true))) return; await api(`/api/tests/${t.id}`, "DELETE"); setAppHash(`/app/giao-vien/lop/${t.classId}?tab=kiem-tra`) });
     return;
   }
-  ctx.setCrumbs([["Lớp của tôi", "/app/lop"], ["Lớp", `/app/lop/${t.classId}`], [t.title]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Kiểm tra lớp học"]]);
   const used = j.attempts.length, doing = j.attempts.find((x) => x.status === "doing" && Date.parse(x.endsAt) > Date.now());
-  main.innerHTML = `<div class="sheet sheet-pad" style="max-width:720px">
-    <h1>${esc(t.title)}</h1><p class="lead">${j.questionCount} câu · ${t.durationMin} phút · ${t.maxAttempts} lượt làm${t.dueAt ? " · " + due(t.dueAt) : ""}</p>
-    ${t.instructions ? `<p>${esc(t.instructions)}</p>` : ""}
-    <p class="pay-warn">Trong lúc làm bài, Rivo tạm khóa. Hết giờ bài sẽ được nộp với những gì bạn đã làm.</p>
-    ${j.attempts.filter((x) => x.status !== "doing").map((x, i) => `<p>Lượt ${i + 1}: <b>${x.score}/${x.maxScore}</b> · ${fmtDate(x.submittedAt)}${x.status === "late" ? " (muộn)" : ""}</p>`).join("")}
-    ${t.status === "published" && (doing || used < t.maxAttempts) ? `<button class="btn btn-primary" id="start">${icon("play")}${doing ? "Tiếp tục làm bài" : "Bắt đầu làm bài"}</button>` : `<p class="muted">${used >= t.maxAttempts ? "Bạn đã dùng hết lượt làm bài." : "Bài kiểm tra đã đóng."}</p>`}</div>`;
+  main.innerHTML = `<div class="cl-test-intro" style="max-width:720px">
+    <span class="lx-ex-pill">BÀI KIỂM TRA</span>
+    <h1>${esc(t.title)}</h1>
+    <p class="lead">${j.questionCount} câu · ${t.durationMin} phút · ${t.maxAttempts} lượt làm${t.dueAt ? " · " + due(t.dueAt) : ""}</p>
+    <div class="cl-m-kpis">
+      <div class="cl-m-kpi"><b>${j.questionCount}</b><span>Câu hỏi</span></div>
+      <div class="cl-m-kpi"><b>${t.durationMin} phút</b><span>Thời gian</span></div>
+    </div>
+    <div class="sheet sheet-pad">
+      <h2>Yêu cầu</h2>
+      <p class="muted">${esc(t.instructions || "Hoàn thành bài kiểm tra và gửi kết quả trước thời hạn. Trong lúc làm bài, trợ lý AI sẽ tạm khóa.")}</p>
+      <div class="cl-m-req-row"><span>Hạn nộp</span><b>${t.dueAt ? fmtDate(t.dueAt, false) : "Không giới hạn"}</b></div>
+      <div class="cl-m-req-row"><span>Trạng thái</span><span class="tag ${used ? "tag-la" : "tag-cam"}">${doing ? "Đang làm" : used ? `Đã làm ${used}/${t.maxAttempts}` : "Chưa nộp"}</span></div>
+      ${j.attempts.filter((x) => x.status !== "doing").map((x, i) => `<p>Lượt ${i + 1}: <b>${x.score}/${x.maxScore}</b> · ${fmtDate(x.submittedAt)}${x.status === "late" ? " (muộn)" : ""}</p>`).join("")}
+      ${t.status === "published" && (doing || used < t.maxAttempts) ? `<button class="btn btn-primary btn-block" id="start" style="margin-top:12px">${icon("play")}${doing ? "Tiếp tục làm bài" : "Bắt đầu làm bài"}</button>` : `<p class="muted">${used >= t.maxAttempts ? "Bạn đã dùng hết lượt làm bài." : "Bài kiểm tra đã đóng."}</p>`}
+    </div>
+  </div>`;
   $("#start", main)?.addEventListener("click", async () => {
     if (!doing && !(await confirmBox("Bắt đầu làm bài?", `Đồng hồ ${t.durationMin} phút bắt đầu chạy ngay và không dừng lại khi bạn rời trang.`, "Bắt đầu"))) return;
     try { takeTest(main, await api(`/api/tests/${id}/start`, "POST", {}), ctx); } catch (e) { toast(e.message, "err"); }
@@ -146,13 +182,21 @@ export async function pageClassTest(main, [id], _q, ctx) {
 
 /* =================== TEACHER: OVERVIEW =================== */
 export async function pageTeacher(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Trang giáo viên"]]);
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Dashboard giáo viên"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let j;
   try { j = await api("/api/teacher/overview"); } catch (e) { main.innerHTML = empty("Trang dành cho giáo viên", e.message, `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">Xem gói Teacher</a>`); return; }
   if (!ctx.isCurrent()) return;
   const L = j.license;
+  const firstCls = j.classes && j.classes[0];
   main.innerHTML = `
+    <div class="tc-m-head">
+      <div>
+        <h1>Xin chào, Giáo viên</h1>
+        <p>Tổng quan lớp và hoạt động học viên.</p>
+      </div>
+      <span class="lx-ex-pill">Teacher</span>
+    </div>
     <div class="page-head"><div><h1>Trang giáo viên</h1><p>Quản lý lớp, giao bài, kiểm tra và theo dõi tiến độ học sinh.</p></div>
       <a class="btn" href="/app/giao-vien/hoc-vien">${icon("user")}Học viên của tôi</a>
       ${j.canCreate ? `<button class="btn btn-primary" id="newClass">${icon("plus")}Tạo lớp</button>` : `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">${icon("star")}Mua / gia hạn giấy phép</a>`}</div>
@@ -166,10 +210,17 @@ export async function pageTeacher(main, _p, _q, ctx) {
       </ol>
       <button class="btn btn-primary" id="newClassTop">${icon("plus")}Tạo lớp đầu tiên</button>
     </section>` : ""}
-    <div class="stats biz-stats">
-      <div><b>${fmtN(j.stats.classes)}</b><span>Lớp</span></div><div><b>${fmtN(j.stats.students)}</b><span>Học sinh đang học</span></div>
-      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${fmtN(j.stats.missing)}</b><span>Bài quá hạn chưa nộp</span></div>
-      <div><b>${j.stats.avgScore ?? "—"}</b><span>Điểm TB bài tập</span></div><div><b>${L ? fmtN(Math.max(0, L.seats - L.used)) : "∞"}</b><span>Chỗ giấy phép còn lại</span></div>
+    <div class="stats biz-stats tc-m-stats">
+      <div><b>${fmtN(j.stats.classes)}</b><span>Lớp đang dạy</span></div><div><b>${fmtN(j.stats.students)}</b><span>Học viên</span></div>
+      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${j.stats.avgScore != null ? j.stats.avgScore : fmtN(j.stats.missing)}</b><span>${j.stats.avgScore != null ? "Điểm TB bài tập" : "Bài quá hạn"}</span></div>
+      <div class="tc-stat-desk"><b>${j.stats.avgScore ?? "—"}</b><span>Điểm TB bài tập</span></div><div class="tc-stat-desk"><b>${L ? fmtN(Math.max(0, L.seats - L.used)) : "∞"}</b><span>Chỗ giấy phép còn lại</span></div>
+    </div>
+    <div class="tc-m-actions">
+      <h2>Công việc cần xử lý</h2>
+      <a class="tc-m-act" href="${firstCls ? `/app/giao-vien/lop/${firstCls.id}?tab=bai-tap` : "/app/giao-vien/hoc-vien"}"><span class="tc-m-ico">📝</span><div class="tc-m-copy"><b>Bài tập và chấm điểm</b><span>${fmtN(j.stats.assignments)} bài đã giao trong các lớp</span></div><span class="tc-m-arr">›</span></a>
+      <a class="tc-m-act" href="${firstCls ? `/app/giao-vien/lop/${firstCls.id}?tab=bao-cao` : "/app/giao-vien/hoc-vien"}"><span class="tc-m-ico">👥</span><div class="tc-m-copy"><b>Học viên cần hỗ trợ</b><span>${fmtN(j.needSupport.length)} học viên cần chú ý</span></div><span class="tc-m-arr">›</span></a>
+      <a class="tc-m-act" href="/app/giao-vien/hoc-vien"><span class="tc-m-ico">🏫</span><div class="tc-m-copy"><b>Quản lý học viên</b><span>Danh sách ${fmtN(j.stats.students)} học viên đang phụ trách</span></div><span class="tc-m-arr">›</span></a>
+      ${j.canCreate ? `<button type="button" class="tc-m-act" id="newClassM"><span class="tc-m-ico">✨</span><div class="tc-m-copy"><b>Tạo lớp / Giao bài tập</b><span>Tạo lớp mới hoặc giao bài cho lớp</span></div><span class="tc-m-arr">›</span></button>` : ""}
     </div>
     <div class="two-col" style="margin-top:16px">
       <section class="sheet sheet-pad"><h2>Lớp của tôi</h2>
@@ -183,6 +234,7 @@ export async function pageTeacher(main, _p, _q, ctx) {
   const openNew = () => classForm(null, (c) => { setAppHash(`/app/giao-vien/lop/${c.id}`) });
   $("#newClass", main)?.addEventListener("click", openNew);
   $("#newClassTop", main)?.addEventListener("click", openNew);
+  $("#newClassM", main)?.addEventListener("click", openNew);
 }
 
 function classForm(c, done) {
@@ -209,16 +261,21 @@ function classForm(c, done) {
 const TABS = [["thanh-vien", "Thành viên"], ["bai-tap", "Bài tập"], ["kiem-tra", "Kiểm tra"], ["bao-cao", "Báo cáo"], ["ngoai-ngu", "Ngoại ngữ"], ["cai-dat", "Cài đặt lớp"]];
 export async function pageTeacherClass(main, [id], query, ctx) {
   const tab = TABS.some((t) => t[0] === query.tab) ? query.tab : "thanh-vien";
-  ctx.setCrumbs([["Trang giáo viên", "/app/giao-vien"], ["…"]]);
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Quản lý lớp và bài tập"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let j;
   try { j = await api(`/api/classes/${id}`); } catch (e) { main.innerHTML = empty("Không mở được lớp", e.message, `<a class="btn" href="/app/giao-vien">Về trang giáo viên</a>`); return; }
   if (!ctx.isCurrent()) return;
   if (!j.manage) { location.replace(`/app/lop/${id}`); return; }
   const c = j.class;
-  ctx.setCrumbs([["Trang giáo viên", "/app/giao-vien"], [c.name]]);
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Quản lý lớp và bài tập"]]);
+  const actMembers = j.members.filter((x) => x.status === "active").length;
   main.innerHTML = `
-    <div class="page-head"><div><h1>${esc(c.name)}</h1><p>Mã lớp <code class="join-code">${esc(c.joinCode)}</code> · ${j.members.filter((x) => x.status === "active").length} học sinh${c.status !== "active" ? " · <b>Đã đóng</b>" : ""}${S.me.role === "admin" && c.teacherId !== S.me.id ? ` · Giáo viên: ${esc(c.teacherName)}` : ""}</p></div></div>
+    <div class="page-head"><div><h1>${esc(c.name)}</h1><p>Mã lớp <code class="join-code">${esc(c.joinCode)}</code> · ${actMembers} học sinh${c.status !== "active" ? " · <b>Đã đóng</b>" : ""}${S.me.role === "admin" && c.teacherId !== S.me.id ? ` · Giáo viên: ${esc(c.teacherName)}` : ""}</p></div></div>
+    <div class="cl-m-kpis">
+      <div class="cl-m-kpi"><b>${fmtN(actMembers)}</b><span>Học viên</span></div>
+      <div class="cl-m-kpi"><b>${fmtN((j.assignments || []).length || (j.invites || []).length)}</b><span>Bài giao / lời mời</span></div>
+    </div>
     <nav class="tabs">${TABS.map(([k, l]) => `<a href="/app/giao-vien/lop/${id}?tab=${k}" class="${k === tab ? "on" : ""}">${l}</a>`).join("")}</nav>
     <div id="tb"></div>`;
   const host = $("#tb", main);
@@ -228,11 +285,12 @@ export async function pageTeacherClass(main, [id], query, ctx) {
 
 function membersTab(host, j, reload) {
   const c = j.class, link = (t) => `${location.origin}/app/tham-gia/${t}`;
+  const kits = ["cat", "fox", "bunny", "dragon", "owl", "frog"];
   host.innerHTML = `
     <div class="two-col">
       <section class="sheet sheet-pad"><h2>Thành viên</h2>
-        ${j.members.length ? `<div class="table-wrap" style="border:0"><table><thead><tr><th>Học sinh</th><th>Trạng thái</th><th>Vào lớp</th><th></th></tr></thead><tbody>${j.members.map((m) => `<tr>
-          <td><a href="#" data-st="${m.userId}"><b>${esc(m.displayName)}</b></a><br><span class="small muted">@${esc(m.username)}</span></td><td><span class="tag ${MEMBER_ST[m.status][1]}">${MEMBER_ST[m.status][0]}</span></td><td class="small">${fmtDate(m.joinedAt, false)}</td>
+        ${j.members.length ? `<div class="table-wrap" style="border:0"><table><thead><tr><th>Học sinh</th><th>Trạng thái</th><th>Vào lớp</th><th></th></tr></thead><tbody>${j.members.map((m, idx) => `<tr>
+          <td><div class="tc-m-stu-cell"><img class="tc-m-stu-av" src="/img/kit/chibi-${kits[idx % kits.length]}.webp" alt="" width="40" height="40" loading="lazy" /><div><a href="#" data-st="${m.userId}"><b>${esc(m.displayName)}</b></a><br><span class="small muted">@${esc(m.username)}</span></div></div></td><td><span class="tag ${MEMBER_ST[m.status][1]}">${MEMBER_ST[m.status][0]}</span></td><td class="small">${fmtDate(m.joinedAt, false)}</td>
           <td class="nowrap">${m.status === "pending" ? `<button class="btn btn-xs btn-primary" data-act="approve" data-u="${m.userId}">Duyệt</button> <button class="btn btn-xs btn-ghost" data-act="reject" data-u="${m.userId}">Từ chối</button>` : `${m.status === "active" ? `<button class="btn btn-xs" data-act="suspend" data-u="${m.userId}">Tạm khóa</button>` : `<button class="btn btn-xs" data-act="unsuspend" data-u="${m.userId}">Mở khóa</button>`} <button class="btn btn-xs btn-ghost" data-act="remove" data-u="${m.userId}" data-n="${esc(m.displayName)}">Xóa khỏi lớp</button>`}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Chưa có học sinh. Gửi mã lớp hoặc liên kết mời bên cạnh.</p>`}
       </section>
       <section>
@@ -363,7 +421,7 @@ function settingsTab(host, j, reload) {
 }
 
 export async function pageAssignment(main, [id], _q, ctx) {
-  ctx.setCrumbs([["Lớp", "/app/lop"], ["Bài được giao"]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Bài tập lớp / kiểm tra"]]);
   main.innerHTML = `<div class="skel" style="height:320px"></div>`;
   let j;
   try { j = await api(`/api/assignments/${id}`); } catch (e) { main.innerHTML = empty("Không mở được bài", e.message); return; }
@@ -372,15 +430,23 @@ export async function pageAssignment(main, [id], _q, ctx) {
   // Bài ngoại ngữ: mở không gian luyện ngoại ngữ, kết quả tự ghi vào bài giao
   if (j.assignment && j.assignment.langItem) { location.replace(`/app/ngoai-ngu/bai/${j.assignment.langItem}?asg=${j.assignment.id}`); return; }
   const a = j.assignment, ex = j.exercise || {};
-  ctx.setCrumbs([["Lớp của tôi", "/app/lop"], ["Lớp", `/app/lop/${a.classId}`], [a.title]]);
+  ctx.setCrumbs([["Lớp học", "/app/lop"], ["Bài tập lớp / kiểm tra"]]);
   const open = a.status === "published";
   const paintMine = (list) => {
     $("#mine", main).innerHTML = list.length ? `<ul class="list">${list.map((s) => `<li class="list-row" style="cursor:default"><span>Lần ${esc(String(s.attemptNo))}${s.late ? " · nộp muộn" : ""}</span>${s.manualScore != null ? `<span class="stamp sm">${esc(String(s.manualScore))}</span>` : `<span class="small muted">Chờ giáo viên chấm</span>`}${s.feedback ? `<p class="small">${esc(s.feedback)}</p>` : ""}</li>`).join("")}</ul>` : `<p class="small muted">Chưa có lần nộp nào.</p>`;
   };
   main.innerHTML = `
-    <div class="page-head"><div><a class="kicker" href="/app/lop/${a.classId}">${icon("left", 'width="12" height="12"')} Về lớp</a><h1>${esc(a.title)}</h1></div><span id="stTag">${scoreTag(j.state)}</span></div>
-    <p class="small muted">${due(a.dueAt)}${a.maxAttempts ? ` · tối đa ${a.maxAttempts} lần nộp` : ""}${a.allowResubmit ? "" : " · chỉ nộp 1 lần"}</p>
-    ${a.instructions ? `<div class="pay-warn" style="margin:10px 0"><b>Hướng dẫn của giáo viên:</b> ${esc(a.instructions)}</div>` : ""}
+    <div class="cl-test-intro">
+      <span class="lx-ex-pill">BÀI TẬP ĐƯỢC GIAO</span>
+      <h1>${esc(a.title)}</h1>
+      <p class="small muted">${due(a.dueAt)}${a.maxAttempts ? ` · tối đa ${a.maxAttempts} lần nộp` : ""}${a.allowResubmit ? "" : " · chỉ nộp 1 lần"}</p>
+      <div class="sheet sheet-pad" style="margin-top:10px">
+        <h2>Yêu cầu</h2>
+        <p class="muted">${esc(a.instructions || "Hoàn thành bài tập và gửi kết quả trước thời hạn. Bạn có thể làm lại theo số lần cho phép.")}</p>
+        <div class="cl-m-req-row"><span>Hạn nộp</span><b>${a.dueAt ? fmtDate(a.dueAt, false) : "Không giới hạn"}</b></div>
+        <div class="cl-m-req-row"><span>Trạng thái</span><span id="stTag">${scoreTag(j.state)}</span></div>
+      </div>
+    </div>
     <section class="sheet sheet-pad" style="margin-top:12px"><div class="prompt">${esc(ex.prompt || "")}</div></section>
     <section class="sheet sheet-pad" style="margin-top:12px">
       <label class="field">Bài làm của bạn<textarea id="ans" rows="10" maxlength="20000" ${open ? "" : "disabled"}></textarea></label>
@@ -489,9 +555,21 @@ async function testForm(j, reload) {
 
 
 function takeTest(main, s, ctx) {
-  main.innerHTML = `<div class="test-head sheet sheet-pad"><b>${esc(s.test.title)}</b><span class="spacer"></span><span class="timer" id="timer"></span><button class="btn btn-primary btn-sm" id="submitT">Nộp bài</button></div>
+  main.innerHTML = `
+    <div class="lx-ex-top-meta cl-test-meta">
+      <div class="lx-ex-top-row">
+        <span class="lx-ex-pill">BÀI KIỂM TRA</span>
+        <span class="lx-ex-cnt">${s.questions.length} câu</span>
+      </div>
+      <div class="lx-ex-prog"><i style="width:100%"></i></div>
+    </div>
+    <div class="cl-m-kpis">
+      <div class="cl-m-kpi"><b id="timerKpi">${s.test.durationMin}:00</b><span>Thời gian còn lại</span></div>
+      <div class="cl-m-kpi"><b>${s.questions.length} câu</b><span>Tổng số câu</span></div>
+    </div>
+    <div class="test-head sheet sheet-pad"><b>${esc(s.test.title)}</b><span class="spacer"></span><span class="timer" id="timer"></span><button class="btn btn-primary btn-sm" id="submitT">Nộp bài</button></div>
     <form id="tf">${s.questions.map((q, i) => `<section class="sheet sheet-pad q-block"><p class="kicker">Câu ${i + 1} · ${q.points} điểm</p>
-      <p><b>${esc(q.q)}</b></p>${q.options.map((o, k) => `<label class="check" style="padding:6px 0"><input type="radio" name="q${q.id}" value="${k}"> ${esc(o)}</label>`).join("")}
+      <p><b>${esc(q.q)}</b></p><div class="cl-test-opts">${q.options.map((o, k) => `<label class="check cl-test-opt"><input type="radio" name="q${q.id}" value="${k}"><span class="lx-opt-let">${String.fromCharCode(65 + k)}</span><span>${esc(o)}</span></label>`).join("")}</div>
     </section>`).join("")}</form>`;
   let done = false;
   const end = Date.parse(s.endsAt);
@@ -509,7 +587,10 @@ function takeTest(main, s, ctx) {
   const tick = setInterval(() => {
     const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
     const el = document.getElementById("timer"); if (!el) return clearInterval(tick);
-    el.textContent = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+    const txt = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+    el.textContent = txt;
+    const kpiEl = document.getElementById("timerKpi");
+    if (kpiEl) kpiEl.textContent = txt;
     el.classList.toggle("warn", left < 60);
     if (!left) submit(true);
   }, 1000);

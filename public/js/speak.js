@@ -624,7 +624,7 @@ export async function pageSpeakHub(main, [langId], query, ctx) {
   try { d = await load(langId, true); } catch (e) { if (ctx.isCurrent()) fail(main, e.message); return; }
   if (!ctx.isCurrent()) return;
   if (getSubject() !== d.lang) setSubject(d.lang);
-  ctx.setCrumbs([[L("Trang chủ", "Home"), "/app/"], [d.name, `/app/ngoai-ngu/${d.lang}`], [L("Phòng luyện nói", "Speaking studio")]]);
+  ctx.setCrumbs([[d.name, `/app/ngoai-ngu/${d.lang}`], [query.muc === "hoi-thoai" ? L("Hội thoại AI", "AI Conversation") : L("Trung tâm luyện nói", "Speaking Lab")]]);
   const lvKey = `pl:speak:lv:${d.lang}`;
   const lv = d.levels.find((l) => l.id === query.cap) || d.levels.find((l) => l.id === ls.get(lvKey, "")) || d.levels[0];
   if (!lv) return fail(main, L("Khóa này chưa có nội dung luyện nói.", "This course has no speaking content yet."));
@@ -658,8 +658,73 @@ export async function pageSpeakHub(main, [langId], query, ctx) {
       <span class="sp-mode-foot"><span>${a.n}/${n} ${L("đã luyện", "practised")}</span>${chip(a.avg)}</span>
       <span class="sp-prog"><i style="width:${n ? Math.round((a.n / n) * 100) : 0}%"></i></span></a>`;
   };
+  const lvShort = lv.code || lv.title.split(/[—·]/)[0].trim();
+  const firstScene = d.scenarios && d.scenarios[0];
+  const mobileHubHtml = tab === "hoi-thoai"
+    ? `<section class="sp-m-coach" aria-label="Rivo AI Coach">
+        <div class="sp-m-coach-head">
+          <img class="sp-m-coach-img" src="/img/kit/chibi-owl.webp" width="68" height="68" alt="" loading="lazy" decoding="async">
+          <div class="sp-m-coach-copy">
+            <b>Rivo AI Coach</b>
+            <span>${L("Đang sẵn sàng luyện tập", "Ready to practice")}</span>
+          </div>
+          <em class="sp-m-lv-pill">${esc(lvShort)}</em>
+        </div>
+        <div class="sp-m-scene-card">
+          <h2>${L("Chọn tình huống hội thoại", "Pick a conversation scenario")}</h2>
+          <div class="sp-m-scene-list">
+            ${(d.scenarios || []).slice(0, 5).map((s) => `<a class="sp-m-scene-row" href="/app/ngoai-ngu/tro-chuyen/${d.lang}/${s.id}?cap=${lv.id}">
+              <span class="sp-m-scene-ic">${I(s.icon, 20)}</span>
+              <span class="sp-m-scene-txt"><b>${esc(s.title)}</b><small>${esc(s.desc)}</small></span>
+              <span class="sp-m-arr" aria-hidden="true">›</span>
+            </a>`).join("")}
+          </div>
+        </div>
+        <div class="sp-m-goal-card">
+          <b>🎯 ${L("Mục tiêu buổi học", "Session goal")}</b>
+          <p>${L("Thực hành 5–7 lượt hội thoại và nhận góp ý sau mỗi câu.", "Practice 5–7 turns of conversation and get feedback after each sentence.")}</p>
+        </div>
+        ${firstScene ? `<a class="btn btn-primary btn-block sp-m-start" href="/app/ngoai-ngu/tro-chuyen/${d.lang}/${firstScene.id}?cap=${lv.id}">${L("Bắt đầu trò chuyện", "Start conversation")}</a>` : ""}
+      </section>`
+    : `<section class="sp-m-hub" aria-label="Speaking Lab">
+        <h1>${L("Luyện nói mỗi ngày", "Practice speaking daily")}</h1>
+        <p class="sp-m-sub">${L("Chọn cách luyện phù hợp với trình độ của bạn.", "Choose a practice mode that fits your level.")}</p>
+        <div class="sp-m-lab-card">
+          <div class="sp-m-lab-top">
+            <img class="sp-m-lab-img" src="/img/kit/chibi-dragon.webp" width="76" height="76" alt="" loading="lazy" decoding="async">
+            <div class="sp-m-lab-copy">
+              <b>Speaking Lab</b>
+              <span>${L("Nghe mẫu · Nói lại · Nhận góp ý", "Listen · Shadow · Get feedback")}</span>
+            </div>
+          </div>
+          <a class="btn btn-primary btn-block" href="${cont ? cont.href : `${base}/${lv.id}/tu`}">${L("Bắt đầu luyện nói", "Start speaking")}</a>
+        </div>
+        <div class="sp-m-mode-list">
+          <a class="sp-m-mode-row" href="${base}/${lv.id}/tu">
+            <span class="sp-m-mode-ic">${I("mic", 22)}</span>
+            <span class="sp-m-mode-txt"><b>${L("Luyện từng từ", "Practice words")}</b><small>${L("Nghe và nói từng từ", "Listen and pronounce each word")}</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </a>
+          <a class="sp-m-mode-row" href="${base}/${lv.id}/cau">
+            <span class="sp-m-mode-ic">${I("mic", 22)}</span>
+            <span class="sp-m-mode-txt"><b>${L("Luyện câu", "Practice sentences")}</b><small>${L("Luyện ngữ điệu và nối âm", "Practice intonation and linking")}</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </a>
+          <a class="sp-m-mode-row" href="${lv.passage ? `${base}/${lv.id}/doan` : `${base}?muc=chu-de`}">
+            <span class="sp-m-mode-ic">${I("page", 22)}</span>
+            <span class="sp-m-mode-txt"><b>${L("Luyện đoạn", "Practice passages")}</b><small>${L("Đọc đoạn văn hoàn chỉnh", "Read complete paragraphs")}</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </a>
+          <a class="sp-m-mode-row" href="${base}?muc=hoi-thoai">
+            <span class="sp-m-mode-ic">${I("spark", 22)}</span>
+            <span class="sp-m-mode-txt"><b>${L("Hội thoại AI", "AI Conversation")}</b><small>${L("Thực hành tình huống thật", "Practice real-life scenarios")}</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </a>
+        </div>
+      </section>`;
   main.innerHTML = `
   <div class="sp" style="--c:${esc(d.color)}">
+    ${mobileHubHtml}
     <section class="sp-hero">
       <div class="sp-hero-txt">
         <span class="sp-eyebrow">${d.flag} ${esc(d.name)} · ${L("PHÒNG LUYỆN NÓI", "SPEAKING STUDIO")}</span>
@@ -744,7 +809,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
   const hub = VIRT[levelId] ? `/app/ngoai-ngu/luyen-noi/${d.lang}?muc=${levelId}` : `/app/ngoai-ngu/luyen-noi/${d.lang}?cap=${levelId}`;
   if (!lv) return fail(main, L("Không tìm thấy cấp độ.", "Level not found."));
   const K = KIND()[kind];
-  ctx.setCrumbs([[L("Trang chủ", "Home"), "/app/"], [d.name, `/app/ngoai-ngu/${d.lang}`], [L("Phòng luyện nói", "Speaking studio"), hub], [`${lv.title} · ${K.title}`]]);
+  ctx.setCrumbs([[d.name, hub], [L("Phòng luyện phát âm", "Pronunciation Studio")]]);
   if (lv.locked) { main.innerHTML = `<div class="sp" style="--c:${esc(d.color)}">${proCard(lv)}</div>`; return; }
   const unit = unitId ? lv.units.find((u) => u.id === unitId) : null;
   const tag = (u) => `${L("Bài", "Lesson")} ${u.no}: ${u.title}`;
@@ -758,9 +823,11 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
   let wave = null, alive = true;
   const title = kind === "doan" ? lv.passage.title : unit ? tag(unit) : `${lv.title} · ${L("tất cả các bài", "all lessons")}`;
   const nextUnit = unit ? lv.units[lv.units.indexOf(unit) + 1] : null;
+  const lvShort = lv.code || lv.title.split(/[—·]/)[0].trim();
 
   main.innerHTML = `
   <div class="sp sp-studio" style="--c:${esc(d.color)}">
+    <div class="sp-m-studio-kicker"><span>${esc(K.title.toUpperCase())} · ${esc(lvShort.toUpperCase())}</span></div>
     <header class="sp-top">
       <a class="sp-back" href="${hub}" aria-label="${L("Về phòng luyện nói", "Back to the studio")}">${I("left", 20)}</a>
       <div class="sp-top-t"><b>${esc(title)}</b><span>${d.flag} ${esc(d.name)} · ${esc(lv.title)} · ${K.title}${weakOnly ? " · " + L("mục cần luyện lại", "items to redo") : ""}</span></div>
@@ -770,6 +837,11 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     ${unit && unit.tip ? `<div class="sp-note tip">${I("spark", 18)}<span><b>${L("Mẹo phát âm", "Pronunciation tip")}:</b> ${esc(unit.tip)}</span></div>` : ""}
     ${kind === "doan" ? `<article class="sheet sp-passage"><div class="sp-passage-head"><b>${esc(lv.passage.title)}</b><button type="button" class="btn btn-sm" id="spReadAll">${I("vol", 16)}<span>${L("Nghe cả đoạn", "Listen to all")}</span></button></div><p class="lx-vi" lang="${esc(d.speech)}" id="spPassage"></p></article>` : ""}
     <section class="sheet sp-card" id="spCard"></section>
+    <div class="sheet sp-m-tip-card">
+      <b>${L("Gợi ý phát âm", "Pronunciation tip")}</b>
+      <p>${esc((unit && unit.tip) || L("Giữ âm đầu nhẹ, mở khẩu hình ở âm cuối và nói tự nhiên.", "Keep the initial sound clear, open your mouth naturally and speak at a steady pace."))}</p>
+    </div>
+    <button type="button" class="btn btn-primary btn-block sp-m-score-btn" data-act="mic">${L("Chấm phát âm", "Score pronunciation")}</button>
     <footer class="sp-nav">
       <button type="button" class="btn" id="spPrev">${I("left", 16)}${L("Trước", "Previous")}</button>
       <span class="sp-keys">${L("Phím tắt: Space thu âm · L nghe mẫu · ← →", "Shortcuts: Space record · L listen · ← →")}</span>
@@ -798,6 +870,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
       <div class="sp-text lx-vi" lang="${esc(d.speech)}" id="spText">${wordsHtml(words)}</div>
       ${it.r ? `<div class="sp-reading lx-vi">${esc(it.r)}</div>` : ""}
       ${it.m ? `<div class="sp-meaning lx-vi">${esc(it.m)}</div>` : ""}
+      <button type="button" class="sp-listen-pill" data-act="listen">▶ ${L("Nghe giọng mẫu", "Listen to model")}</button>
       <div class="sp-ctl">
         <button type="button" class="sp-round" data-act="listen" title="${L("Nghe mẫu (L)", "Listen (L)")}" aria-label="${L("Nghe mẫu", "Listen")}">${I("vol", 22)}</button>
         <button type="button" class="sp-round sp-txt ${st.slow ? "on" : ""}" data-act="slow" title="${L("Đọc chậm", "Slow speed")}" aria-pressed="${st.slow}">0.6×</button>
@@ -806,7 +879,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
         <button type="button" class="sp-round ${st.typing ? "on" : ""}" data-act="type" title="${L("Không dùng được micro? Gõ lại câu", "No microphone? Type it instead")}" aria-label="${L("Gõ lại câu", "Type instead")}">${I("keys", 22)}</button>
       </div>
       <canvas class="sp-wave" id="spWave" aria-hidden="true"></canvas>
-      <div class="sp-status" id="spStatus" aria-live="polite">${r ? "" : SR ? L("Bấm micro rồi đọc to, rõ từng từ", "Tap the microphone and read aloud, clearly") : L("Nghe mẫu, rồi gõ lại câu để kiểm tra", "Listen, then type the sentence to check")}</div>
+      <div class="sp-status" id="spStatus" aria-live="polite">${r ? "" : SR ? L("Chạm để bắt đầu ghi âm", "Tap the microphone and read aloud, clearly") : L("Nghe mẫu, rồi gõ lại câu để kiểm tra", "Listen, then type the sentence to check")}</div>
       <form class="sp-type" id="spType" ${st.typing || !SR ? "" : "hidden"}><input class="input lx-vi" name="t" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${L("Gõ lại câu bạn vừa đọc", "Type what you said")}"><button class="btn btn-primary" type="submit">${L("Chấm", "Check")}</button></form>
       ${r ? resultHtml(it, r) : ""}`;
     wave = makeWave($("#spWave"));
@@ -997,7 +1070,7 @@ export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
   let lv = open.find((l) => l.id === query.cap) || open.find((l) => l.id === ls.get(lvKey, "")) || open[0] || d.levels[0];
   const sc = d.scenarios.find((s) => s.id === sceneId) || (d.interviews || []).find((s) => s.id === sceneId) || d.scenarios[0];
   const hub = `/app/ngoai-ngu/luyen-noi/${d.lang}?cap=${lv.id}`;
-  ctx.setCrumbs([[L("Trang chủ", "Home"), "/app/"], [d.name, `/app/ngoai-ngu/${d.lang}`], [L("Phòng luyện nói", "Speaking studio"), hub], [sc.title]]);
+  ctx.setCrumbs([[d.name, hub], [L("Màn hình chat AI", "AI Conversation")]]);
 
   const st = { msgs: [], busy: false, cap: null, showVi: ls.get("pl:speak:vi", "1") === "1", auto: ls.get("pl:speak:auto", "1") === "1", quota: d.ai.quota, hints: [] };
   let alive = true;
@@ -1006,6 +1079,13 @@ export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
 
   main.innerHTML = `
   <div class="sp sp-chat" style="--c:${esc(d.color)}">
+    <div class="sp-chat-coach">
+      <img class="sp-chat-coach-avatar" src="/img/kit/chibi-owl.webp" width="52" height="52" alt="" loading="lazy" decoding="async">
+      <div class="sp-chat-coach-info">
+        <b>Rivo · ${esc(d.name)} Coach</b>
+        <span>${L("Tình huống", "Scenario")}: ${esc(sc.title)}</span>
+      </div>
+    </div>
     <header class="sp-top">
       <a class="sp-back" href="${hub}" aria-label="${L("Về phòng luyện nói", "Back to the studio")}">${I("left", 20)}</a>
       <span class="sp-scene-ico">${I(sc.icon, 20)}</span>

@@ -96,7 +96,7 @@ const LessonsIndex = (all, l) => all.indexOf(l);
 /* =================== SINGLE LESSON =================== */
 /* =================== PRICING & PAYMENT =================== */
 export async function pagePricing(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Bảng giá"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Bảng giá Pro"]]);
   main.innerHTML = `<div class="skel" style="height:360px"></div>`;
   const [pl, me] = await Promise.all([api("/api/billing/plans"), api("/api/billing/me")]);
   if (!ctx.isCurrent()) return;
@@ -118,17 +118,29 @@ export async function pagePricing(main, _p, _q, ctx) {
       <ul>${BENEFITS[kind].map((b) => `<li>${esc(b)}</li>`).join("")}</ul>
       ${p.quoteOnly ? `<button class="btn" data-quote="${esc(p.name)}">${icon("send")}Liên hệ nâng cấp</button>` : `<button class="btn btn-primary" data-buy="${esc(p.id)}">${icon("star")}Chọn gói</button>`}</div>`;
   };
+  const curPerksHtml = `
+    <div class="plan-m-perks">
+      <h2>Quyền lợi hiện tại</h2>
+      <div class="plan-m-perk"><span class="plan-m-ico is-blue">📘</span><div><b>Bài học cơ bản</b><span>Truy cập các bài mở miễn phí</span></div></div>
+      <div class="plan-m-perk"><span class="plan-m-ico is-green">📊</span><div><b>Theo dõi tiến độ</b><span>Lưu kết quả và lịch sử học tập</span></div></div>
+      <div class="plan-m-perk"><span class="plan-m-ico is-orange">💬</span><div><b>Hỗ trợ</b><span>Liên hệ khi cần nâng cấp hoặc gia hạn</span></div></div>
+    </div>`;
   main.innerHTML = `
     <div class="page-head"><div><h1>Bảng giá</h1><p>Học nền tảng miễn phí mãi mãi. Chọn gói phù hợp khi cần thêm.</p></div></div>
     <nav class="tabs" style="margin-bottom:16px">${[["pro", "Cá nhân (Pro)"], ["family", "Gia đình (Family)"], ["teacher", "Giáo viên (Teacher)"]].map(([k, l]) => `<a href="/app/bang-gia?goi=${k}" class="${k === kind ? "on" : ""}">${l}</a>`).join("")}</nav>
     ${mem.pro && kind === "pro" ? `<div class="req" style="margin-bottom:16px"><b>Bạn đang có quyền ${esc(mem.planName || "Pro")}</b>${mem.staff ? "Tài khoản quản trị luôn có quyền Pro để xem trước nội dung." : `Hạn dùng đến ${fmtDate(mem.expiresAt, false)}${(mem.sources || []).length ? ` (nguồn: ${(mem.sources || []).map((x) => esc(x.label)).join(", ")})` : ""}. Mua thêm Pro cá nhân được cộng nối tiếp và không phụ thuộc lớp học hay gói gia đình.`}</div>` : ""}
-    ${!pl.enabled ? `<div class="sheet sheet-pad empty"><b>Hiện chưa mở bán</b>Bạn vẫn học được toàn bộ nội dung miễn phí.</div>` : !plans.length ? `<div class="sheet sheet-pad empty"><b>Chưa có gói loại này</b>Quản trị viên chưa mở bán.</div>` : `
+    ${!pl.enabled ? `<div class="sheet sheet-pad plan-m-card">
+      <div class="plan-m-top"><span class="lx-ex-pill">${mem.pro ? "PRO" : "FREE"}</span><span class="plan-m-active">Đang hoạt động</span></div>
+      <h2>${mem.pro ? esc(mem.planName || "Gói Pro") : "Gói Free"}</h2>
+      <p class="muted">Hiện chưa mở bán gói mới. Bạn vẫn học được toàn bộ nội dung miễn phí.</p>
+      <a class="btn btn-primary btn-block" href="/app/ngoai-ngu">Vào khóa học</a>
+    </div>${curPerksHtml}` : !plans.length ? `<div class="sheet sheet-pad empty"><b>Chưa có gói loại này</b>Quản trị viên chưa mở bán.</div>${curPerksHtml}` : `
     ${kind === "pro" ? proLayout(pl, mem, plans) : `    <div class="plan-grid">
       ${kind === "pro" ? `<div class="plan-card free"><h3>Free</h3><div class="price">0đ</div><ul>
         <li>Toàn bộ 6 ngoại ngữ, mọi cấp độ</li><li>Bài kiểm tra và chứng nhận hoàn thành</li><li>Rivo ${cfg("aiEnabled", true) ? "giới hạn lượt mỗi ngày" : "(đang tắt)"}</li></ul>
         <button class="btn" disabled>${mem.pro ? "Gói cơ bản" : "Đang dùng"}</button></div>` : ""}
       ${plans.map(card).join("")}
-    </div>`}`}
+    </div>`}${curPerksHtml}`}
     ${pending.length ? `<section class="sheet sheet-pad" style="margin-top:16px"><h2>Đơn đang chờ thanh toán</h2>${pending.map((o) => `<div class="row order-row"><b>${esc(o.code)}</b><span>${esc(o.planName)}</span><span>${vnd(o.amountVnd)}</span>${o.claimedAt ? `<span class="tag tag-cam">Đã báo chuyển, chờ xác nhận</span>` : `<span class="small muted">hết hạn ${fmtDate(o.expiresAt)}</span>`}<span class="spacer"></span><button class="btn btn-sm btn-primary" data-resume="${o.id}">${o.claimedAt ? "Xem" : "Thanh toán"}</button>${o.claimedAt ? "" : `<button class="btn btn-sm btn-ghost" data-cancel="${o.id}">Hủy</button>`}</div>`).join("")}</section>` : ""}
     <section class="sheet sheet-pad faq" style="margin-top:16px"><h2>Câu hỏi thường gặp</h2>
       <details><summary>Thanh toán thế nào?</summary><p>${cfg("payMode", "manual") === "sepay"
@@ -263,7 +275,7 @@ function checkout(r, ctx, onDone) {
 
 /* =================== MY PLAN =================== */
 export async function pageMyPlan(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Gói của tôi"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Gói của tôi"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   const me = await api("/api/billing/me");
   if (!ctx.isCurrent()) return;
@@ -272,17 +284,27 @@ export async function pageMyPlan(main, _p, _q, ctx) {
   const SUB_ST = { active: "Đang hiệu lực", canceled: "Đã tắt nhắc gia hạn", expired: "Đã hết hạn", revoked: "Đã thu hồi" };
   main.innerHTML = `
     <div class="page-head"><div><h1>Gói của tôi</h1><p>Trạng thái thành viên, lịch sử đơn hàng và gia hạn.</p></div></div>
-    <section class="sheet sheet-pad" style="margin-bottom:16px">
+    <section class="sheet sheet-pad plan-m-card" style="margin-bottom:16px">
+      <div class="plan-m-top">
+        <span class="lx-ex-pill">${m.pro ? "PRO" : "FREE"}</span>
+        <span class="plan-m-active">Đang hoạt động</span>
+      </div>
       <div class="row" style="gap:14px;align-items:flex-start">
         <div class="plan-now ${m.pro ? "pro" : ""}">${m.pro ? "PRO" : "FREE"}</div>
         <div style="flex:1;min-width:220px">
-          <h2>${m.pro ? esc(m.planName || "Pro") : "Gói Free"}</h2>
+          <h2>${m.pro ? esc(m.planName || "Gói Pro") : "Gói Free"}</h2>
           <p class="muted">${m.staff ? "Tài khoản quản trị có quyền Pro để xem trước nội dung." : m.pro ? `${m.source === "trial" ? "Bạn đang dùng thử Pro miễn phí. Còn " : "Hiệu lực đến "}<b>${fmtDate(m.expiresAt, false)}</b> (${Math.max(0, Math.ceil((Date.parse(m.expiresAt) - Date.now()) / 86400000))} ngày nữa).` : "Bạn đang dùng gói miễn phí."}</p>
           ${m.pro && !m.staff ? `<label class="switch-row"><input type="checkbox" id="remind" ${m.renewReminder ? "checked" : ""}> Nhắc tôi gia hạn khi sắp hết hạn</label><p class="small muted">Thanh toán bằng chuyển khoản nên không có tự động trừ tiền. Tắt nhắc gia hạn tương đương hủy gia hạn; quyền Pro vẫn dùng đến hết hạn.</p>` : ""}
         </div>
-        <a class="btn btn-primary" href="/app/bang-gia">${icon("star")}${m.pro && !m.staff ? "Gia hạn" : "Nâng cấp Pro"}</a>
+        <a class="btn btn-primary" href="/app/bang-gia">${icon("star")}${m.pro && !m.staff ? "Gia hạn" : "Xem bảng giá"}</a>
       </div>
     </section>
+    <div class="plan-m-perks" style="margin-bottom:16px">
+      <h2>Quyền lợi hiện tại</h2>
+      <div class="plan-m-perk"><span class="plan-m-ico is-blue">📘</span><div><b>Bài học cơ bản</b><span>Truy cập các bài mở miễn phí</span></div></div>
+      <div class="plan-m-perk"><span class="plan-m-ico is-green">📊</span><div><b>Theo dõi tiến độ</b><span>Lưu kết quả và lịch sử học tập</span></div></div>
+      <div class="plan-m-perk"><span class="plan-m-ico is-orange">💬</span><div><b>Hỗ trợ</b><span>Liên hệ khi cần nâng cấp hoặc gia hạn</span></div></div>
+    </div>
     <section class="sheet sheet-pad"><h2>Lịch sử đơn hàng</h2>
       ${me.orders.length ? `<div class="table-wrap" style="border:0"><table><thead><tr><th>Mã đơn</th><th>Gói</th><th class="num">Số tiền</th><th>Trạng thái</th><th>Tạo lúc</th><th>Thanh toán lúc</th></tr></thead><tbody>
         ${me.orders.map((o) => `<tr><td><b>${esc(o.code)}</b></td><td>${esc(o.planName)}</td><td class="num">${vnd(o.amountVnd)}</td><td>${o.status === "pending" && o.claimedAt ? `<span class="tag tag-cam">Chờ quản trị xác nhận</span>` : `<span class="tag ${ORDER_ST[o.status][1]}">${ORDER_ST[o.status][0]}</span>`}</td><td>${fmtDate(o.createdAt)}</td><td>${o.paidAt ? fmtDate(o.paidAt) : ""}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Chưa có đơn hàng nào.</p>`}
@@ -301,7 +323,7 @@ function quotaLine(q) {
   return `Còn ${q.remaining.day}/${q.limits.day} lượt hôm nay · ${q.remaining.month}/${q.limits.month} lượt tháng này`;
 }
 export async function pageAi(main, [convId], _q, ctx) {
-  ctx.setCrumbs([["Hội thoại AI"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["AI Tutor"]]);
   main.innerHTML = `<div class="skel" style="height:360px"></div>`;
   let st, convRes;
   try {
@@ -338,6 +360,40 @@ export async function pageAi(main, [convId], _q, ctx) {
   const P_LABEL = { student: "Gia sư Việt", native: "Gia sư bản ngữ", english: "English Tutor", teacher: "Trợ giảng" };
 
   main.innerHTML = `
+    <div class="ai-m-top">
+      <div class="sp-m-coach-head">
+        <img class="sp-m-coach-img" src="/img/kit/chibi-owl.webp" width="68" height="68" alt="" loading="lazy" decoding="async">
+        <div class="sp-m-coach-copy">
+          <b>Rivo AI Tutor</b>
+          <span>Trợ lý học tập của bạn</span>
+        </div>
+        <em class="sp-m-lv-pill">AI</em>
+      </div>
+      <div class="ai-m-welcome">
+        <h2>Hôm nay bạn muốn học gì?</h2>
+        <p>Hỏi về bài học, nhờ giải thích lỗi sai hoặc luyện giao tiếp.</p>
+      </div>
+      <div class="ai-m-quick">
+        <h3>Gợi ý nhanh</h3>
+        <div class="sp-m-mode-list">
+          <button type="button" class="sp-m-mode-row" data-ai-quick="Hãy giải thích các lỗi ngữ pháp và từ vựng thường gặp trong bài đang học.">
+            <span class="sp-m-mode-ic">✨</span>
+            <span class="sp-m-mode-txt"><b>Giải thích lỗi sai</b><small>Hiểu vì sao đáp án chưa đúng</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="sp-m-mode-row" data-ai-quick="Hãy đóng vai người bản ngữ để luyện hội thoại giao tiếp hằng ngày với mình.">
+            <span class="sp-m-mode-ic">🎙️</span>
+            <span class="sp-m-mode-txt"><b>Luyện hội thoại</b><small>Thực hành tình huống giao tiếp</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="sp-m-mode-row" data-ai-quick="Hãy lập kế hoạch học tập chia mục tiêu thành các nhiệm vụ nhỏ mỗi ngày.">
+            <span class="sp-m-mode-ic">🗺️</span>
+            <span class="sp-m-mode-txt"><b>Lập kế hoạch học</b><small>Chia mục tiêu thành nhiệm vụ nhỏ</small></span>
+            <span class="sp-m-arr" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="page-head"><div><span class="edu-eyebrow">TRỢ LÝ HỌC TẬP ĐA MÔN</span><h1>Hội thoại Rivo</h1><p>Chọn ngoại ngữ bạn đang học — gia sư AI sẽ giải thích ngữ pháp, sửa câu sai, gợi ý bài tập và luyện giao tiếp theo đúng giáo trình.</p></div></div>
     <div class="ch-layout">
       <div class="stack">
@@ -349,7 +405,7 @@ export async function pageAi(main, [convId], _q, ctx) {
           <div class="chips" id="aiQuickChips" style="margin-bottom:12px"></div>
           <div class="ai-msgs" id="aiChatMsgs" style="min-height:280px;max-height:480px;overflow:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px" aria-live="polite"></div>
           <form id="aiChatForm" class="ai-inline-form" style="margin-top:12px">
-            <textarea name="q" rows="2" maxlength="2000" placeholder="Nhập câu hỏi hoặc dán câu ngoại ngữ cần giải thích, sửa lỗi…"></textarea>
+            <textarea name="q" rows="2" maxlength="2000" placeholder="Nhập câu hỏi của bạn..."></textarea>
             <button class="btn btn-primary" type="submit">${icon("send")}Gửi</button>
           </form>
           <p class="small muted" id="aiChatQuota" style="margin-top:8px">${quotaLine(st)}</p>
@@ -448,6 +504,7 @@ export async function pageAi(main, [convId], _q, ctx) {
     main.querySelectorAll("[data-p]").forEach((x) => x.classList.toggle("on", x.dataset.p === persona));
   });
   $("#aiNewConv", main)?.addEventListener("click", () => { curConvId = null; paintGreeting(); paintConvs(); });
+  main.querySelectorAll("[data-ai-quick]").forEach((b) => b.addEventListener("click", () => sendQuestion(b.dataset.aiQuick)));
   $("#aiChatForm", main)?.addEventListener("submit", (e) => {
     e.preventDefault();
     const q = e.currentTarget.q.value.trim();

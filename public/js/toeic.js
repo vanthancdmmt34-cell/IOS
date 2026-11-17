@@ -4,6 +4,7 @@ import { setAppHash } from "./core.js";
 import { api, esc, icon, toast } from "./core.js";
 import { currentLang } from "./i18n.js";
 import { speakText as voiceSpeak, stopSpeaking } from "./voice.js";
+import { HeroBanner } from "./chibi-ds.js";
 
 const EN = () => currentLang() === "en";
 const T = (vi, en) => (EN() ? en : vi);
@@ -36,7 +37,7 @@ function head(eyebrow, title, sub) {
 }
 
 export async function pageToeic(main, [sub] = [], _q, ctx) {
-  ctx.setCrumbs([[T("Trang chủ", "Home"), "/app/"], [T("TOEIC & Luyện thi", "TOEIC & Practice"), "/app/toeic"]]);
+  ctx.setCrumbs([[T("Học viên", "Student"), "/app/"], [T("Luyện thi TOEIC", "TOEIC Practice"), "/app/toeic"]]);
   ctx.onLeave && ctx.onLeave(() => stopSpeech());
   const parts = String(sub || "").split("/").filter(Boolean);
   const [a, b, c] = parts;
@@ -65,8 +66,43 @@ async function viewOverview(main, ctx) {
   if (!ctx.isCurrent()) return;
   const sug = d.suggestion;
   const sugPart = d.parts.find((p) => p.n === sug.part);
+  const lastTest = (d.tests || []).find((t) => t.last && t.last.score);
+  const estScore = lastTest ? lastTest.last.score.total : d.totalDrillCorrect || 0;
+  const firstMock = (d.tests && d.tests[0]) ? d.tests[0].id : "full-1";
+  const heroHtml = HeroBanner({
+    badge: "TOEIC PRACTICE",
+    title: T("Chinh phục mục tiêu TOEIC", "Reach your TOEIC goal"),
+    subtitle: T("Luyện từng phần, theo dõi điểm và tiến độ.", "Drill each Part, track your score and progress."),
+    kit: "dragon",
+    cls: "toeic-m-hero",
+  });
   main.innerHTML = `${head("TOEIC & LUYỆN THI", T("Trung tâm luyện thi TOEIC", "TOEIC practice center"), T("Học theo từng Part, luyện từng phần, làm đề thi thử có giờ và xem kết quả chi tiết.", "Learn each Part, drill each section, sit timed mock tests and review your results."))}
+  ${heroHtml}
+  <div class="toeic-m-kpis">
+    <div class="toeic-m-kpi"><b>${estScore || d.questionCount}</b><span>${lastTest ? T("Điểm gần nhất", "Latest score") : T("Câu trong ngân hàng", "Questions in bank")}</span></div>
+    <div class="toeic-m-kpi"><b>${d.totalDrillCorrect || d.tests.reduce((s, t) => s + t.attempts, 0)}</b><span>${T("Câu đúng khi luyện", "Correct drill answers")}</span></div>
+  </div>
   ${nav("tong-quan")}
+  <section class="toeic-m-struct">
+    <h2>${T("Cấu trúc bài thi", "Test Structure")}</h2>
+    <div class="toeic-m-struct-list">
+      <a class="toeic-m-struct-item" href="/app/toeic/luyen/1">
+        <span class="toeic-m-struct-ico is-listen">🎧</span>
+        <div class="toeic-m-struct-copy"><b>Listening Part 1–4</b><span>100 ${T("câu · Luyện nghe", "questions · Listening practice")}</span></div>
+        <span class="toeic-m-struct-arr">›</span>
+      </a>
+      <a class="toeic-m-struct-item" href="/app/toeic/luyen/5">
+        <span class="toeic-m-struct-ico is-read">📖</span>
+        <div class="toeic-m-struct-copy"><b>Reading Part 5–7</b><span>100 ${T("câu · Ngữ pháp và đọc", "questions · Grammar & Reading")}</span></div>
+        <span class="toeic-m-struct-arr">›</span>
+      </a>
+      <a class="toeic-m-struct-item" href="/app/toeic/de/${esc(firstMock)}">
+        <span class="toeic-m-struct-ico is-mock">⏱️</span>
+        <div class="toeic-m-struct-copy"><b>${T("Thi thử toàn đề", "Full Mock Test")}</b><span>120 ${T("phút · Chấm điểm tự động", "min · Auto-graded")}</span></div>
+        <span class="toeic-m-struct-arr">›</span>
+      </a>
+    </div>
+  </section>
   <section class="sheet sheet-pad toeic-suggest">
     <div><span class="tag tag-tim">${T("Gợi ý hôm nay", "Today's suggestion")}</span><h2>${esc(sugPart ? (EN() ? sugPart.titleEn : sugPart.title) : "")} · Part ${sug.part}</h2><p class="muted">${esc(sug.reason)}</p></div>
     <div class="row"><a class="btn btn-primary" href="/app/toeic/luyen/${sug.part}">${icon("play")}${T("Luyện Part", "Practise Part")} ${sug.part}</a><a class="btn" href="/app/toeic/hoc/${sug.part}">${icon("book")}${T("Xem bài học", "Read lesson")}</a></div>

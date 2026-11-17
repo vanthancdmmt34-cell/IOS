@@ -24,11 +24,27 @@ const I = (n, extra = "") => IP[n] ? `<svg viewBox="0 0 24 24" fill="none" strok
 export function adminShell(main, { tab, groups, ctx }) {
   document.body.classList.add("ax-on");
   ctx.onLeave?.(() => document.body.classList.remove("ax-on"));
+  let curLabel = "Tổng quan";
+  for (const g of groups) {
+    const found = g.items.find(([k]) => k === tab);
+    if (found) { curLabel = found[1]; break; }
+  }
   const nav = groups.map((g) => `<div class="ad-grp"><span class="ad-grp-l">${esc(g.label)}</span>
     ${g.items.map(([k, l, ic, d]) => `<a href="${k.startsWith("#") ? k : "/app/quan-tri/" + k}" class="${k === tab ? "on" : ""}" title="${esc(d || "")}">${I(k === "tong-quan" ? "grid" : (ic || "file"))}<span>${esc(l)}</span></a>`).join("")}</div>`).join("");
+  const isUserTab = ["hoc-vien", "giao-vien", "lop"].includes(tab);
+  const isContentTab = ["ngoai-ngu", "ban-dich"].includes(tab);
+  const isMoreTab = !["tong-quan"].includes(tab) && !isUserTab && !isContentTab;
   main.innerHTML = `
   <div class="ad" id="ad">
     <aside class="ad-side" aria-label="Menu quản trị">
+      <div class="ad-m-drawer-head">
+        <img class="ad-m-drawer-av" src="/img/kit/chibi-dragon.webp" alt="Admin" width="52" height="52" />
+        <div class="ad-m-drawer-user">
+          <b>Quản trị viên</b>
+          <span>${esc(S.me.displayName || "LifeRivo")} · Admin</span>
+        </div>
+        <button type="button" class="ad-m-drawer-close" id="adMClose" aria-label="Đóng">×</button>
+      </div>
       <a class="ad-brand" href="/app/quan-tri">${brandHtml()}</a>
       <span class="ad-badge">Khu quản trị</span>
       <nav class="ad-nav">${nav}</nav>
@@ -37,6 +53,12 @@ export function adminShell(main, { tab, groups, ctx }) {
     <div class="ad-scrim" id="adScrim"></div>
     <div class="ad-main">
       <header class="ad-top">
+        <button class="ad-m-back" id="adMBack" type="button" aria-label="Quay lại">${icon("left")}</button>
+        <div class="ad-m-titles">
+          <b id="adMTitle">Quản trị · ${esc(curLabel)}</b>
+          <span>Quản trị · LifeRivo Study</span>
+        </div>
+        <button class="ad-m-more" id="adMMore" type="button" aria-label="Mở menu quản trị">•••</button>
         <button class="ad-ib ad-menu" id="adMenu" aria-label="Mở menu">${icon("menu")}</button>
         <button class="ad-search" id="adSearch" type="button">${icon("search")}<span>Tìm học viên, bài tập, chương…</span><kbd>Ctrl K</kbd></button>
         <span class="ad-sp"></span>
@@ -52,10 +74,24 @@ export function adminShell(main, { tab, groups, ctx }) {
       </header>
       <div class="ad-content" id="adContent"></div>
     </div>
+    <nav class="ad-m-tab" aria-label="Điều hướng quản trị">
+      <a href="/app/quan-tri/tong-quan" class="ad-m-tab-it ${tab === "tong-quan" ? "on" : ""}"><span class="ad-m-tab-ic">${I("home")}</span><span>Tổng quan</span></a>
+      <a href="/app/quan-tri/hoc-vien" class="ad-m-tab-it ${isUserTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("users")}</span><span>Người dùng</span></a>
+      <a href="/app/quan-tri/ngoai-ngu" class="ad-m-tab-it ${isContentTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("book")}</span><span>Nội dung</span></a>
+      <button type="button" class="ad-m-tab-it ${isMoreTab ? "on" : ""}" id="adMTabMenu"><span class="ad-m-tab-ic">${icon("menu")}</span><span>Menu</span></button>
+    </nav>
   </div>`;
   const ad = $("#ad", main);
-  $("#adMenu", main).addEventListener("click", () => ad.classList.toggle("nav"));
+  const toggleNav = () => ad.classList.toggle("nav");
+  $("#adMenu", main).addEventListener("click", toggleNav);
+  $("#adMMore", main)?.addEventListener("click", toggleNav);
+  $("#adMTabMenu", main)?.addEventListener("click", toggleNav);
+  $("#adMClose", main)?.addEventListener("click", () => ad.classList.remove("nav"));
   $("#adScrim", main).addEventListener("click", () => ad.classList.remove("nav"));
+  $("#adMBack", main)?.addEventListener("click", () => {
+    if (tab !== "tong-quan") location.href = "/app/quan-tri/tong-quan";
+    else location.href = "/app/";
+  });
   $("#adSearch", main).addEventListener("click", () => document.getElementById("searchBtn")?.click());
   const drop = $("#adDrop", main), ub = $("#adUser", main);
   ub.addEventListener("click", (e) => { e.stopPropagation(); drop.hidden = !drop.hidden; ub.setAttribute("aria-expanded", String(!drop.hidden)); });
@@ -140,6 +176,13 @@ export async function dashPage(host, DATA, { onReload } = {}) {
   const kpi = (label, value, foot, href, ic) => `<a class="ad-kpi" href="${href}"><span class="ad-kpi-ic">${I(ic)}</span><span class="l">${esc(label)}</span><b>${value}</b><span class="f">${foot}</span></a>`;
 
   host.innerHTML = `
+  <div class="ad-m-dash-head">
+    <div>
+      <h1>Bảng điều khiển</h1>
+      <p>Tổng quan hoạt động LifeRivo.</p>
+    </div>
+    <span class="ad-m-role-pill">ADMIN</span>
+  </div>
   <div class="ad-hello">
     <div><h1>${hello}, ${esc(S.me.displayName)}</h1><p>${esc(new Date().toLocaleDateString(isEn ? "en-US" : "vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))} · ${esc(siteName())}</p></div>
     <div class="ad-hello-act">
@@ -149,18 +192,28 @@ export async function dashPage(host, DATA, { onReload } = {}) {
     </div>
   </div>
 
-  <section class="ad-todo">
-    <div class="ad-sh"><h2>Việc cần xử lý</h2><span>${todo.length ? `${todo.length} việc` : ""}</span></div>
-    ${todo.length ? `<div class="ad-todo-list">${todo.slice(0, 4).map(([tone, ic, txt, act, href]) => `<a class="ad-task ${tone}" href="${href}"><span class="ic">${I(ic)}</span><span class="tx"><b>${esc(txt)}</b><small>${esc(act)} →</small></span></a>`).join("")}</div>`
-      : `<div class="ad-allgood">${icon("check")}<span><b>Mọi thứ đều ổn.</b> Không có cảnh báo hệ thống, đơn chờ đối soát hay học viên cần nhắc.</span></div>`}
-  </section>
-
   <div class="ad-kpis">
     ${kpi("Học viên", fmtN(studs.length), `+${fmtN(newS)} trong 30 ngày`, "/app/quan-tri/hoc-vien", "users")}
     ${kpi("Đang học 7 ngày", fmtN(act7), `${pctOf(act7, studs.length)}% học viên · ${delta(act7, act7p)}`, "/app/quan-tri/hoc-vien", "user")}
     ${kpi("Đang online", fmtN(DATA.userStats?.online || 0), "phiên đăng nhập hiện tại", "/app/quan-tri/giam-sat", "server")}
     ${st ? kpi("Doanh thu 30 ngày", money(rev), `${fmtN(st.revenue.orders)} đơn · ${delta(rev, revPrev)}`, "/app/quan-tri/kinh-doanh", "wallet") : kpi("Tài khoản", fmtN(DATA.userStats?.total || 0), "toàn hệ thống", "/app/quan-tri/hoc-vien", "users")}
   </div>
+
+  <div class="ad-m-quick">
+    <h2>Quản lý nhanh</h2>
+    <div class="ad-m-quick-grid">
+      <a class="ad-m-qcard" href="/app/quan-tri/hoc-vien"><span class="ad-m-qic">${icon("users")}</span><b>Người dùng</b><span>Tài khoản</span></a>
+      <a class="ad-m-qcard" href="/app/quan-tri/ngoai-ngu"><span class="ad-m-qic">${icon("book")}</span><b>Nội dung</b><span>Ngoại ngữ</span></a>
+      <a class="ad-m-qcard" href="/app/quan-tri/kinh-doanh"><span class="ad-m-qic">${icon("star")}</span><b>Kinh doanh</b><span>Gói Pro</span></a>
+      <a class="ad-m-qcard" href="/app/quan-tri/cai-dat-he-thong"><span class="ad-m-qic">${icon("settings")}</span><b>Hệ thống</b><span>Cấu hình</span></a>
+    </div>
+  </div>
+
+  <section class="ad-todo">
+    <div class="ad-sh"><h2>Cần chú ý</h2><span>${todo.length ? `${todo.length} việc` : ""}</span></div>
+    ${todo.length ? `<div class="ad-todo-list">${todo.slice(0, 4).map(([tone, ic, txt, act, href]) => `<a class="ad-task ${tone}" href="${href}"><span class="ic">${I(ic)}</span><span class="tx"><b>${esc(txt)}</b><small>${esc(act)} →</small></span></a>`).join("")}</div>`
+      : `<div class="ad-allgood">${icon("check")}<span><b>Mọi thứ đều ổn.</b> Không có cảnh báo hệ thống, đơn chờ đối soát hay học viên cần nhắc.</span></div>`}
+  </section>
 
   <div class="ad-grid">
     <section class="ad-card span2">

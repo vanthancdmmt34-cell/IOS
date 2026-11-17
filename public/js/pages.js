@@ -29,7 +29,7 @@ export function noticeHtml(a) {
 /* ================= Playground ================= */
 /* ================= Leaderboard ================= */
 export async function pageNotices(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Thông báo"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Thông báo"]]);
   const [j, n] = await Promise.all([
     api("/api/announcements").catch(() => ({ announcements: [] })),
     api("/api/notifications").catch(() => ({ items: [], unread: 0 })),
@@ -37,23 +37,34 @@ export async function pageNotices(main, _p, _q, ctx) {
   if (!ctx.isCurrent()) return;
   const a = j.announcements || [];
   const items = n.items || [];
+  const unreadCount = items.filter((x) => !x.readAt).length;
+  const icoFor = (idx) => ["🔔", "📘", "🔥", "🏆"][idx % 4];
+  const tintFor = (idx) => ["is-blue", "is-purple", "is-orange", "is-green"][idx % 4];
   main.innerHTML = `
     <div class="page-head"><div><h1>Thông báo</h1><p>Tin hệ thống (nộp bài, chấm điểm, giấy phép, hết hạn Pro) và thông báo lớp từ giáo viên.</p></div>
-      ${items.some((x) => !x.readAt) ? `<button class="btn" id="readAll">Đánh dấu đã đọc hết</button>` : ""}</div>
-    <section class="sheet sheet-pad" style="margin-bottom:16px">
+      ${unreadCount ? `<button class="btn" id="readAll">Đánh dấu đã đọc hết</button>` : ""}</div>
+    <div class="nt-m-toolbar">
+      <span class="lx-ex-pill">${unreadCount} thông báo mới</span>
+      ${items.length ? `<button type="button" class="nt-m-readall" id="readAllM">Đánh dấu đã đọc</button>` : ""}
+    </div>
+    <section class="sheet sheet-pad nt-m-sec" style="margin-bottom:16px">
       <h2>Cá nhân</h2>
-      ${items.length ? `<ul class="list">${items.map((x) => `<li class="list-row" style="cursor:pointer;opacity:${x.readAt ? 0.7 : 1}" data-nid="${x.id}" data-link="${esc(x.link || "")}">
-        <span class="t"><b>${esc(x.title)}</b><span>${esc(x.body || "")} · ${timeAgo(x.createdAt)}${x.readAt ? "" : ' · <em class="notice-new">mới</em>'}</span></span>
+      ${items.length ? `<ul class="list nt-m-list">${items.map((x, idx) => `<li class="list-row nt-m-row ${x.readAt ? "is-read" : "is-unread"}" style="cursor:pointer" data-nid="${x.id}" data-link="${esc(x.link || "")}">
+        <span class="nt-m-ico ${tintFor(idx)}" aria-hidden="true">${icoFor(idx)}</span>
+        <span class="t"><b>${esc(x.title)}</b><span>${esc(x.body || "")}</span><small class="nt-m-time">${timeAgo(x.createdAt)}${x.readAt ? "" : ' · <em class="notice-new">mới</em>'}</small></span>
+        ${x.readAt ? "" : '<i class="nt-m-dot" aria-hidden="true"></i>'}
       </li>`).join("")}</ul>` : `<p class="muted">Chưa có thông báo cá nhân.</p>`}
     </section>
-    <section class="sheet sheet-pad">
+    <section class="sheet sheet-pad nt-m-sec">
       <h2>Thông báo lớp</h2>
       ${a.length ? `<div class="notices">${a.map(noticeHtml).join("")}</div>` : `<p class="muted">Chưa có thông báo lớp.</p>`}
     </section>`;
-  $("#readAll", main)?.addEventListener("click", async () => {
+  const markAll = async () => {
     try { await api("/api/notifications/read-all", "POST", {}); toast("Đã đánh dấu đã đọc.", "ok"); pageNotices(main, [], {}, ctx); }
     catch (e) { toast(e.message, "err"); }
-  });
+  };
+  $("#readAll", main)?.addEventListener("click", markAll);
+  $("#readAllM", main)?.addEventListener("click", markAll);
   main.querySelectorAll("[data-nid]").forEach((el) => el.addEventListener("click", async () => {
     const id = el.dataset.nid;
     try { await api(`/api/notifications/${id}/read`, "POST", {}); } catch {}
@@ -77,18 +88,19 @@ export async function pageNotFound(main, _p, _q, ctx) {
 
 /* ================= Password reset (token) ================= */
 export async function pageResetPassword(main, _p, query, ctx) {
-  ctx.setCrumbs([["Đặt lại mật khẩu"]]);
+  ctx.setCrumbs([["Tài khoản", "/app/ca-nhan"], ["Đặt lại mật khẩu"]]);
   const token = (query && (query.token || query.t)) || "";
-  main.innerHTML = `<div class="sheet sheet-pad" style="max-width:440px;margin:24px auto">
-    <h1>Đặt lại mật khẩu</h1>
-    <p class="small muted">Nhập mật khẩu mới cho liên kết được cấp (hiệu lực 1 giờ).</p>
+  main.innerHTML = `<div class="sheet sheet-pad rst-m-card" style="max-width:440px;margin:16px auto">
+    <div class="rst-m-mascot"><img src="/img/kit/chibi-owl.webp" alt="Rivo" width="76" height="76" /></div>
+    <h1>Tạo mật khẩu mới</h1>
+    <p class="small muted">Nhập mật khẩu mới an toàn cho tài khoản của bạn.</p>
     <form class="auth-form" data-f>
-      <label class="field">Mã đặt lại<input name="token" required value="${esc(token)}" placeholder="Dán token nếu có"></label>
-      <label class="field">Mật khẩu mới<input name="p" type="password" minlength="6" maxlength="128" required></label>
-      <label class="field">Nhập lại mật khẩu<input name="p2" type="password" minlength="6" maxlength="128" required></label>
+      <label class="field"><span class="rst-m-lbl">MÃ XÁC NHẬN</span><input name="token" required value="${esc(token)}" placeholder="Dán mã xác nhận nếu có"></label>
+      <label class="field"><span class="rst-m-lbl">MẬT KHẨU MỚI</span><input name="p" type="password" minlength="6" maxlength="128" required placeholder="••••••••"></label>
+      <label class="field"><span class="rst-m-lbl">NHẬP LẠI MẬT KHẨU</span><input name="p2" type="password" minlength="6" maxlength="128" required placeholder="••••••••"></label>
       <p class="form-msg" data-m></p>
-      <button class="btn btn-primary" type="submit">Lưu mật khẩu mới</button>
-      <p class="small" style="margin-top:12px"><a href="/app/dang-nhap">Quay lại đăng nhập</a></p>
+      <button class="btn btn-primary btn-block" type="submit">Lưu mật khẩu mới</button>
+      <p class="small" style="margin-top:12px;text-align:center"><a href="/app/dang-nhap">Quay lại đăng nhập</a></p>
     </form>
   </div>`;
   main.querySelector("[data-f]").addEventListener("submit", async (e) => {
@@ -111,7 +123,7 @@ export async function pageResetPassword(main, _p, query, ctx) {
 
 /* ================= Study help center ================= */
 export async function pageLearningHelp(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Hỗ trợ"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Hỗ trợ học tập"]]);
   main.innerHTML = `<div class="skel" style="height:320px"></div>`;
   const [ai, billing] = await Promise.all([
     api("/api/ai/status").catch(() => null),
@@ -142,7 +154,7 @@ export async function pageLearningHelp(main, _p, _q, ctx) {
   const _helpSubjName = { en: "Tiếng Anh", zh: "Tiếng Trung", ja: "Tiếng Nhật", ko: "Tiếng Hàn", fr: "Tiếng Pháp", es: "Tiếng Tây Ban Nha" }[_helpSubj] || "";
   main.innerHTML = `
     <div class="page-head edu-page-head"><div><span class="edu-eyebrow">TRUNG TÂM HỖ TRỢ</span><h1>Bạn đang gặp khó khăn khi học?</h1><p>Chọn tình huống phù hợp. LifeRivo sẽ chỉ bạn cách tự tìm nguyên nhân và tiến lên từng bước.</p></div></div>
-    <section class="edu-help-hero sheet sheet-pad"><div><span class="edu-eyebrow">Hỗ trợ thông minh</span><h2>Không chỉ đưa đáp án — giúp bạn hiểu cách sử dụng</h2><p>Khi phát âm chưa chuẩn, hãy nghe giọng mẫu rồi luyện nói lại. Trong màn hình luyện nói, bấm mic để AI chấm phát âm và gợi ý cách sửa.</p><a class="btn btn-primary" href="${nextHrefForHelp()}">${icon("book")} Tiếp tục bài đang học</a></div><div class="edu-help-ai-state"><b>${ai?.pro ? "Rivo Pro" : "Rivo"}</b><span>${esc(aiText)}</span><a href="/app/bang-gia">Xem quyền lợi Pro</a></div></section>
+    <section class="edu-help-hero sheet sheet-pad"><img class="edu-help-mascot" src="/img/kit/chibi-owl.webp" alt="Rivo" width="56" height="56" /><div><span class="edu-eyebrow">Hỗ trợ thông minh</span><h2>Rivo có thể hướng dẫn bạn</h2><p>Không chỉ đưa đáp án — giúp bạn hiểu cách sử dụng. Khi phát âm chưa chuẩn, hãy nghe giọng mẫu rồi luyện nói lại.</p><a class="btn btn-primary" href="${nextHrefForHelp()}">${icon("book")} Tiếp tục bài đang học</a></div><div class="edu-help-ai-state"><b>${ai?.pro ? "Rivo Pro" : "Rivo"}</b><span>${esc(aiText)}</span><a href="/app/bang-gia">Xem quyền lợi Pro</a></div></section>
     <div class="edu-help-grid">
       <a class="edu-help-option" href="/app/ngoai-ngu"><span class="ico-box">${icon("book-open")}</span><b>Chưa hiểu bài học</b><span>Đọc lại mục tiêu, lý thuyết, ví dụ và lỗi thường gặp theo từng chủ đề.</span><em>Mở bài học có hướng dẫn ${icon("right")}</em></a>
       <a class="edu-help-option" href="/app/ngoai-ngu"><span class="ico-box">${icon("chart")}</span><b>Không biết phần nào đang yếu</b><span>Xem bài đã thử nhưng chưa đạt và các chủ đề nên luyện thêm.</span><em>Xem gợi ý cải thiện ${icon("right")}</em></a>
@@ -165,18 +177,45 @@ function nextHrefForHelp() {
 
 // Hồ sơ: tên hiển thị, đổi mật khẩu, góp ý (không còn thống kê bài tập)
 export async function pageProfile(main, _p, _q, ctx) {
-  ctx.setCrumbs([["Hồ sơ của tôi"]]);
+  ctx.setCrumbs([["Học viên", "/app/"], ["Cá nhân"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
-  const rating = await api("/api/rating").catch(() => null);
+  const [rating, langData] = await Promise.all([
+    api("/api/rating").catch(() => null),
+    api("/api/lang").catch(() => null),
+  ]);
   if (!ctx.isCurrent()) return;
   let stars = rating && rating.mine ? rating.mine.stars : 0;
+  const totalPassed = langData && Array.isArray(langData.courses) ? langData.courses.reduce((s, c) => s + (c.done || 0), 0) : 0;
+  const actSt = activityStats();
+  const roleLabel = ({ admin: "Quản trị", teacher: "Giáo viên", student: "Học viên", parent: "Phụ huynh" })[S.me.role] || "Học viên";
+  const roleAvatar = S.me.role === "admin" ? "dragon" : S.me.role === "teacher" ? "owl" : S.me.role === "parent" ? "cat" : "bunny";
   main.innerHTML = `
-    <div class="page-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
-      <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${({ admin: "Quản trị", teacher: "Giáo viên", student: "Học viên", parent: "Phụ huynh" })[S.me.role] || "Học viên"}</p></div></div></div>
+    <div class="pf-m-hero sheet sheet-pad">
+      <div class="pf-m-av"><img src="/img/kit/chibi-${roleAvatar}.webp" alt="" width="84" height="84" /></div>
+      <h1>${esc(S.me.displayName)}</h1>
+      <p>@${esc(S.me.username)} · ${roleLabel}</p>
+      <span class="pf-m-badge">Thành viên LifeRivo</span>
+    </div>
+    <div class="pf-m-kpis">
+      <div class="pf-m-kpi"><b>${fmtN(totalPassed)}</b><span>Bài đã đạt</span></div>
+      <div class="pf-m-kpi"><b>${fmtN(Math.max(1, actSt.totalDays || actSt.streak || 1))} ngày</b><span>Chuỗi học tập</span></div>
+    </div>
+    <div class="pf-m-nav">
+      <h2>Tài khoản</h2>
+      <div class="pf-m-links">
+        <button type="button" class="pf-m-link" data-pf-open="#emailDetails"><span class="pf-m-ico">👤</span><b>Thông tin cá nhân</b><span class="pf-m-arr">›</span></button>
+        <button type="button" class="pf-m-link" data-pf-open="#pwDetails"><span class="pf-m-ico">🔒</span><b>Bảo mật</b><span class="pf-m-arr">›</span></button>
+        <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">💳</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
+        <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">🔔</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
+        <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">❓</span><b>Trợ giúp</b><span class="pf-m-arr">›</span></a>
+      </div>
+    </div>
+    <div class="page-head pf-desk-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
+      <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${roleLabel}</p></div></div></div>
     <div class="stack" style="margin-top:16px;max-width:760px">
       <div class="stack">
         <h3 style="margin:14px 0 2px;font-size:14px;font-weight:700;color:var(--ink-2);padding-bottom:8px;border-bottom:1px solid var(--line,#e5e5ea)">Bảo mật</h3>
-        <details class="sheet sheet-pad">
+        <details class="sheet sheet-pad" id="emailDetails">
           <summary><h2>Email khôi phục</h2></summary>
           <p class="small muted" style="margin-top:4px">Mã OTP đặt lại mật khẩu sẽ gửi về email này khi bạn quên mật khẩu.</p>
           <p class="small" id="emailNow" style="margin-top:8px">${S.me.email ? `Email hiện tại: <b data-i18n="off">${esc(S.me.email)}</b>` : "Chưa có email. Thêm email để tự lấy lại mật khẩu khi quên."}</p>
@@ -188,7 +227,7 @@ export async function pageProfile(main, _p, _q, ctx) {
           </form>
           <div id="emailVerify" style="margin-top:12px"></div>
         </details>
-        <details class="sheet sheet-pad">
+        <details class="sheet sheet-pad" id="pwDetails">
           <summary><h2>Đổi mật khẩu</h2></summary>
           <p class="small muted" style="margin-top:4px">Sau khi đổi, các thiết bị khác đang đăng nhập sẽ bị đăng xuất.</p>
           <form class="auth-form" id="pwForm">
@@ -244,6 +283,15 @@ export async function pageProfile(main, _p, _q, ctx) {
     </div>`;
   const paintStars = (n) => main.querySelectorAll("[data-s]").forEach((b) => { const lit = Number(b.dataset.s) <= n; b.classList.toggle("on", lit); b.setAttribute("aria-checked", String(Number(b.dataset.s) === stars)); });
   paintStars(stars);
+  main.querySelectorAll("[data-pf-open]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const target = main.querySelector(b.dataset.pfOpen);
+      if (target) {
+        target.open = true;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
   main.querySelectorAll("[data-s]").forEach((b) => {
     b.addEventListener("click", () => { stars = Number(b.dataset.s); paintStars(stars); });
     b.addEventListener("mouseenter", () => paintStars(Number(b.dataset.s)));

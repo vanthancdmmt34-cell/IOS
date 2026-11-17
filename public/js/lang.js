@@ -2,7 +2,7 @@
    Exercise workflow: open -> solve -> submit -> server grades -> save best score. */
 import {  } from "./core.js";
 import { S, api, esc, icon, sketchIcon, subjectMascotSvg, fmtN, toast, totalStats, confirmBox, emptyState, groupProgress } from "./core.js";
-import { ChibiMascot, AchievementCard, triggerConfetti } from "./chibi-ds.js";
+import { ChibiMascot, HeroBanner, AchievementCard, triggerConfetti } from "./chibi-ds.js";
 import { savePrefs } from "./game.js";
 import "./lang-en.js";
 import { currentLang } from "./i18n.js";
@@ -427,7 +427,7 @@ function stageInfo(l, isCur, dueCount) {
   return { key: "todo", label: tx("Chưa bắt đầu", "Not started") };
 }
 async function focusLanguage(main, data, c, ctx) {
-  ctx.setCrumbs([[tx("Trang chủ", "Home")], [c.name]]);
+  ctx.setCrumbs([[tx("Học viên", "Student"), `/app/${c.id}`], [tx("Lộ trình học", "Learning Roadmap")]]);
   // Chỉ gọi thẻ ôn khi có từ đến hạn; không có thì không cấp nào bị đánh dấu cần ôn
   const reviewCards = c.review && c.review.due > 0 ? await reviewCardsOf(c.id) : [];
   if (!ctx.isCurrent()) return;
@@ -499,7 +499,35 @@ async function focusLanguage(main, data, c, ctx) {
       ${naCount ? `<div class="lx-path-na"><b>${fmtN(naCount)}</b><span>${tx("cấp chưa triển khai", "levels not available yet")}</span></div>` : ""}
       <div class="lx-path-next-wrap">${nextLink}</div>
     </div>${reviewNote}`;
+  const rmHeroBadge = `${c.name.toUpperCase()} · ${lv ? (lv.code || lv.title.split(/[—·]/)[0].trim()) : c.framework}`;
+  const rmHeroHtml = HeroBanner({
+    badge: rmHeroBadge,
+    title: tx("Lộ trình từ nền tảng đến tự tin giao tiếp", "From foundation to confident communication"),
+    subtitle: tx(`${c.levels.length} giai đoạn · học theo nhịp độ của bạn`, `${c.levels.length} stages · learn at your own pace`),
+    kit: "owl",
+    cls: "lx-roadmap-hero",
+  });
   main.innerHTML = `
+  ${rmHeroHtml}
+  <section class="lx-sec lx-beginner-track" aria-label="${esc(RH.title)}">
+    <div class="sec-head lx-beg-head"><div><h2>${sketchIcon("route")} ${esc(RH.title)}</h2><p>${esc(RH.desc)}</p></div><span class="lx-beg-total">${fmtN(c.pct || 0)}% ${tx("tổng quan", "overall")}</span></div>
+    <ol class="lx-beg-steps">
+      ${STANDARD_ROADMAP.map((st, i) => {
+        const s = roadmapStep(st, rmEn);
+        const state = begState[i];
+        const label = state === "cur" ? tx("Đang học", "In progress") : state === "done" ? tx("Hoàn thành", "Completed") : tx("Chưa mở", "Locked");
+        const stepPct = state === "done" ? 100 : state === "cur" ? Math.max(18, Math.min(92, Number(c.pct) || 40)) : 0;
+        return `<li class="lx-beg-item ${state || "todo"}"><span class="lx-beg-dot" aria-hidden="true"></span><a class="lx-beg-step ${state}" href="${begHref[i]}">
+          <span class="lx-beg-ico">${sketchIcon(st.ic)}</span>
+          <div class="lx-beg-body">
+            <div class="lx-beg-top"><b>${i + 1}. ${esc(s.title)}</b><em class="lx-beg-pill ${state || "todo"}">${label}</em></div>
+            <span>${esc(s.desc)}</span>
+            <div class="lx-beg-bar"><i style="width:${stepPct}%"></i></div>
+          </div>
+        </a></li>`;
+      }).join("")}
+    </ol>
+  </section>
   <section class="rv-buddy" id="rvBuddy" aria-label="${tx("Trợ lý Rivo", "Rivo assistant")}">
     <div class="rv-buddy-face" id="rvFace">${companionSvg(activeCompanionId(c.id), 96)}</div>
     <div class="rv-buddy-talk">
@@ -527,20 +555,6 @@ async function focusLanguage(main, data, c, ctx) {
       <div class="lx-kpi-streak"><span class="lx-kpi-icon">${icon("star")}</span><div><b id="lxStreak">–</b><span>${tx("Chuỗi ngày học", "Learning streak")}</span></div><small>${tx("Duy trì thói quen mỗi ngày", "Build a daily habit")}</small></div>
     </div>
   </div>
-  <section class="lx-sec lx-beginner-track" aria-label="${esc(RH.title)}">
-    <div class="sec-head"><div><h2>${sketchIcon("route")} ${esc(RH.title)}</h2><p>${esc(RH.desc)}</p></div></div>
-    <ol class="lx-beg-steps">
-      ${STANDARD_ROADMAP.map((st, i) => {
-        const s = roadmapStep(st, rmEn);
-        const state = begState[i];
-        const label = state === "cur" ? tx("Đang học", "In progress") : state === "done" ? tx("Đã xong", "Done") : tx("Sắp tới", "Up next");
-        return `<li><a class="lx-beg-step ${state}" href="${begHref[i]}">
-          <span class="lx-beg-ico">${sketchIcon(st.ic)}</span>
-          <div><small>${esc(s.no)} · ${label}</small><b>${esc(s.title)}</b><span>${esc(s.desc)}</span></div>
-        </a></li>`;
-      }).join("")}
-    </ol>
-  </section>
   <section class="lx-sec lx-ai-insights" id="lxAiInsights" hidden aria-live="polite"></section>
   <section class="lx-sec lx-sec-path"><div class="sec-head"><div><h2>${tx("Lộ trình cấp độ", "Level path")}</h2><p>${tx("Chọn cấp độ phù hợp hoặc học tuần tự từ cơ bản đến nâng cao.", "Pick the level that fits you, or go in order from basics to advanced.")}</p></div><a class="btn btn-sm" href="/app/ngoai-ngu/${c.id}">${tx("Xem toàn bộ khóa", "View full course")}</a></div>
     ${pathSummary}
@@ -876,11 +890,25 @@ export async function pageLangCourse(main, [langId, levelId], query, ctx) {
   if (!c) { main.innerHTML = `<div class="sheet empty"><b>Không tìm thấy khóa học</b><a href="/app/">Về trang chủ</a></div>`; return; }
   if (getSubject() !== c.id) setSubject(c.id);
   const lv = c.levels.find((l) => l.id === levelId) || c.levels.find((l) => l.pct < 100) || c.levels[0];
-  ctx.setCrumbs([["Trang chủ", "/app/"], [c.name, `/app/ngoai-ngu/${c.id}`], [lv ? lv.title : ""]]);
+  ctx.setCrumbs([[c.name, `/app/${c.id}`], [tx("Danh sách khóa học / cấp độ", "Courses & Levels")]]);
   if (!lv) { main.innerHTML = `<div class="sheet empty">Khóa này chưa có cấp độ nào.</div>`; return; }
   window.__plAiCtx = { langItem: `${c.id}-${lv.id}`, langName: c.name, page: `${c.name} · ${lv.title}` };
   withAi(ctx);
+  const firstUnit = lv.units && lv.units[0];
+  const stageBannerHtml = HeroBanner({
+    title: `${tx("Chặng", "Stage")} 1 · ${firstUnit ? firstUnit.title : lv.title}`,
+    subtitle: lv.desc || c.desc || tx("Chào hỏi, giới thiệu bản thân và sinh hoạt hằng ngày.", "Greetings, self-introduction and daily life."),
+    kit: "fox",
+    cls: "lx-course-stage-banner",
+  });
   main.innerHTML = `
+  <div class="lx-course-m-head">
+    <div>
+      <h1>${esc(c.name)} ${esc(lv.code || lv.title.split(/[—·]/)[0].trim())}</h1>
+      <p>${esc(lv.desc || `${tx("Khóa học nền tảng", "Foundation course")} · ${(lv.units || []).length} ${tx("chủ đề", "topics")}`)}</p>
+    </div>
+    <span class="lx-course-pct-pill">${fmtN(lv.pct || 0)}%</span>
+  </div>
   <section class="lx-hero lx-hero-sm" style="--c:${esc(c.color)}">
     <div><span class="edu-eyebrow">${esc(c.framework)} · ${c.levels.length} CẤP ĐỘ</span>
       <h1>${c.flag} ${esc(c.name)} <small>${esc(c.native)}</small></h1><p>${esc(c.desc)}</p>
@@ -890,8 +918,9 @@ export async function pageLangCourse(main, [langId, levelId], query, ctx) {
     </div>
   </section>
   <nav class="lx-levels">${c.levels.map((l) => `<a href="/app/ngoai-ngu/${c.id}/${l.id}" class="${l.id === lv.id ? "on" : ""}"><b>${l.locked ? li("lock", 13) + " " : ""}${esc(l.title)}</b><span>${l.done}/${l.total}</span>${l.hidden ? `<em>ẩn</em>` : ""}</a>`).join("")}</nav>
-  <section class="lx-sec">
-    <div class="sec-head"><div><h2>${esc(lv.title)}</h2><p>${esc(lv.desc || "")}</p></div><span class="tag tag-tim">${lv.done}/${lv.total} bài đạt · ${lv.pct}%</span></div>
+  ${stageBannerHtml}
+  <section class="lx-sec lx-course-units-sec">
+    <div class="sec-head"><div><h2>${tx("Các bài học", "Lessons")}</h2><p>${esc(lv.title)}${lv.desc ? " · " + esc(lv.desc) : ""}</p></div><span class="tag tag-tim">${lv.done}/${lv.total} bài đạt · ${lv.pct}%</span></div>
     ${levelBody(lv, data)}
   </section>`;
   bindUnitSpans(main);
@@ -908,7 +937,7 @@ export async function pageLangReview(page, [langId], query, ctx) {
   if (getSubject() !== d.lang) setSubject(d.lang);
   window.__plAiCtx = { langItem: `${d.lang}-review`, langName: d.langName, page: `${d.langName} · Ôn tập từ vựng` };
   withAi(ctx);
-  ctx.setCrumbs([["Trang chủ", "/app/"], [d.langName, `/app/ngoai-ngu/${d.lang}`], ["Ôn tập"]]);
+  ctx.setCrumbs([[d.langName, `/app/ngoai-ngu/${d.lang}`], [tx("Ôn tập SRS", "SRS Review")]]);
   let i = 0, flipped = false, good = 0, onlyFav = false;
   const favKey = `pl:fav:${d.lang}`;
   const getFavs = () => { try { return new Set(JSON.parse(localStorage.getItem(favKey) || "[]")); } catch { return new Set(); } };
@@ -921,20 +950,45 @@ export async function pageLangReview(page, [langId], query, ctx) {
   const paint = () => {
     const favs = getFavs();
     const cards = onlyFav ? d.cards.filter((x) => favs.has(x.word)) : d.cards;
+    const attnCount = cards.filter((x) => x.wrong > 0).length || favs.size;
     if (!cards.length || i >= cards.length) {
-      main.innerHTML = `<div class="lx-ex-page"><div class="sheet sheet-pad lx-pro-card">${ChibiMascot({ state: cards.length ? "achievement" : "welcome", size: 88 })}<h2>${cards.length ? `Xong lượt ôn: nhớ ${good}/${cards.length} từ` : onlyFav ? "Chưa có từ yêu thích nào trong lượt ôn này" : "Hôm nay không có từ nào cần ôn"}</h2><p>${cards.length ? "Từ chưa nhớ sẽ được nhắc lại ngay lần ôn sau; từ đã nhớ sẽ giãn dần 1, 3, 7, 14, 30 ngày." : "Làm thêm bài từ vựng, nghe hoặc bấm ★ yêu thích từ để luyện riêng."}</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="/app/">Về trang môn học</a>${onlyFav ? `<button class="btn" id="lxShowAll">Xem tất cả</button>` : cards.length ? `<button class="btn" id="lxAgain">Ôn tiếp</button>` : ""}</div></div></div>`;
+      main.innerHTML = `<div class="lx-ex-page">
+        <div class="lx-rev-m-head">
+          <h1>${tx("Ôn tập hôm nay", "Today's Review")}</h1>
+          <p>${tx("Nhắc lại đúng lúc để ghi nhớ lâu hơn.", "Review at the right moment for long-term retention.")}</p>
+          <div class="lx-rev-kpis">
+            <div class="lx-rev-kpi"><b>${fmtN(Math.max(0, cards.length - i))}</b><span>${tx("Từ đến hạn", "Words due")}</span></div>
+            <div class="lx-rev-kpi"><b>${fmtN(attnCount)}</b><span>${tx("Từ cần chú ý", "Needs attention")}</span></div>
+          </div>
+        </div>
+        <div class="sheet sheet-pad lx-pro-card">${ChibiMascot({ state: cards.length ? "achievement" : "welcome", size: 88 })}<h2>${cards.length ? `Xong lượt ôn: nhớ ${good}/${cards.length} từ` : onlyFav ? "Chưa có từ yêu thích nào trong lượt ôn này" : "Hôm nay không có từ nào cần ôn"}</h2><p>${cards.length ? "Từ chưa nhớ sẽ được nhắc lại ngay lần ôn sau; từ đã nhớ sẽ giãn dần 1, 3, 7, 14, 30 ngày." : "Làm thêm bài từ vựng, nghe hoặc bấm ★ yêu thích từ để luyện riêng."}</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="/app/">Về trang môn học</a>${onlyFav ? `<button class="btn" id="lxShowAll">Xem tất cả</button>` : cards.length ? `<button class="btn" id="lxAgain">Ôn tiếp</button>` : ""}</div></div></div>`;
       main.querySelector("#lxAgain")?.addEventListener("click", () => pageLangReview(page, [langId], query, ctx));
       main.querySelector("#lxShowAll")?.addEventListener("click", () => { onlyFav = false; i = 0; paint(); });
       return;
     }
     const c = cards[i];
     const isFav = favs.has(c.word);
-    main.innerHTML = `<div class="lx-ex-page">
+    const estMin = Math.max(1, Math.ceil((cards.length - i) * 0.5));
+    main.innerHTML = `<div class="lx-ex-page lx-review-page">
+      <div class="lx-rev-m-head">
+        <h1>${tx("Ôn tập hôm nay", "Today's Review")}</h1>
+        <p>${tx("Nhắc lại đúng lúc để ghi nhớ lâu hơn.", "Review at the right moment for long-term retention.")}</p>
+        <div class="lx-rev-kpis">
+          <div class="lx-rev-kpi"><b>${fmtN(cards.length - i)}</b><span>${tx("Từ đến hạn", "Words due")}</span></div>
+          <div class="lx-rev-kpi"><b>${fmtN(attnCount)}</b><span>${tx("Từ cần chú ý", "Needs attention")}</span></div>
+        </div>
+      </div>
       <div class="page-head"><div><span class="edu-eyebrow">${d.flag} ${esc(d.langName)} · ÔN TẬP SRS</span><h1>Thẻ ${i + 1}/${cards.length}</h1><p>Nhớ nghĩa trước, rồi bấm lật thẻ để kiểm tra. Bấm ★ để lưu từ yêu thích.</p></div><div class="row">${favs.size ? `<button type="button" class="btn btn-sm ${onlyFav ? "btn-primary" : ""}" id="lxFavFilter">★ Yêu thích (${favs.size})</button>` : ""}${ChibiMascot({ state: flipped ? "learning" : "welcome", size: 70 })}</div></div>
       <div class="lx-flash ${flipped ? "flip" : ""}" style="--c:${esc(d.color)}" tabindex="0" role="button" aria-label="Lật thẻ">
+        <div class="lx-flash-top">
+          <span class="lx-ex-pill">${tx("TỪ VỰNG", "VOCABULARY")} · ${i + 1}/${cards.length}</span>
+          <span class="lx-ex-cnt">${tx("Còn", "Left")} ${estMin} ${tx("phút", "min")}</span>
+        </div>
         <button type="button" class="lx-fav-btn ${isFav ? "on" : ""}" data-fav="${esc(c.word)}" title="Đánh dấu từ yêu thích" aria-label="Đánh dấu từ yêu thích">${isFav ? "★" : "☆"}</button>
         <div class="lx-flash-word">${esc(c.word)} ${sayBtn(c.word, d.speech)}</div>
-        ${flipped ? `<div class="lx-flash-back">${c.reading ? `<div class="muted">${esc(c.reading)}</div>` : ""}<b class="lx-vi">${esc(c.meaning)}</b><span class="small muted">${esc(c.level)} · ${esc(c.unit)}${c.wrong ? ` · đã sai ${c.wrong} lần` : ""}</span></div>` : `<div class="muted small">Bấm vào thẻ để lật</div>`}
+        ${c.reading ? `<div class="lx-flash-reading">${esc(c.reading)}</div>` : ""}
+        ${flipped ? `<div class="lx-flash-back"><b class="lx-vi">${esc(c.meaning)}</b><span class="small muted">${esc(c.level)} · ${esc(c.unit)}${c.wrong ? ` · đã sai ${c.wrong} lần` : ""}</span></div>` : `<div class="muted small lx-flash-hint">${tx("Chạm để xem nghĩa", "Tap to reveal meaning")}</div>`}
+        <button type="button" class="btn btn-primary btn-block lx-flash-reveal" data-flip-btn>${flipped ? tx("Ẩn đáp án", "Hide answer") : tx("Hiện đáp án", "Show answer")}</button>
       </div>
       <div class="row lx-flash-actions" ${flipped ? "" : "hidden"}><button class="btn" data-r="0">Chưa nhớ</button><button class="btn btn-primary" data-r="1">Nhớ rồi</button><button class="btn" type="button" id="lxAskWord">💬 Hỏi AI mẹo nhớ & ví dụ</button></div>
       <details class="lx-due-list" open>
@@ -1006,8 +1060,22 @@ export async function pageLangCertList(main, [langId], query, ctx) {
   const { c } = await courseOf(langId, ctx);
   if (!ctx.isCurrent()) return;
   if (!c) { main.innerHTML = `<div class="sheet empty">Không tìm thấy khóa học.</div>`; return; }
-  ctx.setCrumbs([["Trang chủ", "/app/"], [c.name, `/app/ngoai-ngu/${c.id}`], ["Chứng nhận"]]);
+  ctx.setCrumbs([[c.name, `/app/ngoai-ngu/${c.id}`], [tx("Chứng nhận", "Certificates")]]);
+  const featLv = c.levels.find((l) => l.pct === 100) || c.levels[0];
+  const nextLv = c.levels.find((l) => l.pct < 100 && !l.locked) || c.levels[1] || c.levels[0];
   main.innerHTML = `<div class="page-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>Chứng nhận ${esc(c.name)}</h1><p>Đạt toàn bộ bài tập và bài kiểm tra của một cấp để nhận chứng nhận cấp đó.</p></div></div>
+  ${featLv ? `<div class="lx-cert-featured">
+    <div class="lx-cert-feat-ico">🎖️</div>
+    <h2>${tx("Chứng nhận", "Certificate")} ${esc(c.name)} ${esc(featLv.code || featLv.title.split(/[—·]/)[0].trim())}</h2>
+    <p>${featLv.pct === 100 ? tx("Đã hoàn thành cấp độ cơ bản", "Completed basic level") : `${featLv.done}/${featLv.total} ${tx("bài đạt", "lessons passed")} · ${featLv.pct}%`}</p>
+    <span class="lx-cert-feat-tag ${featLv.pct === 100 ? "is-done" : ""}">${featLv.pct === 100 ? tx("Đã đạt", "Earned") : tx("Đang học", "In progress")}</span>
+    <a class="btn btn-primary btn-block lx-cert-feat-btn" href="${featLv.pct === 100 ? `/app/ngoai-ngu/chung-nhan/${c.id}/${featLv.id}` : `/app/ngoai-ngu/${c.id}/${featLv.id}`}">${featLv.pct === 100 ? tx("Xem chứng nhận", "View certificate") : tx("Học tiếp", "Continue learning")}</a>
+  </div>` : ""}
+  ${nextLv && nextLv !== featLv ? `<div class="sheet sheet-pad lx-cert-next">
+    <b>${tx("Tiến độ cấp độ tiếp theo", "Next level progress")}</b>
+    <p>${esc(c.name)} ${esc(nextLv.title)} · ${tx("Đã hoàn thành", "Completed")} ${nextLv.pct}%</p>
+    ${pctBar(nextLv.pct, "#22B573")}
+  </div>` : ""}
   <div class="lx-cert-list">${c.levels.map((l) => `<div class="sheet lx-cert-item ${l.pct === 100 ? "done" : ""}" style="--c:${esc(c.color)}">
     <div class="lx-cert-ico">${li(l.pct === 100 ? "cap" : l.locked ? "lock" : "page", 26)}</div>
     <div class="t"><b>${esc(l.title)}</b><span>${l.done}/${l.total} bài đạt · ${l.pct}%</span>${pctBar(l.pct, c.color)}</div>
@@ -1019,38 +1087,48 @@ export async function pageLangLeaderboard(main, [langId], query, ctx) {
   if (!c) { main.innerHTML = `<div class="sheet empty">Không tìm thấy khóa học.</div>`; return; }
   const d = await api(`/api/lang/leaderboard/${c.id}`);
   if (!ctx.isCurrent()) return;
-  ctx.setCrumbs([["Trang chủ", "/app/"], [c.name, `/app/ngoai-ngu/${c.id}`], ["Xếp hạng"]]);
+  ctx.setCrumbs([[c.name, `/app/ngoai-ngu/${c.id}`], [tx("Xếp hạng", "Leaderboard")]]);
+  const meRow = d.top.find((r) => r.me);
+  const myRank = meRow ? meRow.rank : d.myRank || (d.top.length + 1);
+  const kits = ["owl", "fox", "cat", "bunny", "frog", "dragon"];
   main.innerHTML = `<div class="page-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>Bảng xếp hạng ${esc(c.name)}</h1><p>Xếp theo số bài đã đạt (từ ${CACHE ? CACHE.pass : 80} điểm), bằng nhau thì xét tổng điểm.</p></div></div>
-  <div class="sheet lx-lb lx-lb-big">${d.top.length ? d.top.map((r) => `<div class="lx-lb-row ${r.me ? "me" : ""}"><span class="lx-lb-rank">${r.rank <= 3 ? `<i class="lx-medal m${r.rank}">${r.rank}</i>` : r.rank}</span><b>${esc(r.name)}${r.me ? " (bạn)" : ""}</b><span>${r.passed} bài đạt</span></div>`).join("") : `<div class="empty small muted" style="padding:16px">Chưa có ai đạt bài nào. Hãy là người đầu tiên!</div>`}</div>`;
+  <div class="lx-lb-hero">
+    <span class="lx-lb-hero-ico">🏆</span>
+    <div>
+      <b>${tx(`Tuần này bạn đang ở hạng #${myRank}`, `You are ranked #${myRank} this week`)}</b>
+      <span>${tx("Tiếp tục học để tăng điểm XP.", "Keep learning to earn more XP.")}</span>
+    </div>
+  </div>
+  <div class="sheet lx-lb lx-lb-big">${d.top.length ? d.top.map((r, idx) => `<div class="lx-lb-row ${r.me ? "me" : ""}"><span class="lx-lb-rank">${r.rank <= 3 ? `<i class="lx-medal m${r.rank}">${r.rank}</i>` : r.rank}</span><img class="lx-lb-av" src="/img/kit/chibi-${r.me ? "bunny" : kits[idx % kits.length]}.webp" alt="" width="38" height="38" loading="lazy" /><b>${esc(r.name)}${r.me ? " (bạn)" : ""}</b><span>${r.passed} bài đạt</span></div>`).join("") : `<div class="empty small muted" style="padding:16px">Chưa có ai đạt bài nào. Hãy là người đầu tiên!</div>`}</div>`;
 }
 export async function pageLangBadges(main, [langId], query, ctx) {
   const { data, c } = await courseOf(langId, ctx);
   if (!c) { main.innerHTML = `<div class="sheet empty">Không tìm thấy khóa học.</div>`; return; }
   let streak = 0; try { const d = await api(`/api/lang/insights/${encodeURIComponent(c.id)}`); streak = Math.max(Number(d?.insights?.streak?.longest) || 0, Number(d?.insights?.streak?.current) || 0); } catch {}
   if (!ctx.isCurrent()) return;
-  ctx.setCrumbs([["Trang chủ", "/app/"], [c.name, `/app/ngoai-ngu/${c.id}`], ["Huy hiệu"]]);
+  ctx.setCrumbs([[c.name, `/app/ngoai-ngu/${c.id}`], [tx("Huy hiệu", "Badges")]]);
   const all = c.levels.flatMap((l) => l.units.flatMap((u) => u.exercises));
   const passed = (k) => all.filter((e) => e.kind === k && e.best >= data.pass).length;
   const words = c.levels.reduce((s, l) => s + l.units.reduce((t, u) => t + ((u.exercises.find((e) => e.kind === "nghia") || {}).best >= data.pass ? u.words : 0), 0), 0);
   const perfect = all.filter((e) => e.best === 100).length;
   const B = [
+    ["🔥", "Chuỗi 7 ngày", "Học liên tục 7 ngày", streak, 7],
+    ["📚", "100 từ vựng", "Hoàn thành 100 từ", words, 100],
+    ["🎤", "Tự tin phát âm", "Luyện nói 10 bài", passed("noi"), 10],
+    ["⭐", "Chinh phục cấp độ", "Đạt hết bài của 1 cấp", c.levels[0] ? c.levels[0].done : c.done, c.levels[0] ? (c.levels[0].total || 1) : 10],
     ["🌱", "Bước đầu tiên", "Đạt bài đầu tiên", c.done, 1],
-    ["📚", "Chăm chỉ", "Đạt 10 bài", c.done, 10],
     ["🏅", "Bền bỉ", "Đạt 50 bài", c.done, 50],
     ["🔤", "Vốn từ 50", "Thuộc 50 từ vựng", words, 50],
-    ["📖", "Vốn từ 150", "Thuộc 150 từ vựng", words, 150],
     ["🎧", "Đôi tai thính", "Đạt 5 bài luyện nghe", passed("nghe"), 5],
-    ["🎤", "Tự tin nói", "Đạt 5 bài luyện nói", passed("noi"), 5],
     ["🧩", "Vững ngữ pháp", "Đạt 10 bài ngữ pháp", passed("ngu-phap"), 10],
     ["💯", "Hoàn hảo", "10 bài đạt 100 điểm", perfect, 10],
     ["🃏", "Ôn đều tay", "Theo dõi 30 từ trong thẻ ôn tập", c.review ? c.review.total : 0, 30],
-    ["🔥", "Chuỗi 7 ngày", "Học 7 ngày liên tiếp", streak, 7],
     ["🌋", "Chuỗi 30 ngày", "Học 30 ngày liên tiếp", streak, 30],
     ...c.levels.map((l) => ["🎓", `Hoàn thành ${l.title}`, `Đạt hết bài của ${l.title}`, l.done, l.total || 1]),
   ];
   const got = B.filter((b) => b[3] >= b[4]).length;
   main.innerHTML = `<div class="page-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>Huy hiệu ${esc(c.name)}</h1><p>Đã đạt <b>${got}/${B.length}</b> huy hiệu.</p></div>${ChibiMascot({ state: "achievement", size: 80 })}</div>
-  <div class="lx-badges">${B.map(([ic, t, d, v, need]) => AchievementCard({ icon: ic, title: t, desc: d, value: v, need, color: c.color })).join("")}</div>`;
+  <div class="lx-badges">${B.map(([ic, t, d, v, need], idx) => AchievementCard({ icon: ic, title: t, desc: d, value: v, need, color: c.color, idx })).join("")}</div>`;
 }
 
 /* ---------- Lesson theory page ---------- */
@@ -1064,18 +1142,26 @@ export async function pageLangTheory(page, [langId, levelId, unitId], query, ctx
   if (getSubject() !== t.lang) setSubject(t.lang);
   window.__plAiCtx = { langItem: `${t.lang}-${t.levelId}-u${t.unitId}`, langName: t.langName, page: `${t.langName} · ${t.levelTitle} · Lý thuyết bài ${t.unitNo || t.unitId}` };
   withAi(ctx);
-  ctx.setCrumbs([["Trang chủ", "/app/"], [t.langName, `/app/ngoai-ngu/${t.lang}`], [t.levelTitle, `/app/ngoai-ngu/${t.lang}/${t.levelId}`], [`Lý thuyết bài ${t.unitNo || t.unitId}`]]);
+  ctx.setCrumbs([[t.langName, `/app/ngoai-ngu/${t.lang}/${t.levelId}`], [tx("Chi tiết bài học", "Lesson Detail")]]);
+  const firstEx = d.exercises && d.exercises[0];
+  const unitNumStr = String(t.unitNo || t.unitId).padStart(2, "0");
   main.innerHTML = `
   <div class="lx-ex-page lx-theory">
+    <div class="lx-th-hero">
+      <span class="lx-th-kicker">${tx("BÀI", "LESSON")} ${esc(unitNumStr)} · ${tx("TỪ VỰNG", "VOCABULARY")}</span>
+      <h1>${esc(t.unitTitle)}</h1>
+      <p class="lx-th-sub">${esc(t.basics && t.basics[0] ? t.basics[0] : tx("Đọc và nghe từ vựng, mẫu câu trước khi làm bài luyện tập.", "Read and listen to the words and sample sentences before practising."))}</p>
+    </div>
     <div class="page-head"><div><span class="edu-eyebrow">${t.flag} ${esc(t.langName)} · ${esc(t.levelTitle)} · LÝ THUYẾT</span>
       <h1>Bài ${esc(t.unitNo || t.unitId)}: ${esc(t.unitTitle)}</h1><p>Đọc và nghe trước, rồi làm 4 dạng bài tập bên dưới. Có thắc mắc, bấm <b>Hỏi AI</b> — gia sư biết bạn đang học bài này.</p></div>${ChibiMascot({ state: "learning", size: 78 })}</div>
     <details class="sheet lx-box" ${t.levelId === (t.lang === "zh" ? "hsk1" : t.lang === "ja" ? "n5" : t.lang === "ko" ? "topik1" : "a1") && String(t.unitId) === "1" ? "open" : ""}><summary><b>${li("ruler")}Quy tắc nền tảng của ${esc(t.langName)}</b></summary><ul>${t.basics.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></details>
-    ${t.words.length ? `<section class="sheet lx-box"><h2>${li("book")}Từ vựng (${t.words.length})</h2>
+    ${t.words.length ? `<section class="sheet lx-box lx-vocab-sec"><h2>${li("book")}Từ vựng (${t.words.length})</h2>
       <table class="lx-vocab"><thead><tr><th>Từ</th>${t.typeMode === "word" ? "" : `<th>${esc(t.readingLabel)}</th>`}<th>Nghĩa</th><th></th></tr></thead><tbody>
-      ${t.words.map((w) => `<tr><td class="lx-w">${esc(w.word)}</td>${t.typeMode === "word" ? "" : `<td>${esc(w.reading)}</td>`}<td class="lx-vi">${esc(w.meaning)}</td><td>${sayBtn(w.word, t.speech)} <button type="button" class="btn btn-sm lx-save-word" data-w="${esc(w.word)}" data-r="${esc(w.reading || "")}" data-m="${esc(w.meaning || "")}" data-l="${esc(t.lang)}" aria-pressed="${isWordSaved(t.lang, w.word)}">${isWordSaved(t.lang, w.word) ? "★" : "☆"} ${isWordSaved(t.lang, w.word) ? tx("Đã lưu", "Saved") : tx("Lưu từ", "Save")}</button></td></tr>`).join("")}</tbody></table>
+      ${t.words.map((w) => `<tr><td class="lx-w">${esc(w.word)}</td>${t.typeMode === "word" ? "" : `<td class="lx-ipa"><span class="lx-ipa-pill">${esc(w.reading)}</span></td>`}<td class="lx-vi">${esc(w.meaning)}</td><td><button type="button" class="lx-say-pill" data-say="${esc(w.word)}" data-lang="${esc(t.speech)}">▶ ${tx("Nghe mẫu", "Listen")}</button> ${sayBtn(w.word, t.speech)} <button type="button" class="btn btn-sm lx-save-word" data-w="${esc(w.word)}" data-r="${esc(w.reading || "")}" data-m="${esc(w.meaning || "")}" data-l="${esc(t.lang)}" aria-pressed="${isWordSaved(t.lang, w.word)}">${isWordSaved(t.lang, w.word) ? "★" : "☆"} ${isWordSaved(t.lang, w.word) ? tx("Đã lưu", "Saved") : tx("Lưu từ", "Save")}</button></td></tr>`).join("")}</tbody></table>
     </section>` : ""}
-    ${t.rules.length ? `<section class="sheet lx-box"><h2>${li("puzzle")}Quy tắc ngữ pháp</h2><ol class="lx-rules">${t.rules.map((r) => `<li>${esc(r)}</li>`).join("")}</ol></section>` : ""}
-    ${t.sentences.length ? `<section class="sheet lx-box"><h2>${li("chat")}Mẫu câu</h2>${t.sentences.map((x) => `<div class="lx-sent"><div><b>${esc(x.text)}</b><span class="lx-vi">${esc(x.meaning)}</span></div>${sayBtn(x.text, t.speech)}</div>`).join("")}</section>` : ""}
+    ${t.sentences.length ? `<section class="sheet lx-box lx-sent-sec"><h2>${li("chat")}Mẫu câu</h2>${t.sentences.map((x) => `<div class="lx-sent"><div><b>${esc(x.text)}</b><span class="lx-vi">${esc(x.meaning)}</span><button type="button" class="lx-say-sent" data-say="${esc(x.text)}" data-lang="${esc(t.speech)}">🔊 ${tx("Nghe câu mẫu", "Listen to sentence")}</button></div>${sayBtn(x.text, t.speech)}</div>`).join("")}</section>` : ""}
+    ${t.rules.length ? `<section class="sheet lx-box lx-note-card"><h2>💡 ${tx("Ghi nhớ", "Key notes")}</h2><ol class="lx-rules">${t.rules.map((r) => `<li>${esc(r)}</li>`).join("")}</ol></section>` : `<section class="sheet lx-box lx-note-card"><h2>💡 ${tx("Ghi nhớ", "Key notes")}</h2><p class="lx-note-p">${esc(t.basics && t.basics[1] ? t.basics[1] : tx("Nghe phát âm mẫu rồi lặp lại to, rõ từng từ trước khi làm bài tập.", "Listen to the model pronunciation and repeat aloud before starting the exercise."))}</p></section>`}
+    ${firstEx ? `<div class="lx-th-cta-wrap"><a class="btn btn-primary btn-block lx-th-cta" href="/app/ngoai-ngu/bai/${esc(firstEx.id)}">${tx("Làm bài luyện tập", "Start exercise")} →</a></div>` : ""}
     <section class="lx-box"><div class="row lx-theory-actions"><button class="btn" id="lxAskRule">${li("chat", 16)}Hỏi AI giải thích bài này</button>${t.words.length ? `<button class="btn" type="button" id="lxAskVocab">${li("book", 16)}Mẹo nhớ từ vựng bài này</button><a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/tu/${esc(t.unitId)}">${li("mic", 16)}Luyện đọc từ vựng bài này</a>` : ""}${t.sentences.length ? `<a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/cau/${esc(t.unitId)}">${li("mic", 16)}Đọc theo mẫu câu</a>` : ""}</div>
       <h2>Luyện tập</h2><div class="lx-ex-list">${d.exercises.map((e) => `<a class="lx-ex" href="/app/ngoai-ngu/bai/${e.id}"><span class="t"><b>${esc(e.kindTitle)}</b><span>${e.count} câu</span></span><span class="tag tag-tim">Làm bài →</span></a>`).join("")}</div></section>
   </div>`;
@@ -1127,7 +1213,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
   let asgNote = "";
   window.__plAiCtx = { langItem: ex.id, langName: ex.langName, page: `${ex.langName} · ${ex.levelTitle} · ${ex.title}` };
   withAi(ctx);
-  ctx.setCrumbs([["Trang chủ", "/app/"], [ex.langName, `/app/ngoai-ngu/${ex.lang}`], [ex.levelTitle, `/app/ngoai-ngu/${ex.lang}/${ex.levelId}`], [ex.title]]);
+  ctx.setCrumbs([[ex.langName, `/app/ngoai-ngu/${ex.lang}/${ex.levelId}`], [tx("Bài tập tương tác", "Interactive Exercise")]]);
   const answers = ex.questions.map((q) => q.type === "order" ? [] : q.type === "mcq" ? null : "");
   // Đề luyện thi: đếm ngược theo số phút của đề và tự nộp khi hết giờ. Mốc bắt đầu lưu trong sessionStorage,
   // nên tải lại trang không làm mất thời gian. Đây là kiểm soát phía trình duyệt: máy chủ chỉ chấm bài đã nộp.
@@ -1260,7 +1346,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
   const qHtml = (q, i) => {
     const r = graded ? graded.results[i] : null;
     let body = "";
-    if (q.type === "mcq") body = `<div class="lx-opts ${q.options.every((o) => String(o).length <= 16) ? "lx-opts-short" : ""}">${q.options.map((o, k) => `<button type="button" class="lx-vi lx-opt ${answers[i] === k ? "sel" : ""} ${r && o === r.correct ? "right" : ""} ${r && answers[i] === k && !r.ok ? "wrong" : ""}" data-q="${i}" data-k="${k}" ${graded ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>`;
+    if (q.type === "mcq") body = `<div class="lx-opts ${q.options.every((o) => String(o).length <= 16) ? "lx-opts-short" : ""}">${q.options.map((o, k) => `<button type="button" class="lx-vi lx-opt ${answers[i] === k ? "sel" : ""} ${r && o === r.correct ? "right" : ""} ${r && answers[i] === k && !r.ok ? "wrong" : ""}" data-q="${i}" data-k="${k}" ${graded ? "disabled" : ""}><span class="lx-opt-let" aria-hidden="true">${["A", "B", "C", "D", "E", "F"][k] || (k + 1)}</span><span class="lx-opt-txt">${esc(o)}</span></button>`).join("")}</div>`;
     else if (q.type === "text") body = `<input class="input lx-input" data-q="${i}" value="${esc(answers[i])}" placeholder="Nhập câu trả lời" autocomplete="off" autocapitalize="off" spellcheck="false" ${graded ? "disabled" : ""}>`;
     else if (q.type === "speak") {
       body = `<div class="lx-speak">
@@ -1276,7 +1362,9 @@ export async function pageLangExercise(page, [exId], query, ctx) {
         <div class="lx-bank">${left.map((x) => `<button type="button" class="lx-vi lx-tok" data-q="${i}" data-k="${x.k}" ${graded ? "disabled" : ""}>${esc(x.t)}</button>`).join("")}</div>`;
     }
     const fb = r ? `<div class="lx-fb ${r.ok ? "ok" : "no"}">${r.ok ? "✓ Đúng" : `✗ Đáp án: <b class="lx-vi">${esc(r.correct)}</b>`} ${sayBtn(r.say, ex.speech)}${r.explain ? `<div class="small">${esc(r.explain)}</div>` : ""}${q.type === "speak" ? `<button type="button" class="lx-ask-ai" data-ai="${i}">${li("chat", 15)}AI nhận xét phát âm</button>` : r.ok ? "" : `<button type="button" class="lx-ask-ai" data-ai="${i}">${li("chat", 15)}Hỏi AI vì sao</button>`}</div>` : "";
+    const qKicker = q.type === "mcq" ? tx("CHỌN ĐÁP ÁN ĐÚNG", "CHOOSE THE RIGHT ANSWER") : q.type === "order" ? tx("GHÉP CÂU ĐÚNG", "BUILD THE SENTENCE") : q.type === "speak" ? tx("LUYỆN PHÁT ÂM", "SPEAKING") : tx("ĐIỀN ĐÁP ÁN", "TYPE THE ANSWER");
     return `<div class="lx-q sheet ${r ? (r.ok ? "is-ok" : "is-no") : ""}" id="lxq${i}">
+      <div class="lx-q-kicker">${qKicker} · ${tx("CÂU", "Q")} ${i + 1}</div>
       <div class="lx-q-head"><span class="lx-q-no">${i + 1}</span><div class="lx-q-text lx-vi">${q.listen ? `<button type="button" class="lx-listen" data-say="${esc(q.say)}" data-lang="${esc(ex.speech)}">${li("vol", 16)}Nghe</button> <span class="muted small">${esc(q.q)}</span>` : `<b>${esc(q.q)}</b> ${sayBtn(q.say, ex.speech)}${q.sub ? `<div class="muted small">${esc(q.sub)}</div>` : ""}`}</div></div>
       ${body}${fb}</div>`;
   };
@@ -1286,8 +1374,16 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     const exMascotState = graded
       ? (graded.passed ? "success" : "encouragement")
       : (ex.kind === "nghe" ? "listening" : ex.kind === "noi" ? "speaking" : "learning");
+    const progPct = ex.questions.length ? Math.round((Math.max(1, doneN) / ex.questions.length) * 100) : 0;
     main.innerHTML = `
     <div class="lx-ex-page">
+      <div class="lx-ex-top-meta">
+        <div class="lx-ex-top-row">
+          <span class="lx-ex-pill">${esc((ex.unitId ? `BÀI ${String(ex.unitId).padStart(2, "0")}` : ex.levelTitle).toUpperCase())}</span>
+          <span class="lx-ex-cnt">${tx("Câu", "Question")} ${doneN || 1}/${ex.questions.length}</span>
+        </div>
+        <div class="lx-ex-prog"><i style="width:${progPct}%"></i></div>
+      </div>
       <div class="page-head"><div><span class="edu-eyebrow">${ex.flag} ${esc(ex.langName)} · ${esc(ex.levelTitle)}${ex.unitTitle ? " · " + esc(ex.unitTitle) : ""}</span>
         <h1>${esc(ex.title)}</h1>
         <p>${ex.kind === "nghe" ? "Bấm nút Nghe (nghe lại bao nhiêu lần cũng được) rồi chọn từ bạn nghe thấy." : ex.kind === "noi" ? "Bấm loa để nghe mẫu, rồi bấm micro và đọc to. Máy so câu bạn nói với câu mẫu, giống từ 75% là đúng. Nên dùng Chrome hoặc Edge." : ex.kind === "doc" ? esc(ex.hint) : ex.kind === "doc-hieu" ? "Đọc đoạn văn (có thể bấm loa để nghe), rồi trả lời các câu hỏi." : ex.kind === "ghep-cau" ? "Ghép các từ thành câu đúng với nghĩa tiếng Việt." : "Chọn đáp án đúng cho mỗi câu."} ${isExam ? `Thời gian làm bài ${ex.timeMinutes} phút. ` : ""}Đạt từ ${ex.pass} điểm. Điểm cao nhất: <b>${data.best}</b>${data.attempts ? ` · đã nộp ${data.attempts} lần` : ""}.</p></div>${ChibiMascot({ state: exMascotState, size: 78 })}</div>
@@ -1298,7 +1394,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
         <div class="row">${graded.best < 100 ? `<button class="btn" id="lxRetry">${icon("reset")}Làm lại</button>` : ""}${data.next ? `<a class="btn btn-primary" href="/app/ngoai-ngu/bai/${data.next}">Bài tiếp theo →</a>` : `<a class="btn btn-primary" href="/app/ngoai-ngu/${ex.lang}/${ex.levelId}">Về cấp độ</a>`}</div></div>` : ""}
       ${ex.passage ? `<article class="sheet lx-passage"><div class="lx-passage-head"><b>${li("page", 16)} ${esc(ex.unitTitle || "")}</b> ${sayBtn(ex.passage, ex.speech)}</div><p class="lx-vi" lang="${esc(ex.speech)}">${esc(ex.passage)}</p></article>` : ""}
       <div class="lx-qs">${ex.questions.map(qHtml).join("")}</div>
-      ${graded ? "" : data.best >= 100 ? `<div class="pay-warn lx-locked">✅ Bài này đã đạt 100% nên không làm lại.</div>` : `<div class="lx-submit-bar">${ex.questions.some((q) => q.type === "text" || q.type === "speak") ? keyboardHtml(ex.lang) : ""}<span>${doneN}/${ex.questions.length} câu đã trả lời</span><span class="lx-energy" title="Mỗi lần nộp bài trừ 3 năng lượng. Năng lượng hồi 2 mỗi 30 phút, tối đa 100.">🍀 Năng lượng <b>${petState().energy}</b>/100 · nộp bài −3</span>${isExam ? `<b class="lx-timer" id="lxTimer">--:--</b>` : ""}<button class="btn btn-primary" id="lxSubmit">${icon("check")}Nộp bài</button></div>`}
+      ${graded ? "" : data.best >= 100 ? `<div class="pay-warn lx-locked">✅ Bài này đã đạt 100% nên không làm lại.</div>` : `<div class="lx-submit-bar">${ex.questions.some((q) => q.type === "text" || q.type === "speak") ? keyboardHtml(ex.lang) : ""}<span>${doneN}/${ex.questions.length} câu đã trả lời</span><span class="lx-energy" title="Mỗi lần nộp bài trừ 3 năng lượng. Năng lượng hồi 2 mỗi 30 phút, tối đa 100.">🍀 Năng lượng <b>${petState().energy}</b>/100 · nộp bài −3</span>${isExam ? `<b class="lx-timer" id="lxTimer">--:--</b>` : ""}<button class="btn btn-primary" id="lxSubmit">${icon("check")}${tx("Kiểm tra đáp án", "Check answers")}</button></div>`}
     </div>`;
     const sub = main.querySelector("#lxSubmit");
     if (sub) sub.addEventListener("click", () => submit(false));
@@ -1517,7 +1613,7 @@ export async function pageLangWrite(main, [langId, levelId], query, ctx) {
   if (getSubject() !== d.lang) setSubject(d.lang);
   window.__plAiCtx = { langItem: `${d.lang}-${d.level.id}`, langName: d.name, page: `${d.name} · Luyện viết ${d.level.title}` };
   withAi(ctx);
-  ctx.setCrumbs([["Trang chủ", "/app/"], [d.name, `/app/ngoai-ngu/${d.lang}`], [d.level.title, `/app/ngoai-ngu/${d.lang}/${d.level.id}`], ["Luyện viết"]]);
+  ctx.setCrumbs([[d.name, `/app/ngoai-ngu/${d.lang}/${d.level.id}`], [tx("Luyện viết chữ", "Handwriting Practice")]]);
   const KEY = `pl-write-${d.lang}-${d.level.id}`;
   let best = {}; try { best = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
   let idx = Math.max(0, d.chars.findIndex((c) => !(best[c.ch] >= 70)));
@@ -1528,21 +1624,27 @@ export async function pageLangWrite(main, [langId, levelId], query, ctx) {
     const c = d.chars[idx];
     const done = d.chars.filter((x) => best[x.ch] >= 70).length;
     main.innerHTML = `<div class="lx-write">
+      <div class="lx-th-hero">
+        <span class="lx-th-kicker">${esc(d.name.toUpperCase())} · ${esc(d.level.title.toUpperCase())}</span>
+        <h1>${tx("Luyện viết", "Practice writing")} ${esc(c.ch)}</h1>
+        <p class="lx-th-sub">${tx("Quan sát chữ mẫu, sau đó luyện viết theo mẫu.", "Observe the model character, then trace and write in the practice box.")}</p>
+      </div>
       <div class="page-head"><div><span class="edu-eyebrow">${d.flag} ${esc(d.name)} · ${esc(d.level.title)}</span><h1>Luyện viết</h1>
         <p>Tô theo chữ mờ trong khung, rồi bấm <b>Chấm</b>. Máy so nét bạn viết với hình chữ (không chấm thứ tự nét). Đạt từ 70 điểm. Đã đạt ${done}/${d.chars.length} chữ.</p></div></div>
       <div class="lx-write-grid">
         <div class="sheet lx-write-pad">
           <div class="lx-write-info"><span class="lx-write-ch lx-vi" lang="${esc(d.speech)}">${esc(c.ch)}</span><div><b class="lx-vi">${esc(c.word)}</b>${c.reading ? ` <span class="muted lx-vi">${esc(c.reading)}</span>` : ""} ${sayBtn(c.word, d.speech)}<div class="small muted lx-vi">${esc(c.meaning)}</div></div></div>
+          <h3 class="lx-write-sec-h">${tx("Khu vực luyện viết", "Writing area")}</h3>
           <div class="lx-canvas-wrap"><canvas id="lxCv" width="${SIZE}" height="${SIZE}" aria-label="Khung luyện viết"></canvas></div>
           ${result ? `<div class="lx-meter ${result.score >= 70 ? "ok" : "no"}"><span style="width:${result.score}%"></span><b>${result.score} điểm</b> · phủ chữ ${result.cov}% · nét đúng chỗ ${result.prec}%</div>` : ""}
           <div class="row lx-write-btns">
             <button class="btn" id="lxPrev" ${idx ? "" : "disabled"}>← Chữ trước</button>
-            <button class="btn" id="lxClear">Xóa</button>
+            <button class="btn" id="lxClear">↺ Xóa nét</button>
             <button class="btn" id="lxUndo">Hoàn tác nét</button>
             <label class="small"><input type="checkbox" id="lxGuide" ${showGuide ? "checked" : ""}> Hiện chữ mờ</label>
-            <button class="btn btn-primary" id="lxCheck">Chấm</button>
-            <button class="btn" type="button" id="lxAskChar">💬 Hỏi AI chữ này</button>
+            <button class="btn" type="button" id="lxAskChar">▶ Hướng dẫn AI</button>
             <button class="btn" id="lxNext" ${idx < d.chars.length - 1 ? "" : "disabled"}>Chữ sau →</button>
+            <button class="btn btn-primary btn-block" id="lxCheck">${tx("Kiểm tra chữ viết", "Check handwriting")}</button>
           </div>
         </div>
         <div class="sheet lx-write-list">${d.chars.map((x, i) => `<button type="button" class="lx-wc lx-vi ${i === idx ? "on" : ""} ${best[x.ch] >= 70 ? "ok" : best[x.ch] ? "try" : ""}" data-i="${i}" title="${esc(x.meaning)}">${esc(x.ch)}</button>`).join("")}</div>
