@@ -1675,12 +1675,16 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     z-index: 45;
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-height: 62px;
-    padding: 8px 14px;
+    gap: 8px;
+    min-height: 52px;
+    padding: 6px 12px;
     background: var(--cp-surface, #FFFFFF);
     border-bottom: 1px solid var(--cp-border, #E6EAF0);
     box-shadow: none;
+  }
+  html:root body.in-app:not(.ax-on) #main.page {
+    padding: 10px 12px !important;
+    font-size: 13.5px;
   }
   html:root body.in-app:not(.ax-on) .topbar > :is(#menuBtn, .top-brand, #crumbs, .spacer, #searchBtn, #streakBadge, .theme-btn, #udUserWrap) {
     display: none !important;
@@ -1689,10 +1693,10 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
   html:root body.in-app:not(.ax-on) .topbar .m-top-more {
     display: inline-grid !important;
     place-items: center;
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     flex: none;
     border-radius: 50%;
     border: 1px solid #E6EAF0;
@@ -1707,24 +1711,24 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     gap: 1px;
   }
   html:root body.in-app:not(.ax-on) .topbar #mTopTitle {
-    font: 800 17.5px/1.2 var(--cp-font);
+    font: 800 15.5px/1.2 var(--cp-font);
     color: var(--cp-ink, #162B3D);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   html:root body.in-app:not(.ax-on) .topbar #mTopSub {
-    font: 600 12px/1.25 var(--cp-font);
+    font: 600 11px/1.2 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   html:root body.in-app:not(.ax-on) .topbar #udBellWrap .ud-bell {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 50%;
     border: 1px solid #E6EAF0;
     background: #F4F7FA;
@@ -1750,28 +1754,28 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 12px !important;
+    gap: 10px !important;
     background: transparent !important;
     border: 0 !important;
     border-bottom: 1px solid var(--cp-border, #E6EAF0) !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    padding: 6px 0 14px !important;
-    margin-bottom: 4px !important;
+    padding: 2px 0 10px !important;
+    margin-bottom: 2px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-chibi-banner .hm-cb-left {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
     flex: 1 1 0;
     min-width: 0;
   }
   html:root body.in-app:not(.ax-on) #main .hm-top-avatar-wrap {
     flex: none;
     display: block;
-    width: 52px;
-    height: 52px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     overflow: hidden;
     background: #F1F5F9;
@@ -1785,18 +1789,18 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
   }
   html:root body.in-app:not(.ax-on) #main .hm-chibi-banner h1 {
     margin: 0;
-    font: 900 22px/1.2 var(--cp-font) !important;
+    font: 900 18px/1.2 var(--cp-font) !important;
     color: var(--cp-ink, #162B3D) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-greet-sub {
-    margin: 2px 0 0 !important;
-    font: 600 13.5px/1.35 var(--cp-font) !important;
+    margin: 1px 0 0 !important;
+    font: 600 12px/1.3 var(--cp-font) !important;
     color: var(--cp-ink-3, #64748B) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-cb-right {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 6px !important;
     flex: none;
   }
   html:root body.in-app:not(.ax-on) #main .hm-bell-btn,
@@ -1804,8 +1808,8 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     position: relative;
     display: inline-grid !important;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: #F3F6FA;
     border: 1px solid #E6EAF0;
@@ -1813,28 +1817,28 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     text-decoration: none;
     cursor: pointer;
     padding: 0;
-    font: 800 14px/1 var(--cp-font);
+    font: 800 13px/1 var(--cp-font);
   }
   html:root body.in-app:not(.ax-on) #main .hm-bell-btn svg {
-    width: 20px;
-    height: 20px;
-    margin-top: -4px;
+    width: 18px;
+    height: 18px;
+    margin-top: -3px;
   }
   html:root body.in-app:not(.ax-on) #main .hm-bell-pill {
     position: absolute;
-    bottom: 6px;
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
-    width: 24px;
-    height: 5px;
+    width: 20px;
+    height: 4px;
     border-radius: 999px;
     background: #F472B6;
   }
 
-  /* Thẻ tiến độ hôm nay với vòng tròn 82% bên phải (06-tong-quan-hoc-vien.webp) */
+  /* Thẻ tiến độ hôm nay với vòng tròn bên phải (06-tong-quan-hoc-vien.webp) */
   html:root body.in-app:not(.ax-on) #main .hm-current {
-    padding: 18px 20px !important;
-    border-radius: 24px !important;
+    padding: 13px 14px !important;
+    border-radius: 20px !important;
     border: 1px solid var(--cp-border, #E6EAF0) !important;
     border-left: 1px solid var(--cp-border, #E6EAF0) !important;
     background: var(--cp-surface, #FFFFFF) !important;
@@ -1844,7 +1848,7 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 14px !important;
+    gap: 10px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-current-head > .hm-flag {
     display: none !important;
@@ -1854,88 +1858,97 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     flex: 1 1 0;
     min-width: 0;
     display: grid;
-    gap: 4px;
+    gap: 2px;
   }
   html:root body.in-app:not(.ax-on) #main .hm-status-title {
     margin: 0;
-    font: 900 19px/1.25 var(--cp-font) !important;
+    font: 900 16px/1.2 var(--cp-font) !important;
     color: var(--cp-ink, #162B3D) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-current-today {
-    margin: 2px 0 0;
-    font: 600 14px/1.35 var(--cp-font);
+    margin: 1px 0 0;
+    font: 600 12.5px/1.3 var(--cp-font);
     color: var(--cp-ink-2, #334155);
   }
   html:root body.in-app:not(.ax-on) #main .hm-current-goal-sub {
     margin: 0;
-    font: 600 13px/1.3 var(--cp-font);
+    font: 600 11.5px/1.25 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
   }
   html:root body.in-app:not(.ax-on) #main .hm-ring {
     order: 2;
-    width: 76px !important;
-    height: 76px !important;
+    width: 58px !important;
+    height: 58px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-ring svg {
-    width: 76px !important;
-    height: 76px !important;
+    width: 58px !important;
+    height: 58px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-ring b {
-    font: 900 15px/1 var(--cp-font) !important;
+    font: 900 12.5px/1 var(--cp-font) !important;
     color: var(--cp-ink, #162B3D) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-home .hm-actions {
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .hm-home .hm-actions .btn {
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
   }
 
   /* Lưới 2x2 "Bài học của bạn" với 4 nhân vật Chibi (06-tong-quan-hoc-vien.webp) */
   html:root body.in-app:not(.ax-on) #main .hm-skills {
-    margin-top: 8px;
+    margin-top: 6px;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skills-head h2 {
-    font: 900 22px/1.2 var(--cp-font) !important;
+    font: 900 17px/1.2 var(--cp-font) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skills-head .hm-link {
-    font: 700 14px/1 var(--cp-font);
+    font: 700 12.5px/1 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
     text-decoration: none;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill {
-    border-radius: 22px !important;
+    border-radius: 18px !important;
     border: 1px solid color-mix(in srgb, var(--k) 14%, #E6EAF0) !important;
     background: color-mix(in srgb, var(--k) 4%, #FFFFFF) !important;
-    box-shadow: 0 4px 14px rgba(22, 43, 61, .04) !important;
+    box-shadow: 0 4px 12px rgba(22, 43, 61, .04) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-band {
-    height: 96px !important;
+    height: 72px !important;
     background: var(--k) !important;
-    padding: 6px;
+    padding: 4px;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-mascot {
-    width: 82px !important;
-    height: 82px !important;
+    width: 62px !important;
+    height: 62px !important;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .14));
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-body {
     text-align: center;
-    padding: 12px 12px 14px !important;
+    padding: 9px 10px 11px !important;
     gap: 2px !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-body > b {
-    font: 900 16px/1.25 var(--cp-font) !important;
+    font: 900 14px/1.2 var(--cp-font) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-body > small {
-    font: 600 12px/1.3 var(--cp-font) !important;
+    font: 600 11px/1.25 var(--cp-font) !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-bar {
-    height: 7px !important;
-    margin-top: 10px !important;
+    height: 6px !important;
+    margin-top: 7px !important;
     background: #E2E8F0 !important;
   }
   html:root body.in-app:not(.ax-on) #main .hm-skill-foot {
     text-align: left;
     flex-direction: row !important;
-    margin-top: 8px !important;
-    font: 700 12.5px/1.2 var(--cp-font) !important;
+    margin-top: 6px !important;
+    font: 700 11.5px/1.2 var(--cp-font) !important;
   }
 }
 
@@ -3694,9 +3707,9 @@ html body #main .hm-lang-strip::-webkit-scrollbar {
 html body #main .hm-lang-chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 6px 12px;
+  gap: 5px;
+  min-height: 33px;
+  padding: 4px 10px;
   border-radius: 999px;
   border: 1.5px solid #E6EAF0;
   background: #FFFFFF;
@@ -3719,15 +3732,15 @@ html body #main .hm-lang-chip.on {
 html body #main .hm-lang-chip-flag {
   display: inline-flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
 }
 html body #main .hm-lang-chip b {
-  font: 800 13.5px/1.1 var(--cp-font);
+  font: 800 12px/1.1 var(--cp-font);
 }
 html body #main .hm-lang-chip em {
-  font: 800 11.5px/1 var(--cp-font);
+  font: 800 10.5px/1 var(--cp-font);
   font-style: normal;
-  padding: 3px 7px;
+  padding: 2px 6px;
   border-radius: 999px;
   background: #F1F5F9;
   color: #475569;
@@ -3738,7 +3751,7 @@ html body #main .hm-lang-chip.on em {
 }
 html body #main .hm-lang-chip-more {
   background: #F8FAFC;
-  font: 700 13px/1.1 var(--cp-font);
+  font: 700 12px/1.1 var(--cp-font);
   color: #2B7CB8;
 }
 
@@ -3746,23 +3759,23 @@ html body #main .hm-lang-chip-more {
 html body #main .hm-daily-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 14px;
-  padding-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid #EEF2F6;
 }
 @media (max-width: 960px) {
   html body #main .hm-daily-steps {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
   }
 }
 html body #main .hm-step-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 16px;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 14px;
   border: 1px solid #E6EAF0;
   background: #F8FAFC;
   text-decoration: none;
@@ -3785,10 +3798,10 @@ html body #main .hm-step-chip.is-done {
 html body #main .hm-step-ic {
   display: inline-grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 800;
   flex: none;
 }
@@ -3797,19 +3810,19 @@ html body #main .hm-step-ic.is-purple { background: #F3EFFF; color: #6D28D9; }
 html body #main .hm-step-ic.is-green { background: #E7F8EF; color: #15803D; }
 html body #main .hm-step-copy {
   display: grid;
-  gap: 2px;
+  gap: 1px;
   flex: 1 1 0;
   min-width: 0;
 }
 html body #main .hm-step-copy b {
-  font: 800 14px/1.2 var(--cp-font);
+  font: 800 12.5px/1.2 var(--cp-font);
   color: #162B3D;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 html body #main .hm-step-copy small {
-  font: 500 12px/1.25 var(--cp-font);
+  font: 500 11px/1.2 var(--cp-font);
   color: #64748B;
   white-space: nowrap;
   overflow: hidden;
@@ -3817,42 +3830,42 @@ html body #main .hm-step-copy small {
 }
 html body #main .hm-step-tag {
   display: inline-flex;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   color: #2B7CB8;
-  font: 800 11.5px/1 var(--cp-font);
+  font: 800 10.5px/1 var(--cp-font);
   flex: none;
 }
 
 /* 3. Lưới 6 Công cụ Khám phá & Luyện tập nhanh (.hm-explore-tools) */
 html body #main .hm-explore-tools {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 html body #main .hm-tools-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 8px;
 }
 @media (max-width: 760px) {
   html body #main .hm-tools-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 8px;
   }
 }
 html body #main .hm-tool-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 20px;
+  gap: 9px;
+  padding: 10px 11px;
+  border-radius: 16px;
   border: 1px solid rgba(22, 43, 61, 0.07);
   background: #FFFFFF;
   text-decoration: none;
   color: #162B3D;
-  box-shadow: 0 3px 12px rgba(22, 43, 61, 0.03);
+  box-shadow: 0 3px 10px rgba(22, 43, 61, 0.03);
   transition: transform .15s ease, box-shadow .15s ease;
 }
 html body #main .hm-tool-card:hover {
@@ -3866,9 +3879,9 @@ html body #main .hm-tool-card.is-mint { background: linear-gradient(135deg, #EEF
 html body #main .hm-tool-card.is-pink { background: linear-gradient(135deg, #FFF0F6 0%, #FFFFFF 100%); border-color: #FBCFE8; }
 html body #main .hm-tool-card.is-gold { background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%); border-color: #FDE68A; }
 html body #main .hm-tool-chibi {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
   object-fit: contain;
   background: rgba(255, 255, 255, 0.85);
   padding: 2px;
@@ -3876,15 +3889,15 @@ html body #main .hm-tool-chibi {
 }
 html body #main .hm-tool-copy {
   display: grid;
-  gap: 3px;
+  gap: 2px;
   min-width: 0;
 }
 html body #main .hm-tool-copy b {
-  font: 800 14.5px/1.2 var(--cp-font);
+  font: 800 13px/1.2 var(--cp-font);
   color: #162B3D;
 }
 html body #main .hm-tool-copy small {
-  font: 500 12px/1.3 var(--cp-font);
+  font: 500 11px/1.25 var(--cp-font);
   color: #64748B;
 }
 

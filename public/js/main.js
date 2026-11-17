@@ -427,6 +427,7 @@ function renderShell() {
     ? `<a href="/app/giao-vien" data-mt="gv-home"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Overview" : "Tổng quan"}</span></a>
        <a href="/app/giao-vien/hoc-vien" data-mt="gv-students"><span class="mtab-ic">${lineIcon("users")}</span><span class="mtab-lbl">${mtEn ? "Students" : "Học viên"}</span></a>
        <a href="/app/lop" data-mt="gv-classes"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Classes" : "Lớp học"}</span></a>
+       <a href="/app/thong-bao" data-mt="pr-notices"><span class="mtab-ic">${lineIcon("bell")}</span><span class="mtab-lbl">${mtEn ? "Notices" : "Thông báo"}</span></a>
        <button type="button" class="mtab-more" data-mt="gv-menu" data-open-nav aria-label="Menu"><span class="mtab-ic">${lineIcon("menu")}</span><span class="mtab-lbl">Menu</span></button>`
     : isParentRole
       ? `<a href="/app/gia-dinh" data-mt="pr-family"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Family" : "Gia đình"}</span></a>
@@ -437,6 +438,7 @@ function renderShell() {
          <a href="/app/chon-mon" data-mt="mon-hoc"><span class="mtab-ic">${lineIcon("route")}</span><span class="mtab-lbl">${mtEn ? "Roadmap" : "Lộ trình"}</span></a>
          <a href="/app/chon-mon" data-mt="hoc-tap" class="mtab-center"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Learn" : "Học"}</span></a>
          <a href="/app/chon-mon" data-mt="on-tap"><span class="mtab-ic">${lineIcon("clock")}</span><span class="mtab-lbl">${mtEn ? "Review" : "Ôn tập"}</span></a>
+         <a href="/app/ai" data-mt="ai"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "AI Tutor" : "Gia sư"}</span></a>
          <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`;
 
   root.innerHTML = `
@@ -527,7 +529,7 @@ function renderShell() {
       </header>
       <main id="main" class="page" tabindex="-1"></main>
     </div>
-    <nav class="mtab${isTeacherRole || isParentRole ? " mtab-4" : ""}" id="mTab" aria-label="Điều hướng nhanh">
+    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-6"}" id="mTab" aria-label="Điều hướng nhanh">
       ${mtabHtml}
     </nav>
   </div>`;
@@ -764,6 +766,7 @@ function syncNavState(parsed = parseHashRoute()) {
     "mon-hoc": mtSubj ? "/app/mon-hoc" : "/app/chon-mon",
     "hoc-tap": mtSubj ? `/app/ngoai-ngu/${mtSubj}` : "/app/chon-mon",
     "on-tap": mtSubj ? `/app/ngoai-ngu/on-tap/${mtSubj}` : "/app/chon-mon",
+    ai: "/app/ai",
     "ca-nhan": "/app/ca-nhan",
     "gv-home": "/app/giao-vien",
     "gv-students": "/app/giao-vien/hoc-vien",
@@ -772,12 +775,13 @@ function syncNavState(parsed = parseHashRoute()) {
     "pr-classes": "/app/lop",
     "pr-notices": "/app/thong-bao",
   };
-  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-noi\/|luyen-viet\/|tro-chuyen\/|ly-thuyet\/)/.test(clean);
+  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-noi\/|luyen-viet\/|ly-thuyet\/)/.test(clean);
   const mtActive = {
     home: activeNav === "co-vu" || (!!subj && clean === subj),
     "mon-hoc": clean === "mon-hoc" || clean === "lo-trinh" || (clean === "" && !!query.mon),
     "hoc-tap": learnPath,
     "on-tap": /^ngoai-ngu\/on-tap(?:\/|$)/.test(clean),
+    ai: clean === "ai" || /^ngoai-ngu\/tro-chuyen(?:\/|$)/.test(clean),
     "ca-nhan": /^ca-nhan(?:\/|$)/.test(clean),
     "gv-home": clean === "giao-vien" || /^giao-vien\/lop\//.test(clean),
     "gv-students": clean === "giao-vien/hoc-vien",
