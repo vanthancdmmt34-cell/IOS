@@ -12,12 +12,12 @@ async function pageAdminLazy(main, params, query, ctx) {
   return _pageAdmin(main, params, query, ctx);
 }
 import { pagePricing, pageMyPlan, pageAi } from "./pro.js";
-import { pageMyClasses, pageJoinLink, pageClass, pageAssignment, pageClassTest, pageTeacher, pageTeacherClass, pagePrintReport } from "./classroom.js";
+import { pageMyClasses, pageJoinLink, pageClass, pageAssignment, pageClassTest, pageTeacher, pageTeacherClass, pagePrintReport, pageTeacherAssignments, pageTeacherProgress } from "./classroom.js";
 import { pageFamily } from "./family.js";
 import { pageHome, pageLangCourse, pageLangExercise, pageLangWrite, pageLangTheory, pageLangReview, pageLangCertificate, pageLangCertList, pageLangLeaderboard, pageLangBadges, paintLangSide, refreshLangSide, paintSubjectPill, getSubject, setSubject, subjectNav, subjectInfo } from "./lang.js";
 import { pageMyStudents } from "./teacher-students.js";
 import { roleLabel } from "./core.js";
-import { applyLang, initialLang, currentLang } from "./i18n.js";
+import { applyLang, initialLang, currentLang, t } from "./i18n.js";
 import { loadPrefs, levelOf } from "./game.js";
 import { initFlags } from "./flags.js";
 import { mountAiWidget, aiWidgetRoute } from "./ai-widget.js";
@@ -187,7 +187,7 @@ async function enterApp(me, isNew = false, fromAuth = false) {
 
 /* ---------- Shell ---------- */
 // Unified Left Sidebar Shell: keep navigation grouped cleanly on the left across learning and account pages.
-const ACCOUNT_ROUTES = new Set(["ca-nhan", "goi-cua-toi", "chung-nhan", "huy-hieu", "xep-hang", "thong-bao", "gia-dinh", "bang-gia", "giao-vien", "giao-vien/hoc-vien", "quan-tri-ngoai-ngu", "quan-tri", "quan-tri/kinh-doanh"]);
+const ACCOUNT_ROUTES = new Set(["ca-nhan", "cai-dat", "goi-cua-toi", "chung-nhan", "huy-hieu", "xep-hang", "thong-bao", "gia-dinh", "bang-gia", "giao-vien", "giao-vien/hoc-vien", "giao-vien/bai-tap", "giao-vien/tien-do", "quan-tri-ngoai-ngu", "quan-tri", "quan-tri/kinh-doanh"]);
 const zoneOf = (r) => ACCOUNT_ROUTES.has(r) ? "acct" : "learn";
 // Streamlined menu per UX review: prioritize practice, group learning items, hide unused items.
 const NAV = [
@@ -201,14 +201,14 @@ const NAV = [
   ["co-vu", "sparkle", "Cổ Vũ"],
   ["luyen-noi", "mic", "Luyện nói"],
   ["on-tap", "clock", "Ôn tập"],
-  ["so-tay", "book", "Sổ tay từ vựng"],
+  ["so-tay", "lesson", "Sổ tay từ vựng"],
   ["tro-choi", "sparkle", "Trò chơi"],
-  ["tro-chuyen", "bulb", "Hội thoại AI"],
+  ["tro-chuyen", "chat", "Hội thoại AI"],
   ["phong-van", "briefcase", "Phỏng vấn"],
   ["ngoai-ngu", "globe", "Ngoại ngữ"],
   ["chon-mon", "globe", "Chọn ngoại ngữ"],
   ["toeic", "award", "Luyện thi TOEIC"],
-  ["ai", "bulb", "Hội thoại AI"],
+  ["ai", "chat", "Hội thoại AI"],
   ["ho-tro", "life-buoy", "Hỗ trợ"],
   ["thong-bao", "bell", "Thông báo"],
   // Class / Family
@@ -224,6 +224,7 @@ const NAV = [
   ["ca-nhan", "user", "Hồ sơ của tôi"],
   ["goi-cua-toi", "key", "Gói của tôi"],
   ["bang-gia", "star", "Nâng cấp Pro"],
+  ["cai-dat", "cog", "Cài đặt"],
 ];
 
 // Mô tả ngắn dưới từng mục học: người mới đọc là biết mục đó để làm gì
@@ -243,10 +244,10 @@ const NAV_HINT = {
 };
 
 const NAV_CATS = [
-  { id: "teach", icon: "cat-teach", label: "Giảng dạy", routes: new Set(["giao-vien", "giao-vien/hoc-vien"]) },
+  { id: "teach", icon: "cat-teach", label: "Giảng dạy", routes: new Set(["giao-vien", "giao-vien/hoc-vien", "giao-vien/bai-tap", "giao-vien/tien-do"]) },
   { id: "learn", icon: "cat-learn", label: "Học tập", routes: new Set(["mon-hoc", "co-vu", "so-tay", "luyen-noi", "on-tap", "tro-choi", "tro-chuyen", "ai", "phong-van", "ngoai-ngu", "chon-mon", "toeic"]) },
   { id: "achieve", icon: "cat-achieve", label: "Thành tích & lớp học", routes: new Set(["chung-nhan", "xep-hang", "huy-hieu", "lop", "gia-dinh"]) },
-  { id: "acct", icon: "cat-acct", label: "Tài khoản", routes: new Set(["thong-bao", "ca-nhan", "goi-cua-toi", "bang-gia", "ho-tro"]) },
+  { id: "acct", icon: "cat-acct", label: "Tài khoản", routes: new Set(["thong-bao", "ca-nhan", "cai-dat", "goi-cua-toi", "bang-gia", "ho-tro"]) },
   { id: "admin", icon: "cat-admin", label: "Quản trị", routes: new Set(["quan-tri", "quan-tri/kinh-doanh", "quan-tri/ngoai-ngu"]) },
 ];
 
@@ -354,10 +355,46 @@ function bindHoverMenu(wrap, btn, drop, { onOpen, others = [] } = {}) {
   return { close };
 }
 
+const isMobileSheetViewport = () => window.matchMedia("(max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px)").matches;
+function setNavOpen(open) {
+  if (open) { setLearnFan(false); setAcctFan(false); setAcctSheet(false); }
+  document.body.classList.toggle("nav-open", !!open);
+  document.querySelectorAll("[data-open-nav]").forEach((b) => b.setAttribute("aria-expanded", open ? "true" : "false"));
+}
+function setFanOpen(fanId, btnId, open) {
+  const fan = document.getElementById(fanId);
+  const btn = document.getElementById(btnId);
+  if (!fan) return;
+  if (open) {
+    fan.hidden = false;
+    void fan.offsetWidth;
+    fan.classList.add("is-open");
+  } else {
+    fan.classList.remove("is-open");
+    fan.hidden = true;
+  }
+  btn?.setAttribute("aria-expanded", open ? "true" : "false");
+}
+function setLearnFan(open) {
+  if (open) { setAcctFan(false); setAcctSheet(false); setNavOpen(false); }
+  setFanOpen("mLearnFan", "mTabLearnBtn", open);
+}
+function setAcctFan(open) {
+  if (open) { setLearnFan(false); setAcctSheet(false); setNavOpen(false); }
+  setFanOpen("mAcctFan", "mTabAcctBtn", open);
+}
+function setAcctSheet(open) {
+  const sheet = document.getElementById("mAcctSheet");
+  if (!sheet) return;
+  if (open) { setLearnFan(false); setAcctFan(false); setNavOpen(false); }
+  sheet.hidden = !open;
+  document.querySelectorAll("[data-open-account]").forEach((b) => b.setAttribute("aria-expanded", open ? "true" : "false"));
+}
+
 function renderShell() {
   // 4.0: role-based menu (only show features the user can access; server still enforces permissions)
   const hints = S.nav || {};
-  const showClass = !!hints.hasClass || S.me.role === "admin" || S.me.role === "teacher";
+  const showClass = !!hints.hasClass || ["admin", "teacher", "student", "parent"].includes(S.me.role);
   const showFamily = !!hints.hasFamily || S.me.role === "parent" || S.me.role === "admin";
   const showLb = cfg("leaderboard", true) !== false;
   const showBadge = cfg("gamification", true) !== false;
@@ -404,10 +441,34 @@ function renderShell() {
     return false;
   });
   if (S.me.role === "admin") nav.push(["-", "", "Quản trị"], ["quan-tri", "settings", "Quản trị hệ thống"], ["quan-tri/kinh-doanh", "key", "Thanh toán và gói", null, null, "/app/quan-tri/kinh-doanh?sub=thanh-toan"], ["quan-tri/ngoai-ngu", "globe", "Quản lý ngoại ngữ"]);
-  const catGroups = NAV_CATS.map((g) => ({
-    ...g,
-    items: nav.filter(([r]) => r !== "-" && g.routes.has(r)),
-  })).filter((g) => g.items.length > 0);
+  const isTeacherAcct = S.me.role === "teacher";
+  const catGroups = isTeacherAcct
+    ? [
+        {
+          id: "teach",
+          label: "Giảng dạy",
+          items: [
+            ["giao-vien", "home", "Bảng điều khiển"],
+            ["giao-vien/hoc-vien", "user", "Học viên của tôi"],
+            ["lop", "book", "Lớp của tôi"],
+            ["giao-vien/bai-tap", "edit", "Bài tập và bài kiểm tra"],
+            ["giao-vien/tien-do", "clock", "Chấm và theo dõi tiến độ"],
+            ["thong-bao", "bell", "Thông báo lớp"],
+          ],
+        },
+        {
+          id: "acct",
+          label: "Tài khoản",
+          items: [
+            ["ca-nhan", "user", "Hồ sơ cá nhân"],
+            ["cai-dat", "cog", "Cài đặt"],
+          ],
+        },
+      ]
+    : NAV_CATS.map((g) => ({
+        ...g,
+        items: nav.filter(([r]) => r !== "-" && g.routes.has(r)),
+      })).filter((g) => g.items.length > 0);
   // Giu lai noi dung trang: ve lai shell se pha huy #main cu (trang se trang
   // tron neu khong co ai ve lai). Luu tham chieu roi gan lai sau khi ve xong.
   const subjMeta = subj ? subjectInfo(subj) : null;
@@ -418,9 +479,13 @@ function renderShell() {
     : S.me.role === "admin"
       ? "/img/kit/chibi-dragon.webp"
       : "/img/kit/chibi-bunny.webp";
-  const roleSub = subjMeta
-    ? `${roleLabel(S.me.role)} · ${subjMeta.name}`
-    : (S.me.role === "teacher" ? "Tài khoản giáo viên" : S.me.role === "admin" ? "Quản trị hệ thống" : roleLabel(S.me.role));
+  const roleSub = S.me.role === "teacher"
+    ? "Tài khoản giáo viên"
+    : S.me.role === "admin"
+      ? "Quản trị hệ thống"
+      : subjMeta
+        ? `${roleLabel(S.me.role)} · ${t(subjMeta.name)}`
+        : roleLabel(S.me.role);
   const isTeacherRole = S.me.role === "teacher";
   const isParentRole = S.me.role === "parent";
   const mtabHtml = isTeacherRole
@@ -428,7 +493,7 @@ function renderShell() {
        <a href="/app/giao-vien/hoc-vien" data-mt="gv-students"><span class="mtab-ic">${lineIcon("users")}</span><span class="mtab-lbl">${mtEn ? "Students" : "Học viên"}</span></a>
        <a href="/app/lop" data-mt="gv-classes"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Classes" : "Lớp học"}</span></a>
        <a href="/app/thong-bao" data-mt="pr-notices"><span class="mtab-ic">${lineIcon("bell")}</span><span class="mtab-lbl">${mtEn ? "Notices" : "Thông báo"}</span></a>
-       <button type="button" class="mtab-more" data-mt="gv-menu" data-open-nav aria-label="Menu"><span class="mtab-ic">${lineIcon("menu")}</span><span class="mtab-lbl">Menu</span></button>`
+       <button type="button" class="mtab-more" data-mt="gv-menu" data-open-nav aria-expanded="false" aria-label="Menu"><span class="mtab-ic">${lineIcon("menu")}</span><span class="mtab-lbl">Menu</span></button>`
     : isParentRole
       ? `<a href="/app/gia-dinh" data-mt="pr-family"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Family" : "Gia đình"}</span></a>
          <a href="/app/lop" data-mt="pr-classes"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Classes" : "Lớp học"}</span></a>
@@ -436,13 +501,80 @@ function renderShell() {
          <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`
       : `<a href="/app/chon-mon" data-mt="home"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Overview" : "Tổng quan"}</span></a>
          <a href="/app/chon-mon" data-mt="mon-hoc"><span class="mtab-ic">${lineIcon("route")}</span><span class="mtab-lbl">${mtEn ? "Roadmap" : "Lộ trình"}</span></a>
-         <a href="/app/chon-mon" data-mt="luyen-noi"><span class="mtab-ic">${lineIcon("mic")}</span><span class="mtab-lbl">${mtEn ? "Speak" : "Luyện nói"}</span></a>
-         <a href="/app/chon-mon" data-mt="hoc-tap" class="mtab-center"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Learn" : "Học"}</span></a>
-         <a href="/app/chon-mon" data-mt="on-tap"><span class="mtab-ic">${lineIcon("clock")}</span><span class="mtab-lbl">${mtEn ? "Review" : "Ôn tập"}</span></a>
+         <button type="button" class="mtab-center" id="mTabLearnBtn" data-mt="hoc-ngay" aria-haspopup="true" aria-expanded="false" aria-controls="mLearnFan" aria-label="${mtEn ? "Open study menu" : "Mở menu học tập"}"><span class="mtab-ic"><span class="mtab-ic-main">${lineIcon("book")}</span><span class="mtab-ic-x">${lineIcon("x")}</span></span><span class="mtab-lbl">${mtEn ? "Learn now" : "Học ngay"}</span></button>
          <a href="/app/phong-van" data-mt="phong-van"><span class="mtab-ic">${lineIcon("briefcase")}</span><span class="mtab-lbl">${mtEn ? "Interview" : "Phỏng vấn"}</span></a>
-         <a href="/app/toeic" data-mt="toeic"><span class="mtab-ic">${lineIcon("award")}</span><span class="mtab-lbl">TOEIC</span></a>
-         <a href="/app/co-vu" data-mt="co-vu"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "Cheer" : "Cổ vũ"}</span></a>
-         <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`;
+         <button type="button" class="mtab-acct-btn" id="mTabAcctBtn" data-mt="ca-nhan" aria-haspopup="true" aria-expanded="false" aria-controls="mAcctFan" aria-label="${mtEn ? "Open personal menu" : "Mở menu cá nhân"}"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></button>`;
+  const mLearnFanHtml = (!isTeacherRole && !isParentRole) ? `
+    <div class="m-fan-wrap m-learn-fan" id="mLearnFan" hidden>
+      <div class="m-fan-scrim" data-close-learn aria-hidden="true"></div>
+      <div class="m-fan-arc" role="menu" aria-label="${mtEn ? "Learn now" : "Học ngay"}">
+        <a href="${subj ? "/app/mon-hoc" : "/app/chon-mon"}" class="m-fan-petal is-i0" data-ml="mon-hoc" role="menuitem">
+          <span class="m-fan-orb is-indigo">${lineIcon("route")}</span>
+          <span class="m-fan-pill">${mtEn ? "Roadmap" : "Lộ trình"}</span>
+        </a>
+        <a href="${subj ? `/app/ngoai-ngu/luyen-noi/${subj}` : "/app/chon-mon"}" class="m-fan-petal is-i1" data-ml="luyen-noi" role="menuitem">
+          <span class="m-fan-orb is-purple">${lineIcon("mic")}</span>
+          <span class="m-fan-pill">${mtEn ? "Speaking" : "Luyện nói"}</span>
+        </a>
+        <a href="${subj ? `/app/ngoai-ngu/${subj}` : "/app/chon-mon"}" class="m-fan-petal is-i2" data-ml="hoc-tap" role="menuitem">
+          <span class="m-fan-orb is-sky">${lineIcon("book")}</span>
+          <span class="m-fan-pill">${mtEn ? "Learn" : "Học"}</span>
+        </a>
+        <a href="${subj ? `/app/ngoai-ngu/on-tap/${subj}` : "/app/chon-mon"}" class="m-fan-petal is-i3" data-ml="on-tap" role="menuitem">
+          <span class="m-fan-orb is-mint">${lineIcon("clock")}</span>
+          <span class="m-fan-pill">${mtEn ? "Review" : "Ôn tập"}</span>
+        </a>
+        <a href="/app/toeic" class="m-fan-petal is-i4" data-ml="toeic" role="menuitem">
+          <span class="m-fan-orb is-amber">${lineIcon("award")}</span>
+          <span class="m-fan-pill">TOEIC</span>
+        </a>
+      </div>
+    </div>` : "";
+  const mAcctFanHtml = (!isTeacherRole && !isParentRole) ? `
+    <div class="m-fan-wrap m-acct-fan" id="mAcctFan" hidden>
+      <div class="m-fan-scrim" data-close-acct-fan aria-hidden="true"></div>
+      <div class="m-fan-arc" role="menu" aria-label="${mtEn ? "Personal" : "Cá nhân"}">
+        <a href="${subj ? "/app/co-vu" : "/app/chon-mon"}" class="m-fan-petal is-a0" data-ma="co-vu" role="menuitem">
+          <span class="m-fan-orb is-amber">${lineIcon("star")}</span>
+          <span class="m-fan-pill">${mtEn ? "Cheer" : "Cổ vũ"}</span>
+        </a>
+        <a href="/app/ca-nhan" class="m-fan-petal is-a1" data-ma="ca-nhan" role="menuitem">
+          <span class="m-fan-orb is-sky">${lineIcon("user")}</span>
+          <span class="m-fan-pill">${mtEn ? "Profile" : "Hồ sơ"}</span>
+        </a>
+        <a href="/app/goi-cua-toi" class="m-fan-petal is-a2" data-ma="goi-cua-toi" role="menuitem">
+          <span class="m-fan-orb is-purple">${lineIcon("award")}</span>
+          <span class="m-fan-pill">${mtEn ? "Plan & Certificates" : "Gói & Chứng nhận"}</span>
+        </a>
+        <a href="/app/cai-dat" class="m-fan-petal is-a3" data-ma="cai-dat" role="menuitem">
+          <span class="m-fan-orb is-rose">${lineIcon("cog")}</span>
+          <span class="m-fan-pill">${mtEn ? "Settings" : "Cài đặt"}</span>
+        </a>
+      </div>
+    </div>` : "";
+  const mAcctSheetHtml = `
+    <div class="m-sheet-wrap m-acct-sheet-wrap" id="mAcctSheet" hidden>
+      <div class="m-sheet-scrim" data-close-acct></div>
+      <div class="m-sheet-card m-acct-card" role="dialog" aria-modal="true" aria-labelledby="mAcctName">
+        <div class="m-acct-head">
+          <img class="m-acct-av" src="${roleAvatar}" width="48" height="48" alt="">
+          <div class="m-acct-who">
+            <b id="mAcctName">${esc(S.me.displayName || S.me.username)}<span data-pro-slot></span></b>
+            <small>@${esc(S.me.username)} · ${esc(roleLabel(S.me.role))}</small>
+          </div>
+        </div>
+        <div class="m-acct-div"></div>
+        <div class="m-acct-list">
+          <a href="/app/ca-nhan" class="m-acct-item">${lineIcon("user")}<span>${mtEn ? "My profile" : "Hồ sơ của tôi"}</span></a>
+          <a href="/app/goi-cua-toi" class="m-acct-item">${lineIcon("star")}<span>${mtEn ? "My plan" : "Gói của tôi"}</span></a>
+          <a href="${subj ? `/app/ngoai-ngu/chung-nhan-cua-toi/${subj}` : "/app/chon-mon"}" class="m-acct-item" data-acct-cert>${lineIcon("award")}<span>${mtEn ? "Certificates" : "Chứng nhận"}</span></a>
+          ${S.me.role === "admin" ? `<a href="/app/quan-tri" class="m-acct-item">${lineIcon("cog")}<span>${mtEn ? "System admin" : "Quản trị hệ thống"}</span></a>` : ""}
+          <button type="button" class="m-acct-item" id="mAcctGuide">${lineIcon("bulb")}<span>${mtEn ? "Review guide" : "Xem lại hướng dẫn"}</span></button>
+          <a href="/app/cai-dat" class="m-acct-item">${lineIcon("cog")}<span>${mtEn ? "Settings" : "Cài đặt"}</span></a>
+          <button type="button" class="m-acct-item is-danger" id="mAcctLogout">${lineIcon("logout")}<span>${mtEn ? "Sign out" : "Đăng xuất"}</span></button>
+        </div>
+      </div>
+    </div>`;
 
   root.innerHTML = `
   <div class="shell">
@@ -468,7 +600,11 @@ function renderShell() {
             <span class="nav-cat-meta"><em class="nav-cat-cnt">${g.items.length}</em><span class="nav-cat-tog" aria-hidden="true">+</span></span>
           </summary>
           <div class="nav-cat-body">
-            ${g.items.map(([r, ic, label, , , href]) => `<a href="${href || "/app/" + r}" data-r="${r}" data-zone="${zoneOf(r)}"><span class="nav-ic">${lineIcon(ic || "file")}</span><span class="nav-lbl"><span>${esc(label)}</span>${NAV_HINT[r] ? `<small class="nav-hint">${esc(NAV_HINT[r])}</small>` : ""}</span></a>`).join("")}
+            ${g.items.map(([r, ic, label, , , href]) => {
+              const deskOnly = !isTeacherAcct && (r === "thong-bao" || r === "toeic") ? " nav-desk-only" : "";
+              return `<a${deskOnly ? ` class="${deskOnly.trim()}"` : ""} href="${href || "/app/" + r}" data-r="${r}" data-zone="${zoneOf(r)}"><span class="nav-ic">${lineIcon(ic || "file")}</span><span class="nav-lbl"><span>${esc(label)}</span>${NAV_HINT[r] ? `<small class="nav-hint">${esc(NAV_HINT[r])}</small>` : ""}</span></a>`;
+            }).join("")}
+            ${g.id === "acct" ? `<button type="button" class="nav-act nav-m-only" data-logout><span class="nav-ic">${lineIcon("logout")}</span><span class="nav-lbl"><span>${mtEn ? "Sign out" : "Đăng xuất"}</span></span></button>` : ""}
           </div>
         </details>`).join("")}
       </nav>
@@ -516,7 +652,8 @@ function renderShell() {
           <button type="button" class="icon-btn ud-bell" id="udBell" aria-haspopup="true" aria-expanded="false" aria-label="Thông báo" title="Thông báo">${lineIcon("bell")}<i id="udBellDot" hidden></i></button>
           <div class="ud-drop ud-bell-drop" id="udBellDrop" hidden></div>
         </div>
-        <button type="button" class="icon-btn m-top-more" id="mTopMore" data-open-nav aria-label="Mở menu điều hướng"><svg class="line-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/></svg></button>
+        <button type="button" class="icon-btn m-top-acct" id="mTopAcct" data-open-account aria-haspopup="dialog" aria-expanded="false" aria-label="${mtEn ? "Quick account menu" : "Menu tài khoản nhanh"}"><img src="${roleAvatar}" width="32" height="32" alt=""></button>
+        <button type="button" class="icon-btn m-top-more" id="mTopMore" data-open-nav aria-expanded="false" aria-label="Mở menu điều hướng"><svg class="line-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/></svg></button>
         <div class="ud-user" id="udUserWrap">
           <button type="button" id="udUser" aria-haspopup="true" aria-expanded="false" aria-label="Tài khoản">${accountChipHtml()}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="ud-drop" id="udDrop" hidden>
@@ -532,9 +669,12 @@ function renderShell() {
       </header>
       <main id="main" class="page" tabindex="-1"></main>
     </div>
-    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-9"}" id="mTab" aria-label="Điều hướng nhanh">
+    <nav class="mtab${isParentRole ? " mtab-4" : ""}" id="mTab" aria-label="Điều hướng nhanh">
       ${mtabHtml}
     </nav>
+    ${mLearnFanHtml}
+    ${mAcctFanHtml}
+    ${mAcctSheetHtml}
   </div>`;
   if (oldMain) { const nm = document.getElementById("main"); if (nm && nm !== oldMain) nm.replaceWith(oldMain); }
   $("#logoutBtn").addEventListener("click", logout);
@@ -559,16 +699,44 @@ function renderShell() {
           const bDrop = document.getElementById("udBellDrop"), bBtn = document.getElementById("udBell");
           if (bDrop && !bDrop.hidden) { bDrop.hidden = true; bBtn?.setAttribute("aria-expanded", "false"); }
         }
+        if (!e.target.closest("#mLearnFan .m-fan-arc, #mTabLearnBtn")) {
+          const lf = document.getElementById("mLearnFan");
+          if (lf && !lf.hidden) setLearnFan(false);
+        }
+        if (!e.target.closest("#mAcctFan .m-fan-arc, #mTabAcctBtn")) {
+          const af = document.getElementById("mAcctFan");
+          if (af && !af.hidden) setAcctFan(false);
+        }
         if (e.target.closest("[data-open-nav]")) {
           e.preventDefault();
-          document.body.classList.toggle("nav-open");
+          setLearnFan(false);
+          setAcctFan(false);
+          setAcctSheet(false);
+          setNavOpen(!document.body.classList.contains("nav-open"));
         } else if (e.target.closest("[data-close-nav]")) {
           e.preventDefault();
-          document.body.classList.remove("nav-open");
+          setNavOpen(false);
         } else if (e.target.closest("[data-open-search]")) {
           e.preventDefault();
-          document.body.classList.remove("nav-open");
+          setNavOpen(false);
           openPalette();
+        } else if (e.target.closest('[data-open-account]:not([data-open-account="mobile"])')) {
+          e.preventDefault();
+          const sh = document.getElementById("mAcctSheet");
+          setAcctSheet(sh ? sh.hidden : true);
+        } else if (e.target.closest("[data-close-learn]") || e.target.closest("#mLearnFan a")) {
+          setLearnFan(false);
+        } else if (e.target.closest("[data-close-acct-fan]") || e.target.closest("#mAcctFan a")) {
+          setAcctFan(false);
+        } else if (e.target.closest("[data-close-acct]") || e.target.closest("#mAcctSheet a")) {
+          setAcctSheet(false);
+        } else if (e.target.closest("[data-logout]")) {
+          e.preventDefault();
+          setNavOpen(false);
+          setLearnFan(false);
+          setAcctFan(false);
+          setAcctSheet(false);
+          logout();
         }
       });
       document.addEventListener("keydown", (e) => {
@@ -577,12 +745,63 @@ function renderShell() {
         if (uDrop && !uDrop.hidden) { uDrop.hidden = true; uBtn?.setAttribute("aria-expanded", "false"); }
         const bDrop = document.getElementById("udBellDrop"), bBtn = document.getElementById("udBell");
         if (bDrop && !bDrop.hidden) { bDrop.hidden = true; bBtn?.setAttribute("aria-expanded", "false"); }
+        const inLearnFan = document.activeElement?.closest?.("#mLearnFan");
+        const inAcctFan = document.activeElement?.closest?.("#mAcctFan");
+        setLearnFan(false);
+        setAcctFan(false);
+        setAcctSheet(false);
+        if (inLearnFan) document.getElementById("mTabLearnBtn")?.focus();
+        else if (inAcctFan) document.getElementById("mTabAcctBtn")?.focus();
       });
     }
     $("#udLogout").addEventListener("click", logout);
     $("#udGuide").addEventListener("click", () => import("./guide.js").then((m) => m.openGuide({ force: true })).catch(() => {}));
+    const bindFanMenu = (btnId, fanId, setFn) => {
+      const btn = document.getElementById(btnId);
+      const fan = document.getElementById(fanId);
+      if (!btn || !fan) return;
+      let hoverTimer = 0, hoverOpenedAt = 0;
+      const clearHover = () => { if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = 0; } };
+      const scheduleClose = () => {
+        clearHover();
+        hoverTimer = setTimeout(() => { if (!fan.hidden) setFn(false); }, 340);
+      };
+      btn.addEventListener("pointerenter", (e) => {
+        if (e.pointerType !== "mouse") return;
+        clearHover();
+        if (fan.hidden) { hoverOpenedAt = Date.now(); setFn(true); }
+      });
+      btn.addEventListener("pointerleave", (e) => {
+        if (e.pointerType !== "mouse") return;
+        scheduleClose();
+      });
+      fan.addEventListener("pointerover", (e) => {
+        if (e.pointerType !== "mouse") return;
+        if (e.target.closest(".m-fan-petal")) clearHover();
+      });
+      fan.addEventListener("pointerout", (e) => {
+        if (e.pointerType !== "mouse") return;
+        if (e.target.closest(".m-fan-petal") && !e.relatedTarget?.closest?.(".m-fan-petal")) scheduleClose();
+      });
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        clearHover();
+        if (!fan.hidden && Date.now() - hoverOpenedAt < 400) return;
+        setFn(fan.hidden);
+      });
+    };
+    bindFanMenu("mTabLearnBtn", "mLearnFan", setLearnFan);
+    bindFanMenu("mTabAcctBtn", "mAcctFan", setAcctFan);
+    $("#mAcctGuide")?.addEventListener("click", () => {
+      setAcctSheet(false);
+      import("./guide.js").then((m) => m.openGuide({ force: true })).catch(() => {});
+    });
+    $("#mAcctLogout")?.addEventListener("click", () => {
+      setAcctSheet(false);
+      logout();
+    });
   }
-  $("#menuBtn").addEventListener("click", () => document.body.classList.toggle("nav-open"));
+  $("#menuBtn").addEventListener("click", () => setNavOpen(!document.body.classList.contains("nav-open")));
   $("#mTopBack")?.addEventListener("click", () => {
     const parentLink = [...document.querySelectorAll("#crumbs a")].pop();
     if (parentLink && parentLink.getAttribute("href")) {
@@ -593,7 +812,7 @@ function renderShell() {
     if (S.me && S.me.role === "teacher") { setAppHash("/app/giao-vien"); return; }
     setAppHash(s ? `/app/${s}` : "/app/chon-mon");
   });
-  $("#scrim").addEventListener("click", () => document.body.classList.remove("nav-open"));
+  $("#scrim").addEventListener("click", () => setNavOpen(false));
   $("#searchBtn").addEventListener("click", openPalette);
   {
     const cats = [...document.querySelectorAll("#sideNav details.nav-cat")];
@@ -606,6 +825,7 @@ function renderShell() {
   syncNavState();
   paintSideProgress();
   paintStreakBadge();
+  paintProBadges();
   const showVer = (v) => { const el = document.getElementById("sbVer"); if (el && v) el.textContent = `Phiên bản ${v}`; };
   if (S.version) showVer(S.version); else api("/api/health").then((h) => showVer(h.version)).catch(() => {});
 }
@@ -715,6 +935,7 @@ const ROUTES = [
   [/^ngoai-ngu\/([a-z]+)(?:\/([\w-]+))?$/, pageLangCourse, "ngoai-ngu"],
   [/^quan-tri-ngoai-ngu$/, (m, _p, q, c) => pageAdminLazy(m, ["ngoai-ngu"], q, c), "quan-tri-ngoai-ngu"],
   [/^ca-nhan$/, pageFn("pageProfile"), "ca-nhan"],
+  [/^cai-dat$/, pageFn("pageSettings"), "cai-dat"],
   [/^thong-bao$/, pageFn("pageNotices"), "thong-bao"],
   [/^dat-lai-mat-khau$/, pageFn("pageResetPassword"), "dat-lai-mat-khau"],
   [/^ho-tro$/, pageFn("pageLearningHelp"), "ho-tro"],
@@ -729,6 +950,8 @@ const ROUTES = [
   [/^kiem-tra-lop\/(\d+)$/, pageClassTest, "lop"],
   [/^giao-vien$/, pageTeacher, "giao-vien"],
   [/^giao-vien\/hoc-vien$/, pageMyStudents, "giao-vien/hoc-vien"],
+  [/^giao-vien\/bai-tap$/, pageTeacherAssignments, "giao-vien/bai-tap"],
+  [/^giao-vien\/tien-do$/, pageTeacherProgress, "giao-vien/tien-do"],
   [/^giao-vien\/lop\/(\d+)$/, pageTeacherClass, "giao-vien"],
   [/^in-bao-cao\/(\d+)$/, pagePrintReport, "giao-vien"],
   [/^gia-dinh$/, pageFamily, "gia-dinh"],
@@ -774,6 +997,8 @@ function syncNavState(parsed = parseHashRoute()) {
     toeic: "/app/toeic",
     "co-vu": mtSubj ? "/app/co-vu" : "/app/chon-mon",
     "ca-nhan": "/app/ca-nhan",
+    "goi-cua-toi": "/app/goi-cua-toi",
+    "cai-dat": "/app/cai-dat",
     "gv-home": "/app/giao-vien",
     "gv-students": "/app/giao-vien/hoc-vien",
     "gv-classes": "/app/lop",
@@ -792,6 +1017,8 @@ function syncNavState(parsed = parseHashRoute()) {
     toeic: /^toeic(?:\/|$)/.test(clean),
     "co-vu": activeNav === "co-vu" || clean === "co-vu",
     "ca-nhan": /^ca-nhan(?:\/|$)/.test(clean),
+    "goi-cua-toi": /^goi-cua-toi(?:\/|$)/.test(clean) || /^chung-nhan(?:\/|$)/.test(clean) || /^ngoai-ngu\/chung-nhan/.test(clean) || activeNav === "chung-nhan",
+    "cai-dat": /^cai-dat(?:\/|$)/.test(clean),
     "gv-home": clean === "giao-vien" || /^giao-vien\/lop\//.test(clean),
     "gv-students": clean === "giao-vien/hoc-vien",
     "gv-classes": clean === "lop" || /^lop\//.test(clean),
@@ -799,12 +1026,24 @@ function syncNavState(parsed = parseHashRoute()) {
     "pr-classes": clean === "lop" || /^lop\//.test(clean),
     "pr-notices": clean === "thong-bao",
   };
-  document.querySelectorAll("#mTab a").forEach((a) => {
-    const k = a.dataset.mt;
+  document.querySelectorAll("#mTab a, #mLearnFan a[data-ml], #mAcctFan a[data-ma]").forEach((a) => {
+    const k = a.dataset.mt || a.dataset.ml || a.dataset.ma;
     if (mtLinks[k]) a.setAttribute("href", mtLinks[k]);
     a.classList.toggle("on", !!mtActive[k]);
     if (mtActive[k]) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
+  const learnBtn = document.getElementById("mTabLearnBtn");
+  if (learnBtn) {
+    learnBtn.classList.toggle("on", !!(mtActive["luyen-noi"] || mtActive["hoc-tap"] || mtActive["on-tap"] || mtActive.toeic));
+  }
+  const acctBtn = document.getElementById("mTabAcctBtn");
+  if (acctBtn) {
+    acctBtn.classList.toggle("on", !!(mtActive["co-vu"] || mtActive["ca-nhan"] || mtActive["goi-cua-toi"] || mtActive["cai-dat"]));
+  }
+  const acctCert = document.querySelector("#mAcctSheet [data-acct-cert]");
+  if (acctCert) {
+    acctCert.setAttribute("href", mtSubj ? `/app/ngoai-ngu/chung-nhan-cua-toi/${mtSubj}` : "/app/chon-mon");
+  }
   const activeCat = document.querySelector("#sideNav a.on")?.closest("details.nav-cat");
   if (activeCat && window.innerWidth > 760) {
     document.querySelectorAll("#sideNav details.nav-cat").forEach((d) => { d.open = d === activeCat; });
@@ -824,7 +1063,10 @@ export async function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} }); cleanups = [];
   window.__plAiCtx = null; // new page declares its own context for the AI assistant
   while (closeTopModal()) {}
-  document.body.classList.remove("nav-open");
+  setNavOpen(false);
+  setLearnFan(false);
+  setAcctFan(false);
+  setAcctSheet(false);
   const main = document.getElementById("main");
   if (!main) return;
   startMobileFold(main);
@@ -910,8 +1152,13 @@ document.addEventListener("click", (e) => {
   if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
   const a = e.target.closest && e.target.closest('a[href^="/app/"]');
   if (!a || (a.target && a.target !== "_self")) return;
+  if (a.matches('[data-open-account="mobile"]') && isMobileSheetViewport()) {
+    e.preventDefault();
+    setAcctSheet(true);
+    return;
+  }
   e.preventDefault();
-  document.body.classList.remove("nav-open");
+  setNavOpen(false);
   setAppHash(a.getAttribute("href"));
 });
 
@@ -1041,7 +1288,13 @@ function openPalette() {
 
 document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); }
-  if (e.key === "Escape") { if (!closeTopModal()) document.body.classList.remove("nav-open"); }
+  if (e.key === "Escape") {
+    if (!closeTopModal()) {
+      setNavOpen(false);
+      setLearnSheet(false);
+      setAcctSheet(false);
+    }
+  }
 });
 
 boot();

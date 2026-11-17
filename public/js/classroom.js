@@ -20,26 +20,53 @@ export async function pageMyClasses(main, _p, query, ctx) {
   const j = await api("/api/classes");
   if (!ctx.isCurrent()) return;
   const ST = { active: ["Đang học", "tag-la"], pending: ["Chờ giáo viên duyệt", "tag-cam"], suspended: ["Đang bị tạm khóa", "tag-do"] };
-  const firstClass = j.joined && j.joined[0];
+  const teaching = Array.isArray(j.teaching) ? j.teaching : [];
+  const joined = Array.isArray(j.joined) ? j.joined : [];
+  const mgr = isMgr();
+  const firstClass = joined[0];
+  const teachingCards = teaching.length
+    ? `<div class="class-grid">${teaching.map((c) => `<a class="class-card" href="/app/giao-vien/lop/${c.id}"><div class="cl-m-card-top"><span class="lx-ex-pill">${c.status === "active" ? "ĐANG DẠY" : "ĐÃ ĐÓNG"}</span><span class="cl-m-code">${c.joinCode ? `Mã lớp: ${esc(c.joinCode)}` : ""}</span></div><b>${esc(c.name)}</b>${c.joinCode ? `<span class="small muted">Mã lớp: <code>${esc(c.joinCode)}</code></span>` : ""}${c.description ? `<span class="small">${esc(c.description)}</span>` : ""}<span class="tag ${c.status === "active" ? "tag-la" : "tag-line"}" style="margin-top:auto;align-self:flex-start">${c.status === "active" ? "Đang hoạt động" : "Đã đóng"}</span></a>`).join("")}</div>`
+    : empty("Chưa có lớp giảng dạy nào", "Tạo lớp mới tại trang Giáo viên để lấy mã lớp gửi học viên.", '<a class="btn btn-primary" href="/app/giao-vien">Về trang Giáo viên</a>');
+  const joinedCards = joined.length
+    ? `<div class="class-grid">${joined.map((c) => `<a class="class-card" href="/app/lop/${c.id}"><div class="cl-m-card-top"><span class="lx-ex-pill">${c.myStatus === "active" ? "ĐANG THAM GIA" : esc(ST[c.myStatus][0])}</span><span class="cl-m-code">${c.joinCode ? `Mã lớp: ${esc(c.joinCode)}` : ""}</span></div><b>${esc(c.name)}</b><span class="small muted">Giáo viên: ${esc(c.teacherName)}${c.members ? ` · ${c.members} học viên` : ""}</span>${c.description ? `<span class="small">${esc(c.description)}</span>` : ""}<span class="tag ${ST[c.myStatus][1]}" style="margin-top:auto;align-self:flex-start">${ST[c.myStatus][0]}</span>${c.status !== "active" ? `<span class="small muted">Lớp đã đóng</span>` : ""}</a>`).join("")}</div>`
+    : empty("Bạn chưa tham gia lớp nào", "Nhập mã lớp ở dưới, hoặc mở liên kết mời giáo viên gửi.");
+  const joinFormHtml = `
+    <form id="joinF" class="row" style="gap:10px"><label class="field" style="flex:1;min-width:200px;margin:0">Mã lớp<input name="code" maxlength="12" placeholder="Ví dụ: K7M3PQR" autocomplete="off" style="text-transform:uppercase" value="${esc(query.ma || "")}"></label>
+      <button class="btn btn-primary" style="align-self:flex-end">${icon("plus")}Tham gia lớp bằng mã</button></form>
+    <p class="form-msg err" id="joinMsg"></p>`;
   main.innerHTML = `
     <div class="cl-m-head">
       <h1>Lớp học của bạn</h1>
-      <p>Theo dõi lớp, giáo viên và bài tập được giao.</p>
+      <p>${mgr ? "Quản lý lớp đang dạy, bài tập và tiến độ học viên." : "Theo dõi lớp, giáo viên và bài tập được giao."}</p>
     </div>
-    <div class="page-head"><div><h1>Lớp của tôi</h1><p>Tham gia lớp bằng mã do giáo viên gửi. Học trong lớp có giấy phép của giáo viên thì bạn được dùng quyền Pro trong thời gian học.</p></div>
-      ${isMgr() ? `<a class="btn" href="/app/giao-vien">${icon("settings")}Trang giáo viên</a>` : ""}</div>
-    ${j.joined.length ? `<div class="class-grid">${j.joined.map((c) => `<a class="class-card" href="/app/lop/${c.id}"><div class="cl-m-card-top"><span class="lx-ex-pill">${c.myStatus === "active" ? "ĐANG THAM GIA" : esc(ST[c.myStatus][0])}</span><span class="cl-m-code">${c.joinCode ? `Mã lớp: ${esc(c.joinCode)}` : ""}</span></div><b>${esc(c.name)}</b><span class="small muted">Giáo viên: ${esc(c.teacherName)}${c.members ? ` · ${c.members} học viên` : ""}</span>${c.description ? `<span class="small">${esc(c.description)}</span>` : ""}<span class="tag ${ST[c.myStatus][1]}" style="margin-top:auto;align-self:flex-start">${ST[c.myStatus][0]}</span>${c.status !== "active" ? `<span class="small muted">Lớp đã đóng</span>` : ""}</a>`).join("")}</div>`
-      : empty("Bạn chưa tham gia lớp nào", "Nhập mã lớp ở dưới, hoặc mở liên kết mời giáo viên gửi.")}
-    <div class="cl-m-quick">
-      <a class="cl-m-qrow" href="${firstClass ? `/app/lop/${firstClass.id}` : "/app/ngoai-ngu"}"><span class="cl-m-qico">📘</span><div class="cl-m-qcopy"><b>Bài tập được giao</b><span>${firstClass ? `Xem bài tập lớp ${esc(firstClass.name)}` : "Xem bài tập đang mở"}</span></div><span class="cl-m-qarr">›</span></a>
-      <a class="cl-m-qrow" href="/app/thong-bao"><span class="cl-m-qico">🔔</span><div class="cl-m-qcopy"><b>Thông báo lớp</b><span>Tin nhắn và nhắc nhở từ giáo viên</span></div><span class="cl-m-qarr">›</span></a>
-    </div>
-    <section class="sheet sheet-pad cl-m-join-sec" style="margin-top:14px">
-      <form id="joinF" class="row" style="gap:10px"><label class="field" style="flex:1;min-width:200px;margin:0">Mã lớp<input name="code" maxlength="12" placeholder="Ví dụ: K7M3PQR" autocomplete="off" style="text-transform:uppercase" value="${esc(query.ma || "")}"></label>
-        <button class="btn btn-primary" style="align-self:flex-end">${icon("plus")}Tham gia lớp bằng mã</button></form>
-      <p class="form-msg err" id="joinMsg"></p>
-    </section>`;
-  $("#joinF", main).addEventListener("submit", async (e) => {
+    <div class="page-head"><div><h1>Lớp của tôi</h1><p>${mgr ? "Danh sách lớp bạn phụ trách giảng dạy." : "Tham gia lớp bằng mã do giáo viên gửi. Học trong lớp có giấy phép của giáo viên thì bạn được dùng quyền Pro trong thời gian học."}</p></div>
+      ${mgr ? `<a class="btn" href="/app/giao-vien">${icon("settings")}Trang giáo viên</a>` : ""}</div>
+    ${mgr ? `
+      <section style="margin-bottom:16px">
+        ${joined.length ? `<h2 style="margin:0 0 10px">Lớp tôi đang dạy</h2>` : ""}
+        ${teachingCards}
+      </section>
+      ${joined.length ? `<section style="margin-bottom:16px"><h2 style="margin:0 0 10px">Lớp đang tham gia</h2>${joinedCards}</section>` : ""}
+      <div class="cl-m-quick">
+        <a class="cl-m-qrow" href="/app/giao-vien/bai-tap"><span class="cl-m-qico">📘</span><div class="cl-m-qcopy"><b>Bài tập và bài kiểm tra</b><span>Giao bài và tạo đề cho lớp</span></div><span class="cl-m-qarr">›</span></a>
+        <a class="cl-m-qrow" href="/app/giao-vien/tien-do"><span class="cl-m-qico">📊</span><div class="cl-m-qcopy"><b>Chấm và theo dõi tiến độ</b><span>Xem điểm và học viên cần hỗ trợ</span></div><span class="cl-m-qarr">›</span></a>
+        <a class="cl-m-qrow" href="/app/thong-bao"><span class="cl-m-qico">🔔</span><div class="cl-m-qcopy"><b>Thông báo lớp</b><span>Tin nhắn và nhắc nhở</span></div><span class="cl-m-qarr">›</span></a>
+      </div>
+      <details class="sheet sheet-pad cl-m-join-sec" style="margin-top:14px">
+        <summary style="cursor:pointer;font-weight:700">Tham gia lớp khác bằng mã</summary>
+        <div style="margin-top:12px">${joinFormHtml}</div>
+      </details>
+    ` : `
+      ${joinedCards}
+      <div class="cl-m-quick">
+        <a class="cl-m-qrow" href="${firstClass ? `/app/lop/${firstClass.id}` : "/app/ngoai-ngu"}"><span class="cl-m-qico">📘</span><div class="cl-m-qcopy"><b>Bài tập được giao</b><span>${firstClass ? `Xem bài tập lớp ${esc(firstClass.name)}` : "Xem bài tập đang mở"}</span></div><span class="cl-m-qarr">›</span></a>
+        <a class="cl-m-qrow" href="/app/thong-bao"><span class="cl-m-qico">🔔</span><div class="cl-m-qcopy"><b>Thông báo lớp</b><span>Tin nhắn và nhắc nhở từ giáo viên</span></div><span class="cl-m-qarr">›</span></a>
+      </div>
+      <section class="sheet sheet-pad cl-m-join-sec" style="margin-top:14px">
+        ${joinFormHtml}
+      </section>
+    `}`;
+  $("#joinF", main)?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const code = e.target.code.value.trim();
     if (!code) return;
@@ -599,4 +626,67 @@ function takeTest(main, s, ctx) {
   }, 1000);
   ctx.onLeave(() => clearInterval(tick));
   $("#submitT", main).addEventListener("click", async () => { if (await confirmBox("Nộp bài?", "Sau khi nộp không sửa được.", "Nộp bài")) submit(); });
+}
+
+/* =================== TEACHER: ASSIGNMENTS & PROGRESS ROUTES =================== */
+export async function pageTeacherAssignments(main, _p, query, ctx) {
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Bài tập và bài kiểm tra"]]);
+  main.innerHTML = `<div class="skel" style="height:260px"></div>`;
+  let j;
+  try { j = await api("/api/teacher/overview"); } catch (e) { main.innerHTML = empty("Trang dành cho giáo viên", e.message, `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">Xem gói Teacher</a>`); return; }
+  if (!ctx.isCurrent()) return;
+  const classes = Array.isArray(j.classes) ? j.classes : [];
+  if (!classes.length) {
+    main.innerHTML = `<div class="page-head"><div><h1>Bài tập và bài kiểm tra</h1><p>Giao bài tập và tạo đề kiểm tra cho lớp học.</p></div></div>
+      ${empty("Chưa có lớp nào", "Hãy tạo lớp đầu tiên trong trang Giáo viên trước khi giao bài hoặc tạo kiểm tra.", '<a class="btn btn-primary" href="/app/giao-vien">Về trang Giáo viên</a>')}`;
+    return;
+  }
+  const activeCls = classes.find((c) => String(c.id) === String(query.lop)) || classes[0];
+  const activeTab = query.tab === "kiem-tra" ? "kiem-tra" : "bai-tap";
+  main.innerHTML = `
+    <div class="page-head">
+      <div><h1>Bài tập và bài kiểm tra</h1><p>${esc(activeCls.name)} · Mã lớp <code class="join-code">${esc(activeCls.joinCode)}</code></p></div>
+      <a class="btn" href="/app/giao-vien/lop/${activeCls.id}?tab=${activeTab}">Mở trang lớp</a>
+    </div>
+    ${classes.length > 1 ? `<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">${classes.map((c) => `<a class="btn btn-sm${c.id === activeCls.id ? " btn-primary" : ""}" href="/app/giao-vien/bai-tap?lop=${c.id}&tab=${activeTab}">${esc(c.name)}</a>`).join("")}</div>` : ""}
+    <nav class="tabs">
+      <a href="/app/giao-vien/bai-tap?lop=${activeCls.id}&tab=bai-tap" class="${activeTab === "bai-tap" ? "on" : ""}">Bài tập</a>
+      <a href="/app/giao-vien/bai-tap?lop=${activeCls.id}&tab=kiem-tra" class="${activeTab === "kiem-tra" ? "on" : ""}">Bài kiểm tra</a>
+    </nav>
+    <div id="tcAsgHost"><div class="skel" style="height:180px"></div></div>`;
+  let clsJson;
+  try { clsJson = await api(`/api/classes/${activeCls.id}`); } catch (e) { $("#tcAsgHost", main).innerHTML = empty("Không tải được dữ liệu lớp", e.message); return; }
+  if (!ctx.isCurrent()) return;
+  const host = $("#tcAsgHost", main);
+  const reload = () => pageTeacherAssignments(main, [], { lop: String(activeCls.id), tab: activeTab }, ctx);
+  if (activeTab === "kiem-tra") await testsTab(host, clsJson, reload);
+  else await assignmentsTab(host, clsJson, reload);
+}
+
+export async function pageTeacherProgress(main, _p, query, ctx) {
+  ctx.setCrumbs([["Giáo viên", "/app/giao-vien"], ["Chấm và theo dõi tiến độ"]]);
+  main.innerHTML = `<div class="skel" style="height:260px"></div>`;
+  let j;
+  try { j = await api("/api/teacher/overview"); } catch (e) { main.innerHTML = empty("Trang dành cho giáo viên", e.message, `<a class="btn btn-primary" href="/app/bang-gia?goi=teacher">Xem gói Teacher</a>`); return; }
+  if (!ctx.isCurrent()) return;
+  const classes = Array.isArray(j.classes) ? j.classes : [];
+  if (!classes.length) {
+    main.innerHTML = `<div class="page-head"><div><h1>Chấm và theo dõi tiến độ</h1><p>Theo dõi mức hoàn thành, điểm số và học viên cần hỗ trợ.</p></div></div>
+      ${empty("Chưa có lớp nào", "Khi có lớp và bài giao, báo cáo tiến độ học viên sẽ hiện tại đây.", '<a class="btn btn-primary" href="/app/giao-vien">Về trang Giáo viên</a>')}`;
+    return;
+  }
+  const activeCls = classes.find((c) => String(c.id) === String(query.lop)) || classes[0];
+  const needSupport = Array.isArray(j.needSupport) ? j.needSupport : [];
+  main.innerHTML = `
+    <div class="page-head">
+      <div><h1>Chấm và theo dõi tiến độ</h1><p>${esc(activeCls.name)} · Mã lớp <code class="join-code">${esc(activeCls.joinCode)}</code></p></div>
+      <a class="btn" href="/app/giao-vien/lop/${activeCls.id}?tab=bao-cao">Mở trang lớp</a>
+    </div>
+    ${classes.length > 1 ? `<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">${classes.map((c) => `<a class="btn btn-sm${c.id === activeCls.id ? " btn-primary" : ""}" href="/app/giao-vien/tien-do?lop=${c.id}">${esc(c.name)}</a>`).join("")}</div>` : ""}
+    <div id="tcProgHost"><div class="skel" style="height:200px"></div></div>
+    ${needSupport.length ? `<section class="sheet sheet-pad" style="margin-top:16px"><h2>Học sinh cần hỗ trợ</h2><ul class="list">${needSupport.map((s) => `<li><a class="list-row" href="/app/giao-vien/lop/${s.classId}?tab=bao-cao"><span class="t"><b>${esc(s.displayName)}</b><span>${esc(s.className)} · hoàn thành ${s.completion}%${s.avgScore != null ? ` · điểm TB ${s.avgScore}` : ""}${s.missing ? ` · ${s.missing} bài quá hạn` : ""}</span></span></a></li>`).join("")}</ul></section>` : ""}`;
+  let clsJson;
+  try { clsJson = await api(`/api/classes/${activeCls.id}`); } catch (e) { $("#tcProgHost", main).innerHTML = empty("Không tải được báo cáo lớp", e.message); return; }
+  if (!ctx.isCurrent()) return;
+  await reportTab($("#tcProgHost", main), clsJson);
 }

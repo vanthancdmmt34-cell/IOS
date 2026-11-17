@@ -1,14 +1,15 @@
 /* LifeRivo 2.0 - student pages */
 import { appHash, setAppHash } from "./core.js";
 import {
-  S, api, esc, icon, avatar, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, store, best, isDone, groupProgress, findEx, chapterNum, chapterShort, loc, trMsg,
+  S, api, esc, icon, lineIcon, avatar, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, store, best, isDone, groupProgress, findEx, chapterNum, chapterShort, loc, trMsg,
   chapterStats, totalStats, isUnlocked, nextOpenInChapter, pathStats, setScores, refreshScores, loadExams,
   animateCount, onScores, $, avatarColor, initials, cfg, siteName, aiOn, aiAuto,
-  paintProBadges,
+  paintProBadges, currentTheme, toggleTheme,
 } from "./core.js";
 import { getSubject, setSubject } from "./lang.js";
 import { proDashCard, openAiInline } from "./pro.js";
 import { mascot, levelOf, LEVELS, loadActivity, activityStats, dayKey, loadPrefs, savePrefs, isBookmarked, toggleBookmark, BADGES, badgeState, badgeHtml, newBadges, markBadgesSeen, celebrate, goalRing, G } from "./game.js";
+import { currentLang, applyLang } from "./i18n.js";
 
 /* ================= Shared utilities ================= */
 /* ================= Goal selection (Batch 2) ================= */
@@ -200,18 +201,19 @@ export async function pageProfile(main, _p, _q, ctx) {
       <div class="pf-m-kpi"><b>${fmtN(totalPassed)}</b><span>Bài đã đạt</span></div>
       <div class="pf-m-kpi"><b>${fmtN(Math.max(1, actSt.totalDays || actSt.streak || 1))} ngày</b><span>Chuỗi học tập</span></div>
     </div>
+    <div class="page-head pf-desk-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
+      <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${roleLabel}</p></div></div></div>
     <div class="pf-m-nav">
       <h2>Tài khoản</h2>
       <div class="pf-m-links">
         <button type="button" class="pf-m-link" data-pf-open="#emailDetails"><span class="pf-m-ico">👤</span><b>Thông tin cá nhân</b><span class="pf-m-arr">›</span></button>
         <button type="button" class="pf-m-link" data-pf-open="#pwDetails"><span class="pf-m-ico">🔒</span><b>Bảo mật</b><span class="pf-m-arr">›</span></button>
+        <a class="pf-m-link" href="/app/cai-dat"><span class="pf-m-ico">⚙️</span><b>Cài đặt</b><span class="pf-m-arr">›</span></a>
         <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">💳</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
         <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">🔔</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
         <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">❓</span><b>Trợ giúp</b><span class="pf-m-arr">›</span></a>
       </div>
     </div>
-    <div class="page-head pf-desk-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
-      <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${roleLabel}</p></div></div></div>
     <div class="stack" style="margin-top:16px;max-width:760px">
       <div class="stack">
         <h3 style="margin:14px 0 2px;font-size:14px;font-weight:700;color:var(--ink-2);padding-bottom:8px;border-bottom:1px solid var(--line,#e5e5ea)">Bảo mật</h3>
@@ -464,5 +466,114 @@ export async function pageProfile(main, _p, _q, ctx) {
     } finally {
       btn.disabled = false;
     }
+  });
+}
+
+/* ================= Settings (/app/cai-dat) ================= */
+export async function pageSettings(main, _p, _q, ctx) {
+  ctx.setCrumbs([[S.me?.role === "teacher" ? "Giáo viên" : "Tài khoản", "/app/ca-nhan"], ["Cài đặt"]]);
+  await loadPrefs().catch(() => {});
+  if (!ctx.isCurrent()) return;
+  const theme = currentTheme();
+  const lang = currentLang();
+  const goal = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));
+  main.innerHTML = `
+    <div class="st-wrap" style="max-width:760px">
+      <div class="page-head">
+        <div>
+          <h1>Cài đặt</h1>
+          <p>Quản lý giao diện, ngôn ngữ và mục tiêu học mỗi ngày.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <section class="sheet sheet-pad st-card">
+          <div class="st-row">
+            <div>
+              <h2>Giao diện</h2>
+              <p class="small muted">Chuyển giữa nền sáng và nền tối.</p>
+            </div>
+            <div class="row" style="gap:8px">
+              <span class="tag tag-line" id="stThemeState">${theme === "dark" ? "Tối" : "Sáng"}</span>
+              <button type="button" class="btn" id="stThemeBtn" data-settings-theme>${lineIcon(theme === "dark" ? "sun" : "moon")}<span>${theme === "dark" ? "Chế độ sáng" : "Chế độ tối"}</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet sheet-pad st-card">
+          <div class="st-row">
+            <div>
+              <h2>Ngôn ngữ giao diện</h2>
+              <p class="small muted">Áp dụng cho toàn bộ thanh điều hướng và màn hình ứng dụng.</p>
+            </div>
+            <div class="row" style="gap:8px" role="group" aria-label="Ngôn ngữ giao diện">
+              <button type="button" class="btn btn-sm${lang === "vi" ? " btn-primary" : ""}" data-set-lang="vi">Tiếng Việt</button>
+              <button type="button" class="btn btn-sm${lang === "en" ? " btn-primary" : ""}" data-set-lang="en">English</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet sheet-pad st-card">
+          <div class="st-row">
+            <div>
+              <h2>Mục tiêu học mỗi ngày</h2>
+              <p class="small muted">Số bài học mục tiêu trong một ngày (1–20 bài).</p>
+            </div>
+            <div class="row" style="gap:10px;align-items:center">
+              <button type="button" class="btn btn-sm" data-st-goal="-1" aria-label="Giảm mục tiêu">−</button>
+              <b id="stGoalVal" style="min-width:56px;text-align:center">${fmtN(goal)} bài</b>
+              <button type="button" class="btn btn-sm" data-st-goal="1" aria-label="Tăng mục tiêu">+</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet sheet-pad st-card">
+          <h2 style="margin:0 0 10px">Tài khoản & Bảo mật</h2>
+          <div class="pf-m-links" style="display:grid;gap:8px">
+            <a class="pf-m-link" href="/app/ca-nhan"><span class="pf-m-ico">🔐</span><b>Email khôi phục & Đổi mật khẩu</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">💳</span><b>Gói của tôi</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">🔔</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">❓</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
+          </div>
+          <div style="margin-top:14px;display:flex;justify-content:flex-end">
+            <button type="button" class="btn btn-ghost is-danger" data-logout>${lineIcon("logout")}<span>Đăng xuất</span></button>
+          </div>
+        </section>
+      </div>
+    </div>`;
+
+  main.querySelector("[data-settings-theme]")?.addEventListener("click", () => {
+    const next = toggleTheme();
+    const st = main.querySelector("#stThemeState");
+    const btn = main.querySelector("#stThemeBtn");
+    if (st) st.textContent = next === "dark" ? "Tối" : "Sáng";
+    if (btn) btn.innerHTML = `${lineIcon(next === "dark" ? "sun" : "moon")}<span>${next === "dark" ? "Chế độ sáng" : "Chế độ tối"}</span>`;
+  });
+
+  main.querySelectorAll("[data-set-lang]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const next = btn.dataset.setLang === "en" ? "en" : "vi";
+      if (next === currentLang()) return;
+      btn.disabled = true;
+      try {
+        await api("/api/profile/lang", "PUT", { lang: next }).catch(() => {});
+        if (S.me) S.me.lang = next;
+        await applyLang(next);
+        location.reload();
+      } catch (e) {
+        btn.disabled = false;
+        toast(e.message, "err");
+      }
+    });
+  });
+
+  main.querySelectorAll("[data-st-goal]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cur = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));
+      const next = Math.min(20, Math.max(1, cur + Number(btn.dataset.stGoal)));
+      savePrefs({ dailyGoal: next });
+      const val = main.querySelector("#stGoalVal");
+      if (val) val.textContent = `${fmtN(next)} bài`;
+      toast("Đã lưu mục tiêu hằng ngày.", "ok");
+    });
   });
 }

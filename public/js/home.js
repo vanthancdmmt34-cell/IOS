@@ -7,8 +7,8 @@ import { S, api, esc, icon, lineIcon, sketchIcon, CHIBI_PETS, subjectMascotSvg, 
 import { ChibiMascot, HeroBanner, StreakCounter, DailyMission, LevelBadge } from "./chibi-ds.js";
 import { currentLang, t as trUi } from "./i18n.js";
 import { getSubject } from "./lang.js";
-import { COMPANIONS, companionOf, companionSvg, activeCompanionId, refreshCompanion } from "./companion.js";
-import { petState, cheer, exchange, refreshPet, petView } from "./pet-state.js";
+import { companionCardHtml, bindCompanionCard } from "./companion-card.js";
+import { petState, refreshPet } from "./pet-state.js";
 import { savePrefs } from "./game.js";
 import { goalById } from "./roadmap-std.js";
 
@@ -202,16 +202,9 @@ export async function pageStudentHome(main, params, query, ctx) {
       </div>
     </section>`;
   })() : "";
-  const defaultPet = ({ en: "owl", zh: "panda", ja: "cat", ko: "bunny", fr: "fox", es: "dragon" }[cur]) || "dragon";
-  // Bạn đồng hành là trợ lý học tập: dùng chung lựa chọn với các màn khác (S.prefs.companion)
-  const activeC = companionOf(activeCompanionId());
-  const activePet = { name: activeC.name, tier: activeC.tone };
   const userLv = Math.max(1, Math.floor(doneShown / 8) + 1);
   const pet = petState();
   const starCount = pet.stars;
-  const knowPct = Math.min(100, pet.knowledge);
-  const knowTxt = Number.isInteger(pet.knowledge) ? fmtN(pet.knowledge) : String(pet.knowledge).replace(".", ",");
-  const energyPct = pet.energy;
   const goal = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));
   const lessonsToday = pet.daily.lessons;
   const goalPct = Math.min(100, Math.round((lessonsToday / goal) * 100));
@@ -225,7 +218,7 @@ export async function pageStudentHome(main, params, query, ctx) {
   <div class="lh hm${cheer ? " hm-is-cheer" : ""}">
     <section class="hm-chibi-banner" aria-label="${L("Hồ sơ", "Overview")}">
       <div class="hm-cb-left">
-        <a class="hm-top-avatar-wrap" href="/app/ca-nhan" aria-label="${L("Hồ sơ của tôi", "My profile")}">
+        <a class="hm-top-avatar-wrap" href="/app/ca-nhan" data-open-account="mobile" aria-label="${L("Menu tài khoản nhanh", "Quick account menu")}">
           <img class="hm-top-avatar" src="/img/kit/chibi-bunny.webp" width="52" height="52" alt="" loading="lazy" decoding="async">
         </a>
         <div class="hm-cb-copy">
@@ -315,33 +308,7 @@ export async function pageStudentHome(main, params, query, ctx) {
         </div>
       </section>
 
-      <aside class="hm-pet-card" id="hmPetCard" aria-label="${L("Thú cưng đồng hành", "Pet Companion")}">
-        <div class="hm-pet-head">
-          <div>
-            <b id="hmPetName">${esc(activePet.name)}</b>
-            <small id="hmPetTier">${esc(activePet.tier)} · LVL ${userLv}</small>
-          </div>
-        </div>
-        <div class="hm-pet-tabs" role="tablist" aria-label="${L("Chọn bạn đồng hành", "Choose companion")}">
-          ${COMPANIONS.map((c) => `
-            <button type="button" class="hm-pet-tab${c.id === activeC.id ? " on" : ""}" data-pet="${esc(c.id)}" title="${esc(c.name)}">
-              ${companionSvg(c.id, 40)}
-              <span>${esc(c.name.split(" ")[0])}</span>
-            </button>
-          `).join("")}
-        </div>
-        <div class="hm-pet-stage">
-          <div class="hm-pet-aura" aria-hidden="true"></div>
-          <div id="hmPetHeroImg" class="hm-pet-hero-img" role="img" aria-label="${esc(activePet.name)}">${companionSvg(activeC.id, 210)}</div>
-        </div>
-        <div class="hm-pet-bars">
-          <div><span>🍀 ${L("Năng lượng", "Energy")}</span><b>${energyPct}/100</b>${bar(energyPct, "#10B981")}</div>
-          <div><span>🧠 ${L("Tri thức", "Knowledge")}</span><b id="hmPetKnowVal">${knowTxt}/100</b>${bar(knowPct, "#8B5CF6")}</div>
-        </div>
-        <button type="button" class="hm-pet-cheer-btn" id="hmPetCheerBtn">⭐ ${L("Cổ vũ bạn học · 5 sao = +2 tri thức", "Cheer your companion · 5 stars = +2 knowledge")}</button>
-        <button type="button" class="hm-pet-cheer-btn hm-pet-exch-btn" id="hmPetExchBtn" disabled>🎁 ${L("Đổi 100 tri thức = 1 ngày Pro", "Exchange 100 knowledge = 1 day of Pro")}</button>
-        <small class="hm-pet-exch-note" id="hmPetExchNote"></small>
-      </aside>
+      ${companionCardHtml({ userLv, showStars: false })}
     </div>
 
     ${heroSub ? `
@@ -921,62 +888,15 @@ export async function pageStudentHome(main, params, query, ctx) {
       }
     }
   }
-  // Chọn bạn đồng hành (6 bạn, có Cú): lưu theo tài khoản, đổi hình động ngay
-  main.querySelectorAll("[data-pet]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const c = companionOf(btn.dataset.pet);
-      savePrefs({ companion: c.id });
-      refreshCompanion(`${c.name} sẽ đi cùng bạn trên mọi trang và nhắc bài tiếp theo. Chọn xong rồi!`);
-      main.querySelectorAll("[data-pet]").forEach((b) => b.classList.toggle("on", b === btn));
-      const hero = main.querySelector("#hmPetHeroImg");
-      const nm = main.querySelector("#hmPetName");
-      const tr = main.querySelector("#hmPetTier");
-      if (hero) { hero.innerHTML = companionSvg(c.id, 210); hero.setAttribute("aria-label", c.name); hero.classList.remove("chibi-pop"); void hero.offsetWidth; hero.classList.add("chibi-pop"); }
-      if (nm) nm.textContent = c.name;
-      if (tr) tr.textContent = `${c.tone} · LVL ${userLv}`;
+  if (main.querySelector("#hmPetCard")) {
+    bindCompanionCard(main, { userLv, starRoot: main });
+  } else {
+    refreshPet().then(() => {
+      if (!main.isConnected) return;
+      const s = petState();
+      main.querySelectorAll(".hm-star-pill b").forEach((b) => { b.textContent = fmtN(s.stars); });
     });
-  });
-  // Số liệu bạn đồng hành trên trang: sao, tri thức (tối đa 100) và lượt đổi Pro trong ngày
-  const paintPet = () => {
-    const s = petState();
-    const kv = main.querySelector("#hmPetKnowVal");
-    if (kv) kv.textContent = `${Number.isInteger(s.knowledge) ? fmtN(s.knowledge) : String(s.knowledge).replace(".", ",")}/100`;
-    main.querySelectorAll(".hm-star-pill b").forEach((b) => { b.textContent = fmtN(s.stars); });
-    const v = petView();
-    const used = v ? v.exchangedToday || 0 : 0;
-    const limit = v && v.exchangeLimit ? v.exchangeLimit : 2;
-    const btn = main.querySelector("#hmPetExchBtn");
-    if (btn) btn.disabled = s.knowledge < 100 || used >= limit;
-    const note = main.querySelector("#hmPetExchNote");
-    if (note) note.textContent = used >= limit
-      ? L(`Hôm nay đã đổi ${used}/${limit} lần. Lượt mới lúc 5:00 sáng mai.`, `Exchanged ${used}/${limit} today. Resets at 5:00 am.`)
-      : L(`Đã đổi ${used}/${limit} lần hôm nay.`, `Exchanged ${used}/${limit} today.`);
-  };
-  paintPet();
-  refreshPet().then(() => { if (main.isConnected) paintPet(); });
-  main.querySelector("#hmPetCheerBtn")?.addEventListener("click", async (ev) => {
-    const btn = ev.currentTarget;
-    btn.disabled = true;
-    try {
-      await cheer();
-      const name = main.querySelector("#hmPetName")?.textContent || L("Bạn đồng hành", "Your companion");
-      const img = main.querySelector("#hmPetHeroImg");
-      if (img) { img.classList.remove("chibi-pop"); void img.offsetWidth; img.classList.add("chibi-pop"); }
-      paintPet();
-      refreshCompanion(`${name}: Cảm ơn bạn đã cổ vũ mình! +2 tri thức.`);
-      toast(L(`${name} được cổ vũ! +2 tri thức.`, `${name} was cheered! +2 knowledge.`), "ok");
-    } catch (e) { toast(e.message, "info"); }
-    finally { btn.disabled = false; }
-  });
-  main.querySelector("#hmPetExchBtn")?.addEventListener("click", async (ev) => {
-    const btn = ev.currentTarget;
-    btn.disabled = true;
-    try {
-      await exchange();
-      toast(L("Đã đổi 100 tri thức lấy 1 ngày Pro!", "Exchanged 100 knowledge for 1 day of Pro!"), "ok");
-    } catch (e) { toast(e.message, "info"); }
-    paintPet();
-  });
+  }
   // Mục tiêu học mỗi ngày: tăng/giảm 1 bài, lưu theo tài khoản
   main.querySelectorAll("[data-goal-step]").forEach((b) => b.addEventListener("click", () => {
     const cur = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));

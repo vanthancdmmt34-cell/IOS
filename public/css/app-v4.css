@@ -1214,9 +1214,19 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
   html:root body.in-app:not(.ax-on) #main .sw-chibi-desc { font-size: 13px; line-height: 1.45; margin: 0; }
   html:root body.in-app:not(.ax-on) #main .sw-mini-steps { font-size: 12.5px; gap: 2px; }
   html:root body.in-app:not(.ax-on) #main .sw-chibi-cta { min-height: 42px; font-size: 14px; }
-  html body.in-app .mtab { left: 8px; right: 8px; padding: 6px 4px; gap: 2px; }
-  html body.in-app .mtab a,
-  html body.in-app .mtab .mtab-more { font-size: 10px; white-space: nowrap; min-height: 54px; }
+  html body.in-app .mtab { left: 8px; right: 8px; padding: 4px 5px; gap: 1px; border-radius: 24px; }
+  html body.in-app .mtab :is(a, button, .mtab-more) { font-size: 8.5px; letter-spacing: -0.02em; white-space: nowrap; min-height: 44px; padding: 2px 0; }
+  html:root body.in-app:not(.ax-on) #main .hm-pet-card { padding: 16px 14px; }
+  html:root body.in-app:not(.ax-on) #main .hm-pet-bars { gap: 8px 10px !important; font-size: 11px !important; }
+  html:root body.in-app:not(.ax-on) .topbar .m-top-back,
+  html:root body.in-app:not(.ax-on) .topbar .m-top-more,
+  html:root body.in-app:not(.ax-on) .topbar .m-top-acct,
+  html:root body.in-app:not(.ax-on) .topbar #udBellWrap .ud-bell {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
 }
 
 /* ---------- Giai đoạn 15: bài học trên điện thoại ----------
@@ -1491,11 +1501,9 @@ html:root body.in-app:not(.ax-on) #main .lx-due-list { display: none; }
 /* ---------- Giai đoạn 26: Mobile UI/UX Redesign — Header, Bottom Nav, Chibi Mascots, Hero Banner, Dashboard (06, 51, 59) ---------- */
 
 /* Ẩn các phần tử header di động trên máy tính */
-html body.in-app .topbar .m-top-back,
-html body.in-app .topbar .m-top-titles,
-html body.in-app .topbar .m-top-more,
-html body.in-app #main .hm-bell-btn,
-html body.in-app #main .hm-more-btn {
+html:root body.in-app:not(.ax-on) .topbar :is(.m-top-back, .m-top-titles, .m-top-acct, .m-top-more),
+html:root body.in-app.ax-on .topbar :is(.m-top-back, .m-top-titles, .m-top-acct, .m-top-more),
+html:root body.in-app:not(.ax-on) #main :is(.hm-bell-btn, .hm-more-btn) {
   display: none;
 }
 
@@ -1849,6 +1857,26 @@ html:root body.in-app:not(.ax-on) #main .hm-phone-only { display: none; }
     background: #F4F7FA;
     color: var(--cp-ink, #162B3D);
     padding: 0;
+  }
+  html:root body.in-app:not(.ax-on) .topbar .m-top-acct {
+    display: inline-grid !important;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    flex: none;
+    padding: 0;
+    border-radius: 50%;
+    border: 1.5px solid #DCE8F3;
+    background: #EAF4FB;
+    overflow: hidden;
+  }
+  html:root body.in-app:not(.ax-on) .topbar .m-top-acct img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   html:root body.in-app:not(.ax-on) .topbar .m-top-titles {
     display: grid !important;
@@ -3515,7 +3543,9 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
     display: none !important;
   }
   html:root body.in-app.ax-on #mTab,
-  html:root body.in-app.ax-on .mtab {
+  html:root body.in-app.ax-on .mtab,
+  html:root body.in-app.ax-on .m-fan-wrap,
+  html:root body.in-app.ax-on .m-sheet-wrap {
     display: none !important;
   }
 }
@@ -4336,6 +4366,73 @@ html body #main .hm-pet-bars {
 html body #main .hm-pet-bars span,
 html body #main .hm-pet-bars b {
   white-space: nowrap;
+}
+html body #main .pf-companion-wrap {
+  max-width: 760px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+html body #main .hm-pet-head .hm-pet-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  align-self: center;
+  padding: 5px 11px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+html body #main .hm-pet-head .hm-pet-stars b {
+  display: inline;
+  font-size: inherit;
+}
+html body #main .hm-pet-head .hm-pet-stars small {
+  font-size: 11px;
+  font-weight: 800;
+}
+html body #main .st-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+}
+html body #main .st-card h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+html body #main .st-wrap .pf-m-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--cp-border, var(--line, #E6EAF0));
+  background: var(--cp-surface, var(--paper-2, #FFFFFF));
+  text-decoration: none;
+  color: inherit;
+}
+html body #main .st-wrap .pf-m-ico {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--paper-3, #F4F7FA);
+  font-size: 16px;
+  flex: none;
+}
+html body #main .st-wrap .pf-m-link b {
+  flex: 1 1 0;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+html body #main .st-wrap .pf-m-arr {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-3, #64748B);
 }
 
 /* Bảng 4 chỉ số Tổng quan nhanh trên Trang chủ / Tổng quan (.hm-m-overview-kpis) */

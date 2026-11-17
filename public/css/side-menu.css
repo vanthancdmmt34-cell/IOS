@@ -312,8 +312,9 @@ html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on {
 }
 html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.on .nav-lbl > :first-child { font-weight: 800 !important; }
 
-/* Mặc định trên máy tính: ẩn khối đầu menu di động */
-html body.in-app:not(.ax-on) .shell > .side > .side-m-head { display: none; }
+/* Mặc định trên máy tính: ẩn khối đầu menu di động và nút chỉ dùng trên di động */
+html body.in-app:not(.ax-on) .shell > .side > .side-m-head,
+html body.in-app:not(.ax-on) .shell > .side .nav-m-only { display: none !important; }
 
 /* Màn hình hẹp: menu điều hướng trượt chuẩn theo ảnh tham chiếu (46, 47) */
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
@@ -326,37 +327,39 @@ html body.in-app:not(.ax-on) .shell > .side > .side-m-head { display: none; }
 }
 
 /* ---------- Thanh điều hướng dưới: ẩn trên máy tính; trên điện thoại được định nghĩa ở khối bên dưới ---------- */
-html body.in-app .mtab { display: none; }
+html body.in-app .mtab,
+html body .m-sheet-wrap,
+html body .m-fan-wrap { display: none; }
 
 /* ---------- Điện thoại: thanh dưới chuẩn và menu điều hướng (46, 47) ---------- */
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html body.in-app .shell > .main { padding-bottom: calc(74px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .shell > .main { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
   /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
   html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
 
-  /* Thanh điều hướng dưới nổi (Floating Frosted Pill Dock) */
+  /* Thanh điều hướng dưới nổi (Flagship Floating Frosted Pill Dock) */
   html body.in-app .mtab {
     position: fixed;
     z-index: 60;
     display: grid;
-    left: 10px;
-    right: 10px;
-    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 12px;
+    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 2px;
-    padding: 4px 6px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.90);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    box-shadow: 0 10px 28px rgba(22, 43, 61, 0.11), 0 2px 8px rgba(63, 151, 211, 0.08);
+    padding: 5px 8px;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 12px 32px rgba(15, 36, 56, 0.11);
   }
   html[data-theme="dark"] body.in-app .mtab,
   body.dark.in-app .mtab {
-    background: rgba(22, 32, 46, 0.90);
-    border-color: rgba(71, 85, 105, 0.45);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    background: rgba(15, 23, 42, 0.86);
+    border-color: rgba(148, 163, 184, 0.22);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 14px 36px rgba(0, 0, 0, 0.45);
   }
   html body.in-app .mtab.mtab-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -371,10 +374,6 @@ html body.in-app .mtab { display: none; }
     grid-template-columns: repeat(8, minmax(0, 1fr));
     padding: 4px 5px;
   }
-  html body.in-app .mtab.mtab-9 {
-    grid-template-columns: repeat(9, minmax(0, 1fr));
-    padding: 4px 4px;
-  }
   html body.in-app .mtab.mtab-7 a,
   html body.in-app .mtab.mtab-7 .mtab-more {
     font-size: 8.3px;
@@ -387,33 +386,30 @@ html body.in-app .mtab { display: none; }
     letter-spacing: -0.03em;
     padding: 2px 0;
   }
-  html body.in-app .mtab.mtab-9 a,
-  html body.in-app .mtab.mtab-9 .mtab-more {
-    font-size: 7px;
-    letter-spacing: -0.04em;
-    padding: 2px 0;
-  }
-  html body.in-app .mtab a,
-  html body.in-app .mtab .mtab-more {
+  html body.in-app .mtab :is(a, button, .mtab-more) {
     position: relative;
     appearance: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.5px;
-    min-height: 42px;
+    gap: 2px;
+    min-height: 46px;
     min-width: 0;
     padding: 2px 1px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 16px;
     background: transparent;
-    color: var(--cp-ink-3, #64748B);
-    font: 700 9px/1.05 var(--cp-font);
+    color: #64748B;
+    font: 600 10px/1.1 var(--cp-font);
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: transform .15s cubic-bezier(.34,1.56,.64,1), color .18s ease, background-color .18s ease;
+    transition: transform .16s cubic-bezier(.34,1.56,.64,1), color .18s ease, background-color .18s ease;
+  }
+  html[data-theme="dark"] body.in-app .mtab :is(a, button, .mtab-more),
+  body.dark.in-app .mtab :is(a, button, .mtab-more) {
+    color: #94A3B8;
   }
   html body.in-app .mtab .mtab-lbl {
     max-width: 100%;
@@ -421,8 +417,9 @@ html body.in-app .mtab { display: none; }
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  @media (max-width: 359px) {
-    html body.in-app .mtab { left: 6px; right: 6px; padding: 4px; border-radius: 18px; }
+  @media (max-width: 360px) {
+    html body.in-app .mtab { left: 8px; right: 8px; padding: 4px 5px; border-radius: 24px; }
+    html body.in-app .mtab :is(a, button, .mtab-more) { font-size: 8.5px; letter-spacing: -0.02em; min-height: 44px; padding: 2px 0; }
     html body.in-app .mtab.mtab-6 a,
     html body.in-app .mtab.mtab-6 .mtab-more,
     html body.in-app .mtab.mtab-7 a,
@@ -432,76 +429,90 @@ html body.in-app .mtab { display: none; }
       font-size: 6.7px;
       letter-spacing: -0.04em;
     }
-    html body.in-app .mtab.mtab-9 {
-      grid-template-columns: none;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(42px, 1fr);
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    html body.in-app .mtab.mtab-9::-webkit-scrollbar { display: none; }
-    html body.in-app .mtab.mtab-9 a,
-    html body.in-app .mtab.mtab-9 .mtab-more {
-      font-size: 7px;
-      letter-spacing: -0.03em;
-    }
   }
-  html body.in-app .mtab a:active,
-  html body.in-app .mtab .mtab-more:active { transform: scale(0.93); }
-  html body.in-app .mtab a:focus-visible,
-  html body.in-app .mtab .mtab-more:focus-visible { outline: 2px solid var(--cp-primary); outline-offset: 2px; }
+  html body.in-app .mtab :is(a, button, .mtab-more):active { transform: scale(0.93); }
+  html body.in-app .mtab :is(a, button, .mtab-more):focus-visible { outline: 2px solid var(--cp-primary, #3F97D3); outline-offset: 2px; }
   html body.in-app .mtab .mtab-ic {
     display: grid;
     place-items: center;
-    width: 28px;
-    height: 24px;
-    border-radius: 10px;
-    transition: background .2s ease, color .2s ease, transform .2s ease;
+    width: 40px;
+    height: 28px;
+    border-radius: 999px;
+    transition: background .2s ease, color .2s ease, transform .22s cubic-bezier(0.22, 1.28, 0.36, 1);
   }
-  html body.in-app .mtab .mtab-ic svg { width: 16.5px !important; height: 16.5px !important; }
-  html body.in-app .mtab a.on,
+  html body.in-app .mtab .mtab-ic svg { width: 20px !important; height: 20px !important; stroke-width: 1.75; }
+  html body.in-app .mtab :is(a, button).on,
+  html body.in-app .mtab :is(a, button)[aria-expanded="true"],
   html body.in-app .mtab .mtab-more[aria-expanded="true"] {
     color: #1E6FA8;
-    font-weight: 800;
+    font-weight: 700;
   }
-  html body.in-app .mtab a.on::after {
-    content: "";
-    position: absolute;
-    top: -3px;
-    width: 14px;
-    height: 2.5px;
-    border-radius: 999px;
-    background: #3F97D3;
+  html[data-theme="dark"] body.in-app .mtab :is(a, button).on,
+  html[data-theme="dark"] body.in-app .mtab :is(a, button)[aria-expanded="true"],
+  html[data-theme="dark"] body.in-app .mtab .mtab-more[aria-expanded="true"] {
+    color: #7CC4F8;
   }
-  html body.in-app .mtab a.mtab-center.on::after { display: none; }
-  html body.in-app .mtab a.on .mtab-ic,
+  html body.in-app .mtab :is(a, button).on .mtab-ic,
+  html body.in-app .mtab :is(a, button)[aria-expanded="true"] .mtab-ic,
   html body.in-app .mtab .mtab-more[aria-expanded="true"] .mtab-ic {
-    background: #EAF4FB;
+    background: rgba(63, 151, 211, 0.13);
     color: #1E6FA8;
-    transform: translateY(-1px);
+  }
+  html[data-theme="dark"] body.in-app .mtab :is(a, button).on .mtab-ic,
+  html[data-theme="dark"] body.in-app .mtab :is(a, button)[aria-expanded="true"] .mtab-ic,
+  html[data-theme="dark"] body.in-app .mtab .mtab-more[aria-expanded="true"] .mtab-ic {
+    background: rgba(86, 174, 236, 0.18);
+    color: #7CC4F8;
   }
 
-  /* Nút Học ở giữa nổi bật với gradient & viền phát sáng nhẹ */
-  html body.in-app .mtab a.mtab-center { transform: translateY(-5px); }
-  html body.in-app .mtab a.mtab-center:active { transform: translateY(-3px) scale(0.95); }
-  html body.in-app .mtab a.mtab-center .mtab-ic,
-  html body.in-app .mtab a.mtab-center.on .mtab-ic {
-    width: 36px;
-    height: 36px;
-    border-radius: 13px;
-    background: linear-gradient(135deg, #4B9CD3 0%, #2B7CB8 100%) !important;
+  /* Nút Học ngay ở giữa nổi bật với viên ngọc gradient & vòng hào quang trắng */
+  html body.in-app .mtab .mtab-center { transform: translateY(-7px); }
+  html body.in-app .mtab .mtab-center:active { transform: translateY(-5px) scale(0.95); }
+  html body.in-app .mtab .mtab-center .mtab-ic,
+  html body.in-app .mtab .mtab-center.on .mtab-ic,
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #56AEEC 0%, #2577B8 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 6px 16px rgba(43, 124, 184, 0.36), 0 0 0 3px rgba(255, 255, 255, 0.94);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 20px rgba(43, 124, 184, 0.36);
   }
-  html[data-theme="dark"] body.in-app .mtab a.mtab-center .mtab-ic,
-  html[data-theme="dark"] body.in-app .mtab a.mtab-center.on .mtab-ic {
-    box-shadow: 0 6px 16px rgba(43, 124, 184, 0.45), 0 0 0 3px rgba(22, 32, 46, 0.94);
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic {
+    transform: scale(1.06) translateY(-1px);
   }
-  html body.in-app .mtab a.mtab-center .mtab-ic svg { color: #FFFFFF !important; }
-  html body.in-app .mtab a.mtab-center .mtab-lbl { color: #2577B0; font-weight: 800; }
+  html body.in-app .mtab .mtab-center .mtab-ic-main,
+  html body.in-app .mtab .mtab-center .mtab-ic-x {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition: transform .26s cubic-bezier(0.22, 1.28, 0.36, 1), opacity .18s ease;
+  }
+  html body.in-app .mtab .mtab-center .mtab-ic-x {
+    opacity: 0;
+    transform: scale(0.45) rotate(-90deg);
+  }
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic-main {
+    opacity: 0;
+    transform: scale(0.45) rotate(90deg);
+  }
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic-x {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  html[data-theme="dark"] body.in-app .mtab .mtab-center .mtab-ic,
+  html[data-theme="dark"] body.in-app .mtab .mtab-center.on .mtab-ic,
+  html[data-theme="dark"] body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic {
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.94), 0 8px 22px rgba(37, 119, 184, 0.48);
+  }
+  html body.in-app .mtab .mtab-center .mtab-ic svg { color: #FFFFFF !important; }
+  html body.in-app .mtab .mtab-center .mtab-lbl { color: #1E6FA8; font-weight: 700; }
+  html[data-theme="dark"] body.in-app .mtab .mtab-center .mtab-lbl { color: #7CC4F8; }
 
   /* Bàn phím đang mở (đang nhập liệu): ẩn thanh điều hướng dưới để không che ô nhập */
-  html body.in-app.kb-open .mtab { display: none !important; }
+  html body.in-app.kb-open :is(.mtab, .m-fan-wrap) { display: none !important; }
 
   /* Menu điều hướng di động: ngăn trượt từ bên trái giống hệt 46-menu-hoc-vien.webp & 47-menu-giao-vien.webp */
   html body.in-app:not(.ax-on) .shell > .side {
@@ -532,7 +543,8 @@ html body.in-app .mtab { display: none; }
 
   /* Khối hồ sơ đầu menu di động: Chibi avatar tròn + tên + vai trò/môn + nút đóng × */
   html body.in-app:not(.ax-on) .shell > .side > .side-m-head {
-    display: flex;
+    display: flex !important;
+    flex: none;
     align-items: center;
     gap: 12px;
     padding: 4px 2px 14px;
@@ -544,8 +556,8 @@ html body.in-app .mtab { display: none; }
     flex: none;
     border-radius: 50%;
     object-fit: cover;
-    background: #EAF4FB;
-    border: 1.5px solid #DCE8F3;
+    background: var(--cp-primary-soft, #EAF4FB);
+    border: 1.5px solid var(--cp-border, #DCE8F3);
   }
   html body.in-app:not(.ax-on) .shell > .side .side-m-who {
     flex: 1 1 0;
@@ -593,14 +605,26 @@ html body.in-app .mtab { display: none; }
     padding: 6px 8px 2px !important;
     cursor: default;
   }
-  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a {
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a,
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body button.nav-act {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
+    width: 100%;
     padding: 10px 12px !important;
+    border: 0 !important;
     border-radius: 14px !important;
+    background: transparent;
     color: var(--cp-ink-2, #334155) !important;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+    box-shadow: none !important;
   }
+  html body.in-app:not(.ax-on) .shell > .side .nav-m-only { display: flex !important; }
+  html body.in-app:not(.ax-on) .shell > .side .nav-cat-body a.nav-desk-only,
+  html body.in-app:not(.ax-on) .shell > .side .nav-desk-only { display: none !important; }
   html body.in-app:not(.ax-on) .shell > .side .nav-ic {
     display: inline-grid !important;
     place-items: center;
@@ -621,44 +645,313 @@ html body.in-app .mtab { display: none; }
     color: #1E6FA8 !important;
     font-weight: 800 !important;
   }
-  html body.in-app:not(.ax-on) .shell > .side .side-foot > :not(.me-card) { display: none !important; }
-  html body.in-app:not(.ax-on) .shell > .side .me-card {
-    padding-top: 10px !important;
-    gap: 4px !important;
+  html body.in-app:not(.ax-on) .shell > .side .side-foot { display: none !important; }
+
+  /* Menu xòe quạt nổi (#mLearnFan, #mAcctFan) & Menu tài khoản nhanh (#mAcctSheet) */
+  html body.in-app:not(.ax-on) .m-fan-wrap:not([hidden]) {
+    position: fixed;
+    inset: 0;
+    z-index: 58;
+    display: block;
+    pointer-events: auto;
   }
-  html body.in-app:not(.ax-on) .shell > .side .me-card .who { display: none !important; }
-  html body.in-app:not(.ax-on) .shell > .side .side-action {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    width: 100% !important;
-    padding: 9px 12px !important;
-    border-radius: 12px !important;
-    text-decoration: none !important;
-    color: var(--cp-ink-2, #334155) !important;
-    font: 600 14px/1.3 var(--cp-font) !important;
+  html body.in-app.ax-on .m-fan-wrap,
+  html body.in-app.ax-on .m-sheet-wrap { display: none !important; }
+  html body.in-app:not(.ax-on) .m-fan-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.24);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity .22s ease;
   }
-  html body.in-app:not(.ax-on) .shell > .side .side-action svg {
-    display: inline-block !important;
-    width: 18px !important;
-    height: 18px !important;
+  html body.in-app:not(.ax-on) .m-fan-wrap.is-open .m-fan-scrim { opacity: 1; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-scrim {
+    background: rgba(2, 6, 23, 0.52);
+  }
+  html body.in-app:not(.ax-on) .m-fan-arc {
+    position: fixed;
+    z-index: 2;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  html body.in-app:not(.ax-on) .m-learn-fan .m-fan-arc {
+    left: 50%;
+    bottom: calc(52px + env(safe-area-inset-bottom));
+  }
+  html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc {
+    right: 48px;
+    bottom: calc(52px + env(safe-area-inset-bottom));
+  }
+  html body.in-app:not(.ax-on) .m-fan-petal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35);
+    transition: transform 0.32s cubic-bezier(0.22, 1.28, 0.36, 1) var(--fd, 0ms), opacity 0.2s ease var(--fd, 0ms);
+    -webkit-tap-highlight-color: transparent;
+  }
+  html body.in-app:not(.ax-on) .m-fan-wrap.is-open .m-fan-petal {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--fx, 0px)), calc(-50% + var(--fy, 0px))) scale(1);
+  }
+  html body.in-app:not(.ax-on) .m-fan-petal:active .m-fan-orb { transform: scale(0.92); }
+  html body.in-app:not(.ax-on) .m-fan-petal:focus-visible { outline: none; }
+  html body.in-app:not(.ax-on) .m-fan-petal:focus-visible .m-fan-orb {
+    outline: 3px solid var(--cp-primary, #3F97D3);
+    outline-offset: 2px;
+  }
+  html body.in-app:not(.ax-on) .m-fan-orb {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 2px solid rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 24px rgba(15, 36, 56, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  html body.in-app:not(.ax-on) .m-fan-orb svg {
+    width: 20px !important;
+    height: 20px !important;
+    stroke-width: 1.75;
+  }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-sky { background: linear-gradient(145deg, #F0F9FF 0%, #D9EFFD 100%); color: #1E6FA8; }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-indigo { background: linear-gradient(145deg, #F3F5FF 0%, #E0E7FF 100%); color: #4338CA; }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-purple { background: linear-gradient(145deg, #F7F2FF 0%, #EADDFD 100%); color: #6D28D9; }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-mint { background: linear-gradient(145deg, #EEFCF5 0%, #D1F7E3 100%); color: #0F766E; }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-amber { background: linear-gradient(145deg, #FFFBEB 0%, #FDECC8 100%); color: #B45309; }
+  html body.in-app:not(.ax-on) .m-fan-orb.is-rose { background: linear-gradient(145deg, #FFF1F5 0%, #FDE2EA 100%); color: #BE185D; }
+  html body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-orb {
+    background: linear-gradient(135deg, #EAF4FB 0%, #CFE8F9 100%);
+    color: #1E6FA8;
+    border-color: #3F97D3;
+    box-shadow: 0 0 0 3px rgba(63, 151, 211, 0.2), 0 10px 24px rgba(30, 111, 168, 0.22);
+  }
+  html body.in-app:not(.ax-on) .m-fan-pill {
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #E6EEF6;
+    box-shadow: 0 4px 12px rgba(15, 36, 56, 0.08);
+    color: #162B3D;
+    font: 700 11px/1.2 var(--cp-font);
+    white-space: nowrap;
+  }
+  html body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-pill {
+    background: #EAF4FB;
+    border-color: #93C5FD;
+    color: #1E6FA8;
+  }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb {
+    border-color: rgba(51, 65, 85, 0.92);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-sky { background: linear-gradient(145deg, #1E3A5F 0%, #172554 100%); color: #7CC4F8; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-indigo { background: linear-gradient(145deg, #272959 0%, #1E1B4B 100%); color: #A5B4FC; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-purple { background: linear-gradient(145deg, #352157 0%, #2E1065 100%); color: #C4B5FD; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-mint { background: linear-gradient(145deg, #164038 0%, #064E3B 100%); color: #6EE7B7; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-amber { background: linear-gradient(145deg, #452F14 0%, #451A03 100%); color: #FCD34D; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-rose { background: linear-gradient(145deg, #4A1D32 0%, #4C0519 100%); color: #FDA4AF; }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-orb {
+    background: linear-gradient(135deg, #1E4976 0%, #153658 100%);
+    color: #93D5FF;
+    border-color: #56AEEC;
+  }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-pill {
+    background: rgba(15, 23, 42, 0.94);
+    border-color: rgba(71, 85, 105, 0.65);
+    color: #F1F5F9;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-pill {
+    background: #173452;
+    border-color: #56AEEC;
+    color: #93D5FF;
+  }
+
+  /* Tọa độ xòe quạt Học ngay (5 nút đối xứng) & Cá nhân (4 nút cung góc tư trên-trái) */
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -126px; --fy: -56px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -68px; --fy: -122px; --fd: 30ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -148px; --fd: 60ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 68px; --fy: -122px; --fd: 90ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 126px; --fy: -56px; --fd: 120ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -8px; --fy: -224px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -92px; --fy: -190px; --fd: 30ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -166px; --fy: -124px; --fd: 60ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -210px; --fy: -52px; --fd: 90ms; }
+  @media (max-width: 360px) {
+    html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc { right: 38px; }
+    html body.in-app:not(.ax-on) .m-fan-orb { width: 44px; height: 44px; }
+    html body.in-app:not(.ax-on) .m-fan-pill { font-size: 10.5px; padding: 2.5px 8px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -104px; --fy: -48px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -58px; --fy: -112px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -136px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 58px; --fy: -112px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 104px; --fy: -48px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -6px; --fy: -214px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -82px; --fy: -178px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -148px; --fy: -118px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -190px; --fy: -50px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html body.in-app:not(.ax-on) .m-fan-petal,
+    html body.in-app:not(.ax-on) .m-fan-scrim,
+    html body.in-app .mtab .mtab-center .mtab-ic-main,
+    html body.in-app .mtab .mtab-center .mtab-ic-x { transition: none !important; }
+  }
+
+  /* Menu tài khoản nhanh (#mAcctSheet) */
+  html body.in-app:not(.ax-on) .m-sheet-wrap:not([hidden]) {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
+  }
+  html body.in-app:not(.ax-on) .m-sheet-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(244, 247, 251, 0.78);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  html[data-theme="dark"] body.in-app:not(.ax-on) .m-sheet-scrim {
+    background: rgba(15, 23, 42, 0.65);
+  }
+  html body.in-app:not(.ax-on) .m-sheet-card {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 420px);
+    background: var(--cp-surface, #FFFFFF);
+    border: 1px solid var(--cp-border, #E6EAF0);
+    border-radius: 24px;
+    box-shadow: 0 20px 48px rgba(22, 43, 61, 0.16);
+    padding: 18px 16px 14px;
+    color: var(--cp-ink, #162B3D);
+    font-family: var(--cp-font);
+  }
+  html body.in-app:not(.ax-on) .m-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  html body.in-app:not(.ax-on) .m-sheet-head b {
+    display: block;
+    font: 900 18px/1.2 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+  }
+  html body.in-app:not(.ax-on) .m-sheet-head small {
+    display: block;
+    font: 600 12.5px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+  }
+  html body.in-app:not(.ax-on) .m-sheet-close {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cp-surface-2, #F4F7FA);
+    color: var(--cp-ink-2, #334155);
+    font: 600 20px/1 var(--cp-font);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  html body.in-app:not(.ax-on) .m-acct-card { padding: 18px 18px 10px; }
+  html body.in-app:not(.ax-on) .m-acct-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+  }
+  html body.in-app:not(.ax-on) .m-acct-av {
+    width: 48px;
+    height: 48px;
     flex: none;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--cp-primary-soft, #EAF4FB);
+    border: 1.5px solid var(--cp-border, #DCE8F3);
+  }
+  html body.in-app:not(.ax-on) .m-acct-who { min-width: 0; display: grid; gap: 2px; }
+  html body.in-app:not(.ax-on) .m-acct-who b {
+    font: 900 17px/1.25 var(--cp-font);
+    color: var(--cp-ink, #162B3D);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html body.in-app:not(.ax-on) .m-acct-who small {
+    font: 600 13px/1.3 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html body.in-app:not(.ax-on) .m-acct-div {
+    height: 1px;
+    background: var(--cp-border, #EEF2F6);
+    margin: 0 -2px 6px;
+  }
+  html body.in-app:not(.ax-on) .m-acct-list {
+    display: grid;
+    gap: 2px;
+  }
+  html body.in-app:not(.ax-on) .m-acct-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 6px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--cp-ink, #162B3D);
+    font: 700 15px/1.3 var(--cp-font);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  html body.in-app:not(.ax-on) .m-acct-item svg {
+    width: 19px !important;
+    height: 19px !important;
+    color: var(--cp-ink-2, #475569);
+    flex: none;
+  }
+  html body.in-app:not(.ax-on) .m-acct-item.is-danger,
+  html body.in-app:not(.ax-on) .m-acct-item.is-danger svg {
+    color: var(--cp-bad, #DC2626);
   }
 }
 
 /* Điện thoại ngang (chiều cao ≤500px, ví dụ 812×375, 844×390): thanh dưới gọn hơn để còn chỗ cho nội dung */
 @media (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html body.in-app .shell > .main { padding-bottom: calc(74px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .shell > .main { padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important; }
   html body.in-app .mtab {
     padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
   }
-  html body.in-app .mtab a,
-  html body.in-app .mtab .mtab-more { min-height: 44px; gap: 2px; font-size: 10.5px; }
-  html body.in-app .mtab .mtab-ic { width: 32px; height: 24px; }
+  html body.in-app .mtab :is(a, button, .mtab-more) { min-height: 44px; gap: 2px; font-size: 10px; }
+  html body.in-app .mtab .mtab-ic { width: 36px; height: 26px; }
   html body.in-app .mtab .mtab-ic svg { width: 18px !important; height: 18px !important; }
-  html body.in-app .mtab a.mtab-center { transform: translateY(-2px); }
-  html body.in-app .mtab a.mtab-center .mtab-ic,
-  html body.in-app .mtab a.mtab-center.on .mtab-ic { width: 38px; height: 34px; border-radius: 12px; }
+  html body.in-app .mtab .mtab-center { transform: translateY(-3px); }
+  html body.in-app .mtab .mtab-center .mtab-ic,
+  html body.in-app .mtab .mtab-center.on .mtab-ic,
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic { width: 40px; height: 40px; border-radius: 14px; }
   html body.in-app .daily-pro-notice,
-  html body.in-app .cp-follow { bottom: calc(74px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .cp-follow { bottom: calc(78px + env(safe-area-inset-bottom)) !important; }
 }
