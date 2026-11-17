@@ -438,7 +438,7 @@ function renderShell() {
          <a href="/app/chon-mon" data-mt="mon-hoc"><span class="mtab-ic">${lineIcon("route")}</span><span class="mtab-lbl">${mtEn ? "Roadmap" : "Lộ trình"}</span></a>
          <a href="/app/chon-mon" data-mt="hoc-tap" class="mtab-center"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Learn" : "Học"}</span></a>
          <a href="/app/chon-mon" data-mt="on-tap"><span class="mtab-ic">${lineIcon("clock")}</span><span class="mtab-lbl">${mtEn ? "Review" : "Ôn tập"}</span></a>
-         <a href="/app/ai" data-mt="ai"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "AI Tutor" : "Gia sư"}</span></a>
+         <a href="/app/co-vu" data-mt="co-vu"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "Cheer" : "Cổ vũ"}</span></a>
          <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`;
 
   root.innerHTML = `
@@ -766,7 +766,7 @@ function syncNavState(parsed = parseHashRoute()) {
     "mon-hoc": mtSubj ? "/app/mon-hoc" : "/app/chon-mon",
     "hoc-tap": mtSubj ? `/app/ngoai-ngu/${mtSubj}` : "/app/chon-mon",
     "on-tap": mtSubj ? `/app/ngoai-ngu/on-tap/${mtSubj}` : "/app/chon-mon",
-    ai: "/app/ai",
+    "co-vu": mtSubj ? "/app/co-vu" : "/app/chon-mon",
     "ca-nhan": "/app/ca-nhan",
     "gv-home": "/app/giao-vien",
     "gv-students": "/app/giao-vien/hoc-vien",
@@ -775,13 +775,13 @@ function syncNavState(parsed = parseHashRoute()) {
     "pr-classes": "/app/lop",
     "pr-notices": "/app/thong-bao",
   };
-  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-noi\/|luyen-viet\/|ly-thuyet\/)/.test(clean);
+  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-noi\/|luyen-viet\/|tro-chuyen\/|ly-thuyet\/)/.test(clean);
   const mtActive = {
-    home: activeNav === "co-vu" || (!!subj && clean === subj),
+    home: !!subj && clean === subj && !query.mode,
     "mon-hoc": clean === "mon-hoc" || clean === "lo-trinh" || (clean === "" && !!query.mon),
     "hoc-tap": learnPath,
     "on-tap": /^ngoai-ngu\/on-tap(?:\/|$)/.test(clean),
-    ai: clean === "ai" || /^ngoai-ngu\/tro-chuyen(?:\/|$)/.test(clean),
+    "co-vu": activeNav === "co-vu" || clean === "co-vu",
     "ca-nhan": /^ca-nhan(?:\/|$)/.test(clean),
     "gv-home": clean === "giao-vien" || /^giao-vien\/lop\//.test(clean),
     "gv-students": clean === "giao-vien/hoc-vien",
