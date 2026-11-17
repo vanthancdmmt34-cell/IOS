@@ -1650,7 +1650,10 @@ export function hydrateLanding(root = document, onAuthed = null) {
   }
 
   // 7. Language switch handler
-  bindLangSwitch(root, () => { loadPublic(root, true); demoRefreshFn?.(); });
+  bindLangSwitch(root, () => { loadPublic(root, true); demoRefreshFn?.(); mountMobileLanding(root, onAuthed, true); });
+
+  // 7b. Dedicated Mobile Logged-out Homepage (<= 760px)
+  mountMobileLanding(root, onAuthed);
 
   // 8. Hash routing triggers
   if (appHash() === "/app/dang-nhap") openAuth("login", onAuthed);
@@ -1671,6 +1674,200 @@ export function hydrateLanding(root = document, onAuthed = null) {
   // 9. Load public metrics & animations
   loadPublic(root);
   initFx(root);
+}
+
+/**
+ * Dedicated mobile-first logged-out homepage rendered inside #landingPage.
+ * Hidden on desktop (> 760px) via CSS; gives mobile visitors a focused,
+ * self-contained white + sky-blue + Chibi overview with live mini-quiz & dock.
+ */
+function mountMobileLanding(root = document, onAuthed, force = false) {
+  const lp = root.querySelector("#landingPage") || document.getElementById("landingPage");
+  if (!lp) return;
+  let box = lp.querySelector("#lpMobileHome");
+  if (box && !force) return;
+  const en = currentLang() === "en";
+  const langs = [
+    { id: "en", name: en ? "English" : "Tiếng Anh", lvl: "CEFR A1–C1", kit: "owl", tone: "is-sky", idx: 0 },
+    { id: "zh", name: en ? "Chinese" : "Tiếng Trung", lvl: "HSK 1–6", kit: "dragon", tone: "is-peach", idx: 1 },
+    { id: "ja", name: en ? "Japanese" : "Tiếng Nhật", lvl: "JLPT N5–N1", kit: "cat", tone: "is-pink", idx: 2 },
+    { id: "ko", name: en ? "Korean" : "Tiếng Hàn", lvl: "TOPIK 1–6", kit: "fox", tone: "is-lavender", idx: 3 },
+    { id: "fr", name: en ? "French" : "Tiếng Pháp", lvl: "DELF A1–C1", kit: "bunny", tone: "is-mint", idx: 4 },
+    { id: "es", name: en ? "Spanish" : "Tây Ban Nha", lvl: "DELE A1–C1", kit: "frog", tone: "is-gold", idx: 5 },
+  ];
+  const html = `
+    <div class="lp-m-home" id="lpMobileHome">
+      <section class="lp-m-hero">
+        <div class="lp-m-hero-pill">✨ ${en ? "6 LANGUAGES · AI SPEAKING COACH" : "6 NGOẠI NGỮ · CHẤM PHÁT ÂM AI"}</div>
+        <div class="lp-m-hero-body">
+          <div class="lp-m-hero-copy">
+            <h1>${en ? "Speak foreign languages with confidence." : "Học ngoại ngữ tự tin giao tiếp mỗi ngày."}</h1>
+            <p>${en ? "5-minute lessons, instant AI pronunciation scoring, and smart SRS review." : "Bài học ngắn 5 phút, AI chấm phát âm từng từ và nhắc ôn thông minh."}</p>
+          </div>
+          <img class="lp-m-hero-art" src="/img/chibi/hero-tutor.webp" alt="LifeRivo Tutor" width="96" height="96" decoding="async" />
+        </div>
+        <div class="lp-m-hero-actions">
+          <button type="button" class="lp-m-btn-primary" data-m-auth="register">${en ? "Start free now" : "Tạo tài khoản miễn phí"}</button>
+          <a class="lp-m-btn-ghost" href="#lpMobileDemo">${en ? "Try 30s quiz" : "Chơi thử 30s →"}</a>
+        </div>
+      </section>
+
+      <div class="lp-m-kpis" aria-label="${en ? "Key numbers" : "Điểm nổi bật"}">
+        <div class="lp-m-kpi is-blue"><b>6</b><span>${en ? "Languages" : "Ngoại ngữ"}</span></div>
+        <div class="lp-m-kpi is-green"><b>2.790+</b><span>${en ? "Exercises" : "Bài tập tự chấm"}</span></div>
+        <div class="lp-m-kpi is-purple"><b>30+</b><span>${en ? "AI Interviews" : "Ngành phỏng vấn"}</span></div>
+      </div>
+
+      <section class="lp-m-card" id="lpMobileDemo" aria-label="${en ? "Try a quick exercise" : "Thử bài học 30 giây"}">
+        <div class="lp-m-sec-head">
+          <h2>⚡ ${en ? "Try 30s interactive quiz" : "Chơi thử 30 giây không cần đăng ký"}</h2>
+          <span class="lp-m-pill-tag">${en ? "Free" : "Miễn phí"}</span>
+        </div>
+        <div class="lp-m-demo-tabs" id="lpMDemoTabs" role="tablist">
+          ${LANG_DEMOS.map((d, i) => `<button type="button" role="tab" class="lp-m-dtab${i === 0 ? " on" : ""}" data-mdemo="${i}" aria-selected="${i === 0}">${LANG_FLAG_SVG[d.code] || d.flag}<span>${esc(d.label.replace(/^Tiếng\s+/i, ""))}</span></button>`).join("")}
+        </div>
+        <div class="lp-m-demo-stage" id="lpMDemoStage"></div>
+      </section>
+
+      <section class="lp-m-sec" id="lpMobileLangs">
+        <div class="lp-m-sec-head">
+          <h2>🌍 ${en ? "Choose a language" : "Chọn ngoại ngữ muốn học"}</h2>
+          <button type="button" class="lp-m-link-btn" data-m-auth="register">${en ? "Sign up →" : "Học ngay →"}</button>
+        </div>
+        <div class="lp-m-lang-grid">
+          ${langs.map((l) => `
+            <button type="button" class="lp-m-lang-card ${l.tone}" data-m-pick-lang="${l.id}" data-m-pick-idx="${l.idx}">
+              <img src="/img/kit/chibi-${l.kit}.webp" alt="" width="44" height="44" loading="lazy" />
+              <div>
+                <div class="lp-m-lang-name">${LANG_FLAG_SVG[l.id] || ""}<b>${esc(l.name)}</b></div>
+                <small>${esc(l.lvl)}</small>
+              </div>
+            </button>`).join("")}
+        </div>
+      </section>
+
+      <section class="lp-m-sec">
+        <div class="lp-m-sec-head">
+          <h2>🚀 ${en ? "Everything you need to progress" : "Đầy đủ công cụ học hiệu quả"}</h2>
+        </div>
+        <div class="lp-m-feat-grid">
+          <div class="lp-m-feat is-sky"><b>🎙️ ${en ? "AI Speaking Score" : "Chấm phát âm AI"}</b><span>${en ? "Word-by-word feedback & 0.6x slow audio" : "Nghe chậm 0.6x & chấm chuẩn từng từ"}</span></div>
+          <div class="lp-m-feat is-lavender"><b>💬 ${en ? "2-Way AI Roleplay" : "Hội thoại AI 2 chiều"}</b><span>${en ? "Real situations & instant grammar fixes" : "Nhập vai tình huống & sửa câu ngay"}</span></div>
+          <div class="lp-m-feat is-mint"><b>🃏 ${en ? "Smart SRS Review" : "Nhắc ôn SRS 1-3-7"}</b><span>${en ? "Never forget learned vocabulary" : "Nhắc đúng lúc trước khi quên từ"}</span></div>
+          <div class="lp-m-feat is-peach"><b>💼 ${en ? "TOEIC & Interviews" : "TOEIC & 30 ngành"}</b><span>${en ? "7 TOEIC Parts & job interview prep" : "7 Part TOEIC & luyện phỏng vấn việc làm"}</span></div>
+        </div>
+      </section>
+
+      <section class="lp-m-card lp-m-steps-card">
+        <div class="lp-m-sec-head">
+          <h2>🧭 ${en ? "4 steps from beginner" : "Lộ trình 4 bước từ con số 0"}</h2>
+        </div>
+        <ol class="lp-m-steps">
+          <li><b>${en ? "Start with sounds" : "Làm quen bảng chữ cái & phát âm"}</b><span>${en ? "Listen at 0.6x speed and repeat clearly" : "Nghe giọng chuẩn chậm 0.6x và đọc lại từng âm"}</span></li>
+          <li><b>${en ? "5-min word & grammar" : "Bài ngắn 5 phút mỗi ngày"}</b><span>${en ? "Short theory, instant auto-graded practice" : "Từ vựng, mẫu câu ngắn kèm chấm tự động"}</span></li>
+          <li><b>${en ? "Speak with AI Coach" : "Luyện nói & hội thoại AI"}</b><span>${en ? "Practice dialogues and 30 career tracks" : "Trò chuyện AI & phỏng vấn 30 ngành nghề"}</span></li>
+          <li><b>${en ? "SRS & Certificates" : "Ôn SRS & nhận chứng nhận"}</b><span>${en ? "Keep your streak and unlock rewards" : "Giữ chuỗi ngày học & đổi huy hiệu"}</span></li>
+        </ol>
+      </section>
+
+      <section class="lp-m-cta-card">
+        <div>
+          <b>${en ? "Free forever for foundational courses" : "Miễn phí trọn đời cấp cơ bản"}</b>
+          <p>${en ? "Create an account in 10 seconds to save your progress across all 6 languages." : "Tạo tài khoản trong 10 giây để lưu tiến độ học, bảng từ vựng và nhận cổ vũ mỗi ngày."}</p>
+        </div>
+        <div class="lp-m-cta-btns">
+          <button type="button" class="lp-m-btn-primary" data-m-auth="register">${en ? "Create free account" : "Tạo tài khoản miễn phí"}</button>
+          <button type="button" class="lp-m-btn-outline" data-m-auth="login">${en ? "Already have an account? Sign in" : "Đã có tài khoản? Đăng nhập"}</button>
+        </div>
+        <div class="lp-m-foot-links">
+          <a href="/${en ? "en" : "vi"}/pricing">${en ? "Pricing Free vs Pro" : "Bảng giá Free vs Pro"}</a>
+          <span>·</span>
+          <a href="mailto:study@liferivo.com">study@liferivo.com</a>
+        </div>
+      </section>
+
+      <nav class="lp-m-dock" aria-label="${en ? "Quick navigation" : "Điều hướng nhanh"}">
+        <a href="#lpMobileLangs" class="lp-m-dock-it"><span class="lp-m-dock-ic">🌍</span><span>${en ? "Courses" : "Ngoại ngữ"}</span></a>
+        <a href="#lpMobileDemo" class="lp-m-dock-it"><span class="lp-m-dock-ic">⚡</span><span>${en ? "Try Quiz" : "Chơi thử"}</span></a>
+        <button type="button" class="lp-m-dock-it is-center" data-m-auth="register"><span class="lp-m-dock-ic">✨</span><span>${en ? "Start" : "Học ngay"}</span></button>
+        <a href="/${en ? "en" : "vi"}/pricing" class="lp-m-dock-it"><span class="lp-m-dock-ic">💎</span><span>${en ? "Pricing" : "Bảng giá"}</span></a>
+        <button type="button" class="lp-m-dock-it" data-m-auth="login"><span class="lp-m-dock-ic">👤</span><span>${en ? "Sign in" : "Đăng nhập"}</span></button>
+      </nav>
+    </div>`;
+
+  if (!box) {
+    box = document.createElement("div");
+    lp.appendChild(box);
+    box.outerHTML = html;
+    box = lp.querySelector("#lpMobileHome");
+  } else {
+    box.outerHTML = html;
+    box = lp.querySelector("#lpMobileHome");
+  }
+
+  let mDemoIdx = 0;
+  const stage = box.querySelector("#lpMDemoStage");
+  const paintMDemo = (idx) => {
+    mDemoIdx = ((idx % LANG_DEMOS.length) + LANG_DEMOS.length) % LANG_DEMOS.length;
+    box.querySelectorAll("[data-mdemo]").forEach((t) => {
+      const on = Number(t.dataset.mdemo) === mDemoIdx;
+      t.classList.toggle("on", on);
+      t.setAttribute("aria-selected", String(on));
+    });
+    const d = LANG_DEMOS[mDemoIdx];
+    stage.innerHTML = `
+      <div class="lp-m-demo-q">
+        <div class="lp-m-demo-top">
+          <span class="lp-m-demo-badge">${LANG_FLAG_SVG[d.code] || d.flag} ${esc(d.badge)}</span>
+          <div class="lp-m-demo-audio">
+            <button type="button" class="lp-m-say-btn" data-msay="1">🔊 ${en ? "Listen" : "Nghe mẫu"}</button>
+            <button type="button" class="lp-m-say-btn" data-msay="0.6">🐢 0.6x</button>
+          </div>
+        </div>
+        <b>${esc(d.q)}</b>
+        ${d.phonetic ? `<small>${esc(d.phonetic)}</small>` : ""}
+      </div>
+      <div class="lp-m-demo-opts">
+        ${d.opts.map((o, k) => `<button type="button" class="lp-m-opt" data-mopt="${k}"><em>${String.fromCharCode(65 + k)}</em><span>${esc(o)}</span></button>`).join("")}
+      </div>
+      <div class="lp-m-demo-msg" id="lpMDemoMsg" hidden></div>`;
+    stage.querySelectorAll("[data-msay]").forEach((b) => b.addEventListener("click", () => {
+      speakDemoSample(d.speakText, d.speakLang, Number(b.dataset.msay) || 1, b);
+    }));
+    stage.querySelectorAll("[data-mopt]").forEach((ob) => ob.addEventListener("click", () => {
+      const ok = Number(ob.dataset.mopt) === d.a;
+      stage.querySelectorAll("[data-mopt]").forEach((x) => {
+        x.disabled = true;
+        if (Number(x.dataset.mopt) === d.a) x.classList.add("is-ok");
+      });
+      if (!ok) ob.classList.add("is-bad");
+      const msg = stage.querySelector("#lpMDemoMsg");
+      if (msg) {
+        msg.hidden = false;
+        msg.className = `lp-m-demo-msg ${ok ? "is-ok" : "is-bad"}`;
+        msg.innerHTML = `<span>${ok ? (en ? "Correct! " : "Chính xác! ") : (en ? "Not quite. " : "Chưa đúng. ")}${esc(d.why)}</span>${ok ? `<button type="button" class="lp-m-demo-reg" data-m-auth="register">${en ? "Save progress →" : "Lưu tiến độ học →"}</button>` : ""}`;
+        msg.querySelector("[data-m-auth]")?.addEventListener("click", () => { trackFunnel("register_click"); openAuth("register", onAuthed || authedCb); });
+      }
+      if (ok) { trackFunnel("demo_run_ok"); confetti(ob); }
+    }));
+  };
+  paintMDemo(0);
+
+  box.querySelectorAll("[data-mdemo]").forEach((b) => b.addEventListener("click", () => paintMDemo(Number(b.dataset.mdemo))));
+  box.querySelectorAll("[data-m-pick-lang]").forEach((b) => b.addEventListener("click", () => {
+    try { localStorage.setItem("pl:subject", b.dataset.mPickLang); } catch {}
+    paintMDemo(Number(b.dataset.mPickIdx || 0));
+    smoothScrollTo(box.querySelector("#lpMobileDemo"));
+  }));
+  box.querySelectorAll("[data-m-auth]").forEach((b) => b.addEventListener("click", () => {
+    const mMode = b.dataset.mAuth === "register" ? "register" : "login";
+    if (mMode === "register") trackFunnel("register_click");
+    openAuth(mMode, onAuthed || authedCb);
+  }));
+  box.querySelectorAll('a[href^="#lpMobile"]').forEach((a) => a.addEventListener("click", (e) => {
+    const tgt = box.querySelector(a.getAttribute("href"));
+    if (tgt) { e.preventDefault(); smoothScrollTo(tgt); }
+  }));
 }
 
 /**
