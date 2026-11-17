@@ -4664,3 +4664,6 @@ html[data-theme="dark"] body.in-app #main :is(.hm-ov-kpi b, .hm-step-copy b, .hm
 
 /* Chặn kéo đàn hồi (bounce) của trang khi chạy trong app iOS: thanh menu dưới không bị trôi theo. */
 html:has(body.in-app) { overscroll-behavior: none; }
+
+/* Trong app iOS (contentInset never) đẩy nội dung xuống dưới tai thỏ/thanh trạng thái. */
+html body.in-app { padding-top: env(safe-area-inset-top); }
