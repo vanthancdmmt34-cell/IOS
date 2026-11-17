@@ -4278,3 +4278,37 @@ html body #main .lx-beg-ic.is-blue { background: #EAF4FB; color: #1E6FA8; }
 html body #main .lx-beg-ic.is-purple { background: #F3EFFF; color: #6D28D9; }
 html body #main .lx-beg-ic.is-green { background: #E7F8EF; color: #15803D; }
 html body #main .lx-beg-ic.is-amber { background: #FFF7E6; color: #B45309; }
+
+/* Canh chỉnh Bạn đồng hành (.hm-pet-stage / #hmPetHeroImg) vào đúng tâm hình tròn, không tràn che chữ */
+html body #main .hm-pet-stage {
+  display: grid !important;
+  place-items: center !important;
+  width: 170px;
+  height: 170px;
+  margin: 6px auto 14px !important;
+  padding: 0 !important;
+  position: relative;
+}
+html body #main .hm-pet-stage .hm-pet-hero-img {
+  display: grid !important;
+  place-items: center !important;
+  width: 170px !important;
+  height: 170px !important;
+  padding: 16px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  background: radial-gradient(circle at 50% 45%, #FFFFFF 0%, #F4F1FF 100%);
+  box-shadow: 0 12px 28px rgba(139, 92, 246, .16) !important;
+}
+html body #main .hm-pet-stage .hm-pet-hero-img > img,
+html body #main .hm-pet-stage .hm-pet-hero-img > svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+  margin: 0 auto !important;
+}

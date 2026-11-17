@@ -879,7 +879,8 @@ export async function pageStudentHome(main, params, query, ctx) {
             </div>`;
           }).join("")}
         </div>
-      </section>
+      </section>`;
+      const cheerTasksHtml = `
       <section class="hm-cheer-tasks" aria-label="${L("Nhiệm vụ hôm nay", "Today's missions")}">
         <h2>${L("Nhiệm vụ hôm nay", "Today's missions")}</h2>
         <div class="hm-cheer-task-list">
@@ -912,6 +913,12 @@ export async function pageStudentHome(main, params, query, ctx) {
       const wrap = document.createElement("div");
       wrap.innerHTML = cheerHeroHtml + cheerWeekHtml;
       bannerEl.after(...wrap.children);
+      const studioEl = rootCheer.querySelector(".hm-studio-grid");
+      if (studioEl) {
+        const taskWrap = document.createElement("div");
+        taskWrap.innerHTML = cheerTasksHtml;
+        studioEl.after(...taskWrap.children);
+      }
     }
   }
   // Chọn bạn đồng hành (6 bạn, có Cú): lưu theo tài khoản, đổi hình động ngay

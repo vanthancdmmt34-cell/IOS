@@ -330,7 +330,7 @@ html body.in-app .mtab { display: none; }
 
 /* ---------- Điện thoại: thanh dưới chuẩn và menu điều hướng (46, 47) ---------- */
 @media (max-width: 760px), (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html body.in-app .shell > .main { padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .shell > .main { padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
   /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
   html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
 
@@ -343,7 +343,7 @@ html body.in-app .mtab { display: none; }
     bottom: 0;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1px;
-    padding: 4px 4px calc(5px + env(safe-area-inset-bottom));
+    padding: 3px 4px calc(4px + env(safe-area-inset-bottom));
     border-radius: 0;
     background: var(--cp-surface, #FFFFFF);
     border: 0;
@@ -363,15 +363,15 @@ html body.in-app .mtab { display: none; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    min-height: 44px;
+    gap: 1px;
+    min-height: 38px;
     min-width: 0;
-    padding: 3px 1px;
+    padding: 2px 1px;
     border: 0;
-    border-radius: 10px;
+    border-radius: 9px;
     background: transparent;
     color: var(--cp-ink-3, #64748B);
-    font: 700 9.5px/1.1 var(--cp-font);
+    font: 700 9px/1.05 var(--cp-font);
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -386,7 +386,7 @@ html body.in-app .mtab { display: none; }
   @media (max-width: 359px) {
     html body.in-app .mtab.mtab-6 a,
     html body.in-app .mtab.mtab-6 .mtab-more {
-      font-size: 8.8px;
+      font-size: 8.3px;
       letter-spacing: -0.02em;
     }
   }
@@ -397,12 +397,12 @@ html body.in-app .mtab { display: none; }
   html body.in-app .mtab .mtab-ic {
     display: grid;
     place-items: center;
-    width: 30px;
-    height: 26px;
-    border-radius: 9px;
+    width: 26px;
+    height: 22px;
+    border-radius: 8px;
     transition: background .18s ease, color .18s ease;
   }
-  html body.in-app .mtab .mtab-ic svg { width: 18px !important; height: 18px !important; }
+  html body.in-app .mtab .mtab-ic svg { width: 16px !important; height: 16px !important; }
   html body.in-app .mtab a.on,
   html body.in-app .mtab .mtab-more[aria-expanded="true"] {
     color: #2577B0;
@@ -420,9 +420,9 @@ html body.in-app .mtab { display: none; }
   html body.in-app .mtab a.mtab-center:active { transform: translateY(-1px); }
   html body.in-app .mtab a.mtab-center .mtab-ic,
   html body.in-app .mtab a.mtab-center.on .mtab-ic {
-    width: 34px;
-    height: 34px;
-    border-radius: 11px;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
     background: #3F97D3 !important;
     color: #FFFFFF !important;
     box-shadow: 0 4px 10px rgba(63, 151, 211, .28);
