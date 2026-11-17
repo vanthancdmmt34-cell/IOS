@@ -951,33 +951,69 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
   html:root body.in-app:not(.ax-on) #main .ob-opt-copy b { font: 800 15.5px/1.25 var(--cp-font); color: var(--cp-ink, #162B3D); }
   html:root body.in-app:not(.ax-on) #main .ob-opt-copy small { font: 600 13px/1.35 var(--cp-font); color: var(--cp-ink-3, #64748B); }
 
-  /* 08-lo-trinh-hoc.webp: Timeline "Lộ trình chuẩn 4 bước" */
+  /* 08-lo-trinh-hoc.webp: Lộ trình trực quan & gọn giống Tổng quan */
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero.lr-hero-banner {
+    padding: 11px 14px !important;
+    border-radius: 18px !important;
+    margin-bottom: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero .lr-hero-pill {
+    padding: 3px 9px !important;
+    margin-bottom: 5px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero .lr-hero-pill span {
+    font-size: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero .lr-hero-copy h2 {
+    font: 900 16px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero .lr-hero-copy p {
+    font-size: 11.5px !important;
+    line-height: 1.3 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero .lr-hero-art img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beginner-track {
+    background: var(--cp-surface, #FFFFFF);
+    border: 1px solid var(--cp-border, #E6EAF0);
+    border-radius: 20px;
+    padding: 12px 13px;
+    box-shadow: var(--v4-shadow);
+    margin-bottom: 10px;
+  }
   html:root body.in-app:not(.ax-on) #main .lx-beg-head {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 9px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-head h2 {
+    font: 900 15.5px/1.2 var(--cp-font) !important;
+    margin: 0 !important;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-head p { display: none; }
   html:root body.in-app:not(.ax-on) #main .lx-beg-total {
-    font: 600 13.5px/1 var(--cp-font);
+    font: 700 11.5px/1 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
+    white-space: nowrap;
   }
   html:root body.in-app:not(.ax-on) #main ol.lx-beg-steps {
     position: relative;
     list-style: none;
     margin: 0;
-    padding: 0 0 0 28px !important;
+    padding: 0 0 0 20px !important;
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    gap: 7px !important;
   }
   html:root body.in-app:not(.ax-on) #main ol.lx-beg-steps::before {
     content: "";
     position: absolute;
-    left: 9px;
-    top: 18px;
-    bottom: 18px;
+    left: 6px;
+    top: 14px;
+    bottom: 14px;
     width: 2px;
     background: #E2E8F0;
   }
@@ -986,12 +1022,12 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-dot {
     position: absolute;
-    left: -28px;
-    top: 18px;
-    width: 20px;
-    height: 20px;
+    left: -20px;
+    top: 14px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    border: 3px solid #FFFFFF;
+    border: 2.5px solid #FFFFFF;
     background: #CBD5E1;
     box-shadow: 0 0 0 1px #E2E8F0;
     z-index: 2;
@@ -999,53 +1035,90 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
   html:root body.in-app:not(.ax-on) #main .lx-beg-item.done .lx-beg-dot { background: #22B573; }
   html:root body.in-app:not(.ax-on) #main .lx-beg-item.cur .lx-beg-dot { background: #3F97D3; }
   html:root body.in-app:not(.ax-on) #main .lx-beg-step {
-    display: block !important;
-    padding: 16px !important;
-    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding: 9px 11px !important;
+    border-radius: 14px !important;
     border: 1px solid var(--cp-border, #E6EAF0) !important;
-    background: var(--cp-surface, #FFFFFF) !important;
-    box-shadow: var(--v4-shadow) !important;
+    background: #F8FAFC !important;
+    box-shadow: none !important;
     text-decoration: none !important;
   }
-  html:root body.in-app:not(.ax-on) #main .lx-beg-ico { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-step.cur {
+    border-color: #B9DDF6 !important;
+    background: #F2F9FE !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic {
+    display: inline-grid !important;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    flex: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic svg { width: 17px !important; height: 17px !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic.is-blue { background: #EAF4FB; color: #1E6FA8; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic.is-purple { background: #F3EFFF; color: #6D28D9; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic.is-green { background: #E7F8EF; color: #15803D; }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-ic.is-amber { background: #FFF7E6; color: #B45309; }
   html:root body.in-app:not(.ax-on) #main .lx-beg-body {
     display: grid;
-    gap: 6px;
+    gap: 2px;
+    flex: 1 1 0;
+    min-width: 0;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-top b {
-    font: 800 15.5px/1.25 var(--cp-font);
+    font: 800 13px/1.2 var(--cp-font);
     color: var(--cp-ink, #162B3D);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-pill {
-    padding: 4px 10px;
+    padding: 2px 7px;
     border-radius: 999px;
-    font: 700 11.5px/1.2 var(--cp-font);
+    font: 700 10px/1.2 var(--cp-font);
     font-style: normal;
-    background: #F1F5F9;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
     color: #64748B;
     white-space: nowrap;
+    flex: none;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-pill.done {
     background: #E7F6EC;
+    border-color: #BBF7D0;
     color: #1F9D55;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-pill.cur {
     background: #EAF4FB;
+    border-color: #B9DDF6;
     color: #1E6FA8;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-body > span {
-    font: 600 13px/1.35 var(--cp-font);
+    font: 500 11px/1.3 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
   }
   html:root body.in-app:not(.ax-on) #main .lx-beg-bar {
-    height: 7px;
-    margin-top: 4px;
+    flex: 1 1 0;
+    height: 5px;
+    margin-top: 0;
     border-radius: 999px;
     background: #E2E8F0;
     overflow: hidden;
@@ -1055,6 +1128,63 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
     height: 100%;
     border-radius: inherit;
     background: #3F97D3;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-beg-cta {
+    margin-top: 0 !important;
+    font: 800 11px/1.2 var(--cp-font) !important;
+    color: #2B7CB8;
+    white-space: nowrap;
+    flex: none;
+  }
+  /* Làm gọn các khối phụ bên dưới Lộ trình để trang không dài quá */
+  html:root body.in-app:not(.ax-on) #main .lx-sec {
+    margin-top: 12px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-sec .sec-head h2 {
+    font-size: 15.5px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-sec .sec-head p {
+    font-size: 11.5px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .rv-buddy {
+    padding: 10px 12px !important;
+    border-radius: 16px !important;
+    font-size: 12.5px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-hero-row {
+    gap: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-focus-hero {
+    padding: 12px 14px !important;
+    border-radius: 18px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-focus-hero h1 {
+    font-size: 17px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-kpis > div {
+    padding: 10px !important;
+    border-radius: 14px !important;
+    font-size: 11.5px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-kpis > div b {
+    font-size: 16px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-practice-grid {
+    gap: 8px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-practice-card {
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-practice-card .t b {
+    font-size: 13px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-practice-card .t span {
+    font-size: 11px !important;
   }
 }
 
@@ -4117,3 +4247,34 @@ html body #main .tc-step-list li::before {
     justify-items: center;
   }
 }
+
+/* Base styles (cả Desktop & Mobile) cho Lộ trình 4 bước trực quan */
+html body #main .lx-beg-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+html body #main .lx-beg-meta-row .lx-beg-bar {
+  flex: 1 1 0;
+  margin-top: 0;
+}
+html body #main .lx-beg-meta-row .lx-beg-cta {
+  margin-top: 0;
+  font-size: 12px;
+  white-space: nowrap;
+  flex: none;
+}
+html body #main .lx-beg-ic {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex: none;
+}
+html body #main .lx-beg-ic svg { width: 18px; height: 18px; }
+html body #main .lx-beg-ic.is-blue { background: #EAF4FB; color: #1E6FA8; }
+html body #main .lx-beg-ic.is-purple { background: #F3EFFF; color: #6D28D9; }
+html body #main .lx-beg-ic.is-green { background: #E7F8EF; color: #15803D; }
+html body #main .lx-beg-ic.is-amber { background: #FFF7E6; color: #B45309; }

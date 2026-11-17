@@ -519,11 +519,12 @@ async function focusLanguage(main, data, c, ctx) {
       }).join("")}
     </nav>` : "";
   const stepCtaLabels = [
-    tx("Học phát âm & nền tảng →", "Learn basics →"),
-    tx("Làm bài từ vựng & câu →", "Practice words →"),
-    tx("Mở phòng luyện nói AI →", "Open AI speaking →"),
-    tx("Ôn thẻ SRS & nhận chứng nhận →", "SRS & certificates →"),
+    tx("Học phát âm →", "Basics →"),
+    tx("Làm bài từ vựng →", "Words →"),
+    tx("Luyện nói AI →", "Speaking →"),
+    tx("Ôn tập SRS →", "Review →"),
   ];
+  const stepTones = ["is-blue", "is-purple", "is-green", "is-amber"];
   main.innerHTML = `
   ${rmLangStrip}
   ${rmHeroHtml}
@@ -536,12 +537,14 @@ async function focusLanguage(main, data, c, ctx) {
         const label = state === "cur" ? tx("Đang học", "In progress") : state === "done" ? tx("Hoàn thành", "Completed") : tx("Sẵn sàng", "Ready");
         const stepPct = state === "done" ? 100 : state === "cur" ? Math.max(18, Math.min(92, Number(c.pct) || 40)) : 8;
         return `<li class="lx-beg-item ${state || "todo"}"><span class="lx-beg-dot" aria-hidden="true"></span><a class="lx-beg-step ${state}" href="${begHref[i]}">
-          <span class="lx-beg-ico">${sketchIcon(st.ic)}</span>
+          <span class="lx-beg-ic ${stepTones[i] || "is-blue"}">${sketchIcon(st.ic)}</span>
           <div class="lx-beg-body">
             <div class="lx-beg-top"><b>${i + 1}. ${esc(s.title)}</b><em class="lx-beg-pill ${state || "todo"}">${label}</em></div>
             <span>${esc(s.desc)}</span>
-            <div class="lx-beg-bar"><i style="width:${stepPct}%"></i></div>
-            <span class="lx-beg-cta">${esc(stepCtaLabels[i] || tx("Mở bước này →", "Open step →"))}</span>
+            <div class="lx-beg-meta-row">
+              <div class="lx-beg-bar"><i style="width:${stepPct}%"></i></div>
+              <span class="lx-beg-cta">${esc(stepCtaLabels[i] || tx("Mở →", "Open →"))}</span>
+            </div>
           </div>
         </a></li>`;
       }).join("")}
@@ -610,7 +613,7 @@ async function focusLanguage(main, data, c, ctx) {
       </a>
     </div>
   </section>
-  ${lv ? `<section class="lx-sec lx-sec-lessons"><div class="sec-head"><div><h2>${esc(lv.title)} — ${tx("bài học", "lessons")}</h2><p>${esc(lv.desc || "")}</p></div><span class="tag tag-tim">${lv.done}/${lv.total} ${tx("bài đạt", "passed")}</span></div>${levelBody(lv, data)}</section>` : ""}
+  ${lv ? `<section class="lx-sec lx-sec-lessons"><details class="lx-fold lx-fold-lessons"><summary><span>${esc(lv.title)} — ${tx("Danh sách bài học", "Lessons")}</span><small>${lv.done}/${lv.total} ${tx("bài đạt", "passed")}</small></summary>${levelBody(lv, data)}</details></section>` : ""}
   <section class="lx-sec lx-bottom-folds" aria-label="${tx("Bảng xếp hạng và hoạt động gần đây", "Leaderboard and recent activity")}">
     <details class="lx-fold"><summary><span>${tx("Xếp hạng", "Ranking")} ${esc(c.name)}</span><small>${tx("Theo số bài đạt", "By lessons passed")}</small></summary><div class="sheet lx-lb" id="lxLb"><div class="lx-loading"><span class="spin"></span></div></div></details>
     ${recent.length ? `<details class="lx-fold"><summary><span>${tx("Làm gần đây", "Recent")}</span><small>${recent.length} ${tx("bài gần nhất", "most recent lessons")}</small></summary><div class="lx-ex-list">${recent.map((e) => `<a class="lx-ex" href="/app/ngoai-ngu/bai/${e.id}"><span class="lx-ex-ico">${kindIco(e.kind)}</span><span class="t"><b>${esc(e.kindTitle || e.title)}</b><span>${esc(e.l.title)} · ${esc(e.u.title)}</span></span>${scoreTag(e.best, data.pass)}</a>`).join("")}</div></details>` : ""}
