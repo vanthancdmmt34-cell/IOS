@@ -4312,3 +4312,11 @@ html body #main .hm-pet-stage .hm-pet-hero-img > svg {
   display: block !important;
   margin: 0 auto !important;
 }
+html body #main .hm-pet-bars {
+  gap: 8px 14px !important;
+  font-size: 11.5px !important;
+}
+html body #main .hm-pet-bars span,
+html body #main .hm-pet-bars b {
+  white-space: nowrap;
+}

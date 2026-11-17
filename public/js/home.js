@@ -914,10 +914,12 @@ export async function pageStudentHome(main, params, query, ctx) {
       wrap.innerHTML = cheerHeroHtml + cheerWeekHtml;
       bannerEl.after(...wrap.children);
       const studioEl = rootCheer.querySelector(".hm-studio-grid");
+      const goalEl = rootCheer.querySelector(".hm-goal");
       if (studioEl) {
         const taskWrap = document.createElement("div");
         taskWrap.innerHTML = cheerTasksHtml;
         studioEl.after(...taskWrap.children);
+        if (goalEl) studioEl.after(goalEl);
       }
     }
   }
