@@ -13,8 +13,8 @@ const savedStep = (lang, track) => {
 };
 const saveStep = (lang, track, n) => { try { localStorage.setItem(keyOf(lang, track), String(n)); } catch {} };
 
-function head(title, sub, back) {
-  return `<div class="page-head"><div><span class="edu-eyebrow">PHỎNG VẤN THỬ</span><h1>${title}</h1><p>${sub}</p></div>${back ? `<a class="btn" href="${back}">${icon("left")}Quay lại</a>` : ""}</div>`;
+function head(title, sub, back, cls = "") {
+  return `<div class="page-head ${cls}"><div><span class="edu-eyebrow">PHỎNG VẤN THỬ</span><h1>${title}</h1><p>${sub}</p></div>${back ? `<a class="btn" href="${back}">${icon("left")}Quay lại</a>` : ""}</div>`;
 }
 
 export async function pageInterview(main, [langId, trackId], _q, ctx) {
@@ -39,7 +39,11 @@ function renderHub(main, ctx) {
   const spoken = INTERVIEW_LANGS.filter((l) => l.group === "lang");
   const firstTracks = INTERVIEW_TRACKS[spoken[0]?.id] || [];
   const totalQ = firstTracks.reduce((n, t) => n + t.questions.length, 0);
-  main.innerHTML = `${head("Phỏng vấn & Phỏng vấn AI", "Chọn ngoại ngữ để luyện phỏng vấn 2 chiều với AI theo 30 ngành nghề hoặc tự luyện theo bộ câu mẫu.")}
+  main.innerHTML = `${head("Phỏng vấn & Phỏng vấn AI", "Chọn ngoại ngữ để luyện phỏng vấn 2 chiều với AI theo 30 ngành nghề hoặc tự luyện theo bộ câu mẫu.", "", "iv-hub-head")}
+    <div class="iv-m-intro">
+      <h1>Phỏng vấn thử cùng AI</h1>
+      <p>Luyện trả lời các câu hỏi thường gặp theo ngành nghề.</p>
+    </div>
     <div class="sheet sheet-pad iv-m-card">
       <h2>Phỏng vấn thử cùng AI</h2>
       <p>Chọn vị trí và ngành nghề để luyện câu trả lời chuẩn chuyên nghiệp.</p>

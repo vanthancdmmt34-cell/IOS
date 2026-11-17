@@ -439,6 +439,7 @@ function renderShell() {
          <a href="/app/chon-mon" data-mt="luyen-noi"><span class="mtab-ic">${lineIcon("mic")}</span><span class="mtab-lbl">${mtEn ? "Speak" : "Luyện nói"}</span></a>
          <a href="/app/chon-mon" data-mt="hoc-tap" class="mtab-center"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Learn" : "Học"}</span></a>
          <a href="/app/chon-mon" data-mt="on-tap"><span class="mtab-ic">${lineIcon("clock")}</span><span class="mtab-lbl">${mtEn ? "Review" : "Ôn tập"}</span></a>
+         <a href="/app/phong-van" data-mt="phong-van"><span class="mtab-ic">${lineIcon("briefcase")}</span><span class="mtab-lbl">${mtEn ? "Interview" : "Phỏng vấn"}</span></a>
          <a href="/app/co-vu" data-mt="co-vu"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "Cheer" : "Cổ vũ"}</span></a>
          <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`;
 
@@ -530,7 +531,7 @@ function renderShell() {
       </header>
       <main id="main" class="page" tabindex="-1"></main>
     </div>
-    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-7"}" id="mTab" aria-label="Điều hướng nhanh">
+    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-8"}" id="mTab" aria-label="Điều hướng nhanh">
       ${mtabHtml}
     </nav>
   </div>`;
@@ -768,6 +769,7 @@ function syncNavState(parsed = parseHashRoute()) {
     "luyen-noi": mtSubj ? `/app/ngoai-ngu/luyen-noi/${mtSubj}` : "/app/chon-mon",
     "hoc-tap": mtSubj ? `/app/ngoai-ngu/${mtSubj}` : "/app/chon-mon",
     "on-tap": mtSubj ? `/app/ngoai-ngu/on-tap/${mtSubj}` : "/app/chon-mon",
+    "phong-van": "/app/phong-van",
     "co-vu": mtSubj ? "/app/co-vu" : "/app/chon-mon",
     "ca-nhan": "/app/ca-nhan",
     "gv-home": "/app/giao-vien",
@@ -784,6 +786,7 @@ function syncNavState(parsed = parseHashRoute()) {
     "luyen-noi": /^ngoai-ngu\/luyen-noi(?:\/|$)/.test(clean),
     "hoc-tap": learnPath,
     "on-tap": /^ngoai-ngu\/on-tap(?:\/|$)/.test(clean),
+    "phong-van": /^phong-van(?:\/|$)/.test(clean),
     "co-vu": activeNav === "co-vu" || clean === "co-vu",
     "ca-nhan": /^ca-nhan(?:\/|$)/.test(clean),
     "gv-home": clean === "giao-vien" || /^giao-vien\/lop\//.test(clean),

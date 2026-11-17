@@ -367,10 +367,20 @@ html body.in-app .mtab { display: none; }
   html body.in-app .mtab.mtab-7 {
     grid-template-columns: repeat(7, minmax(0, 1fr));
   }
+  html body.in-app .mtab.mtab-8 {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    padding: 4px 5px;
+  }
   html body.in-app .mtab.mtab-7 a,
   html body.in-app .mtab.mtab-7 .mtab-more {
     font-size: 8.3px;
     letter-spacing: -0.02em;
+    padding: 2px 0;
+  }
+  html body.in-app .mtab.mtab-8 a,
+  html body.in-app .mtab.mtab-8 .mtab-more {
+    font-size: 7.4px;
+    letter-spacing: -0.03em;
     padding: 2px 0;
   }
   html body.in-app .mtab a,
@@ -406,9 +416,11 @@ html body.in-app .mtab { display: none; }
     html body.in-app .mtab.mtab-6 a,
     html body.in-app .mtab.mtab-6 .mtab-more,
     html body.in-app .mtab.mtab-7 a,
-    html body.in-app .mtab.mtab-7 .mtab-more {
-      font-size: 7.5px;
-      letter-spacing: -0.03em;
+    html body.in-app .mtab.mtab-7 .mtab-more,
+    html body.in-app .mtab.mtab-8 a,
+    html body.in-app .mtab.mtab-8 .mtab-more {
+      font-size: 6.7px;
+      letter-spacing: -0.04em;
     }
   }
   html body.in-app .mtab a:active,

@@ -4381,6 +4381,7 @@ html body #main .hm-ov-kpi span {
 }
 
 /* Nâng cấp chiều sâu hiện đại cho nền & thẻ di động + Dark Mode parity */
+html:root body.in-app:not(.ax-on) #main .iv-m-intro { display: none; }
 @media (max-width: 760px) {
   html[data-theme="light"] body.in-app:not(.ax-on) {
     background: #F4F7FB !important;
@@ -4411,6 +4412,142 @@ html body #main .hm-ov-kpi span {
   html:root body.in-app:not(.ax-on) #main .hm-ov-kpi:active,
   html:root body.in-app:not(.ax-on) #main .hm-step-chip:active {
     transform: scale(0.98);
+  }
+
+  /* 09-danh-sach-khoa-hoc: gọn danh sách cấp độ + danh sách các bài học */
+  html:root body.in-app:not(.ax-on) #main .lx-levels {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 6px !important;
+    margin: 4px 0 10px !important;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-levels::-webkit-scrollbar { display: none; }
+  html:root body.in-app:not(.ax-on) #main .lx-levels a {
+    flex: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 12px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    min-height: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-levels a b { font-size: 12px !important; white-space: nowrap; }
+  html:root body.in-app:not(.ax-on) #main .lx-levels a span { font-size: 11px !important; opacity: 0.78; }
+  html:root body.in-app:not(.ax-on) #main .lx-course-units-sec .sec-head { margin-bottom: 8px !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-course-units-sec .sec-head h2 { font: 800 17px/1.2 var(--cp-font) !important; }
+  html:root body.in-app:not(.ax-on) #main .lx-course-units-sec .sec-head p,
+  html:root body.in-app:not(.ax-on) #main .lx-course-units-sec .sec-head .tag,
+  html:root body.in-app:not(.ax-on) #main .lx-course-units-sec .lx-chapter-filter { display: none !important; }
+
+  /* 15-ong-chat-ai: đầu trang gọn + khung nhập tách nét rõ phía trên dock */
+  html:root body.in-app:not(.ax-on) #main .sp-chat .sp-top {
+    padding: 7px 10px !important;
+    border-radius: 14px !important;
+    gap: 6px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat .sp-hints {
+    background: #EFF6FC;
+    border: 1px solid #D7E8F7;
+    border-radius: 14px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat .sp-chatbar {
+    background: #FFFFFF;
+    border: 1px solid #DDE5EE;
+    border-radius: 16px;
+    padding: 5px;
+    box-shadow: 0 4px 14px rgba(22, 43, 61, 0.06);
+  }
+  html:root body.in-app:not(.ax-on) #main .sp-chat .sp-send {
+    background: #3F97D3 !important;
+    border-color: #3F97D3 !important;
+    border-radius: 12px !important;
+  }
+
+  /* 18-mini-games: lưới 2x2 tiếng Việt gọn sạch không xuống dòng */
+  html:root body.in-app:not(.ax-on) #main .cds-game-card {
+    display: grid !important;
+    align-content: start;
+    gap: 5px !important;
+    padding: 13px !important;
+    border-radius: 18px !important;
+    min-height: 0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-game-top { margin-bottom: 2px; }
+  html:root body.in-app:not(.ax-on) #main .cds-game-card .cds-kicker,
+  html:root body.in-app:not(.ax-on) #main .cds-game-foot > span { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-game-ico { font-size: 24px !important; line-height: 1; }
+  html:root body.in-app:not(.ax-on) #main .cds-game-card b {
+    font: 800 14px/1.2 var(--cp-font) !important;
+    color: #162B3D;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-game-card p {
+    margin: 0 !important;
+    font: 500 11.5px/1.35 var(--cp-font) !important;
+    color: #64748B;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-game-foot { margin-top: 4px !important; }
+  html:root body.in-app:not(.ax-on) #main .cds-game-foot em {
+    padding: 0 !important;
+    background: transparent !important;
+    color: #2B7CB8 !important;
+    font: 700 12px/1.1 var(--cp-font) !important;
+    white-space: nowrap !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card {
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E6EAF0 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card b { font-size: 15px !important; }
+  html:root body.in-app:not(.ax-on) #main .cg-m-streak-card p { font-size: 12px !important; }
+
+  /* 19-phong-van: bố cục Phỏng vấn thử cùng AI gọn như mẫu */
+  html:root body.in-app:not(.ax-on) #main .iv-hub-head { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .iv-m-intro {
+    display: grid !important;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-intro h1 {
+    margin: 0;
+    font: 900 22px/1.2 var(--cp-font);
+    color: #162B3D;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-intro p {
+    margin: 0;
+    font: 500 12.5px/1.35 var(--cp-font);
+    color: #64748B;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-card > h2,
+  html:root body.in-app:not(.ax-on) #main .iv-m-card > p { display: none !important; }
+  html:root body.in-app:not(.ax-on) #main .iv-m-card {
+    padding: 16px !important;
+    gap: 10px !important;
+    border-radius: 20px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-field span {
+    font: 800 12.5px/1.2 var(--cp-font) !important;
+    color: #162B3D !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-field :is(input, select) {
+    min-height: 40px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    border-color: #DDE5EE;
+    background: #F8FAFC;
+  }
+  html:root body.in-app:not(.ax-on) #main .iv-m-start {
+    min-height: 42px !important;
+    border-radius: 999px !important;
+    font: 800 14px/1 var(--cp-font) !important;
+    margin-top: 2px;
   }
 }
 html[data-theme="dark"] body.in-app #main .hm-m-overview-kpis .hm-ov-kpi,

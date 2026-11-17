@@ -875,8 +875,9 @@ function levelBody(lv, data) {
   // 4.11.1: each lesson is an expandable row (with progress); expands the first incomplete lesson by default.
   const openUnit = lv.units.find((u) => u.exercises.some((e) => e.best < data.pass)) || lv.units[0];
   const curMapUnit = lv.units.find((u) => u.exercises.some((e) => e.best < data.pass)) || null;
+  const isMob = typeof window !== "undefined" && window.innerWidth <= 760;
   return `${chapterFilterHtml()}<div class="lx-units lx-map" data-cf="all">
-      ${lv.units.map((u, ui) => { const n = u.exercises.length, done = u.exercises.filter((e) => e.best >= data.pass).length, full = n > 0 && done === n, cur = u === curMapUnit; return `<details class="lx-unit sheet ${full ? "is-done" : ""} ${cur ? "is-cur" : ""} ${!full && done === 0 ? "is-new" : ""} ${!full && done > 0 ? "is-started" : ""}" ${u === openUnit ? "open" : ""}>
+      ${lv.units.map((u, ui) => { const n = u.exercises.length, done = u.exercises.filter((e) => e.best >= data.pass).length, full = n > 0 && done === n, cur = u === curMapUnit; return `<details class="lx-unit sheet ${full ? "is-done" : ""} ${cur ? "is-cur" : ""} ${!full && done === 0 ? "is-new" : ""} ${!full && done > 0 ? "is-started" : ""}" ${!isMob && u === openUnit ? "open" : ""}>
         <summary class="lx-unit-head">
           <span class="lx-map-state">${tx(`Chặng ${ui + 1}`, `Stage ${ui + 1}`)} · ${full ? tx("Đã xong", "Done") : cur ? tx("Bạn đang ở đây", "You are here") : done > 0 ? tx("Đã bắt đầu", "Started") : tx("Sắp tới", "Up next")}</span>
           ${cur ? `<span class="lx-map-here" aria-hidden="true">${ChibiMascot({ state: "learning", size: 46 })}</span>` : ""}

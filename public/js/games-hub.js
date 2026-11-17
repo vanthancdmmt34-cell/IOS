@@ -7,15 +7,15 @@ import { refreshPet, petView, startGameSession, judgeGame } from "./pet-state.js
 import { ChibiMascot, GameCard, SuccessModal, LoadingState, EmptyState } from "./chibi-ds.js";
 
 const GAME_META = [
-  { id: "match", title: "Word Matching", tag: "Từ vựng", icon: "🧩", tint: "#F3EFFF", desc: "Ghép cặp từ ngoại ngữ với nghĩa tiếng Việt, tới 200 cặp." },
-  { id: "quiz", title: "Word Quiz", tag: "Trắc nghiệm", icon: "⚡", tint: "#FFEBF2", desc: "Trắc nghiệm chọn đúng nghĩa từ vựng trong kho bài, tới 200 câu." },
-  { id: "builder", title: "Sentence Builder", tag: "Ghép câu", icon: "🧱", tint: "#EAF5FF", desc: "Sắp xếp các từ xáo trộn thành câu giao tiếp hoàn chỉnh." },
-  { id: "listen", title: "Listening Challenge", tag: "Luyện nghe", icon: "🎧", tint: "#E6FAF1", desc: "Nghe phát âm mẫu thật và chọn chính xác từ bạn nghe được." },
-  { id: "race", title: "Vocabulary Race", tag: "Tốc độ 45s", icon: "🏁", tint: "#FFF9F0", desc: "Thử thách phản xạ trong 45 giây — trả lời đúng càng nhiều càng tốt!" },
-  { id: "spell", title: "Spelling Challenge", tag: "Chính tả", icon: "✍️", tint: "#FCE7F3", desc: "Xem nghĩa tiếng Việt, nghe mẫu và gõ chính xác từng chữ cái." },
-  { id: "memory", title: "Memory Flip", tag: "Ghi nhớ", icon: "🃏", tint: "#EEF6FF", desc: "Lật thẻ tìm cặp từ và nghĩa khớp nhau, rèn trí nhớ." },
-  { id: "unscramble", title: "Word Unscramble", tag: "Sắp chữ", icon: "🔤", tint: "#FFF4E8", desc: "Sắp các chữ cái xáo trộn thành đúng từ vựng." },
-  { id: "truefalse", title: "True or False", tag: "Đúng/Sai", icon: "✔️", tint: "#E9FBF3", desc: "Xem nghĩa gợi ý và chọn đúng hay sai thật nhanh." },
+  { id: "match", title: "Ghép từ", tag: "Từ vựng", icon: "🧩", tint: "#F3EFFF", desc: "Tạo cặp từ đúng nghĩa" },
+  { id: "quiz", title: "Phản xạ nhanh", tag: "Trắc nghiệm", icon: "⚡", tint: "#FFF1E6", desc: "Chọn đáp án trong 10 giây" },
+  { id: "listen", title: "Nghe và chọn", tag: "Luyện nghe", icon: "🎧", tint: "#EAF5FF", desc: "Nhận diện từ đã nghe" },
+  { id: "memory", title: "Thẻ ghi nhớ", tag: "Ghi nhớ", icon: "🃏", tint: "#EEFAEB", desc: "Ôn từ theo cặp thẻ" },
+  { id: "builder", title: "Ghép câu", tag: "Ghép câu", icon: "🧱", tint: "#F3EFFF", desc: "Sắp xếp từ thành câu chuẩn" },
+  { id: "race", title: "Đua tốc độ 45s", tag: "Tốc độ", icon: "🏁", tint: "#FFF9E8", desc: "Trả lời nhanh trong 45 giây" },
+  { id: "spell", title: "Chính tả", tag: "Chính tả", icon: "✍️", tint: "#FCE7F3", desc: "Nghe và gõ đúng từng chữ" },
+  { id: "unscramble", title: "Sắp chữ", tag: "Từ vựng", icon: "🔤", tint: "#FFF4E8", desc: "Ghép chữ cái thành từ đúng" },
+  { id: "truefalse", title: "Đúng hay Sai", tag: "Phản xạ", icon: "✔️", tint: "#E9FBF3", desc: "Kiểm tra nghĩa đúng sai nhanh" },
 ];
 
 const LS_KEY = "pl:games";
@@ -163,7 +163,7 @@ export async function pageGamesHub(main, [paramLang], query, ctx) {
       </div>
       <div class="sheet sheet-pad cg-m-streak-card">
         <b>Chuỗi thử thách</b>
-        <p>Hoàn thành 3 trò chơi để nhận thưởng năng lượng và tri thức.</p>
+        <p>Hoàn thành 3 trò chơi để nhận huy hiệu chăm học.</p>
       </div>
     </div>`;
     main.querySelectorAll("[data-game]").forEach((btn) => {
