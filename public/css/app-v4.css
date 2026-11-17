@@ -655,29 +655,45 @@ html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner { display: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 8px;
   }
   html:root body.in-app:not(.ax-on) #main .lx-course-m-head h1 {
     margin: 0;
-    font: 900 24px/1.2 var(--cp-font) !important;
+    font: 900 18.5px/1.2 var(--cp-font) !important;
   }
   html:root body.in-app:not(.ax-on) #main .lx-course-m-head p {
     margin: 2px 0 0;
-    font: 600 13.5px/1.35 var(--cp-font);
+    font: 600 11.5px/1.3 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
   }
   html:root body.in-app:not(.ax-on) #main .lx-course-pct-pill {
     flex: none;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 999px;
     background: #EAF4FB;
     color: #1E6FA8;
-    font: 800 14px/1 var(--cp-font);
+    font: 800 12.5px/1 var(--cp-font);
   }
   html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner,
   html:root body.in-app:not(.ax-on) #main .lx-roadmap-hero {
     display: block;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner.lr-hero-banner {
+    padding: 11px 14px !important;
+    border-radius: 18px !important;
+    margin-bottom: 10px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner .lr-hero-copy h2 {
+    font: 900 16px/1.2 var(--cp-font) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner .lr-hero-copy p {
+    font-size: 11.5px !important;
+    line-height: 1.3 !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-course-stage-banner .lr-hero-art img {
+    width: 58px !important;
+    height: 58px !important;
   }
   html:root body.in-app:not(.ax-on) #main .lx-hero.lx-hero-sm {
     display: none !important;

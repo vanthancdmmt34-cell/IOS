@@ -700,25 +700,14 @@ export async function pageStudentHome(main, params, query, ctx) {
       ...nodes(current),
       ...nodes(skillsBlock),
       ...nodes(exploreToolsHtml),
-      ...take(":scope > .hm-daily"),
-      ...take(":scope > .hm-courses"),
-      ...take(":scope > .hm-kpis"),
-      ...take(":scope > .hm-focus-empty"),
-      ...take(":scope > .hm-studio-grid"),
       ...nodes(unfinished),
-      ...nodes(reviewCard),
-      ...(statsEl ? [statsEl] : []),
       ...nodes(aiCard),
-      ...(todoEl ? [todoEl] : []),
-      ...(focusEl ? [focusEl] : []),
-      ...take(":scope > .hm-missions-row"),
-      ...take(":scope > .hm-goal"),
-      ...take(":scope > .hm-insights"),
-      ...take(":scope > .hm-quick"),
-      ...take(':scope > section[aria-labelledby="hmSubjectTitle"], :scope > section[aria-labelledby="hmSubjectsTitle"]'),
-      ...take(":scope > .hm-pro"),
-      ...take("#lhExplore"),
     ];
+    // Cắt sạch các khối trùng với trang Cổ Vũ (Bạn đồng hành, Mục tiêu, Kế hoạch, Nhiệm vụ), Ôn tập và Luyện nói (#lhExplore) khỏi Tổng quan
+    root.querySelectorAll(":scope > .hm-studio-grid, :scope > .hm-goal, :scope > .hm-missions-row, :scope > .hm-daily, :scope > .hm-courses, :scope > .hm-kpis, :scope > .hm-focus-empty, :scope > .hm-insights, :scope > .hm-quick, :scope > .hm-pro, :scope > #lhExplore, :scope > section[aria-labelledby='hmSubjectTitle'], :scope > section[aria-labelledby='hmSubjectsTitle']").forEach((el) => el.remove());
+    statsEl?.remove();
+    todoEl?.remove();
+    focusEl?.remove();
     order.forEach((el) => root.append(el));
     cols?.remove();
   }

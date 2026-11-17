@@ -436,6 +436,7 @@ function renderShell() {
          <a href="/app/ca-nhan" data-mt="ca-nhan"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></a>`
       : `<a href="/app/chon-mon" data-mt="home"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Overview" : "Tổng quan"}</span></a>
          <a href="/app/chon-mon" data-mt="mon-hoc"><span class="mtab-ic">${lineIcon("route")}</span><span class="mtab-lbl">${mtEn ? "Roadmap" : "Lộ trình"}</span></a>
+         <a href="/app/chon-mon" data-mt="luyen-noi"><span class="mtab-ic">${lineIcon("mic")}</span><span class="mtab-lbl">${mtEn ? "Speak" : "Luyện nói"}</span></a>
          <a href="/app/chon-mon" data-mt="hoc-tap" class="mtab-center"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Learn" : "Học"}</span></a>
          <a href="/app/chon-mon" data-mt="on-tap"><span class="mtab-ic">${lineIcon("clock")}</span><span class="mtab-lbl">${mtEn ? "Review" : "Ôn tập"}</span></a>
          <a href="/app/co-vu" data-mt="co-vu"><span class="mtab-ic">${lineIcon("sparkle")}</span><span class="mtab-lbl">${mtEn ? "Cheer" : "Cổ vũ"}</span></a>
@@ -529,7 +530,7 @@ function renderShell() {
       </header>
       <main id="main" class="page" tabindex="-1"></main>
     </div>
-    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-6"}" id="mTab" aria-label="Điều hướng nhanh">
+    <nav class="mtab${isParentRole ? " mtab-4" : isTeacherRole ? "" : " mtab-7"}" id="mTab" aria-label="Điều hướng nhanh">
       ${mtabHtml}
     </nav>
   </div>`;
@@ -764,6 +765,7 @@ function syncNavState(parsed = parseHashRoute()) {
   const mtLinks = {
     home: mtSubj ? `/app/${mtSubj}` : "/app/chon-mon",
     "mon-hoc": mtSubj ? "/app/mon-hoc" : "/app/chon-mon",
+    "luyen-noi": mtSubj ? `/app/ngoai-ngu/luyen-noi/${mtSubj}` : "/app/chon-mon",
     "hoc-tap": mtSubj ? `/app/ngoai-ngu/${mtSubj}` : "/app/chon-mon",
     "on-tap": mtSubj ? `/app/ngoai-ngu/on-tap/${mtSubj}` : "/app/chon-mon",
     "co-vu": mtSubj ? "/app/co-vu" : "/app/chon-mon",
@@ -775,10 +777,11 @@ function syncNavState(parsed = parseHashRoute()) {
     "pr-classes": "/app/lop",
     "pr-notices": "/app/thong-bao",
   };
-  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-noi\/|luyen-viet\/|tro-chuyen\/|ly-thuyet\/)/.test(clean);
+  const learnPath = clean === "ngoai-ngu" || /^ngoai-ngu\/(?:[a-z]{2}(?:\/|$)|bai\/|luyen-viet\/|tro-chuyen\/|ly-thuyet\/)/.test(clean);
   const mtActive = {
     home: !!subj && clean === subj && !query.mode,
     "mon-hoc": clean === "mon-hoc" || clean === "lo-trinh" || (clean === "" && !!query.mon),
+    "luyen-noi": /^ngoai-ngu\/luyen-noi(?:\/|$)/.test(clean),
     "hoc-tap": learnPath,
     "on-tap": /^ngoai-ngu\/on-tap(?:\/|$)/.test(clean),
     "co-vu": activeNav === "co-vu" || clean === "co-vu",
