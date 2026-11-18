@@ -17,7 +17,9 @@
     // Thanh menu dưới nằm sát mép dưới màn hình; khoảng trống cho thanh Home nằm trong padding của thanh.
     + "html body.in-app .mtab{bottom:0!important;left:0!important;right:0!important;border-radius:24px 24px 0 0!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))!important}"
     // Tắt chạm đúp để phóng to (double-tap zoom) khi người dùng bấm nhanh liên tiếp.
-    + "html{touch-action:manipulation}";
+    + "html{touch-action:manipulation}"
+    // Thanh tiêu đề của khung đăng nhập (landing) nằm dưới đồng hồ/tai thỏ: đẩy xuống dưới vùng an toàn.
+    + "html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top{top:env(safe-area-inset-top)!important;height:calc(52px + env(safe-area-inset-top))!important;padding-top:env(safe-area-inset-top)!important;box-sizing:border-box!important}";
   (document.head || document.documentElement).appendChild(topFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
