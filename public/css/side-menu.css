@@ -946,17 +946,17 @@ html body .m-fan-wrap { display: none; }
 
 /* Điện thoại ngang (chiều cao ≤500px, ví dụ 812×375, 844×390): thanh dưới gọn hơn để còn chỗ cho nội dung */
 @media (max-height: 500px) and (orientation: landscape) and (max-width: 960px) {
-  html body.in-app .shell > .main { padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .shell > .main { padding-bottom: calc(62px + env(safe-area-inset-bottom)) !important; }
   html body.in-app .mtab {
-    padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
+    padding: 2px 6px calc(2px + env(safe-area-inset-bottom));
   }
-  html body.in-app .mtab :is(a, button, .mtab-more) { min-height: 44px; gap: 2px; font-size: 10px; }
-  html body.in-app .mtab .mtab-ic { width: 36px; height: 26px; }
-  html body.in-app .mtab .mtab-ic svg { width: 18px !important; height: 18px !important; }
-  html body.in-app .mtab .mtab-center { transform: translateY(-3px); }
+  html body.in-app .mtab :is(a, button, .mtab-more) { min-height: 32px; gap: 1px; font-size: 8.5px; }
+  html body.in-app .mtab .mtab-ic { width: 26px; height: 18px; }
+  html body.in-app .mtab .mtab-ic svg { width: 13px !important; height: 13px !important; }
+  html body.in-app .mtab .mtab-center { transform: translateY(-1px); }
   html body.in-app .mtab .mtab-center .mtab-ic,
   html body.in-app .mtab .mtab-center.on .mtab-ic,
-  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic { width: 40px; height: 40px; border-radius: 14px; }
+  html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic { width: 26px; height: 22px; border-radius: 8px; }
   html body.in-app .daily-pro-notice,
-  html body.in-app .cp-follow { bottom: calc(78px + env(safe-area-inset-bottom)) !important; }
+  html body.in-app .cp-follow { bottom: calc(62px + env(safe-area-inset-bottom)) !important; }
 }

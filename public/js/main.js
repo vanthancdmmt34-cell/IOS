@@ -492,8 +492,8 @@ function renderShell() {
     ? `<a href="/app/giao-vien" data-mt="gv-home"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Overview" : "Tổng quan"}</span></a>
        <a href="/app/giao-vien/hoc-vien" data-mt="gv-students"><span class="mtab-ic">${lineIcon("users")}</span><span class="mtab-lbl">${mtEn ? "Students" : "Học viên"}</span></a>
        <a href="/app/lop" data-mt="gv-classes"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Classes" : "Lớp học"}</span></a>
-       <a href="/app/thong-bao" data-mt="pr-notices"><span class="mtab-ic">${lineIcon("bell")}</span><span class="mtab-lbl">${mtEn ? "Notices" : "Thông báo"}</span></a>
-       <button type="button" class="mtab-more" data-mt="gv-menu" data-open-nav aria-expanded="false" aria-label="Menu"><span class="mtab-ic">${lineIcon("menu")}</span><span class="mtab-lbl">Menu</span></button>`
+       <a href="/app/giao-vien/bai-tap" data-mt="gv-tasks"><span class="mtab-ic">${lineIcon("check")}</span><span class="mtab-lbl">${mtEn ? "Assignments" : "Bài tập"}</span></a>
+       <a href="/app/giao-vien/tien-do" data-mt="gv-progress"><span class="mtab-ic">${lineIcon("chart")}</span><span class="mtab-lbl">${mtEn ? "Progress" : "Tiến độ"}</span></a>`
     : isParentRole
       ? `<a href="/app/gia-dinh" data-mt="pr-family"><span class="mtab-ic">${lineIcon("home")}</span><span class="mtab-lbl">${mtEn ? "Family" : "Gia đình"}</span></a>
          <a href="/app/lop" data-mt="pr-classes"><span class="mtab-ic">${lineIcon("book")}</span><span class="mtab-lbl">${mtEn ? "Classes" : "Lớp học"}</span></a>
@@ -637,7 +637,7 @@ function renderShell() {
     <div class="main">
       <header class="topbar">
         <button class="icon-btn menu-btn" id="menuBtn" aria-label="Mở menu">${lineIcon("menu")}</button>
-        <button type="button" class="icon-btn m-top-back" id="mTopBack" aria-label="Quay lại"><svg class="line-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button type="button" class="icon-btn m-top-back" id="mTopBack" aria-label="Quay lại"><svg class="line-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
         <a class="brand top-brand" href="${subj ? "/app/mon-hoc" : "/app/"}" aria-label="${esc(siteName())}">${brandHtml()}</a>
         <div class="m-top-titles" id="mTopTitles">
           <b id="mTopTitle">${esc(siteName())}</b>
@@ -653,9 +653,9 @@ function renderShell() {
           <div class="ud-drop ud-bell-drop" id="udBellDrop" hidden></div>
         </div>
         <button type="button" class="icon-btn m-top-acct" id="mTopAcct" data-open-account aria-haspopup="dialog" aria-expanded="false" aria-label="${mtEn ? "Quick account menu" : "Menu tài khoản nhanh"}"><img src="${roleAvatar}" width="32" height="32" alt=""></button>
-        <button type="button" class="icon-btn m-top-more" id="mTopMore" data-open-nav aria-expanded="false" aria-label="Mở menu điều hướng"><svg class="line-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/></svg></button>
+        <button type="button" class="icon-btn m-top-more" id="mTopMore" data-open-nav aria-expanded="false" aria-label="Mở menu điều hướng"><svg class="line-ic" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18" cy="12" r="1.8"/></svg></button>
         <div class="ud-user" id="udUserWrap">
-          <button type="button" id="udUser" aria-haspopup="true" aria-expanded="false" aria-label="Tài khoản">${accountChipHtml()}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" id="udUser" aria-haspopup="true" aria-expanded="false" aria-label="Tài khoản">${accountChipHtml()}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="ud-drop" id="udDrop" hidden>
             <div class="who"><b>${esc(S.me.displayName)}<span data-pro-slot></span></b><span>${esc(roleLabel(S.me.role))}</span></div>
             <a href="/app/ca-nhan">${lineIcon("user")}Hồ sơ của tôi</a>
@@ -1002,6 +1002,8 @@ function syncNavState(parsed = parseHashRoute()) {
     "gv-home": "/app/giao-vien",
     "gv-students": "/app/giao-vien/hoc-vien",
     "gv-classes": "/app/lop",
+    "gv-tasks": "/app/giao-vien/bai-tap",
+    "gv-progress": "/app/giao-vien/tien-do",
     "pr-family": "/app/gia-dinh",
     "pr-classes": "/app/lop",
     "pr-notices": "/app/thong-bao",
@@ -1022,6 +1024,8 @@ function syncNavState(parsed = parseHashRoute()) {
     "gv-home": clean === "giao-vien" || /^giao-vien\/lop\//.test(clean),
     "gv-students": clean === "giao-vien/hoc-vien",
     "gv-classes": clean === "lop" || /^lop\//.test(clean),
+    "gv-tasks": clean === "giao-vien/bai-tap",
+    "gv-progress": clean === "giao-vien/tien-do",
     "pr-family": clean === "gia-dinh",
     "pr-classes": clean === "lop" || /^lop\//.test(clean),
     "pr-notices": clean === "thong-bao",

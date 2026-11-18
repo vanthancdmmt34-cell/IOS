@@ -47,6 +47,13 @@ export function initialLang(userLang) {
   return userLang === "en" || userLang === "vi" ? userLang : "vi";
 }
 
+const EXTRA_EN = {
+  "Học tập & Nền tảng": "Learning & Platform",
+  "Tiến độ": "Progress",
+  "Học ngay": "Learn now",
+  "Cổ vũ": "Cheer",
+  "Gói & Chứng nhận": "Plan & Certificates",
+};
 async function loadDict() {
   if (DICT) return;
   try {
@@ -54,7 +61,7 @@ async function loadDict() {
       fetch("/locales/en.json", { cache: "no-cache" }).then((r) => r.json()),
       fetch("/api/public/ui-translations?lang=en").then((r) => (r.ok ? r.json() : { items: {} })).catch(() => ({ items: {} })),
     ]);
-    DICT = new Map(Object.entries({ ...base.exact, ...(base.keys || {}), ...over.items }));
+    DICT = new Map(Object.entries({ ...EXTRA_EN, ...base.exact, ...(base.keys || {}), ...over.items }));
     PATTERNS = (base.patterns || []).map(([vi, en]) => {
       // "{0} tháng", "{0} bài tập"...: mẫu đếm đơn vị thì {0} đầu câu phải là SỐ. Nếu để (.+?) thì
       // "Thời gian và ngày tháng" bị dịch thành "Thời gian và ngày months" (nửa Việt nửa Anh).

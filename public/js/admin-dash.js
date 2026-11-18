@@ -18,7 +18,7 @@ const IP = {
   target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
   home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
 };
-const I = (n, extra = "") => IP[n] ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${IP[n]}</svg>` : icon(n, extra);
+const I = (n, extra = "") => IP[n] ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${IP[n]}</svg>` : icon(n, extra);
 
 /* ---------- Shell ---------- */
 export function adminShell(main, { tab, groups, ctx }) {
