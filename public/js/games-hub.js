@@ -1,7 +1,7 @@
 /* LifeRivo Mini Games Arcade (#/tro-choi)
    Đề và đáp án do máy chủ giữ (modules/pet-games.js). Trình duyệt chỉ hiển thị đề và gửi từng câu trả lời để máy chủ chấm;
    thưởng năng lượng và tri thức chỉ cộng cho câu máy chủ chấm là đúng. Điểm kỷ lục lưu cục bộ trong pl:games. */
-import { S, api, esc, icon, toast, fmtN } from "./core.js";
+import { S, api, esc, icon, lineIcon, toast, fmtN } from "./core.js";
 import { getSubject } from "./lang.js";
 import { refreshPet, petView, startGameSession, judgeGame } from "./pet-state.js";
 import { ChibiMascot, GameCard, SuccessModal, LoadingState, EmptyState } from "./chibi-ds.js";
@@ -232,7 +232,7 @@ export async function pageGamesHub(main, [paramLang], query, ctx) {
       gameShell(isListen ? "Listening Challenge" : "Word Quiz", isListen ? "Bấm nghe phát âm rồi chọn đáp án đúng!" : "Chọn nhanh nghĩa tiếng Việt chính xác!", `
         <div class="cg-score">Câu <b>${idx + 1}/${items.length}</b> · Điểm: <b>${score}</b></div>
         <div class="cg-prompt">${isListen
-          ? `<button type="button" class="btn btn-primary" id="cgPlayAudio">🔊 Nghe từ vựng mẫu</button>`
+          ? `<button type="button" class="btn btn-primary" id="cgPlayAudio">${lineIcon("speaker", 17)}<span>Nghe từ vựng mẫu</span></button>`
           : `<b class="cg-word">${esc(it.prompt)}</b>${it.reading ? `<small>${esc(it.reading)}</small>` : ""}`}</div>
         <div class="cg-opts">${it.options.map((o) => `<button type="button" class="cds-quiz-opt" data-ans="${esc(o.id)}">${esc(o.label)}</button>`).join("")}</div>
       `, isListen ? "listening" : "learning");
@@ -333,7 +333,7 @@ export async function pageGamesHub(main, [paramLang], query, ctx) {
       const it = items[idx];
       gameShell("Spelling Challenge", "Nghe âm và gõ chính xác từ vựng tương ứng!", `
         <div class="cg-score">Câu <b>${idx + 1}/${items.length}</b> · Điểm: <b>${score}</b></div>
-        <p class="cg-meaning">Nghĩa: <b>${esc(it.meaning)}</b> <button type="button" class="btn btn-sm" id="cgSpellSay">🔊 Nghe</button></p>
+        <p class="cg-meaning">Nghĩa: <b>${esc(it.meaning)}</b> <button type="button" class="btn btn-sm" id="cgSpellSay">${lineIcon("speaker", 15)}<span>Nghe</span></button></p>
         <form id="cgSpellForm" class="cg-spell-form">
           <input class="input" id="cgSpellIn" placeholder="Gõ chính xác từ…" autocomplete="off" autofocus>
           <button type="submit" class="btn btn-primary">Kiểm tra</button>

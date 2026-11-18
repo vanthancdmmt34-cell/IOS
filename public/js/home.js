@@ -795,7 +795,7 @@ export async function pageStudentHome(main, params, query, ctx) {
           <span class="lh-speak-tag">${L("Phòng luyện nói", "Speaking studio")}</span>
           <h2>${L("Bài 1: Giới thiệu bản thân", "Lesson 1: Introducing yourself")}</h2>
           <p class="lh-speak-sentence">${m.sample}</p>
-          <div class="lh-speak-tools"><span>🔊</span><span>0.6x</span><span>🎙️</span><span>🎧</span><span>⌨️</span></div>
+          <div class="lh-speak-tools"><span>${lineIcon("speaker", 15)}</span><span>0.6x</span><span>🎙️</span><span>🎧</span><span>⌨️</span></div>
           <p class="lh-speak-note">${L("Bấm micro rồi đọc to, rõ từng từ", "Tap the mic, then read aloud, clearly, word by word")}</p>
           <a class="btn btn-primary" href="/app/ngoai-ngu/luyen-noi/${exLang}/chu-de/cau/gioi-thieu">${L("Vào luyện", "Start practicing")}</a>
           <p class="lh-speak-sub2">${L("Gõ lại câu bạn vừa đọc + Chấm", "Type back the sentence you just read + get scored")}</p>

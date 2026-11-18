@@ -4182,6 +4182,8 @@
     "Bấm loa để nghe mẫu, rồi bấm micro và đọc to. Máy so câu bạn nói với câu mẫu, giống từ {0}% là đúng. Nên dùng Chrome hoặc Edge. Đạt từ {1} điểm. Điểm cao nhất:": "Press the speaker to hear the model, then press the microphone and read aloud. Your speech is compared with the model; {0}% similarity counts as correct. Chrome or Edge is recommended. Pass at {1} points. Best score:",
     "Bấm và đọc to câu": "Press and read the sentence aloud",
     "Đang nghe… bấm để dừng": "Listening… press to stop",
+    "Đang nghe… (Dừng)": "Listening… (Stop)",
+    "Tự ngắt khi dứt câu": "Auto-stops after sentence",
     "Giống câu mẫu": "Match with the model",
     "AI nhận xét phát âm": "AI pronunciation feedback",
     "Hỏi AI vì sao": "Ask the AI why",

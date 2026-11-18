@@ -1,6 +1,6 @@
 /* LifeRivo Premium Component Design System (7-State Unified Mascot + Reusable Chibi Mascots + 17 UI Components)
    Uses official LifeRivo Mobile Chibi Kit (/img/kit/chibi-*.webp) and Clean White / Sky-Blue EdTech tokens */
-import { esc } from "./core.js";
+import { esc, lineIcon } from "./core.js";
 
 const TONE_MAP = {
   lavender: "#F3EFFF",
@@ -253,7 +253,7 @@ export const VocabularyFlashcard = ({ word = "", reading = "", meaning = "", exa
   </div>`;
 
 export const AudioPlayer = ({ text = "", lang = "en-US", label = "Nghe phát âm mẫu" } = {}) =>
-  `<button type="button" class="btn btn-sm cds-audio-btn" data-say="${esc(text)}" data-lang="${esc(lang)}">🔊 ${esc(label)}</button>`;
+  `<button type="button" class="btn btn-sm cds-audio-btn" data-say="${esc(text)}" data-lang="${esc(lang)}">${lineIcon("speaker", 16)}<span>${esc(label)}</span></button>`;
 
 export const QuizOption = ({ text = "", attrs = "", cls = "", disabled = false } = {}) =>
   `<button type="button" class="cds-quiz-opt ${esc(cls)}" ${attrs} ${disabled ? "disabled" : ""}>${esc(text)}</button>`;

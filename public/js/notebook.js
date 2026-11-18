@@ -1,5 +1,5 @@
 /* Sổ tay từ vựng: từ đã lưu (lưu từ trang lý thuyết) và ghi chú cá nhân. Lưu trong tài khoản (S.prefs.words, S.prefs.notes). */
-import { S, esc, icon, toast } from "./core.js";
+import { S, esc, icon, lineIcon, toast } from "./core.js";
 import { savePrefs } from "./game.js";
 import { speakText } from "./voice.js";
 import { currentLang } from "./i18n.js";
@@ -63,7 +63,7 @@ export function pageNotebook(main, _params, _query, ctx) {
                 <span class="lx-nb-ico" aria-hidden="true">🔖</span>
                 <div class="lx-nb-txt"><b>${esc(w.word)}</b>${w.reading ? `<span class="lx-nb-read">${esc(w.reading)}</span>` : ""}<span class="lx-nb-mean">${esc(w.meaning || "")}</span></div>
                 <div class="lx-nb-act">
-                  <button type="button" class="btn btn-sm lx-nb-say-btn" data-nb-say="${i}" aria-label="${EN ? "Listen" : "Nghe"}">🔊</button>
+                  <button type="button" class="btn btn-sm lx-nb-say-btn" data-nb-say="${i}" aria-label="${EN ? "Listen" : "Nghe"}">${lineIcon("speaker", 16)}</button>
                   <button type="button" class="btn btn-sm btn-ghost lx-nb-del-btn" data-nb-del="${i}" aria-label="${EN ? "Remove" : "Xóa"}">×</button>
                 </div></li>`;
             }).join("")}</ul>`).join("") : `<div class="lx-nb-empty">

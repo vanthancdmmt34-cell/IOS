@@ -10,6 +10,7 @@ import { getSubject, setSubject } from "./lang.js";
 import { speakText, stopSpeaking, voicePrefs, setVoicePrefs, aiVoiceAvailable, browserVoices } from "./voice.js";
 import { mdLite, mdInline } from "./pro.js";
 import EAR from "./speak-ear.js";
+import { computeRms, createVadMonitor, createSrEndDetector, joinTranscript } from "./voice-vad.js";
 
 const L = (vi, en) => (currentLang() === "en" ? en : vi);
 const SR = typeof window !== "undefined" ? window.SpeechRecognition || window.webkitSpeechRecognition : null;
@@ -121,40 +122,87 @@ const MIC_ERR = () => ({
 // chunks MOI, AudioContext MOI. Chi goi mr.stop() DUY NHAT 1 lan; DUY NHAT onstop giai phong.
 // Log ngan [mic] de theo doi tren console.
 const micLog = (...a) => { try { console.log("[mic]", ...a); } catch {} };
-export function startServerCapture(lang, { onLevel, maxMs = 20000 } = {}) {
-  let stream = null, mr = null, ac = null, raf = 0, timer = 0, stopGuard = 0;
+export function startServerCapture(lang, { onLevel, maxMs = 20000, silenceMs = 1300, noSpeechMs = 7500, record = true } = {}) {
+  let stream = null, mr = null, ac = null, raf = 0, timer = 0, stopGuard = 0, vad = null;
   let stopped = false, aborted = false;
   const chunks = [];
   let audioUrl = "", error = "";
   let resolveWait = null;
   const waitStopped = new Promise((res) => { resolveWait = res; });
+  // Tao AudioContext ngay trong su kien bam (iOS hay de suspended neu tao sau await).
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (AC) {
+    try {
+      ac = new AC();
+      if (ac.state === "suspended") ac.resume().catch(() => {});
+    } catch { ac = null; }
+  }
   const done = (async () => {
     // --- 1. Mo mic: getUserMedia chay DONG BO trong su kien bam (iOS chan neu qua setTimeout/await truoc do).
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
       micLog("gum ok, track:", stream.getAudioTracks().map((t) => t.readyState + "/" + (t.enabled ? "on" : "off")).join(","));
     } catch (e) {
+      if (ac) { try { await ac.close(); } catch {} ac = null; }
       error = (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) ? "not-allowed" : "audio-capture";
       micLog("gum FAIL:", e && e.name, e && e.message);
       return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error };
     }
-    // --- 2. Song am: AudioContext MOI, resume ngay trong gesture (iOS hay de suspended).
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC && onLevel) {
+    if (stopped || aborted) {
+      try { stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
+      if (ac) { try { await ac.close(); } catch {} ac = null; }
+      return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: aborted ? "aborted" : "no-speech" };
+    }
+    // --- 2. Song am + VAD tu ngat: luon tao AnalyserNode khi co AudioContext (ke ca Chat AI khong truyen onLevel).
+    if (ac) {
       try {
-        ac = new AC();
-        if (ac.state === "suspended") { try { await ac.resume(); } catch {} }
+        if (ac.state === "suspended") {
+          let resumeTimer = 0;
+          try {
+            await Promise.race([
+              ac.resume().catch(() => {}),
+              new Promise((r) => { resumeTimer = setTimeout(r, 250); }),
+              waitStopped,
+            ]);
+          } finally { clearTimeout(resumeTimer); }
+        }
+        if (stopped || aborted) {
+          try { stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
+          try { await ac.close(); } catch {}
+          ac = null;
+          return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: aborted ? "aborted" : "no-speech" };
+        }
         micLog("AudioContext:", ac.state);
         const an = ac.createAnalyser(); an.fftSize = 512;
         ac.createMediaStreamSource(stream).connect(an);
         const buf = new Uint8Array(an.fftSize);
-        const tick = () => { an.getByteTimeDomainData(buf); let s = 0; for (const v of buf) { const x = (v - 128) / 128; s += x * x; } onLevel(Math.min(1, Math.sqrt(s / buf.length) * 3.2)); raf = requestAnimationFrame(tick); };
+        if (silenceMs > 0 || noSpeechMs > 0) {
+          vad = createVadMonitor({
+            silenceMs,
+            noSpeechMs,
+            onAutoStop: (reason) => {
+              micLog("server vad stop:", reason);
+              if (reason === "no-speech") error = "no-speech";
+              requestStop();
+            },
+          });
+        }
+        const tick = () => {
+          if (stopped || aborted) return;
+          an.getByteTimeDomainData(buf);
+          const rms = computeRms(buf);
+          if (onLevel) onLevel(Math.min(1, rms * 3.2));
+          if (vad && ac && ac.state !== "suspended") vad.process(rms, performance.now());
+          if (!stopped && !aborted) raf = requestAnimationFrame(tick);
+        };
         tick();
-      } catch { ac = null; }
+      } catch { try { ac.close().catch(() => {}); } catch {} ac = null; }
     }
     // --- 3. MediaRecorder MOI: 1 instance, 1 lan start, 1 lan stop. ondataavailable thu chunk.
     if (!window.MediaRecorder) {
       error = "no-recorder"; micLog("no MediaRecorder");
+      cancelAnimationFrame(raf);
+      if (vad) { vad.destroy(); vad = null; }
       stream.getTracks().forEach((t) => { try { t.stop(); } catch {} });
       if (ac) ac.close().catch(() => {});
       return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error };
@@ -162,6 +210,8 @@ export function startServerCapture(lang, { onLevel, maxMs = 20000 } = {}) {
     try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 16000 }); }
     catch { try { mr = new MediaRecorder(stream); } catch (e) { error = "audio-capture"; micLog("MediaRecorder FAIL:", e && e.message); } }
     if (error) {
+      cancelAnimationFrame(raf);
+      if (vad) { vad.destroy(); vad = null; }
       stream.getTracks().forEach((t) => { try { t.stop(); } catch {} });
       if (ac) ac.close().catch(() => {});
       return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error };
@@ -171,14 +221,17 @@ export function startServerCapture(lang, { onLevel, maxMs = 20000 } = {}) {
     try { mr.start(250); micLog("recorder start, state:", mr.state, "mime:", mr.mimeType); }
     catch (e) { error = "audio-capture"; micLog("recorder start FAIL:", e && e.message); }
     if (error) {
+      cancelAnimationFrame(raf);
+      if (vad) { vad.destroy(); vad = null; }
       stream.getTracks().forEach((t) => { try { t.stop(); } catch {} });
       if (ac) ac.close().catch(() => {});
       return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error };
     }
-    // --- 4. Cho dung: het maxMs tu dung; bam dung thi requestStop() goi mr.stop() -> onstop -> resolveWait.
+    // --- 4. Cho dung: het maxMs tu dung; VAD hoac bam dung thi requestStop() goi mr.stop() -> onstop -> resolveWait.
     timer = setTimeout(() => { micLog("maxMs, auto stop"); requestStop(); }, maxMs);
     await waitStopped;
-    clearTimeout(timer); cancelAnimationFrame(raf);
+    clearTimeout(timer); clearTimeout(stopGuard); cancelAnimationFrame(raf);
+    if (vad) { vad.destroy(); vad = null; }
     // --- 5. Giai phong HOAN TOAN: dung TAT CA track, dong AudioContext. KHONG goi mr.stop() them lan nua.
     try { if (stream) stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
     if (ac) { try { await ac.close(); } catch {} }
@@ -186,21 +239,32 @@ export function startServerCapture(lang, { onLevel, maxMs = 20000 } = {}) {
     // --- 6. Dich tren server.
     let text = "";
     if (chunks.length && !aborted && !error) {
-      const blob = new Blob(chunks, { type: (mr && mr.mimeType) || "audio/webm" });
-      audioUrl = URL.createObjectURL(blob);
-      micLog("audio blob:", blob.size, "bytes,", blob.type);
+      let blob = null;
       try {
-        const b64 = await new Promise((res, rej) => {
-          const fr = new FileReader();
-          fr.onload = () => res(String(fr.result).split(",")[1] || "");
-          fr.onerror = () => rej(new Error("read"));
-          fr.readAsDataURL(blob);
-        });
-        const r = await api("/api/lang/speak/stt", "POST", { audio: b64, mime: blob.type || "audio/webm", lang: String(lang || "en").slice(0, 5) }, { timeoutMs: 30000 });
-        text = String((r && r.text) || "").trim();
-        micLog("stt text:", JSON.stringify(text));
-      } catch (e) { error = "stt"; micLog("stt FAIL:", e && e.message); }
+        blob = new Blob(chunks, { type: (mr && mr.mimeType) || "audio/webm" });
+      } catch (e) {
+        error = "audio-capture";
+        micLog("Blob FAIL:", e && e.message);
+      }
+      if (blob) {
+        if (record !== false) {
+          try { audioUrl = URL.createObjectURL(blob); } catch {}
+        }
+        micLog("audio blob:", blob.size, "bytes,", blob.type);
+        try {
+          const b64 = await new Promise((res, rej) => {
+            const fr = new FileReader();
+            fr.onload = () => res(String(fr.result).split(",")[1] || "");
+            fr.onerror = () => rej(new Error("read"));
+            fr.readAsDataURL(blob);
+          });
+          const r = await api("/api/lang/speak/stt", "POST", { audio: b64, mime: blob.type || "audio/webm", lang: String(lang || "en").slice(0, 5) }, { timeoutMs: 30000 });
+          text = String((r && r.text) || "").trim();
+          micLog("stt text:", JSON.stringify(text));
+        } catch (e) { error = "stt"; micLog("stt FAIL:", e && e.message); }
+      }
     } else if (!chunks.length) micLog("EMPTY recording (no chunks)");
+    if (aborted && audioUrl) { try { URL.revokeObjectURL(audioUrl); } catch {} audioUrl = ""; }
     return { text, alts: [], conf: 0, ms: 0, audioUrl, error: aborted ? "aborted" : text ? "" : error || "no-speech" };
   })();
   function requestStop() {
@@ -223,14 +287,14 @@ export function startServerCapture(lang, { onLevel, maxMs = 20000 } = {}) {
 
 // Thu am lien tuc va gui doan thu len server moi partialMs de hien chu gan thoi gian thuc.
 // onPartial(text) duoc goi moi lan co chu moi; shouldStop(text) === true thi tu dung thu am.
-export function startLiveCapture(lang, { onPartial, shouldStop, partialMs = 2500, maxMs = 15000, silenceMs = 0 } = {}) {
+export function startLiveCapture(lang, { onPartial, shouldStop, partialMs = 2500, maxMs = 15000, silenceMs = 1300, noSpeechMs = 7500 } = {}) {
   let stream = null, mr = null, halted = false, aborted = false, busy = false, resolveStopped = null;
-  let ac = null, silenceTimer = 0;
+  let ac = null, silenceTimer = 0, stopGuard = 0, vad = null, noSpeechStop = false, lastPartial = "";
   const stoppedP = new Promise((res) => { resolveStopped = res; });
   const chunks = [];
   // AudioContext tao ngay trong su kien bam (iOS hay de suspended neu tao sau await).
   const AC = window.AudioContext || window.webkitAudioContext;
-  if (silenceMs > 0 && AC) { try { ac = new AC(); if (ac.state === "suspended") ac.resume().catch(() => {}); } catch { ac = null; } }
+  if ((silenceMs > 0 || noSpeechMs > 0) && AC) { try { ac = new AC(); if (ac.state === "suspended") ac.resume().catch(() => {}); } catch { ac = null; } }
   const b64Of = (blob) => new Promise((res, rej) => {
     const fr = new FileReader();
     fr.onload = () => res(String(fr.result).split(",")[1] || "");
@@ -247,57 +311,94 @@ export function startLiveCapture(lang, { onPartial, shouldStop, partialMs = 2500
   const halt = () => {
     if (halted) return;
     halted = true;
-    try { if (mr && mr.state !== "inactive") mr.stop(); else resolveStopped(); } catch { resolveStopped(); }
+    try {
+      if (mr && mr.state !== "inactive") {
+        mr.stop();
+        stopGuard = setTimeout(() => { if (resolveStopped) resolveStopped(); }, 1500);
+      } else resolveStopped();
+    } catch { resolveStopped(); }
   };
   const done = (async () => {
+    let maxT = 0, recErr = "";
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-    } catch (e) {
-      return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) ? "not-allowed" : "audio-capture" };
-    }
-    // Do muc lang: sau khi da co tieng noi, im lang du silenceMs thi tu dung.
-    if (ac) {
       try {
-        const an = ac.createAnalyser(); an.fftSize = 512;
-        ac.createMediaStreamSource(stream).connect(an);
-        const buf = new Uint8Array(an.fftSize);
-        let spoke = false, quietSince = 0;
-        silenceTimer = setInterval(() => {
-          an.getByteTimeDomainData(buf);
-          let s = 0; for (const v of buf) { const x = (v - 128) / 128; s += x * x; }
-          const rms = Math.sqrt(s / buf.length), now = Date.now();
-          if (rms > 0.03) { spoke = true; quietSince = 0; }
-          else if (spoke) { if (!quietSince) quietSince = now; if (now - quietSince >= silenceMs) { micLog("silence stop"); halt(); } }
-        }, 100);
-      } catch (e) { micLog("silence detect off:", e && e.message); }
-    }
-    try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 16000 }); }
-    catch { mr = new MediaRecorder(stream); }
-    mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
-    mr.onstop = () => resolveStopped();
-    mr.start(500);
-    const maxT = setTimeout(halt, maxMs);
-    // Vong lap nhan chu: moi partialMs gui doan thu len server, khong chong lan nhau.
-    (async () => {
-      while (!halted) {
-        await Promise.race([new Promise((r) => setTimeout(r, partialMs)), stoppedP]);
-        if (halted || busy) continue;
-        busy = true;
-        try {
-          const t = await transcribe();
-          if (t && !halted) { if (onPartial) onPartial(t); if (shouldStop && shouldStop(t)) halt(); }
-        } catch (e) { micLog("partial stt FAIL:", e && e.message); }
-        finally { busy = false; }
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      } catch (e) {
+        return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) ? "not-allowed" : "audio-capture" };
       }
-    })();
-    await stoppedP;
-    clearTimeout(maxT); clearInterval(silenceTimer);
-    try { if (ac) ac.close().catch(() => {}); } catch {}
-    try { stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
+      if (halted || aborted) {
+        return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: aborted ? "aborted" : "no-speech" };
+      }
+      // Do muc lang bang VAD thich ung: loc tap am va tu ngat khi im lang hoac khong co tieng noi.
+      if (ac) {
+        try {
+          if (ac.state === "suspended") {
+            let resumeTimer = 0;
+            try {
+              await Promise.race([
+                ac.resume().catch(() => {}),
+                new Promise((r) => { resumeTimer = setTimeout(r, 250); }),
+                stoppedP,
+              ]);
+            } finally { clearTimeout(resumeTimer); }
+          }
+          if (halted || aborted) {
+            return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: aborted ? "aborted" : "no-speech" };
+          }
+          const an = ac.createAnalyser(); an.fftSize = 512;
+          ac.createMediaStreamSource(stream).connect(an);
+          const buf = new Uint8Array(an.fftSize);
+          vad = createVadMonitor({
+            silenceMs,
+            noSpeechMs,
+            onAutoStop: (reason) => {
+              micLog("live vad stop:", reason);
+              if (reason === "no-speech") noSpeechStop = true;
+              halt();
+            },
+          });
+          silenceTimer = setInterval(() => {
+            if (halted || aborted) return;
+            if (ac && ac.state === "suspended") return;
+            an.getByteTimeDomainData(buf);
+            vad.process(computeRms(buf), performance.now());
+          }, 50);
+        } catch (e) { micLog("silence detect off:", e && e.message); }
+      }
+      try { mr = new MediaRecorder(stream, { audioBitsPerSecond: 16000 }); }
+      catch { try { mr = new MediaRecorder(stream); } catch (e) { recErr = "audio-capture"; micLog("live MediaRecorder FAIL:", e && e.message); } }
+      if (recErr) return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: recErr };
+      mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      mr.onstop = () => resolveStopped();
+      try { mr.start(500); }
+      catch (e) { return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: "audio-capture" }; }
+      maxT = setTimeout(halt, maxMs);
+      // Vong lap nhan chu: moi partialMs gui doan thu len server, khong chong lan nhau.
+      (async () => {
+        while (!halted) {
+          await Promise.race([new Promise((r) => setTimeout(r, partialMs)), stoppedP]);
+          if (halted || busy) continue;
+          busy = true;
+          try {
+            const t = await transcribe();
+            if (t && !halted) { lastPartial = t; if (onPartial) onPartial(t); if (shouldStop && shouldStop(t)) halt(); }
+          } catch (e) { micLog("partial stt FAIL:", e && e.message); }
+          finally { busy = false; }
+        }
+      })();
+      await stoppedP;
+    } finally {
+      clearTimeout(maxT); clearTimeout(stopGuard);
+      clearInterval(silenceTimer); silenceTimer = 0;
+      if (vad) { vad.destroy(); vad = null; }
+      try { if (ac) ac.close().catch(() => {}); } catch {}
+      try { if (stream) stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
+    }
     if (aborted) return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: "aborted" };
+    if (noSpeechStop && !lastPartial) return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: "no-speech" };
     let text = "", error = "";
     try { text = await transcribe(); } catch (e) { error = "stt"; micLog("final stt FAIL:", e && e.message); }
-    return { text, alts: [], conf: 0, ms: 0, audioUrl: "", error: text ? "" : error || "no-speech" };
+    return { text: text || lastPartial, alts: [], conf: 0, ms: 0, audioUrl: "", error: (text || lastPartial) ? "" : error || "no-speech" };
   })();
   return { stop() { halt(); }, abort() { aborted = true; halt(); }, done };
 }
@@ -331,115 +432,223 @@ const coveredPct = (heard, target) => {
   return tw.length ? m / tw.length : 0;
 };
 
-function startCapture(lang, { onInterim, onLevel, record = true, maxMs = 20000, target = "" } = {}) {
+function startCapture(lang, { onInterim, onLevel, record = true, maxMs = 20000, target = "", silenceMs = 1300, noSpeechMs = 7500 } = {}) {
   // Mobile: Web Speech API hay chet sau lan dau (iOS/Chrome mobile) -> thu am roi dich tren server cho chac.
-  if (MOBILE) return startServerCapture(lang, { onLevel, maxMs });
-  let rec = null, stream = null, mr = null, ac = null, raf = 0, timer = 0, restartTimer = 0, resolveDone = null, aborted = false, wantStop = false;
-  let rapidEnds = 0, recStartAt = 0;
+  if (MOBILE) return startServerCapture(lang, { onLevel, onInterim, maxMs, silenceMs, noSpeechMs, record, target });
+  let rec = null, stream = null, mr = null, ac = null, raf = 0, timer = 0, stopTimer = 0, restartTimer = 0, retryTimer = 0, coolTimer = 0, resolveCooldown = null, resolveDone = null, aborted = false, wantStop = false;
+  let rapidEnds = 0, recStartAt = 0, srStarted = false;
+  let srDet = null, vad = null, vadReady = false, srHasSpeech = false;
   const chunks = [];
   let t0 = 0, t1 = 0, fin = "", inter = "", alts = [], conf = 0, error = "";
+  const clearCooldown = () => {
+    if (coolTimer) { clearTimeout(coolTimer); coolTimer = 0; }
+    if (resolveCooldown) { const r = resolveCooldown; resolveCooldown = null; r(); }
+  };
+  const stopGracefully = () => {
+    if (wantStop) return;
+    wantStop = true;
+    clearCooldown();
+    const pend = restartTimer;
+    clearTimeout(restartTimer); restartTimer = 0;
+    clearTimeout(retryTimer); retryTimer = 0;
+    if (srDet) { srDet.destroy(); srDet = null; }
+    if (vad) { vad.destroy(); vad = null; }
+    if (rec) {
+      try { rec.stop(); } catch {}
+      stopTimer = setTimeout(() => { if (resolveDone) resolveDone(); }, 600);
+    } else if (resolveDone) {
+      resolveDone();
+    }
+    if (pend && resolveDone) resolveDone();
+  };
   const done = (async () => {
-    if (record && !MOBILE && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC && onLevel) {
-          ac = new AC();
-          const an = ac.createAnalyser(); an.fftSize = 512;
-          ac.createMediaStreamSource(stream).connect(an);
-          const buf = new Uint8Array(an.fftSize);
-          const tick = () => { an.getByteTimeDomainData(buf); let s = 0; for (const v of buf) { const x = (v - 128) / 128; s += x * x; } onLevel(Math.min(1, Math.sqrt(s / buf.length) * 3.2)); raf = requestAnimationFrame(tick); };
-          tick();
+    let audioUrl = "";
+    try {
+      if (record && !MOBILE && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+        } catch (e) {
+          if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) error = "not-allowed";
+          else if (e && e.name === "NotFoundError") error = "audio-capture";
+          stream = null;
         }
-        if (window.MediaRecorder) { mr = new MediaRecorder(stream); mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); }; mr.start(); }
-      } catch (e) {
-        if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) error = "not-allowed";
-        else if (e && e.name === "NotFoundError") error = "audio-capture";
-        stream = null;
+        if (stream && (aborted || wantStop)) {
+          return { text: "", alts: [], conf: 0, ms: 0, audioUrl: "", error: aborted ? "aborted" : "no-speech" };
+        }
+        if (stream) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) {
+            try {
+              ac = new AC();
+              const an = ac.createAnalyser(); an.fftSize = 512;
+              ac.createMediaStreamSource(stream).connect(an);
+              const buf = new Uint8Array(an.fftSize);
+              if (silenceMs > 0 || noSpeechMs > 0) {
+                vad = createVadMonitor({
+                  silenceMs,
+                  noSpeechMs,
+                  onAutoStop: (reason) => {
+                    if (aborted || wantStop) return;
+                    if (reason === "no-speech" && (srHasSpeech || (fin || inter).trim())) return;
+                    micLog("desktop vad stop:", reason);
+                    if (reason === "no-speech") error = "no-speech";
+                    stopGracefully();
+                  },
+                });
+              }
+              const tick = () => {
+                if (aborted || wantStop) return;
+                an.getByteTimeDomainData(buf);
+                const rms = computeRms(buf);
+                if (onLevel) onLevel(Math.min(1, rms * 3.2));
+                if (vad && vadReady && ac && ac.state !== "suspended") vad.process(rms, performance.now());
+                if (!aborted && !wantStop) raf = requestAnimationFrame(tick);
+              };
+              tick();
+            } catch {
+              cancelAnimationFrame(raf); raf = 0;
+              if (vad) { vad.destroy(); vad = null; }
+              if (ac) { try { ac.close().catch(() => {}); } catch {} ac = null; }
+            }
+          }
+        }
+      }
+      if (!error && !aborted && !wantStop && lastCapEnd) {
+        const wait = COOL_MS - (Date.now() - lastCapEnd);
+        if (wait > 0) {
+          micLog("cooldown ms:", wait);
+          await new Promise((resolve) => {
+            resolveCooldown = resolve;
+            coolTimer = setTimeout(() => { coolTimer = 0; resolveCooldown = null; resolve(); }, wait);
+          });
+        }
+      }
+      if (!error && !aborted && !wantStop && stream && window.MediaRecorder) {
+        try {
+          mr = new MediaRecorder(stream);
+          mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+          mr.start();
+        } catch {
+          mr = null;
+          if (!ac && stream) {
+            try { stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {}
+            stream = null;
+          }
+        }
+      }
+      if (!error && !aborted && !wantStop) await new Promise((resolve) => {
+        resolveDone = resolve;
+        let finAcc = "";
+        const FATAL = new Set(["not-allowed", "audio-capture", "network", "language-not-supported", "service-not-allowed"]);
+        srDet = createSrEndDetector({
+          postSpeechMs: silenceMs || 1400,
+          speechEndMs: 650,
+          noSpeechMs,
+          onAutoStop: (reason) => {
+            if (aborted || wantStop) return;
+            micLog("sr end-detector stop:", reason);
+            if (reason === "no-speech" && !(fin || inter).trim()) error = "no-speech";
+            stopGracefully();
+          },
+        });
+        vadReady = true;
+        if (vad) vad.reset();
+        const startRec = () => {
+          if (aborted || wantStop) return resolve();
+          // Tao MOI SpeechRecognition moi lan: dung lai cung instance sau onend hay loi am tham tren Chrome mobile (lan 2 khong thu).
+          const r = new SR();
+          rec = r;
+          r.lang = lang; r.interimResults = true; r.maxAlternatives = 4; r.continuous = true;
+          micLog("sr new session, lang:", lang, "t+", Date.now() - recStartAt);
+          r.onstart = () => { micLog("sr onstart"); srDet && srDet.onStart(); };
+          r.onaudiostart = () => micLog("sr audiostart");
+          r.onaudioend = () => micLog("sr audioend");
+          r.onspeechstart = () => { micLog("sr speechstart"); srHasSpeech = true; if (!t0) t0 = performance.now(); srDet && srDet.onSpeechStart(); };
+          r.onspeechend = () => { micLog("sr speechend"); t1 = performance.now(); srDet && srDet.onSpeechEnd(); };
+          r.onresult = (e) => {
+            if (!t0) t0 = performance.now();
+            t1 = performance.now();
+            let f = "", it = "";
+            for (const rr of e.results) {
+              if (rr.isFinal) { f = joinTranscript(f, rr[0].transcript); if (rr[0].confidence) conf = rr[0].confidence; if (e.results.length === 1) alts = [...rr].slice(1).map((a) => a.transcript); }
+              else it = joinTranscript(it, rr[0].transcript);
+            }
+            fin = joinTranscript(finAcc, f); inter = it;
+            const combined = joinTranscript(fin, inter);
+            if (combined) srHasSpeech = true;
+            if (onInterim) onInterim(combined);
+            if (srDet) srDet.onResult({ transcript: combined, isFinal: Boolean(f.trim()) && !it.trim(), hasInterim: Boolean(it.trim()) });
+            // Doc du tu/cau mau thi tu dung ngay, khong doi het maxMs.
+            if (target && combined && coveredPct(combined, target) >= 1) { stopGracefully(); }
+          };
+          r.onerror = (e) => { micLog("sr error:", e.error); if (e.error !== "aborted") error = e.error || "error"; };
+          r.onend = () => {
+            micLog("sr end, fin:", JSON.stringify(fin), "inter:", JSON.stringify(inter), "error:", error, "aborted:", aborted, "wantStop:", wantStop, "alive ms:", Date.now() - recStartAt);
+            // continuous=true: phien nghe xuyen khoang ngung, chi ket thuc khi tu ngat het cau / bam dung / het maxMs / loi.
+            // Khong tu mo phien moi — lan bam mic sau se mo phien HOAN TOAN MOI (startCapture moi).
+            if (aborted || wantStop) return resolve();
+            if (error && FATAL.has(error)) return resolve();
+            // Phien ket thuc qua nhanh sau khi mo (<800ms) = dich vu tu choi/chet. Thu lai toi da 2 lan TRONG CUNG phien bam (khong deo phien cu).
+            if (Date.now() - recStartAt < 800 && !fin.trim()) {
+              if (++rapidEnds >= 3) { error = "start"; return resolve(); }
+              finAcc = fin; error = "";
+              restartTimer = setTimeout(() => {
+                if (aborted || wantStop) return resolve();
+                try { startRec(); } catch { return resolve(); }
+              }, 150);
+              return;
+            }
+            rapidEnds = 0;
+            return resolve();
+          };
+          let tries = 0;
+          const tryStart = () => {
+            if (aborted || wantStop) return resolve();
+            try { r.start(); recStartAt = Date.now(); srStarted = true; }
+            catch (e) { if (++tries <= 2) retryTimer = setTimeout(tryStart, 400); else { error = "start"; resolve(); } }
+          };
+          tryStart();
+        };
+        timer = setTimeout(() => {
+          micLog("maxMs, auto stop");
+          stopGracefully();
+        }, maxMs);
+        startRec();
+      });
+    } finally {
+      clearCooldown();
+      clearTimeout(timer); clearTimeout(stopTimer); clearTimeout(restartTimer); clearTimeout(retryTimer); restartTimer = 0;
+      cancelAnimationFrame(raf); raf = 0;
+      if (srDet) { srDet.destroy(); srDet = null; }
+      if (vad) { vad.destroy(); vad = null; }
+      if (mr && mr.state !== "inactive") {
+        await new Promise((r) => { const to = setTimeout(r, 800); mr.onstop = () => { clearTimeout(to); r(); }; try { mr.stop(); } catch { clearTimeout(to); r(); } });
+      }
+      if (stream) { try { stream.getTracks().forEach((t) => { try { t.stop(); } catch {} }); } catch {} stream = null; }
+      if (ac) { try { ac.close().catch(() => {}); } catch {} ac = null; }
+      if (record !== false && mr && chunks.length && !aborted) {
+        try {
+          audioUrl = URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || "audio/webm" }));
+        } catch {}
       }
     }
-    if (!error && !aborted && lastCapEnd) {
-      const wait = COOL_MS - (Date.now() - lastCapEnd);
-      if (wait > 0) { micLog("cooldown ms:", wait); await new Promise((r) => setTimeout(r, wait)); }
-    }
-    if (!error && !aborted) await new Promise((resolve) => {
-      resolveDone = resolve;
-      let finAcc = "";
-      const FATAL = new Set(["not-allowed", "audio-capture", "network", "language-not-supported", "service-not-allowed"]);
-      const startRec = () => {
-        // Tao MOI SpeechRecognition moi lan: dung lai cung instance sau onend hay loi am tham tren Chrome mobile (lan 2 khong thu).
-        const r = new SR();
-        rec = r;
-        r.lang = lang; r.interimResults = true; r.maxAlternatives = 4; r.continuous = true;
-        micLog("sr new session, lang:", lang, "t+", Date.now() - recStartAt);
-        r.onstart = () => micLog("sr onstart");
-        r.onaudiostart = () => micLog("sr audiostart");
-        r.onaudioend = () => micLog("sr audioend");
-        r.onspeechstart = () => { micLog("sr speechstart"); if (!t0) t0 = performance.now(); };
-        r.onspeechend = () => { micLog("sr speechend"); t1 = performance.now(); };
-        r.onresult = (e) => {
-          if (!t0) t0 = performance.now();
-          t1 = performance.now();
-          let f = "", it = "";
-          for (const rr of e.results) {
-            if (rr.isFinal) { f += rr[0].transcript; if (rr[0].confidence) conf = rr[0].confidence; if (e.results.length === 1) alts = [...rr].slice(1).map((a) => a.transcript); }
-            else it += rr[0].transcript;
-          }
-          fin = finAcc + f; inter = it;
-          if (onInterim) onInterim((fin + " " + inter).trim());
-          // Doc du tu/cau mau thi tu dung ngay, khong doi het maxMs.
-          if (target && coveredPct(fin + " " + inter, target) >= 1) { try { r.stop(); } catch {} }
-        };
-        r.onerror = (e) => { micLog("sr error:", e.error); if (e.error !== "aborted") error = e.error || "error"; };
-        r.onend = () => {
-          micLog("sr end, fin:", JSON.stringify(fin), "inter:", JSON.stringify(inter), "error:", error, "aborted:", aborted, "wantStop:", wantStop, "alive ms:", Date.now() - recStartAt);
-          // continuous=true: phien nghe xuyen khoang ngung, chi ket thuc khi bam dung / het maxMs / loi.
-          // Khong tu mo phien moi — lan bam mic sau se mo phien HOAN TOAN MOI (startCapture moi).
-          if (aborted || wantStop) return resolve();
-          if (error && FATAL.has(error)) return resolve();
-          // Phien ket thuc qua nhanh sau khi mo (<800ms) = dich vu tu choi/chet. Thu lai toi da 2 lan TRONG CUNG phien bam (khong deo phien cu).
-          if (Date.now() - recStartAt < 800 && !fin.trim()) {
-            if (++rapidEnds >= 3) { error = "start"; return resolve(); }
-            finAcc = fin; error = "";
-            restartTimer = setTimeout(() => {
-              if (aborted || wantStop) return resolve();
-              try { startRec(); } catch { return resolve(); }
-            }, 150);
-            return;
-          }
-          rapidEnds = 0;
-          return resolve();
-        };
-        let tries = 0;
-        const tryStart = () => {
-          try { r.start(); recStartAt = Date.now(); }
-          catch (e) { if (++tries <= 2) setTimeout(tryStart, 400); else { error = "start"; resolve(); } }
-        };
-        tryStart();
-      };
-      timer = setTimeout(() => {
-        wantStop = true;
-        try { rec.stop(); } catch {}
-        // Fallback: neu rec.stop() khong kich onend (phien chet), giai phong promise sau 500ms.
-        setTimeout(() => { if (resolveDone) resolveDone(); }, 500);
-      }, maxMs);
-      startRec();
-    });
-    clearTimeout(timer); clearTimeout(restartTimer); restartTimer = 0; cancelAnimationFrame(raf);
-    let audioUrl = "";
-    if (mr && mr.state !== "inactive") {
-      await new Promise((r) => { const to = setTimeout(r, 800); mr.onstop = () => { clearTimeout(to); r(); }; try { mr.stop(); } catch { clearTimeout(to); r(); } });
-    }
-    if (mr && chunks.length && !aborted) audioUrl = URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || "audio/webm" }));
-    if (stream) stream.getTracks().forEach((t) => t.stop());
-    if (ac) ac.close().catch(() => {});
-    lastCapEnd = Date.now();
-    const text = (fin || inter).trim();
+    if (srStarted) lastCapEnd = Date.now();
+    const text = joinTranscript(fin, inter);
     return { text, alts, conf, ms: t0 && t1 > t0 ? Math.round(t1 - t0) : 0, audioUrl, error: aborted ? "aborted" : text ? "" : error || "no-speech" };
   })();
   return {
-    stop() { wantStop = true; const pend = restartTimer; clearTimeout(restartTimer); restartTimer = 0; try { rec && rec.abort(); } catch {} if (pend && resolveDone) resolveDone(); },
-    abort() { aborted = true; const pend = restartTimer; clearTimeout(restartTimer); restartTimer = 0; try { rec && rec.abort(); } catch {} if (pend && resolveDone) resolveDone(); },
+    stop() { stopGracefully(); },
+    abort() {
+      aborted = true;
+      clearCooldown();
+      clearTimeout(timer); clearTimeout(stopTimer);
+      clearTimeout(restartTimer); restartTimer = 0;
+      clearTimeout(retryTimer); retryTimer = 0;
+      if (srDet) { srDet.destroy(); srDet = null; }
+      if (vad) { vad.destroy(); vad = null; }
+      try { rec && rec.abort(); } catch {}
+      if (resolveDone) resolveDone();
+    },
     done,
   };
 }
@@ -870,7 +1079,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
       <div class="sp-text lx-vi" lang="${esc(d.speech)}" id="spText">${wordsHtml(words)}</div>
       ${it.r ? `<div class="sp-reading lx-vi">${esc(it.r)}</div>` : ""}
       ${it.m ? `<div class="sp-meaning lx-vi">${esc(it.m)}</div>` : ""}
-      <button type="button" class="sp-listen-pill" data-act="listen">▶ ${L("Nghe giọng mẫu", "Listen to model")}</button>
+      <button type="button" class="sp-listen-pill" data-act="listen">${I("vol", 16)}<span>${L("Nghe giọng mẫu", "Listen to model")}</span></button>
       <div class="sp-ctl">
         <button type="button" class="sp-round" data-act="listen" title="${L("Nghe mẫu (L)", "Listen (L)")}" aria-label="${L("Nghe mẫu", "Listen")}">${I("vol", 22)}</button>
         <button type="button" class="sp-round sp-txt ${st.slow ? "on" : ""}" data-act="slow" title="${L("Đọc chậm", "Slow speed")}" aria-pressed="${st.slow}">0.6×</button>
@@ -879,8 +1088,8 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
         <button type="button" class="sp-round ${st.typing ? "on" : ""}" data-act="type" title="${L("Không dùng được micro? Gõ lại câu", "No microphone? Type it instead")}" aria-label="${L("Gõ lại câu", "Type instead")}">${I("keys", 22)}</button>
       </div>
       <canvas class="sp-wave" id="spWave" aria-hidden="true"></canvas>
-      <div class="sp-status" id="spStatus" aria-live="polite">${r ? "" : SR ? L("Chạm để bắt đầu ghi âm", "Tap the microphone and read aloud, clearly") : L("Nghe mẫu, rồi gõ lại câu để kiểm tra", "Listen, then type the sentence to check")}</div>
-      <form class="sp-type" id="spType" ${st.typing || !SR ? "" : "hidden"}><input class="input lx-vi" name="t" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${L("Gõ lại câu bạn vừa đọc", "Type what you said")}"><button class="btn btn-primary" type="submit">${L("Chấm", "Check")}</button></form>
+      <div class="sp-status" id="spStatus" aria-live="polite">${r ? "" : (SR || MOBILE) ? L("Chạm micro để đọc — tự dừng khi hết câu", "Tap the mic to speak — auto-stops after your sentence") : L("Nghe mẫu, rồi gõ lại câu để kiểm tra", "Listen, then type the sentence to check")}</div>
+      <form class="sp-type" id="spType" ${st.typing || (!SR && !MOBILE) ? "" : "hidden"}><input class="input lx-vi" name="t" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${L("Gõ lại câu bạn vừa đọc", "Type what you said")}"><button class="btn btn-primary" type="submit">${L("Chấm", "Check")}</button></form>
       ${r ? resultHtml(it, r) : ""}`;
     wave = makeWave($("#spWave"));
   }
@@ -926,6 +1135,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
 
   function go(i) {
     if (st.cap) { st.cap.abort(); st.cap = null; }
+    micUi(false);
     stopSpeech(); st.readingAll = false; syncReadAll();
     st.idx = Math.max(0, Math.min(items.length, i));
     paintDots(); paintCard();
@@ -934,6 +1144,14 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
   function micUi(on) {
     const b = card.querySelector(".sp-mic");
     if (b) { b.classList.toggle("rec", on); b.innerHTML = on ? I("stop", 30) : I("mic", 30); b.setAttribute("aria-label", on ? L("Dừng thu", "Stop") : L("Thu âm", "Record")); }
+    const sb = main.querySelector(".sp-m-score-btn");
+    if (sb) {
+      sb.classList.toggle("rec", on);
+      sb.classList.toggle("btn-danger", on);
+      sb.classList.toggle("btn-primary", !on);
+      sb.textContent = on ? L("Dừng thu âm", "Stop recording") : L("Chấm phát âm", "Score pronunciation");
+      sb.setAttribute("aria-pressed", String(on));
+    }
     if (wave) wave.set(on);
     card.classList.toggle("is-rec", on);
   }
@@ -959,13 +1177,18 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     stopSpeech();
     const old = card.querySelector(".sp-result"); if (old) old.remove();
     card.querySelectorAll(".sp-w").forEach((s) => { s.className = "sp-w"; });
-    micUi(true); status(L("Đang nghe… đọc to câu trên, bấm lần nữa để dừng", "Listening… read the text aloud, tap again to stop"), "rec");
-    const cap = st.cap = startCapture(d.speech, { onInterim: (t) => status(t, "rec lx-vi"), onLevel: (v) => wave && wave.push(v), maxMs: kind === "doan" ? 30000 : 15000, target: it.t });
-    const out = await cap.done;
-    if (st.cap === cap) st.cap = null;
-    if (!alive || items[st.idx] !== it) { if (out.audioUrl) URL.revokeObjectURL(out.audioUrl); return; }
-    micUi(false);
-    if (out.error === "aborted") return;
+    micUi(true); status(L("Đang nghe… tự dừng khi dứt câu (hoặc bấm để dừng)", "Listening… auto-stops at sentence end (or tap to stop)"), "rec");
+    const silenceMs = kind === "tu" ? 1000 : kind === "doan" ? 1800 : 1300;
+    const cap = st.cap = startCapture(d.speech, { onInterim: (t) => status(t, "rec lx-vi"), onLevel: (v) => wave && wave.push(v), maxMs: kind === "doan" ? 30000 : 15000, silenceMs, noSpeechMs: 7500, target: it.t });
+    let out;
+    try { out = await cap.done; }
+    catch (e) { micLog("capture crashed:", e && e.message); out = { text: "", alts: [], audioUrl: "", error: "start" }; }
+    finally {
+      if (st.cap === cap) st.cap = null;
+      if (alive && items[st.idx] === it) micUi(false);
+    }
+    if (!alive || items[st.idx] !== it) { if (out && out.audioUrl) URL.revokeObjectURL(out.audioUrl); return; }
+    if (out.error === "aborted") { if (out.audioUrl) URL.revokeObjectURL(out.audioUrl); return; }
     if (!out.text) { if (out.audioUrl) URL.revokeObjectURL(out.audioUrl); status(MIC_ERR()[out.error] || L("Không nghe rõ, thử lại nhé.", "Could not hear you clearly. Please try again."), "err"); return; }
     if (out.audioUrl) { if (st.audio[it.k]) URL.revokeObjectURL(st.audio[it.k]); st.audio[it.k] = out.audioUrl; }
     await grade(it, out);
@@ -1151,19 +1374,25 @@ export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
       if (e.status === 402) st.quota = { ...(st.quota || {}), allowed: false, reason: e.message, limits: (st.quota && st.quota.limits) || { day: 0 }, remaining: { day: 0 } }, paint(false);
     }
   }
-  function micUi(on) { const b = $("#spMic"); b.classList.toggle("rec", on); b.innerHTML = on ? I("stop", 24) : I("mic", 24); }
+  function micUi(on) {
+    const b = $("#spMic");
+    b.classList.toggle("rec", on);
+    b.innerHTML = on ? I("stop", 24) : I("mic", 24);
+    b.setAttribute("aria-label", on ? L("Dừng thu", "Stop") : L("Nói", "Speak"));
+  }
   async function talk() {
     if (st.busy) return;
     micLog("chat talk() pressed, busy:", st.busy, "cap active:", !!st.cap);
     if (st.cap) { st.cap.stop(); return; }
     if (!SR && !MOBILE) { toast(L("Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy dùng Chrome / Edge, hoặc gõ câu trả lời.", "This browser cannot recognise speech. Use Chrome / Edge, or type your answer."), "info"); input.focus(); return; }
     if (!window.isSecureContext) { toast(L("Micro chỉ dùng được khi trang chạy bằng https:// (hoặc localhost).", "The microphone only works over https:// (or localhost)."), "err"); return; }
-    stopSpeech(); micUi(true); input.value = ""; input.placeholder = L("Đang nghe…", "Listening…");
-    const cap = st.cap = startCapture(d.speech, { record: false, onInterim: (t) => { input.value = t; }, maxMs: 25000 });
+    stopSpeech(); micUi(true); input.value = ""; input.placeholder = L("Đang nghe… tự dừng khi dứt câu", "Listening… auto-stops at sentence end");
+    const cap = st.cap = startCapture(d.speech, { record: false, onInterim: (t) => { input.value = t; }, maxMs: 25000, silenceMs: 1400, noSpeechMs: 7500 });
     let out;
     try { out = await cap.done; }
     catch (e) { micLog("capture crashed:", e && e.message); out = { text: "", alts: [], error: "start" }; }
     finally { if (st.cap === cap) st.cap = null; }
+    if (out && out.audioUrl) URL.revokeObjectURL(out.audioUrl);
     if (!alive) return;
     micUi(false); input.placeholder = L(`Nói hoặc gõ bằng ${d.name}…`, `Speak or type in ${d.name}…`);
     if (out.error === "aborted") return;

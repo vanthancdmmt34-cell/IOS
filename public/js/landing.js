@@ -1,6 +1,6 @@
 /* LifeRivo - Landing Page & Client Hydration */
 import { appHash, setAppHash } from "./core.js";
-import { S, api, esc, icon, fmtN, openModal, animateCount, smoothScrollTo, store, cfg, siteName, brandHtml, themeBtnHtml } from "./core.js";
+import { S, api, esc, icon, lineIcon, fmtN, openModal, animateCount, smoothScrollTo, store, cfg, siteName, brandHtml, themeBtnHtml } from "./core.js";
 import { langSwitchHtml, bindLangSwitch, currentLang, syncLangSwitchUI, t } from "./i18n.js";
 
 // ── Funnel tracking ─────────────────────────────────────────────────────────
@@ -857,7 +857,7 @@ export function buildLandingMarkup() {
                   <p class="demo-phonetic" id="demoPhonetic"></p>
                 </div>
                 <div class="demo-audio-actions">
-                  <button type="button" class="demo-audio-btn" id="demoSpeakBtn" aria-label="Nghe phát âm mẫu">🔊 Nghe mẫu</button>
+                  <button type="button" class="demo-audio-btn" id="demoSpeakBtn" aria-label="Nghe phát âm mẫu">${lineIcon("speaker", 15)} <span>Nghe mẫu</span></button>
                   <button type="button" class="demo-audio-btn slow" id="demoSlowBtn" aria-label="Nghe chậm 0.6x">🐢 0.6x</button>
                 </div>
               </div>
@@ -1831,7 +1831,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
         <div class="lp-m-demo-top">
           <span class="lp-m-demo-badge">${LANG_FLAG_SVG[d.code] || d.flag} ${esc(d.badge)}</span>
           <div class="lp-m-demo-audio">
-            <button type="button" class="lp-m-say-btn" data-msay="1">🔊 ${en ? "Listen" : "Nghe mẫu"}</button>
+            <button type="button" class="lp-m-say-btn" data-msay="1">${lineIcon("speaker", 15)} <span>${en ? "Listen" : "Nghe mẫu"}</span></button>
             <button type="button" class="lp-m-say-btn" data-msay="0.6">🐢 0.6x</button>
           </div>
         </div>

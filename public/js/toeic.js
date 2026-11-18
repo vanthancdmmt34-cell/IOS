@@ -1,7 +1,7 @@
 // Trung tâm TOEIC & luyện thi (môn Tiếng Anh): tổng quan, học theo Part, luyện từng Part,
 // đề thi thử có giờ, kết quả và lịch sử. Dữ liệu và chấm điểm do máy chủ thực hiện (/api/toeic).
 import { setAppHash } from "./core.js";
-import { api, esc, icon, toast, fmtN } from "./core.js";
+import { api, esc, icon, lineIcon, toast, fmtN } from "./core.js";
 import { currentLang } from "./i18n.js";
 import { speakText as voiceSpeak, stopSpeaking } from "./voice.js";
 import { HeroBanner } from "./chibi-ds.js";
@@ -194,15 +194,15 @@ async function viewDrill(main, n, ctx) {
     const ps = d.passages[pid];
     if (!ps) return "";
     if (ps.kind === "text") return `<div class="toeic-passage"><p>${esc(ps.text)}</p></div>`;
-    return `<div class="toeic-passage toeic-audio"><button type="button" class="btn btn-sm" data-speak="${esc(pid)}">${icon("play")}${T("Nghe đoạn hội thoại", "Play audio")}</button><div class="toeic-script" hidden>${ps.lines.map((x) => `<p>${esc(x)}</p>`).join("")}</div></div>`;
+    return `<div class="toeic-passage toeic-audio"><button type="button" class="btn btn-sm" data-speak="${esc(pid)}">${lineIcon("speaker", 16)}<span>${T("Nghe đoạn hội thoại", "Play audio")}</span></button><div class="toeic-script" hidden>${ps.lines.map((x) => `<p>${esc(x)}</p>`).join("")}</div></div>`;
   };
   const shownPassages = new Set();
   const qHtml = d.questions.map((q, i) => {
     let pre = "";
     if (q.passage && !shownPassages.has(q.passage)) { shownPassages.add(q.passage); pre = passageBlock(q.passage); }
     const isListen = p.section === "listening";
-    const stem = q.part === 1 ? `<div class="toeic-scene" aria-hidden="true">${esc(q.scene || "")}</div><button type="button" class="btn btn-sm" data-speak-opts="${i}">${icon("play")}${T("Nghe 4 phương án", "Play the 4 options")}</button>`
-      : q.part === 2 ? `<button type="button" class="btn btn-sm" data-speak-q="${i}">${icon("play")}${T("Nghe câu hỏi", "Play question")}</button>`
+    const stem = q.part === 1 ? `<div class="toeic-scene" aria-hidden="true">${esc(q.scene || "")}</div><button type="button" class="btn btn-sm" data-speak-opts="${i}">${lineIcon("speaker", 16)}<span>${T("Nghe 4 phương án", "Play the 4 options")}</span></button>`
+      : q.part === 2 ? `<button type="button" class="btn btn-sm" data-speak-q="${i}">${lineIcon("speaker", 16)}<span>${T("Nghe câu hỏi", "Play question")}</span></button>`
       : q.part === 3 || q.part === 4 ? `<p><b>${esc(q.q)}</b></p>`
       : q.part === 5 ? `<p><b>${esc(q.prompt)}</b></p>`
       : q.part === 6 ? `<p class="muted">${esc(q.q || "")}</p>` : `<p><b>${esc(q.q || "")}</b></p>`;
@@ -289,10 +289,10 @@ async function viewExam(main, id, ctx) {
       shownPassages.add(q.passage);
       const ps = d.passages[q.passage];
       pre = ps.kind === "text" ? `<div class="toeic-passage"><p>${esc(ps.text)}</p></div>`
-        : `<div class="toeic-passage toeic-audio"><button type="button" class="btn btn-sm" data-speak="${esc(q.passage)}">${icon("play")}${T("Nghe đoạn", "Play audio")}</button></div>`;
+        : `<div class="toeic-passage toeic-audio"><button type="button" class="btn btn-sm" data-speak="${esc(q.passage)}">${lineIcon("speaker", 16)}<span>${T("Nghe đoạn", "Play audio")}</span></button></div>`;
     }
-    const stem = q.part === 1 ? `<div class="toeic-scene" aria-hidden="true">${esc(q.scene || "")}</div><button type="button" class="btn btn-sm" data-speak-opts="${i}">${icon("play")}${T("Nghe 4 phương án", "Play options")}</button>`
-      : q.part === 2 ? `<button type="button" class="btn btn-sm" data-speak-q="${i}">${icon("play")}${T("Nghe câu hỏi", "Play question")}</button>`
+    const stem = q.part === 1 ? `<div class="toeic-scene" aria-hidden="true">${esc(q.scene || "")}</div><button type="button" class="btn btn-sm" data-speak-opts="${i}">${lineIcon("speaker", 16)}<span>${T("Nghe 4 phương án", "Play options")}</span></button>`
+      : q.part === 2 ? `<button type="button" class="btn btn-sm" data-speak-q="${i}">${lineIcon("speaker", 16)}<span>${T("Nghe câu hỏi", "Play question")}</span></button>`
       : q.part === 5 ? `<p><b>${esc(q.prompt)}</b></p>`
       : q.part === 6 ? `<p class="muted">${esc(q.q || "")}</p>` : `<p><b>${esc(q.q || "")}</b></p>`;
     const ph = i === 0 || d.questions[i - 1].part !== q.part ? `<h3 class="toeic-parthead">Part ${q.part} · ${esc(q.part <= 4 ? T("Nghe", "Listening") : T("Đọc", "Reading"))}</h3>` : "";

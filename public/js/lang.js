@@ -1,7 +1,7 @@
 /* 4.8.0 - Categorized learning home + Foreign Languages (HSK, JLPT, DELF, CEFR, TOPIK).
    Exercise workflow: open -> solve -> submit -> server grades -> save best score. */
 import {  } from "./core.js";
-import { S, api, esc, icon, sketchIcon, subjectMascotSvg, fmtN, toast, totalStats, confirmBox, emptyState, groupProgress } from "./core.js";
+import { S, api, esc, icon, lineIcon, sketchIcon, subjectMascotSvg, fmtN, toast, totalStats, confirmBox, emptyState, groupProgress } from "./core.js";
 import { ChibiMascot, HeroBanner, AchievementCard, triggerConfetti } from "./chibi-ds.js";
 import { savePrefs } from "./game.js";
 import "./lang-en.js";
@@ -16,6 +16,7 @@ import { mountAiWidget } from "./ai-widget.js";
 import { mdLite } from "./pro.js";
 import { speakText, bestVoice as pickVoice } from "./voice.js";
 import { startLiveCapture } from "./speak.js";
+import { createSrEndDetector, joinTranscript } from "./voice-vad.js";
 import { mountCatScrollDock } from "./cat-dock.js";
 // iPhone/Android: Web Speech API hay kẹt từ câu thứ 2, nên thu âm và nhận dạng trên server.
 const MOBILE_UA = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -58,7 +59,7 @@ function speak(text, lang) {
   speakText(text, lang, { rate: slow ? 0.6 : 0.95 });
   return true;
 }
-const sayBtn = (text, lang) => text ? `<button type="button" class="lx-say" data-say="${esc(text)}" data-lang="${esc(lang)}" title="Nghe đọc (bấm lần nữa để nghe chậm)" aria-label="Nghe đọc">${li("vol", 15)}</button>` : "";
+const sayBtn = (text, lang) => text ? `<button type="button" class="lx-say" data-say="${esc(text)}" data-lang="${esc(lang)}" title="Nghe đọc (bấm lần nữa để nghe chậm)" aria-label="Nghe đọc">${lineIcon("speaker", 15)}</button>` : "";
 function bindSay(root) {
   root.addEventListener("click", (e) => {
     const b = e.target.closest("[data-say]");
@@ -1263,8 +1264,13 @@ export async function pageLangExercise(page, [exId], query, ctx) {
   };
   ctx.onLeave(() => { if (examTick) clearInterval(examTick); examTick = 0; });
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recIdx = -1, rec = null;
-  ctx.onLeave(() => { try { rec && rec.abort(); } catch {} });
+  let recIdx = -1, rec = null, recDet = null, recTimer = 0, recEndTimer = 0, recServer = false;
+  ctx.onLeave(() => {
+    if (recDet) { recDet.destroy(); recDet = null; }
+    clearTimeout(recTimer); recTimer = 0;
+    clearTimeout(recEndTimer); recEndTimer = 0;
+    try { rec && rec.abort(); } catch {}
+  });
   // Quick client-side comparison for immediate similarity feedback (server still grades officially).
   const norm = (t) => String(t || "").toLowerCase().normalize("NFC").replace(/[.,!?;:"'“”‘’()¿¡。、，！？：；「」・…\-]/g, " ").replace(/\s+/g, " ").trim();
   const simil = (a, b) => {
@@ -1280,22 +1286,35 @@ export async function pageLangExercise(page, [exId], query, ctx) {
   const ERR = { "not-allowed": "Bạn chưa cho phép dùng micro. Bấm biểu tượng ổ khóa trên thanh địa chỉ → cho phép Micro, rồi thử lại.", "service-not-allowed": "Trình duyệt chặn dịch vụ nhận giọng nói. Hãy dùng Chrome/Edge bản mới.", "audio-capture": "Không tìm thấy micro. Kiểm tra micro đã cắm và được chọn trong cài đặt máy.", "network": "Nhận giọng nói cần Internet (Chrome gửi âm thanh lên máy chủ nhận dạng). Kiểm tra mạng rồi thử lại.", "no-speech": "Không nghe thấy tiếng nói. Nói to, gần micro hơn và thử lại.", "language-not-supported": "Trình duyệt chưa hỗ trợ nhận giọng nói cho ngôn ngữ này. Bạn có thể gõ câu vào ô." };
   // Tỷ lệ từ của câu mẫu đã được nghe (đếm trùng lặp). Đạt 100% thì tự dừng.
   const coveredPct = (heard, target) => {
+    const T = norm(target);
+    if (!T) return 0;
+    const H = norm(heard);
+    if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(T)) {
+      const hChars = [...H.replace(/ /g, "")], tChars = [...T.replace(/ /g, "")];
+      if (!tChars.length) return 0;
+      const pool = {};
+      for (const ch of hChars) pool[ch] = (pool[ch] || 0) + 1;
+      let m = 0;
+      for (const ch of tChars) if (pool[ch] > 0) { m++; pool[ch]--; }
+      return m / tChars.length;
+    }
     const pool = {};
-    for (const w of norm(heard).split(" ").filter(Boolean)) pool[w] = (pool[w] || 0) + 1;
-    const tw = norm(target).split(" ").filter(Boolean);
+    for (const w of H.split(" ").filter(Boolean)) pool[w] = (pool[w] || 0) + 1;
+    const tw = T.split(" ").filter(Boolean);
     let m = 0;
     for (const w of tw) if (pool[w] > 0) { m++; pool[w]--; }
     return tw.length ? m / tw.length : 0;
   };
-  // Trên điện thoại: thu âm, gửi lên server mỗi ~2,5 giây để hiện chữ gần thời gian thực, tự dừng khi đủ từ.
+  // Trên điện thoại: thu âm, gửi lên server mỗi ~2,5 giây để hiện chữ gần thời gian thực, tự dừng khi dứt câu hoặc đủ từ.
   function listenServer(i) {
     if (recIdx === i) { endRec(); return; }
-    if (rec) { const old = rec; finishRec(old); try { old.stop(); } catch {} }
+    if (rec) { const old = rec; finishRec(old); try { old.abort ? old.abort() : old.stop(); } catch {} }
     const target = ex.questions[i].say || ex.questions[i].q;
     const cap = startLiveCapture(ex.speech, {
       maxMs: 20000,
       partialMs: 2500,
-      silenceMs: 3000,
+      silenceMs: 1300,
+      noSpeechMs: 7500,
       onPartial: (t) => {
         if (rec !== cap) return;
         live[i] = t;
@@ -1321,44 +1340,73 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     if (rec) { const old = rec; finishRec(old); try { old.abort(); } catch {} }
     rec = new SR(); rec.lang = ex.speech; rec.interimResults = true; rec.maxAlternatives = 3; rec.continuous = true;
     const r = rec;
+    const target = ex.questions[i].say || ex.questions[i].q;
+    const det = createSrEndDetector({
+      postSpeechMs: 1300,
+      speechEndMs: 650,
+      noSpeechMs: 7500,
+      onAutoStop: (reason) => {
+        if (rec !== r) return;
+        if (reason === "no-speech" && !live[i] && !answers[i]) toast(ERR["no-speech"], "info");
+        endRec();
+      },
+    });
+    recDet = det;
     recIdx = i; live[i] = ""; paintKeep();
-    clearTimeout(recTimer); recTimer = setTimeout(endRec, 12000);
-    rec.onresult = (e) => {
-      let txt = "", fin = false;
-      for (const r of e.results) { txt += r[0].transcript; if (r.isFinal) fin = true; }
-      if (fin) {
+    clearTimeout(recTimer); recTimer = setTimeout(endRec, 15000);
+    r.onstart = () => det.onStart();
+    r.onspeechstart = () => det.onSpeechStart();
+    r.onspeechend = () => det.onSpeechEnd();
+    r.onresult = (e) => {
+      let finTxt = "", interTxt = "";
+      for (const res of e.results) {
+        if (res.isFinal) finTxt = joinTranscript(finTxt, res[0].transcript);
+        else interTxt = joinTranscript(interTxt, res[0].transcript);
+      }
+      const txt = joinTranscript(finTxt, interTxt);
+      const hasInterim = Boolean(interTxt.trim());
+      const isFinal = Boolean(finTxt.trim()) && !hasInterim;
+      if (isFinal) {
         // Pick the recognition alternative closest to the target sentence among the browser's candidates.
         const last = e.results[e.results.length - 1];
         let best = txt;
-        if (e.results.length === 1) for (const alt of last) if (simil(alt.transcript, ex.questions[i].say || ex.questions[i].q) > simil(best, ex.questions[i].say || ex.questions[i].q)) best = alt.transcript;
+        if (e.results.length === 1) for (const alt of last) if (simil(alt.transcript, target) > simil(best, target)) best = alt.transcript;
         answers[i] = best.trim(); live[i] = "";
+        const inp = main.querySelector(`.lx-speak-in[data-q="${i}"]`);
+        if (inp) inp.value = answers[i];
       } else {
         live[i] = txt;
         const inp = main.querySelector(`.lx-speak-in[data-q="${i}"]`);
         if (inp) inp.value = txt;
-        // Đã đọc đủ các từ của câu mẫu thì tự dừng.
-        if (coveredPct(txt, ex.questions[i].say || ex.questions[i].q) >= 1) { try { rec.stop(); } catch {} }
       }
+      det.onResult({ transcript: txt, isFinal, hasInterim });
+      // Đã đọc đủ các từ của câu mẫu thì tự dừng (chạy trên cả interim lẫn final).
+      if (txt && coveredPct(txt, target) >= 1) endRec();
     };
-    rec.onerror = (e) => { if (e.error !== "aborted") toast(ERR[e.error] || "Không nghe rõ, thử lại nhé.", e.error === "no-speech" ? "info" : "err"); };
-    rec.onend = () => finishRec(r);
-    try { rec.start(); } catch (err) { finishRec(r); toast("Không bật được micro: " + err.message, "err"); }
+    r.onerror = (e) => { if (e.error !== "aborted") toast(ERR[e.error] || "Không nghe rõ, thử lại nhé.", e.error === "no-speech" ? "info" : "err"); };
+    r.onend = () => finishRec(r);
+    try { r.start(); } catch (err) { finishRec(r); toast("Không bật được micro: " + err.message, "err"); }
   }
   // Dọn trạng thái ghi âm. iOS Safari đôi khi không gọi onend, nên hàm này tự reset để nút không bị kẹt ở "Đang nghe".
-  let recTimer = 0, recServer = false;
   function finishRec(r) {
     if (rec !== r) return;
     const i = recIdx;
     clearTimeout(recTimer); recTimer = 0;
+    clearTimeout(recEndTimer); recEndTimer = 0;
+    if (recDet) { recDet.destroy(); recDet = null; }
     if (i >= 0 && live[i] && live[i].trim()) answers[i] = live[i].trim();
     if (i >= 0) live[i] = "";
     rec = null; recIdx = -1; recServer = false; paintKeep();
   }
   function endRec() {
     const r = rec; if (!r) return;
+    if (recDet) { recDet.destroy(); recDet = null; }
     try { r.stop(); } catch {}
     // Thu trên server: đợi kết quả nhận dạng; Web Speech: tự dọn sau 1,5 giây nếu không có onend.
-    if (!recServer) setTimeout(() => finishRec(r), 1500);
+    if (!recServer) {
+      clearTimeout(recEndTimer);
+      recEndTimer = setTimeout(() => finishRec(r), 1500);
+    }
   }
   const meter = (q, i) => {
     if (!answers[i] || graded) return "";
@@ -1374,7 +1422,8 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     else if (q.type === "text") body = `<input class="input lx-input" data-q="${i}" value="${esc(answers[i])}" placeholder="Nhập câu trả lời" autocomplete="off" autocapitalize="off" spellcheck="false" ${graded ? "disabled" : ""}>`;
     else if (q.type === "speak") {
       body = `<div class="lx-speak">
-        <button type="button" class="btn ${recIdx === i ? "btn-danger" : "btn-primary"} lx-mic" data-mic="${i}" ${graded ? "disabled" : ""}>${recIdx === i ? li("stop", 16) + "Đang nghe… bấm để dừng" : answers[i] ? li("mic", 16) + "Đọc lại" : li("mic", 16) + "Bấm và đọc to câu"}</button>
+        <button type="button" class="btn ${recIdx === i ? "btn-danger" : "btn-primary"} lx-mic" data-mic="${i}" ${graded ? "disabled" : ""}>${recIdx === i ? li("stop", 16) + "Đang nghe… (Dừng)" : answers[i] ? li("mic", 16) + "Đọc lại" : li("mic", 16) + "Bấm và đọc to câu"}</button>
+        ${recIdx === i ? `<span class="muted small lx-mic-hint">Tự ngắt khi dứt câu</span>` : ""}
         <input class="input lx-input lx-speak-in" data-q="${i}" value="${esc(answers[i])}" placeholder="Câu máy nghe được (có thể gõ nếu không có micro)" autocomplete="off" ${graded ? "disabled" : ""}>
         ${meter(q, i)}
       </div>`;
@@ -1389,7 +1438,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     const qKicker = q.type === "mcq" ? tx("CHỌN ĐÁP ÁN ĐÚNG", "CHOOSE THE RIGHT ANSWER") : q.type === "order" ? tx("GHÉP CÂU ĐÚNG", "BUILD THE SENTENCE") : q.type === "speak" ? tx("LUYỆN PHÁT ÂM", "SPEAKING") : tx("ĐIỀN ĐÁP ÁN", "TYPE THE ANSWER");
     return `<div class="lx-q sheet ${r ? (r.ok ? "is-ok" : "is-no") : ""}" id="lxq${i}">
       <div class="lx-q-kicker">${qKicker} · ${tx("CÂU", "Q")} ${i + 1}</div>
-      <div class="lx-q-head"><span class="lx-q-no">${i + 1}</span><div class="lx-q-text lx-vi">${q.listen ? `<button type="button" class="lx-listen" data-say="${esc(q.say)}" data-lang="${esc(ex.speech)}">${li("vol", 16)}Nghe</button> <span class="muted small">${esc(q.q)}</span>` : `<b>${esc(q.q)}</b> ${sayBtn(q.say, ex.speech)}${q.sub ? `<div class="muted small">${esc(q.sub)}</div>` : ""}`}</div></div>
+      <div class="lx-q-head"><span class="lx-q-no">${i + 1}</span><div class="lx-q-text lx-vi">${q.listen ? `<button type="button" class="lx-listen" data-say="${esc(q.say)}" data-lang="${esc(ex.speech)}">${lineIcon("speaker", 17)}<span>Nghe</span></button> <span class="muted small">${esc(q.q)}</span>` : `<b>${esc(q.q)}</b> ${sayBtn(q.say, ex.speech)}${q.sub ? `<div class="muted small">${esc(q.sub)}</div>` : ""}`}</div></div>
       ${body}${fb}</div>`;
   };
 
@@ -1467,7 +1516,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     }
     if (graded) return;
     const mic = e.target.closest("[data-mic]");
-    if (mic) { if (recIdx === +mic.dataset.mic) { try { rec.stop(); } catch {} } else listen(+mic.dataset.mic); return; }
+    if (mic) { if (recIdx === +mic.dataset.mic) endRec(); else listen(+mic.dataset.mic); return; }
     const o = e.target.closest(".lx-opt");
     if (o) { answers[+o.dataset.q] = +o.dataset.k; paintKeep(); return; }
     const t = e.target.closest(".lx-tok");

@@ -105,6 +105,9 @@ html body:not(.in-app) .landing-page .lang-switch .on { background: var(--cp-pri
 
 /* ---------- Nút ---------- */
 html body:not(.in-app) .landing-page :is(.aw-pill, .chibi-stage-btn, .demo-audio-btn, .footer-social-btn) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border-radius: 999px !important;
   border: 1px solid var(--cp-border-strong) !important;
   background: var(--cp-surface) !important;
@@ -1113,6 +1116,9 @@ html body:not(.in-app) #lpMobileHome { display: none; }
   html body:not(.in-app) #lpMobileHome .lp-m-demo-badge .lang-flag-svg { width: 15px; height: 10px; border-width: 1px; }
   html body:not(.in-app) #lpMobileHome .lp-m-demo-audio { display: flex; gap: 4px; flex: none; }
   html body:not(.in-app) #lpMobileHome .lp-m-say-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     border: 1px solid #DCE3EC;
     background: #FFFFFF;
     border-radius: 999px;

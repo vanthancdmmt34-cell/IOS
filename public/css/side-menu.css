@@ -325,6 +325,9 @@ html body .m-fan-wrap { display: none; }
 
 /* Máy tính bảng (761px–1020px): giữ #side làm ngăn kéo trượt mở bằng #menuBtn */
 @media (min-width: 761px) and (max-width: 1020px) {
+  html body.in-app:not(.ax-on) .shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
   html body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .shell > .side {
     position: fixed !important;
     left: 0 !important;

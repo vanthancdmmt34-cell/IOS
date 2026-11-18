@@ -111,12 +111,12 @@
 .sp-round[disabled] { opacity: .4; cursor: not-allowed; }
 .sp-round.on, .sp-tool.on { background: var(--c-soft); border-color: var(--c); color: var(--c); }
 .sp-txt { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sp-mic { position: relative; display: grid; place-items: center; width: 78px; height: 78px; border-radius: 50%; border: 0; background: var(--c); color: #fff; cursor: pointer; box-shadow: 0 10px 24px -10px var(--c), 0 4px 0 color-mix(in srgb, var(--c) 70%, #000); transition: transform .12s, background .2s; }
-.sp-mic:hover { transform: translateY(-1px); }
+.sp-mic { position: relative; display: grid; place-items: center; width: 78px; height: 78px; flex: none; border-radius: 50%; border: 0; background: #1E6FA8; color: #fff; cursor: pointer; box-shadow: 0 10px 24px -10px #1E6FA8, 0 4px 0 color-mix(in srgb, #1E6FA8 70%, #000); transition: transform .12s, background .2s; }
+.sp-mic:hover { transform: translateY(-1px); background: #185A8B; }
 .sp-mic:active { transform: translateY(2px); }
-.sp-mic.sm { width: 48px; height: 48px; box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 70%, #000); }
-.sp-mic.rec { background: var(--no); box-shadow: 0 4px 0 color-mix(in srgb, var(--no) 70%, #000); }
-.sp-mic.rec::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--no); animation: sp-pulse 1.3s ease-out infinite; }
+.sp-mic.sm { width: 48px; height: 48px; box-shadow: 0 3px 0 color-mix(in srgb, #1E6FA8 70%, #000); }
+.sp-mic.rec { background: #D3263A; color: #fff; box-shadow: 0 4px 0 color-mix(in srgb, #D3263A 70%, #000); }
+.sp-mic.rec::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid #D3263A; animation: sp-pulse 1.3s ease-out infinite; }
 @keyframes sp-pulse { from { opacity: .75; transform: scale(.94); } to { opacity: 0; transform: scale(1.3); } }
 .sp-mic:focus-visible, .sp-round:focus-visible, .sp-tool:focus-visible, .sp-mini:focus-visible { outline: 3px solid color-mix(in srgb, var(--c) 45%, transparent); outline-offset: 3px; }
 
