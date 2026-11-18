@@ -21,6 +21,14 @@
     // Thanh tiêu đề của khung đăng nhập (landing) nằm dưới đồng hồ/tai thỏ: đẩy xuống dưới vùng an toàn.
     + "html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top{top:env(safe-area-inset-top)!important;height:calc(52px + env(safe-area-inset-top))!important;padding-top:env(safe-area-inset-top)!important;box-sizing:border-box!important}";
   (document.head || document.documentElement).appendChild(topFix);
+  // Chế độ tối của iPhone/Android: vài thành phần có nền sáng cố định nhưng chữ lại theo bảng màu tối, nên chữ gần như biến mất.
+  var darkFix = document.createElement("style");
+  darkFix.textContent = "html[data-theme=dark] body.in-app:not(.ax-on) #main .ob-step-pill{background:#273549!important;color:#CBD5E1!important}"
+    + "html[data-theme=dark] body.in-app:not(.ax-on) #main .ob-course.on{background:rgba(63,151,211,.18)!important}"
+    + "html[data-theme=dark] body.in-app:not(.ax-on) #main .ob-step-banner{background:rgba(63,151,211,.18)!important;color:#7DD3FC!important}"
+    + "html[data-theme=dark] body.in-app:not(.ax-on) #main .iv-m-field span{color:#F8FAFC!important}"
+    + "html[data-theme=dark] body.in-app:not(.ax-on) .ud-user .ud-last{color:#F8FAFC!important}";
+  (document.head || document.documentElement).appendChild(darkFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
 
