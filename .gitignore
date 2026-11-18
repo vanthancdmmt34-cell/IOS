@@ -11,3 +11,6 @@ Thumbs.db
 
 # Cấu hình chạy thử trên máy phát triển
 .claude/
+
+# Giao diện đóng gói cho app native (tạo bằng tools/build-native.mjs)
+www/

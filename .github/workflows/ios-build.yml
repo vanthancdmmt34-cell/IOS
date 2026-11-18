@@ -53,6 +53,9 @@ jobs:
       - name: Cài thư viện Node
         run: npm ci
 
+      - name: Tạo thư mục www (giao diện đóng gói sẵn)
+        run: node tools/build-native.mjs
+
       - name: Đồng bộ Capacitor sang iOS (cài CocoaPods)
         run: npx cap sync ios
 
