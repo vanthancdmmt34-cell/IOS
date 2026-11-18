@@ -102,21 +102,22 @@ export function registerTier1(suite, ctx) {
       await ctx.visit('/app/ca-nhan', { role: 'student', viewport: 'mobile' });
       const hub = await cdp.evalJs(() => ({
         hasTopMore: !!document.getElementById('mTopMore'),
-        personalLinks: [...document.querySelectorAll('.pf-hub-nav a, .pf-hub-nav button')].map((e) => e.getAttribute('href') || e.dataset.pfOpen || ''),
-        systemLinks: [...document.querySelectorAll('.pf-sys-nav a, .pf-sys-nav button')].map((e) => e.getAttribute('href') || e.id || (e.hasAttribute('data-logout') ? 'logout' : '')),
+        hasTopAcct: !!document.getElementById('mTopAcct'),
+        personalLinks: [...document.querySelectorAll('.pf-hub-nav a, .pf-hub-nav button')].map((e) => e.getAttribute('href') || e.dataset.pfOpen || (e.hasAttribute('data-logout') ? 'logout' : e.id || '')),
       }));
       assert.strictEqual(hub.hasTopMore, false, '#mTopMore must be absent on inner mobile pages');
+      assert.strictEqual(hub.hasTopAcct, false, '#mTopAcct must be removed so Cá nhân is the single entry');
       assert.ok(hub.personalLinks.includes('/app/lop'), 'Cá nhân hub must expose /app/lop');
       assert.ok(hub.personalLinks.includes('/app/so-tay'), 'Cá nhân hub must expose /app/so-tay');
       assert.ok(hub.personalLinks.includes('/app/tro-choi/en'), 'Cá nhân hub must expose /app/tro-choi/en');
       assert.ok(hub.personalLinks.includes('/app/ngoai-ngu/xep-hang/en'), 'Cá nhân hub must expose /app/ngoai-ngu/xep-hang/en');
       assert.ok(hub.personalLinks.includes('/app/ngoai-ngu/huy-hieu/en'), 'Cá nhân hub must expose /app/ngoai-ngu/huy-hieu/en');
-      assert.ok(hub.systemLinks.includes('/app/cai-dat') && hub.systemLinks.includes('/app/thong-bao') && hub.systemLinks.includes('/app/ho-tro') && hub.systemLinks.includes('logout'), 'Hệ thống hub must expose settings, notices, support, and logout');
+      assert.ok(hub.personalLinks.includes('/app/cai-dat') && hub.personalLinks.includes('/app/thong-bao') && hub.personalLinks.includes('/app/ho-tro') && hub.personalLinks.includes('logout'), 'Cá nhân hub must expose settings, notices, support, and logout');
     }
   );
 
   suite.test(
-    { id: 'T1-F2-02', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Learner #sideNav consolidates Học tập, Cá nhân, Hệ thống and deduplicates .me-card' },
+    { id: 'T1-F2-02', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Learner #sideNav consolidates Học tập & Cá nhân (with Cài đặt) and deduplicates .me-card' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'desktop' });
       const nav = await cdp.evalJs(() => {
@@ -133,11 +134,12 @@ export function registerTier1(suite, ctx) {
           hasLogoutBtn: !!document.getElementById('logoutBtn'),
         };
       });
-      assert.deepStrictEqual(nav.cats.map((c) => c.label), ['Học tập', 'Cá nhân', 'Hệ thống']);
+      assert.deepStrictEqual(nav.cats.map((c) => c.label), ['Học tập', 'Cá nhân']);
+      const learn = nav.cats.find((c) => c.id === 'learn')?.hrefs || [];
       const personal = nav.cats.find((c) => c.id === 'personal')?.hrefs || [];
-      const system = nav.cats.find((c) => c.id === 'system')?.hrefs || [];
+      assert.ok(learn.length <= 7, `Learner Học tập must stay concise (got ${learn.length})`);
       assert.ok(personal.includes('/app/ca-nhan') && personal.includes('/app/co-vu') && personal.includes('/app/lop'), 'Cá nhân group missing expected learner links');
-      assert.ok(system.includes('/app/thong-bao') && system.includes('/app/cai-dat') && system.includes('/app/ho-tro'), 'Hệ thống group must expose /app/ho-tro to learners');
+      assert.ok(personal.includes('/app/thong-bao') && personal.includes('/app/cai-dat') && personal.includes('/app/ho-tro'), 'Cá nhân group must expose thong-bao, cai-dat, and ho-tro');
       assert.strictEqual(nav.hasSbSearch, false, 'Redundant #sbSearch must be removed from .me-card');
       assert.strictEqual(nav.hasSideTheme, false, 'Redundant [data-theme-toggle] must be removed from .me-card');
       assert.ok(nav.hasSbGuide && nav.hasLogoutBtn, '.me-card must retain #sbGuide and #logoutBtn');
@@ -145,7 +147,7 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F2-03', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Admin #sideNav unifies Giảng dạy (incl. bai-tap & tien-do), Học tập, Cá nhân, Hệ thống' },
+    { id: 'T1-F2-03', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Admin #sideNav unifies Giảng dạy, Học tập, Cá nhân (incl. quan-tri & cai-dat)' },
     async () => {
       await ctx.visit('/app/en', { role: 'admin', viewport: 'desktop' });
       const cats = await cdp.evalJs(() =>
@@ -155,11 +157,11 @@ export function registerTier1(suite, ctx) {
           hrefs: [...d.querySelectorAll('a')].map((a) => a.getAttribute('href')),
         }))
       );
-      assert.deepStrictEqual(cats.map((c) => c.label), ['Giảng dạy', 'Học tập', 'Cá nhân', 'Hệ thống']);
+      assert.deepStrictEqual(cats.map((c) => c.label), ['Giảng dạy', 'Học tập', 'Cá nhân']);
       const teach = cats.find((c) => c.id === 'teach')?.hrefs || [];
-      const sys = cats.find((c) => c.id === 'system')?.hrefs || [];
+      const personal = cats.find((c) => c.id === 'personal')?.hrefs || [];
       assert.ok(teach.includes('/app/giao-vien/bai-tap') && teach.includes('/app/giao-vien/tien-do') && teach.includes('/app/lop'), 'Admin Giảng dạy must include bai-tap, tien-do, and lop');
-      assert.ok(sys.includes('/app/quan-tri') && sys.includes('/app/ho-tro') && sys.includes('/app/cai-dat'), 'Admin Hệ thống must include quan-tri, ho-tro, cai-dat');
+      assert.ok(personal.includes('/app/quan-tri') && personal.includes('/app/ho-tro') && personal.includes('/app/cai-dat'), 'Admin Cá nhân must include quan-tri, ho-tro, cai-dat');
     }
   );
 
@@ -213,29 +215,22 @@ export function registerTier1(suite, ctx) {
 
   // ================= F3: Teacher Consolidated Navigation & Routes =================
   suite.test(
-    { id: 'T1-F3-01', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher #mTopAcct opens role-aware #mAcctSheet with Thông báo lớp and zero learner cert leak' },
+    { id: 'T1-F3-01', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher uses Cá nhân #mTabAcctBtn fan-out without redundant #mTopAcct and zero learner cert leak' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
       assert.strictEqual(await cdp.evalJs(() => !!document.getElementById('mTopMore')), false, '#mTopMore must be removed for teacher');
-      await cdp.click('#mTopAcct');
-      const info = await cdp.evalJs(() => ({
-        hidden: document.getElementById('mAcctSheet')?.hidden ?? true,
-        src: document.querySelector('#mAcctSheet .m-acct-av')?.getAttribute('src') || '',
-        sub: document.querySelector('#mAcctSheet .m-acct-who small')?.textContent.trim() || '',
-        hrefs: [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((e) => e.getAttribute('href') || e.id || ''),
-        labels: [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((e) => e.textContent.trim()),
-      }));
-      assert.strictEqual(info.hidden, false, '#mAcctSheet must open from #mTopAcct');
-      assert.ok(info.src.includes('chibi-owl.webp'), `Expected owl avatar, got ${info.src}`);
-      assert.ok(info.sub.includes('Giáo viên'), `Expected Giáo viên role, got "${info.sub}"`);
-      assert.ok(info.hrefs.includes('/app/thong-bao') && info.labels.includes('Thông báo lớp'), 'Teacher #mAcctSheet must include Thông báo lớp');
-      assert.ok(info.hrefs.includes('/app/ho-tro') && info.hrefs.includes('/app/cai-dat'), 'Teacher #mAcctSheet must include Hỗ trợ and Cài đặt');
-      assert.strictEqual(info.hrefs.some((h) => h.includes('chung-nhan')), false, 'Teacher #mAcctSheet must NOT leak learner Chứng nhận');
+      assert.strictEqual(await cdp.evalJs(() => !!document.getElementById('mTopAcct')), false, '#mTopAcct must be removed for teacher');
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      const fan = await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 4 });
+      const hrefs = fan.items.map((x) => x.href);
+      assert.ok(hrefs.includes('/app/giao-vien/hoc-vien') && hrefs.includes('/app/thong-bao') && hrefs.includes('/app/ca-nhan') && hrefs.includes('/app/cai-dat'), `Unexpected teacher fan hrefs: ${JSON.stringify(hrefs)}`);
+      assert.strictEqual(hrefs.some((h) => h.includes('chung-nhan')), false, 'Teacher Cá nhân fan-out must NOT leak learner Chứng nhận');
     }
   );
 
   suite.test(
-    { id: 'T1-F3-02', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher desktop 1440x900 #sideNav uses unified Giảng dạy, Cá nhân, Hệ thống without learner clutter' },
+    { id: 'T1-F3-02', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher desktop 1440x900 #sideNav uses unified Giảng dạy & Cá nhân without learner clutter' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'desktop' });
       const data = await cdp.evalJs(() =>
@@ -248,12 +243,12 @@ export function registerTier1(suite, ctx) {
           })),
         }))
       );
-      assert.deepStrictEqual(data.map((c) => c.label), ['Giảng dạy', 'Cá nhân', 'Hệ thống']);
+      assert.deepStrictEqual(data.map((c) => c.label), ['Giảng dạy', 'Cá nhân']);
       assert.strictEqual(data[0].links.length, 5, `Giảng dạy must have 5 items (got ${data[0].links.length})`);
       const allHrefs = data.flatMap((c) => c.links.map((l) => l.href));
       assert.ok(allHrefs.includes('/app/giao-vien/bai-tap'), 'Missing /app/giao-vien/bai-tap');
       assert.ok(allHrefs.includes('/app/giao-vien/tien-do'), 'Missing /app/giao-vien/tien-do');
-      assert.ok(allHrefs.includes('/app/thong-bao') && allHrefs.includes('/app/cai-dat') && allHrefs.includes('/app/ho-tro'), 'Missing Hệ thống items');
+      assert.ok(allHrefs.includes('/app/thong-bao') && allHrefs.includes('/app/cai-dat') && allHrefs.includes('/app/ho-tro'), 'Missing Cá nhân items');
       assert.ok(!allHrefs.some((h) => h.includes('phong-van') || h.includes('toeic')), 'Teacher #sideNav must not leak student routes');
     }
   );
@@ -521,13 +516,13 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F6-02', tier: 1, feature: 'F6', milestone: 'M1', name: 'Tapping topbar #mTopAcct opens #mAcctSheet on inner mobile pages' },
+    { id: 'T1-F6-02', tier: 1, feature: 'F6', milestone: 'M1', name: 'Inner mobile pages remove redundant #mTopAcct avatar and use Cá nhân #mTabAcctBtn fan-out' },
     async () => {
       await ctx.visit('/app/phong-van', { role: 'student', viewport: 'mobile' });
-      assert.ok(await ctx.existsVisible('#mTopAcct'), '#mTopAcct must be visible on inner mobile pages');
-      await cdp.click('#mTopAcct');
-      const hidden = await cdp.evalJs(() => document.getElementById('mAcctSheet')?.hidden ?? true);
-      assert.strictEqual(hidden, false, '#mAcctSheet must open from #mTopAcct');
+      assert.strictEqual(await cdp.evalJs(() => !!document.getElementById('mTopAcct')), false, '#mTopAcct must be removed on inner mobile pages');
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 5 });
     }
   );
 

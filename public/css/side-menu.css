@@ -685,7 +685,7 @@ html body .m-fan-wrap { display: none; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -80px; --fd: 50ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 55px; --fy: -58px; --fd: 75ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 108px; --fy: -16px; --fd: 100ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -4px; --fy: -154px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -10px; --fy: -154px; --fd: 0ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -50px; --fy: -116px; --fd: 25ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -98px; --fy: -78px; --fd: 50ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -150px; --fy: -44px; --fd: 75ms; }
@@ -700,10 +700,10 @@ html body .m-fan-wrap { display: none; }
     html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -80px; }
     html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 52px; --fy: -58px; }
     html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 102px; --fy: -16px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -4px; --fy: -154px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -48px; --fy: -116px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -96px; --fy: -78px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -146px; --fy: -44px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -14px; --fy: -162px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -52px; --fy: -118px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -98px; --fy: -78px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -148px; --fy: -44px; }
     html body.in-app:not(.ax-on) .m-fan-petal.is-a4 { --fx: -200px; --fy: -14px; }
   }
   @media (prefers-reduced-motion: reduce) {

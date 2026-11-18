@@ -213,9 +213,11 @@ export async function pageProfile(main, _p, _q, ctx) {
     <div class="pf-m-nav pf-hub-nav">
       <h2>Cá nhân</h2>
       <div class="pf-m-links">
+        <a class="pf-m-link" href="/app/cai-dat"><span class="pf-m-ico">${lineIcon("cog")}</span><b>Cài đặt</b><span class="pf-m-arr">›</span></a>
+        ${isAdmin ? `<a class="pf-m-link" href="/app/quan-tri"><span class="pf-m-ico">${lineIcon("settings")}</span><b>Quản trị hệ thống</b><span class="pf-m-arr">›</span></a>` : ""}
+        ${(isTeacher || isAdmin) ? `<a class="pf-m-link" href="/app/giao-vien"><span class="pf-m-ico">${lineIcon("home")}</span><b>Trang giáo viên</b><span class="pf-m-arr">›</span></a>` : ""}
         <button type="button" class="pf-m-link" data-pf-open="#emailDetails"><span class="pf-m-ico">${lineIcon("user")}</span><b>Thông tin cá nhân</b><span class="pf-m-arr">›</span></button>
         <button type="button" class="pf-m-link" data-pf-open="#pwDetails"><span class="pf-m-ico">${lineIcon("lock")}</span><b>Bảo mật</b><span class="pf-m-arr">›</span></button>
-        ${(isTeacher || isAdmin) ? `<a class="pf-m-link" href="/app/giao-vien"><span class="pf-m-ico">${lineIcon("home")}</span><b>Trang giáo viên</b><span class="pf-m-arr">›</span></a>` : ""}
         ${showClass ? `<a class="pf-m-link" href="/app/lop"><span class="pf-m-ico">${lineIcon("book")}</span><b>Lớp của tôi</b><span class="pf-m-arr">›</span></a>` : ""}
         ${showFamily ? `<a class="pf-m-link" href="/app/gia-dinh"><span class="pf-m-ico">${lineIcon("users")}</span><b>Gia đình</b><span class="pf-m-arr">›</span></a>` : ""}
         ${!isTeacher ? `
@@ -234,6 +236,11 @@ export async function pageProfile(main, _p, _q, ctx) {
         ` : ""}
         <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">${lineIcon("key")}</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
         ${on("proEnabled") && !isTeacher && !isAdmin && !(S.membership && S.membership.pro) ? `<a class="pf-m-link" href="/app/bang-gia"><span class="pf-m-ico">${lineIcon("star")}</span><b>Nâng cấp Pro</b><span class="pf-m-arr">›</span></a>` : ""}
+        <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">${lineIcon("bell")}</span><b>${isTeacher ? "Thông báo lớp" : "Thông báo"}</b><span class="pf-m-arr">›</span></a>
+        <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">${lineIcon("life-buoy")}</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
+        <button type="button" class="pf-m-link" id="pfQuickSearch"><span class="pf-m-ico">${lineIcon("search")}</span><b>Tìm kiếm nhanh</b><span class="pf-m-arr">›</span></button>
+        <button type="button" class="pf-m-link" id="pfGuideBtn"><span class="pf-m-ico">${lineIcon("bulb")}</span><b>Xem lại hướng dẫn</b><span class="pf-m-arr">›</span></button>
+        <button type="button" class="pf-m-link is-danger" data-logout><span class="pf-m-ico">${lineIcon("logout")}</span><b>Đăng xuất</b><span class="pf-m-arr">›</span></button>
       </div>
     </div>
     <div class="stack" style="margin-top:16px;max-width:760px">
@@ -264,19 +271,6 @@ export async function pageProfile(main, _p, _q, ctx) {
         </details>
       </div>
       <div class="stack">
-        <h3 style="margin:14px 0 2px;font-size:14px;font-weight:700;color:var(--ink-2);padding-bottom:8px;border-bottom:1px solid var(--line,#e5e5ea)">Hệ thống</h3>
-        <div class="pf-sys-nav">
-          <div class="pf-m-links">
-            <a class="pf-m-link" href="/app/cai-dat"><span class="pf-m-ico">${lineIcon("cog")}</span><b>Cài đặt</b><span class="pf-m-arr">›</span></a>
-            <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">${lineIcon("bell")}</span><b>${isTeacher ? "Thông báo lớp" : "Thông báo"}</b><span class="pf-m-arr">›</span></a>
-            <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">${lineIcon("life-buoy")}</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
-            ${!isTeacher ? `<a class="pf-m-link" href="/app/chon-mon"><span class="pf-m-ico">${lineIcon("globe")}</span><b>Chọn ngoại ngữ</b><span class="pf-m-arr">›</span></a>` : ""}
-            ${isAdmin ? `<a class="pf-m-link" href="/app/quan-tri"><span class="pf-m-ico">${lineIcon("settings")}</span><b>Quản trị hệ thống</b><span class="pf-m-arr">›</span></a>` : ""}
-            <button type="button" class="pf-m-link" id="pfQuickSearch"><span class="pf-m-ico">${lineIcon("search")}</span><b>Tìm kiếm nhanh</b><span class="pf-m-arr">›</span></button>
-            <button type="button" class="pf-m-link" id="pfGuideBtn"><span class="pf-m-ico">${lineIcon("bulb")}</span><b>Xem lại hướng dẫn</b><span class="pf-m-arr">›</span></button>
-            <button type="button" class="pf-m-link is-danger" data-logout><span class="pf-m-ico">${lineIcon("logout")}</span><b>Đăng xuất</b><span class="pf-m-arr">›</span></button>
-          </div>
-        </div>
         <details class="sheet sheet-pad" id="proSection" open>
           <summary><h2>Pro và mã quà tặng</h2></summary>
           <div id="proStatus" class="small" style="margin-top:8px"></div>

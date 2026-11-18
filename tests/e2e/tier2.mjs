@@ -92,7 +92,7 @@ export function registerTier2(suite, ctx) {
       await ctx.visit('/app/ca-nhan', { role: 'student', viewport: 'narrow' });
       await ctx.assertNoOverflow('T2-F2-01 ca-nhan hub 320px');
       assert.ok(await ctx.existsVisible('.pf-hub-nav'), 'Expected visible Cá nhân hub on 320px');
-      assert.ok(await ctx.existsVisible('.pf-sys-nav'), 'Expected visible Hệ thống hub on 320px');
+      assert.ok(await ctx.existsVisible('.pf-hub-nav a[href="/app/cai-dat"]'), 'Expected visible Cài đặt inside Cá nhân hub on 320px');
     }
   );
 
@@ -138,7 +138,7 @@ export function registerTier2(suite, ctx) {
       await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'desktop' });
       await ctx.assertNoOverflow('T2-F2-04 parent 1440px');
       const labels = await cdp.evalJs(() => [...document.querySelectorAll('#sideNav .nav-cat-lbl')].map((e) => e.textContent.trim()));
-      assert.deepStrictEqual(labels, ['Học tập', 'Cá nhân', 'Hệ thống']);
+      assert.deepStrictEqual(labels, ['Học tập', 'Cá nhân']);
     }
   );
 
@@ -160,36 +160,32 @@ export function registerTier2(suite, ctx) {
       assert.deepStrictEqual(badHrefs, [], `Found broken hrefs when subject is null: ${JSON.stringify(badHrefs)}`);
       await ctx.visit('/app/ca-nhan', { role: 'zeroStudent', viewport: 'mobile', subject: null });
       const hubText = await cdp.evalJs(() => document.getElementById('main')?.textContent || '');
-      assert.ok(!hubText.includes('undefined') && hubText.includes('Chọn ngoại ngữ'));
+      assert.ok(!hubText.includes('undefined') && hubText.includes('Cài đặt'), `Unexpected /app/ca-nhan hub text: ${hubText.slice(0, 120)}`);
     }
   );
 
   // ================= F3: Teacher Consolidated Navigation & Routes Boundaries =================
   suite.test(
-    { id: 'T2-F3-01', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher #mAcctSheet and /app/ca-nhan hub fit narrow 320x844 without horizontal overflow' },
+    { id: 'T2-F3-01', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher #mTabAcctBtn fan-out and /app/ca-nhan hub fit narrow 320x844 without horizontal overflow' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'narrow' });
       await ctx.assertNoOverflow('T2-F3-01 teacher home 320px');
-      await cdp.click('#mTopAcct');
-      const rect = await cdp.evalJs(() => {
-        const c = document.querySelector('#mAcctSheet .m-acct-card');
-        const r = c?.getBoundingClientRect();
-        return { hidden: document.getElementById('mAcctSheet')?.hidden ?? true, left: r?.left ?? -1, right: r?.right ?? 999, innerW: window.innerWidth };
-      });
-      assert.strictEqual(rect.hidden, false);
-      assert.ok(rect.left >= 0 && rect.right <= rect.innerW + 1, `Teacher sheet overflows 320px (${rect.left}..${rect.right})`);
+      assert.strictEqual(await cdp.evalJs(() => !!document.getElementById('mTopAcct')), false, '#mTopAcct must stay removed for teacher');
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 4 });
       await ctx.visit('/app/ca-nhan', { role: 'teacher', viewport: 'narrow' });
       await ctx.assertNoOverflow('T2-F3-01 teacher ca-nhan 320px');
     }
   );
 
   suite.test(
-    { id: 'T2-F3-02', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher #mAcctSheet & desktop #sideNav stay free of student routes even when pl:subject is polluted' },
+    { id: 'T2-F3-02', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher Cá nhân fan-out & desktop #sideNav stay free of student routes even when pl:subject is polluted' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile', subject: 'ja' });
-      await cdp.click('#mTopAcct');
-      const mHrefs = await cdp.evalJs(() => [...document.querySelectorAll('#mAcctSheet a')].map((a) => a.getAttribute('href') || ''));
-      assert.ok(!mHrefs.some((h) => h.includes('chung-nhan') || h.includes('xep-hang')), `Teacher sheet leaked student route: ${JSON.stringify(mHrefs)}`);
+      await cdp.click('#mTabAcctBtn');
+      const mHrefs = await cdp.evalJs(() => [...document.querySelectorAll('#mAcctFan a')].map((a) => a.getAttribute('href') || ''));
+      assert.ok(!mHrefs.some((h) => h.includes('chung-nhan') || h.includes('xep-hang')), `Teacher fan leaked student route: ${JSON.stringify(mHrefs)}`);
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'desktop', subject: 'ja' });
       const dHrefs = await cdp.evalJs(() => [...document.querySelectorAll('#sideNav a')].map((a) => a.getAttribute('href') || ''));
       assert.ok(!dHrefs.some((h) => h.includes('phong-van') || h.includes('toeic') || h.includes('chung-nhan')), `Teacher #sideNav leaked student route: ${JSON.stringify(dHrefs)}`);
@@ -477,16 +473,15 @@ export function registerTier2(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T2-F6-05', tier: 2, feature: 'F6', milestone: 'M1', name: 'Teacher #mAcctSheet shows owl avatar & @e2e_teacher role label' },
+    { id: 'T2-F6-05', tier: 2, feature: 'F6', milestone: 'M1', name: 'Teacher /app/ca-nhan shows @e2e_teacher role label and Cá nhân fan includes Cài đặt' },
     async () => {
-      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
-      await cdp.click('#mTopAcct');
+      await ctx.visit('/app/ca-nhan', { role: 'teacher', viewport: 'mobile' });
       const info = await cdp.evalJs(() => ({
-        src: document.querySelector('#mAcctSheet .m-acct-av')?.getAttribute('src') || '',
-        sub: document.querySelector('#mAcctSheet .m-acct-who small')?.textContent.trim() || '',
+        hasTopAcct: !!document.getElementById('mTopAcct'),
+        text: document.getElementById('main')?.textContent || '',
       }));
-      assert.ok(info.src.includes('chibi-owl.webp'));
-      assert.ok(info.sub.includes('@e2e_teacher') && info.sub.includes('Giáo viên'));
+      assert.strictEqual(info.hasTopAcct, false, '#mTopAcct must stay removed for teacher');
+      assert.ok(info.text.includes('@e2e_teacher') && info.text.includes('Giáo viên') && info.text.includes('Cài đặt'));
     }
   );
 

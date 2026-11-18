@@ -116,8 +116,11 @@ export function registerTier3(suite, ctx) {
       const lbTxt = await cdp.evalJs(() => document.querySelector('.lx-lb')?.textContent || '');
       assert.match(lbTxt, /XP/i, 'M2: Expected XP in leaderboard');
 
-      await cdp.click('#mTopAcct');
-      await cdp.click('#mAcctSheet [data-acct-badge]');
+      await cdp.click('#mTabAcctBtn');
+      await ctx.waitForFanPill('mTabAcctBtn', '/app/ca-nhan');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/ca-nhan');
+      await cdp.waitForAppSettled({ selector: '.pf-hub-nav' });
+      await cdp.click('.pf-hub-nav a[href="/app/ngoai-ngu/huy-hieu/en"]');
       await cdp.waitForAppSettled({ selector: '.lx-badges' });
       const badgeTxt = await cdp.evalJs(() => document.getElementById('main')?.textContent || '');
       assert.ok(badgeTxt.includes('Huy hiệu của bạn'), 'M2: Expected "Huy hiệu của bạn" mobile heading');
@@ -159,8 +162,9 @@ export function registerTier3(suite, ctx) {
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/giao-vien/tien-do');
 
-      await cdp.click('#mTopAcct');
-      await cdp.click('#mAcctSheet a[href="/app/thong-bao"]');
+      await cdp.click('#mTabAcctBtn');
+      await ctx.waitForFanPill('mTabAcctBtn', '/app/thong-bao');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/thong-bao');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/thong-bao');
     }

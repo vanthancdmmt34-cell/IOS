@@ -103,10 +103,10 @@ export function registerTier4(suite, ctx) {
       await ctx.shot('14-ca-nhan-hub-390.png');
 
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
-      await cdp.click('#mTopAcct');
-      await new Promise((r) => setTimeout(r, 180));
-      await ctx.shot('15-teacher-acct-sheet-390.png');
-      await cdp.click('#mAcctSheet [data-close-acct]');
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 200));
+      await ctx.shot('15-teacher-acct-fan-390.png');
+      await cdp.click('#mAcctFan [data-close-acct-fan]');
 
       await cdp.click('#mTab a[href="/app/lop"]');
       await cdp.waitForAppSettled({ selector: '#main' });
