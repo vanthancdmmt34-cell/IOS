@@ -315,9 +315,22 @@ function parseCookies(req) {
   }
   return out;
 }
+// Ứng dụng iOS/Android đóng gói sẵn giao diện gọi API bằng header Authorization: Bearer <token>.
+const NATIVE_ORIGINS = new Set(["capacitor://localhost", "https://localhost", "http://localhost"]);
+function applyNativeCors(req, res) {
+  const origin = String(req.headers.origin || "");
+  if (!NATIVE_ORIGINS.has(origin)) return false;
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Authorization,Content-Type,X-Lang,X-CSRF-Token");
+  res.setHeader("Access-Control-Max-Age", "600");
+  return true;
+}
 async function getSession(req) {
   const cookies = parseCookies(req);
-  const token = cookies.hoc_session;
+  const bearer = String(req.headers.authorization || "").match(/^Bearer\s+([a-f0-9]{64})$/i);
+  const token = bearer ? bearer[1].toLowerCase() : cookies.hoc_session;
   if (!token) return null;
   const row = await db.prepare("SELECT s.*, u.id AS user_id, u.username, u.display_name, u.role, u.disabled, u.lang FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ?").get(token);
   if (!row || row.disabled) return null;
@@ -512,7 +525,7 @@ async function handleApi(req, res, url) {
       return sendJson(res, 201, { user: { id: userId, username, displayName, role, lang }, trial: null, csrfToken: null, needLogin: true });
     }
     res.setHeader("Set-Cookie", `hoc_session=${token}; ${cookieFlags(req)}; Max-Age=${sessionDays() * 86400}`);
-    return sendJson(res, 201, { user: { id: userId, username, displayName, role, lang }, trial: null, csrfToken: csrf });
+    return sendJson(res, 201, { user: { id: userId, username, displayName, role, lang }, trial: null, csrfToken: csrf, token });
   }
   
 if (method === "POST" && url.pathname === "/api/login") {
@@ -534,11 +547,11 @@ if (method === "POST" && url.pathname === "/api/login") {
     const exp = new Date(Date.now() + sessionDays() * 86400000).toISOString();
     await db.prepare("INSERT INTO sessions (token, user_id, csrf_token, created_at, expires_at) VALUES (?, ?, ?, ?, ?)").run(token, user.id, csrf, nowIso(), exp);
     res.setHeader("Set-Cookie", `hoc_session=${token}; ${cookieFlags(req)}; Max-Age=${sessionDays() * 86400}`);
-    return sendJson(res, 200, { user: publicUser(user), csrfToken: csrf });
+    return sendJson(res, 200, { user: publicUser(user), csrfToken: csrf, token });
   }
   if (method === "POST" && url.pathname === "/api/logout") {
     const sess = await getSession(req);
-    if (sess) await db.prepare("DELETE FROM sessions WHERE token = ?").run(parseCookies(req).hoc_session);
+    if (sess) await db.prepare("DELETE FROM sessions WHERE token = ?").run(sess.token);
     res.setHeader("Set-Cookie", `hoc_session=; ${cookieFlags(req)}; Max-Age=0`);
     return sendJson(res, 200, { ok: true });
   }
@@ -1321,6 +1334,7 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
     metricRoute = normalizeMetricRoute(url.pathname);
+    if (url.pathname.startsWith("/api/") && applyNativeCors(req, res) && req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
     if (url.pathname === "/internal/metrics") {
       const token = String(process.env.METRICS_TOKEN || "");
       const supplied = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
