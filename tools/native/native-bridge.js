@@ -11,6 +11,10 @@
   var zoomFix = document.createElement("style");
   zoomFix.textContent = "input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px!important}";
   (document.head || document.documentElement).appendChild(zoomFix);
+  // Thanh tiêu đề dính (sticky top:0) nằm dưới thanh trạng thái/tai thỏ, nên dời xuống đúng vùng an toàn.
+  var topFix = document.createElement("style");
+  topFix.textContent = "html body.in-app .main > .topbar,html body.in-app .toeic-timer-bar{top:env(safe-area-inset-top)!important}";
+  (document.head || document.documentElement).appendChild(topFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
 
