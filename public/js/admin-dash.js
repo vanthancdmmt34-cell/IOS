@@ -25,15 +25,18 @@ export function adminShell(main, { tab, groups, ctx }) {
   document.body.classList.add("ax-on");
   ctx.onLeave?.(() => document.body.classList.remove("ax-on"));
   let curLabel = "Tổng quan";
+  let curGroupLabel = "Tổng quan";
   for (const g of groups) {
     const found = g.items.find(([k]) => k === tab);
-    if (found) { curLabel = found[1]; break; }
+    if (found) { curLabel = found[1]; curGroupLabel = g.label; break; }
   }
   const nav = groups.map((g) => `<div class="ad-grp"><span class="ad-grp-l">${esc(g.label)}</span>
     ${g.items.map(([k, l, ic, d]) => `<a href="${k.startsWith("#") ? k : "/app/quan-tri/" + k}" class="${k === tab ? "on" : ""}" title="${esc(d || "")}">${I(k === "tong-quan" ? "grid" : (ic || "file"))}<span>${esc(l)}</span></a>`).join("")}</div>`).join("");
+  const isOverviewTab = tab === "tong-quan";
   const isUserTab = ["hoc-vien", "giao-vien", "lop", "lop-giay-phep"].includes(tab);
-  const isContentTab = ["ngoai-ngu", "ban-dich", "song-ngu"].includes(tab);
-  const isMoreTab = !["tong-quan"].includes(tab) && !isUserTab && !isContentTab;
+  const isContentTab = ["ngoai-ngu", "ban-dich", "song-ngu", "thong-bao"].includes(tab);
+  const isBizTab = ["kinh-doanh", "ma-qua-tang"].includes(tab);
+  const isSystemTab = ["cai-dat", "he-thong", "du-lieu", "giam-sat"].includes(tab);
   main.innerHTML = `
   <div class="ad" id="ad">
     <aside class="ad-side" aria-label="Menu quản trị">
@@ -56,13 +59,13 @@ export function adminShell(main, { tab, groups, ctx }) {
         <button class="ad-m-back" id="adMBack" type="button" aria-label="Quay lại">${icon("left")}</button>
         <div class="ad-m-titles">
           <b id="adMTitle">Quản trị · ${esc(curLabel)}</b>
-          <span>Quản trị · LifeRivo Study</span>
+          <span>${esc(curGroupLabel)} · LifeRivo Study</span>
         </div>
-        <button class="ad-m-more" id="adMMore" type="button" aria-label="Mở menu quản trị">•••</button>
-        <button class="ad-ib ad-menu" id="adMenu" aria-label="Mở menu">${icon("menu")}</button>
         <button class="ad-search" id="adSearch" type="button">${icon("search")}<span>Tìm học viên, bài tập, chương…</span><kbd>Ctrl K</kbd></button>
         <span class="ad-sp"></span>
+        <button class="ad-ib ad-m-search-btn" id="adMSearch" type="button" title="Tìm kiếm nhanh" aria-label="Tìm kiếm nhanh">${icon("search")}</button>
         <a class="ad-ib" href="/app/quan-tri/thong-bao" id="axBell" title="Thông báo" aria-label="Thông báo">${icon("bell")}</a>
+        <a class="ad-ib ad-m-home-btn" href="/app/" id="adMHome" title="Về trang học" aria-label="Về trang học">${I("home")}</a>
         <div class="ad-user">
           <button type="button" id="adUser" aria-haspopup="true" aria-expanded="false">${avatar(S.me.displayName, S.me.username)}<span><b>${esc(S.me.displayName)}</b><small>${esc(roleLabel(S.me.role))}</small></span>${I("down")}</button>
           <div class="ad-drop" id="adDrop" hidden>
@@ -75,24 +78,22 @@ export function adminShell(main, { tab, groups, ctx }) {
       <div class="ad-content" id="adContent"></div>
     </div>
     <nav class="ad-m-tab" aria-label="Điều hướng quản trị">
-      <a href="/app/quan-tri/tong-quan" class="ad-m-tab-it ${tab === "tong-quan" ? "on" : ""}"><span class="ad-m-tab-ic">${I("home")}</span><span>Tổng quan</span></a>
+      <a href="/app/quan-tri/tong-quan" class="ad-m-tab-it ${isOverviewTab ? "on" : ""}"><span class="ad-m-tab-ic">${I("home")}</span><span>Tổng quan</span></a>
       <a href="/app/quan-tri/hoc-vien" class="ad-m-tab-it ${isUserTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("users")}</span><span>Người dùng</span></a>
       <a href="/app/quan-tri/ngoai-ngu" class="ad-m-tab-it ${isContentTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("book")}</span><span>Nội dung</span></a>
-      <button type="button" class="ad-m-tab-it ${isMoreTab ? "on" : ""}" id="adMTabMenu"><span class="ad-m-tab-ic">${icon("menu")}</span><span>Menu</span></button>
+      <a href="/app/quan-tri/kinh-doanh" class="ad-m-tab-it ${isBizTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("star")}</span><span>Kinh doanh</span></a>
+      <a href="/app/quan-tri/cai-dat" class="ad-m-tab-it ${isSystemTab ? "on" : ""}"><span class="ad-m-tab-ic">${icon("settings")}</span><span>Hệ thống</span></a>
     </nav>
   </div>`;
   const ad = $("#ad", main);
-  const toggleNav = () => ad.classList.toggle("nav");
-  $("#adMenu", main).addEventListener("click", toggleNav);
-  $("#adMMore", main)?.addEventListener("click", toggleNav);
-  $("#adMTabMenu", main)?.addEventListener("click", toggleNav);
   $("#adMClose", main)?.addEventListener("click", () => ad.classList.remove("nav"));
-  $("#adScrim", main).addEventListener("click", () => ad.classList.remove("nav"));
+  $("#adScrim", main)?.addEventListener("click", () => ad.classList.remove("nav"));
   $("#adMBack", main)?.addEventListener("click", () => {
     if (tab !== "tong-quan") setAppHash("/app/quan-tri/tong-quan");
     else setAppHash("/app/");
   });
-  $("#adSearch", main).addEventListener("click", () => document.getElementById("searchBtn")?.click());
+  $("#adSearch", main)?.addEventListener("click", () => document.getElementById("searchBtn")?.click());
+  $("#adMSearch", main)?.addEventListener("click", () => document.getElementById("searchBtn")?.click());
   const drop = $("#adDrop", main), ub = $("#adUser", main);
   ub.addEventListener("click", (e) => { e.stopPropagation(); drop.hidden = !drop.hidden; ub.setAttribute("aria-expanded", String(!drop.hidden)); });
   const close = () => { drop.hidden = true; ub.setAttribute("aria-expanded", "false"); };
@@ -200,12 +201,41 @@ export async function dashPage(host, DATA, { onReload } = {}) {
   </div>
 
   <div class="ad-m-quick">
-    <h2>Quản lý nhanh</h2>
+    <h2>Phân khu quản trị</h2>
     <div class="ad-m-quick-grid">
-      <a class="ad-m-qcard" href="/app/quan-tri/hoc-vien"><span class="ad-m-qic">${icon("users")}</span><b>Người dùng</b><span>Tài khoản</span></a>
-      <a class="ad-m-qcard" href="/app/quan-tri/ngoai-ngu"><span class="ad-m-qic">${icon("book")}</span><b>Nội dung</b><span>Ngoại ngữ</span></a>
-      <a class="ad-m-qcard" href="/app/quan-tri/kinh-doanh"><span class="ad-m-qic">${icon("star")}</span><b>Kinh doanh</b><span>Gói Pro</span></a>
-      <a class="ad-m-qcard" href="/app/quan-tri/he-thong"><span class="ad-m-qic">${icon("settings")}</span><b>Hệ thống</b><span>Cấu hình</span></a>
+      <div class="ad-m-qcard">
+        <a class="ad-m-qhead" href="/app/quan-tri/hoc-vien"><span class="ad-m-qic">${icon("users")}</span><div><b>Người dùng</b><span>Tài khoản & Lớp học</span></div></a>
+        <div class="ad-m-qlinks">
+          <a href="/app/quan-tri/hoc-vien">Học viên</a>
+          <a href="/app/quan-tri/giao-vien">Giáo viên</a>
+          <a href="/app/quan-tri/lop-giay-phep">Lớp & giấy phép</a>
+        </div>
+      </div>
+      <div class="ad-m-qcard">
+        <a class="ad-m-qhead" href="/app/quan-tri/ngoai-ngu"><span class="ad-m-qic">${icon("book")}</span><div><b>Nội dung</b><span>Khóa học & Bản dịch</span></div></a>
+        <div class="ad-m-qlinks">
+          <a href="/app/quan-tri/ngoai-ngu">Ngoại ngữ</a>
+          <a href="/app/quan-tri/song-ngu">Bản dịch</a>
+          <a href="/app/quan-tri/thong-bao">Thông báo</a>
+        </div>
+      </div>
+      <div class="ad-m-qcard">
+        <a class="ad-m-qhead" href="/app/quan-tri/kinh-doanh"><span class="ad-m-qic">${icon("star")}</span><div><b>Kinh doanh</b><span>Doanh thu & Gói Pro</span></div></a>
+        <div class="ad-m-qlinks">
+          <a href="/app/quan-tri/kinh-doanh">Doanh thu & Pro</a>
+          <a href="/app/quan-tri/kinh-doanh?sub=don-hang">Đơn hàng</a>
+          <a href="/app/quan-tri/ma-qua-tang">Mã quà tặng</a>
+        </div>
+      </div>
+      <div class="ad-m-qcard">
+        <a class="ad-m-qhead" href="/app/quan-tri/he-thong"><span class="ad-m-qic">${icon("settings")}</span><div><b>Hệ thống</b><span>Cấu hình & Giám sát</span></div></a>
+        <div class="ad-m-qlinks">
+          <a href="/app/quan-tri/cai-dat">Cài đặt chung</a>
+          <a href="/app/quan-tri/he-thong">AI & Thanh toán</a>
+          <a href="/app/quan-tri/du-lieu">Sao lưu</a>
+          <a href="/app/quan-tri/giam-sat">Giám sát</a>
+        </div>
+      </div>
     </div>
   </div>
 

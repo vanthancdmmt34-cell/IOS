@@ -19,14 +19,14 @@ export const ADMIN_ROUTES = [
   { tab: 'giao-vien', path: '/app/quan-tri/giao-vien', dock: 'Người dùng', dockEn: 'Users' },
   { tab: 'lop-giay-phep', path: '/app/quan-tri/lop-giay-phep', dock: 'Người dùng', dockEn: 'Users' },
   { tab: 'ngoai-ngu', path: '/app/quan-tri/ngoai-ngu', dock: 'Nội dung', dockEn: 'Content' },
-  { tab: 'thong-bao', path: '/app/quan-tri/thong-bao', dock: 'Menu', dockEn: 'Menu' },
-  { tab: 'kinh-doanh', path: '/app/quan-tri/kinh-doanh', dock: 'Menu', dockEn: 'Menu' },
-  { tab: 'ma-qua-tang', path: '/app/quan-tri/ma-qua-tang', dock: 'Menu', dockEn: 'Menu' },
-  { tab: 'cai-dat', path: '/app/quan-tri/cai-dat', dock: 'Menu', dockEn: 'Menu' },
-  { tab: 'he-thong', path: '/app/quan-tri/he-thong', dock: 'Menu', dockEn: 'Menu' },
+  { tab: 'thong-bao', path: '/app/quan-tri/thong-bao', dock: 'Nội dung', dockEn: 'Content' },
+  { tab: 'kinh-doanh', path: '/app/quan-tri/kinh-doanh', dock: 'Kinh doanh', dockEn: 'Business' },
+  { tab: 'ma-qua-tang', path: '/app/quan-tri/ma-qua-tang', dock: 'Kinh doanh', dockEn: 'Business' },
+  { tab: 'cai-dat', path: '/app/quan-tri/cai-dat', dock: 'Hệ thống', dockEn: 'System' },
+  { tab: 'he-thong', path: '/app/quan-tri/he-thong', dock: 'Hệ thống', dockEn: 'System' },
   { tab: 'song-ngu', path: '/app/quan-tri/song-ngu', dock: 'Nội dung', dockEn: 'Content' },
-  { tab: 'du-lieu', path: '/app/quan-tri/du-lieu', dock: 'Menu', dockEn: 'Menu' },
-  { tab: 'giam-sat', path: '/app/quan-tri/giam-sat', dock: 'Menu', dockEn: 'Menu' },
+  { tab: 'du-lieu', path: '/app/quan-tri/du-lieu', dock: 'Hệ thống', dockEn: 'System' },
+  { tab: 'giam-sat', path: '/app/quan-tri/giam-sat', dock: 'Hệ thống', dockEn: 'System' },
 ];
 
 export function createE2EContext({ cdp, srv, shotsDir }) {

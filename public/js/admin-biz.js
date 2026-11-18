@@ -3,7 +3,7 @@ import { appHash } from "./core.js";
 import { api, esc, lineIcon as icon, fmtN, fmtDate, toast, promptBox, confirmBox, openModal, $ } from "./core.js";
 
 const vnd = (n) => fmtN(n) + "đ";
-const SUB = [["thanh-toan", "Tài khoản nhận tiền"], ["thong-ke", "Thống kê"], ["don-hang", "Đơn hàng"], ["giao-dich", "Giao dịch ngân hàng"], ["thanh-vien", "Thành viên Pro"], ["goi", "Gói và giá"], ["ai", "Chi phí AI"], ["webhook", "Nhật ký webhook"], ["nhat-ky", "Nhật ký"]];
+const SUB = [["thong-ke", "Thống kê"], ["don-hang", "Đơn hàng"], ["thanh-vien", "Thành viên Pro"], ["goi", "Gói và giá"], ["giao-dich", "Giao dịch ngân hàng"], ["thanh-toan", "Tài khoản nhận tiền"], ["ai", "Chi phí AI"], ["webhook", "Nhật ký webhook"], ["nhat-ky", "Nhật ký"]];
 const ORDER_ST = { pending: ["Chờ thanh toán", "tag-cam"], paid: ["Đã thanh toán", "tag-la"], expired: ["Hết hạn", "tag-line"], canceled: ["Đã hủy", "tag-line"] };
 const PAY_ST = { matched: ["Khớp, đã kích hoạt", "tag-la"], manual: ["Gán tay", "tag-tim"], unmatched: ["Không có mã đơn", "tag-do"], mismatch: ["Lệch (thiếu tiền/đơn cũ)", "tag-cam"], ignored: ["Bỏ qua (tiền ra)", "tag-line"] };
 
@@ -21,8 +21,8 @@ async function refreshBizBadge() {
 }
 
 export async function bizPage(body, ctx) {
-  let sub = new URLSearchParams(appHash().split("?")[1] || "").get("sub") || "thanh-toan";
-  if (!SUB.some(([k]) => k === sub)) sub = "thanh-toan";
+  let sub = new URLSearchParams(appHash().split("?")[1] || "").get("sub") || "thong-ke";
+  if (!SUB.some(([k]) => k === sub)) sub = "thong-ke";
   body.innerHTML = `<div class="chips" id="bizTabs" style="margin-bottom:14px">${SUB.map(([k, l]) => `<button class="chip ${k === sub ? "on" : ""}" data-sub="${k}">${l}</button>`).join("")}</div><div id="bizBody"></div>`;
   const host = $("#bizBody", body);
   const show = async () => {

@@ -79,7 +79,7 @@ export function registerTier1(suite, ctx) {
       }));
       assert.ok(!/Quản trị viên/.test(res.drawerTitle), `Drawer title "${res.drawerTitle}" should be translated to EN`);
       assert.ok(!/Lớp học và giấy phép/.test(res.navText), 'Drawer item "Lớp học và giấy phép" should be translated to EN');
-      assert.ok(res.dockLabels.includes('Overview') && res.dockLabels.includes('Menu'), `Expected EN dock labels, got ${JSON.stringify(res.dockLabels)}`);
+      assert.ok(res.dockLabels.includes('Overview') && res.dockLabels.length === 5, `Expected 5 EN dock labels, got ${JSON.stringify(res.dockLabels)}`);
     }
   );
 
@@ -949,48 +949,46 @@ export function registerTier1(suite, ctx) {
     }
   );
 
-  // ================= F11: Admin Mobile Drawer & Line Icons =================
+  // ================= F11: Admin Unified 5-Pillar Architecture & Line Icons =================
   suite.test(
-    { id: 'T1-F11-01', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin mobile drawer displays Finn dragon avatar, "Quản trị viên", and "LifeRivo · Admin"' },
+    { id: 'T1-F11-01', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin shell displays Finn dragon avatar, "Quản trị viên", "LifeRivo · Admin", and zero duplicate menu buttons' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
       const head = await cdp.evalJs(() => {
         const av = document.querySelector('.ad-m-drawer-av');
         return {
-          open: document.getElementById('ad')?.classList.contains('nav') || false,
+          noDupMenuBtns: !document.getElementById('adMMore') && !document.getElementById('adMTabMenu'),
+          dockCount: document.querySelectorAll('.ad-m-tab .ad-m-tab-it').length,
           src: av?.getAttribute('src') || '',
-          loaded: !!av?.complete && (av?.naturalWidth || 0) > 0,
           title: document.querySelector('.ad-m-drawer-user b')?.textContent.trim() || '',
           sub: document.querySelector('.ad-m-drawer-user span')?.textContent.trim() || '',
         };
       });
-      assert.ok(head.open, '.ad must have .nav class');
-      assert.ok(head.src.includes('chibi-dragon.webp') && head.loaded, `Expected loaded Finn dragon avatar, got ${head.src}`);
+      assert.ok(head.noDupMenuBtns, 'Must eliminate duplicate #adMMore / #adMTabMenu menu triggers');
+      assert.strictEqual(head.dockCount, 5, 'Expected 5 unified pillars on .ad-m-tab dock');
+      assert.ok(head.src.includes('chibi-dragon.webp'), `Expected Finn dragon avatar, got ${head.src}`);
       assert.strictEqual(head.title, 'Quản trị viên');
       assert.ok(head.sub.includes('LifeRivo · Admin'), `M3: Expected "LifeRivo · Admin", got "${head.sub}"`);
     }
   );
 
   suite.test(
-    { id: 'T1-F11-02', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin drawer displays "Lớp học và giấy phép" and all 6 groups' },
+    { id: 'T1-F11-02', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin navigation displays "Lớp học và giấy phép" and all 5 unified groups' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
       const nav = await cdp.evalJs(() => ({
         groups: [...document.querySelectorAll('.ad-grp-l')].map((e) => e.textContent.trim()),
         items: [...document.querySelectorAll('.ad-nav a span')].map((e) => e.textContent.trim()),
       }));
-      assert.strictEqual(nav.groups.length, 6, `Expected 6 Admin nav groups, got ${nav.groups.length}`);
+      assert.strictEqual(nav.groups.length, 5, `Expected 5 unified Admin nav groups, got ${nav.groups.length}`);
       assert.ok(nav.items.includes('Lớp học và giấy phép'), `M3: Expected "Lớp học và giấy phép" label, got ${JSON.stringify(nav.items)}`);
     }
   );
 
   suite.test(
-    { id: 'T1-F11-03', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin mobile drawer hides .ad-back ("Về trang học") on mobile' },
+    { id: 'T1-F11-03', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin mobile hides .ad-back ("Về trang học") inside .ad-side on mobile' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
       const backDisp = await cdp.evalJs(() => {
         const el = document.querySelector('.ad-back');
         return el ? getComputedStyle(el).display : 'missing';
@@ -1000,10 +998,9 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F11-04', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin shell & drawer contain ZERO .sk-ic or Chibi-face SVGs' },
+    { id: 'T1-F11-04', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin shell & navigation contain ZERO .sk-ic or Chibi-face SVGs' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
       const v = await ctx.inspectAdminVisuals();
       assert.strictEqual(v.skIcCount, 0, `M3: Found ${v.skIcCount} .sk-ic icons inside .ad`);
       assert.strictEqual(v.chibiSvgs, 0, `M3: Found ${v.chibiSvgs} Chibi-face SVGs inside .ad`);
@@ -1078,7 +1075,8 @@ export function registerTier1(suite, ctx) {
       const sysHref = await cdp.evalJs(() => {
         const cards = [...document.querySelectorAll('.ad-m-qcard')];
         const sys = cards.find((c) => c.textContent.includes('Hệ thống'));
-        return sys?.getAttribute('href') || '';
+        const a = sys?.tagName === 'A' ? sys : sys?.querySelector('a.ad-m-qhead, a');
+        return a?.getAttribute('href') || '';
       });
       assert.ok(sysHref && !sysHref.includes('cai-dat-he-thong'), `M3: Hệ thống quick card has broken href "${sysHref}"`);
 

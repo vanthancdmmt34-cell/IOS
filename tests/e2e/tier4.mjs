@@ -201,8 +201,8 @@ export function registerTier4(suite, ctx) {
       assert.strictEqual(v.bodyBg, 'rgb(244, 247, 251)', `M3: Expected #F4F7FB canvas, got ${v.bodyBg}`);
       assert.strictEqual(v.skIcCount, 0, 'M3: Zero .sk-ic allowed in Admin');
 
-      await cdp.click('#adMMore');
-      await new Promise((r) => setTimeout(r, 180));
+      await cdp.click('.ad-m-tab a[href="/app/quan-tri/hoc-vien"]');
+      await cdp.waitForAppSettled({ expectAdmin: true });
       await ctx.shot('30-admin-drawer-390.png');
 
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'desktop', expectAdmin: true });

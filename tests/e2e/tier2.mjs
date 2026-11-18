@@ -719,47 +719,38 @@ export function registerTier2(suite, ctx) {
     }
   );
 
-  // ================= F11: Admin Mobile Drawer Boundaries =================
+  // ================= F11: Admin Unified Navigation Boundaries =================
   suite.test(
-    { id: 'T2-F11-01', tier: 2, feature: 'F11', milestone: 'M3', name: 'Admin mobile drawer fits narrow 320x844 with zero overflow and zero .sk-ic' },
+    { id: 'T2-F11-01', tier: 2, feature: 'F11', milestone: 'M3', name: 'Admin mobile shell & 5-tab dock fit narrow 320x844 with zero overflow and zero .sk-ic' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'narrow', expectAdmin: true });
-      await cdp.click('#adMMore');
-      await ctx.assertNoOverflow('T2-F11-01 admin drawer 320px');
+      await ctx.assertNoOverflow('T2-F11-01 admin shell 320px');
       const v = await ctx.inspectAdminVisuals();
       assert.strictEqual(v.skIcCount, 0);
     }
   );
 
   suite.test(
-    { id: 'T2-F11-02', tier: 2, feature: 'F11', milestone: 'M3', name: 'Admin drawer closes cleanly via #adMClose and #adScrim' },
+    { id: 'T2-F11-02', tier: 2, feature: 'F11', milestone: 'M3', name: 'Admin .ad-subnav renders sibling category tabs cleanly on multi-page pillars' },
     async () => {
-      await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
-      assert.strictEqual(await cdp.evalJs(() => document.getElementById('ad')?.classList.contains('nav')), true);
-      await cdp.click('#adMClose');
-      assert.strictEqual(await cdp.evalJs(() => document.getElementById('ad')?.classList.contains('nav')), false);
-
-      await cdp.click('#adMMore');
-      assert.strictEqual(await cdp.evalJs(() => document.getElementById('ad')?.classList.contains('nav')), true);
-      await cdp.click('#adScrim');
-      assert.strictEqual(await cdp.evalJs(() => document.getElementById('ad')?.classList.contains('nav')), false);
+      await ctx.visit('/app/quan-tri/hoc-vien', { role: 'admin', viewport: 'mobile', expectAdmin: true });
+      const items = await cdp.evalJs(() => [...document.querySelectorAll('.ad-subnav .ad-subnav-it')].map((a) => a.textContent.trim()));
+      assert.deepStrictEqual(items, ['Tài khoản người dùng', 'Giáo viên', 'Lớp học và giấy phép']);
     }
   );
 
   suite.test(
-    { id: 'T2-F11-03', tier: 2, feature: 'F11', milestone: 'M3', name: 'Clicking Admin drawer nav link closes drawer and mounts destination route' },
+    { id: 'T2-F11-03', tier: 2, feature: 'F11', milestone: 'M3', name: 'Clicking Admin .ad-subnav link navigates cleanly to sibling route' },
     async () => {
-      await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
-      await cdp.click('.ad-nav a[href="/app/quan-tri/giam-sat"]');
+      await ctx.visit('/app/quan-tri/cai-dat', { role: 'admin', viewport: 'mobile', expectAdmin: true });
+      await cdp.click('.ad-subnav a[href="/app/quan-tri/giam-sat"]');
       await cdp.waitForAppSettled({ expectAdmin: true });
       const info = await cdp.evalJs(() => ({
         path: location.pathname,
-        navOpen: document.getElementById('ad')?.classList.contains('nav') || false,
+        activeSub: document.querySelector('.ad-subnav .ad-subnav-it.on')?.textContent.trim() || '',
       }));
       assert.strictEqual(info.path, '/app/quan-tri/giam-sat');
-      assert.strictEqual(info.navOpen, false);
+      assert.strictEqual(info.activeSub, 'Giám sát');
     }
   );
 

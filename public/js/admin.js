@@ -11,36 +11,34 @@ import { pageLangAdmin } from "./lang.js";
 import { roleLabel, cfg, refreshBrand } from "./core.js";
 import { S, api, esc, lineIcon as icon, avatar, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, promptBox, findEx, chapterNum, chapterShort, $ } from "./core.js";
 
-// Admin feature groups — categorized sidebar for easy navigation
+// Admin feature groups — unified 5-pillar architecture across desktop sidebar, sub-nav, and mobile dock
 const ADMIN_GROUPS = [
   { id: "overview", label: "Tổng quan", items: [
     ["tong-quan", "Bảng điều khiển", "chart", "Việc cần xử lý và tình hình học tập"],
   ] },
-  { id: "people", label: "Học viên và lớp", items: [
+  { id: "people", label: "Người dùng", items: [
     ["hoc-vien", "Tài khoản người dùng", "user", "Học viên, phụ huynh, khóa tài khoản, đặt lại mật khẩu"],
     ["giao-vien", "Giáo viên", "users", "Tài khoản và giấy phép giáo viên"],
     ["lop-giay-phep", "Lớp học và giấy phép", "book", "Lớp học và giấy phép Teacher"],
   ] },
-  { id: "content", label: "Nội dung học", items: [
+  { id: "content", label: "Nội dung", items: [
     ["ngoai-ngu", "Khóa ngoại ngữ", "globe", "Quản lý nội dung ngoại ngữ"],
-  ] },
-  { id: "learning", label: "Theo dõi học tập", items: [
+    ["song-ngu", "Bản dịch giao diện", "translate", "Song ngữ Việt và Anh"],
     ["thong-bao", "Thông báo", "bell", "Gửi thông báo tới học viên"],
   ] },
   { id: "biz", label: "Kinh doanh", items: [
     ["kinh-doanh", "Doanh thu và gói Pro", "star", "Đơn hàng, thanh toán, thống kê AI"],
-    ["ma-qua-tang", "Mã quà tặng Pro", "star", "Tạo mã ngẫu nhiên, theo dõi mã đã dùng"],
+    ["ma-qua-tang", "Mã quà tặng Pro", "gift", "Tạo mã ngẫu nhiên, theo dõi mã đã dùng"],
   ] },
   { id: "system", label: "Hệ thống", items: [
     ["cai-dat", "Cài đặt chung", "sliders", "Đăng ký, bảo trì, thương hiệu"],
     ["he-thong", "Thanh toán, AI, máy chủ", "settings", "SePay, Gemini, website"],
-    ["song-ngu", "Bản dịch giao diện", "globe", "Song ngữ Việt và Anh"],
     ["du-lieu", "Dữ liệu và sao lưu", "database", "Sao lưu, xuất, bảo trì cơ sở dữ liệu"],
     ["giam-sat", "Giám sát", "chart", "Số liệu hệ thống, chi phí AI, cảnh báo"],
   ] },
 ];
 const TABS = ADMIN_GROUPS.flatMap((g) => g.items.filter(([k]) => !k.startsWith("#")).map(([k, l]) => [k, l]));
-const TAB_META = Object.fromEntries(ADMIN_GROUPS.flatMap((g) => g.items.map(([k, l, ic, d]) => [k, { label: l, icon: ic, desc: d, group: g.label }])));
+const TAB_META = Object.fromEntries(ADMIN_GROUPS.flatMap((g) => g.items.map(([k, l, ic, d]) => [k, { label: l, icon: ic, desc: d, group: g.label, groupId: g.id }])));
 
 /* ---------- Bài tập tùy chỉnh: trắc nghiệm ngoại ngữ ---------- */
 let DATA = null;
@@ -97,7 +95,12 @@ export async function pageAdmin(main, [tab = "tong-quan", uid], _q, ctx) {
   const content = adminShell(main, { tab, groups: ADMIN_GROUPS, ctx });
   const reload = async () => { DATA = null; await pageAdmin(main, [tab, uid], _q, ctx); toast("Đã tải lại số liệu.", "ok"); };
   const isDash = tab === "tong-quan";
+  const curGroup = ADMIN_GROUPS.find((g) => g.items.some(([k]) => k === tab)) || ADMIN_GROUPS[0];
+  const subnavHtml = !isDash && curGroup && curGroup.items.length > 1
+    ? `<nav class="ad-subnav" aria-label="Phân mục ${esc(curGroup.label)}">${curGroup.items.map(([k, l, ic]) => `<a href="/app/quan-tri/${k}" class="ad-subnav-it ${k === tab ? "on" : ""}">${icon(ic || "file")}<span>${esc(l)}</span></a>`).join("")}</nav>`
+    : "";
   content.innerHTML = isDash ? `<div id="admBody"><div class="skel" style="height:420px"></div></div>` : `
+    ${subnavHtml}
     <div class="ax-head">
       <div><h1>${esc(uid ? "Hồ sơ người dùng" : meta.label)}</h1><p>${esc(meta.group)}${meta.desc ? " · " + esc(meta.desc) : ""}</p></div>
       <button class="ax-ghost" id="admReload" type="button">${icon("reset")}Tải lại số liệu</button>

@@ -182,11 +182,12 @@ export function registerTier3(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T3-09', tier: 3, feature: 'F11', milestone: 'M3', name: 'Admin drawer -> Lớp học và giấy phép -> Người dùng dock active -> #adMBack SPA' },
+    { id: 'T3-09', tier: 3, feature: 'F11', milestone: 'M3', name: 'Admin Người dùng dock -> .ad-subnav Lớp học và giấy phép -> Người dùng dock active -> #adMBack SPA' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
-      await cdp.click('#adMMore');
-      await cdp.click('.ad-nav a[href="/app/quan-tri/lop-giay-phep"]');
+      await cdp.click('.ad-m-tab a[href="/app/quan-tri/hoc-vien"]');
+      await cdp.waitForAppSettled({ expectAdmin: true });
+      await cdp.click('.ad-subnav a[href="/app/quan-tri/lop-giay-phep"]');
       await cdp.waitForAppSettled({ expectAdmin: true });
       const dockLbl = await cdp.evalJs(() => document.querySelector('.ad-m-tab-it.on')?.textContent.trim() || '');
       assert.strictEqual(dockLbl, 'Người dùng', `M3: Expected Người dùng active on lop-giay-phep, got "${dockLbl}"`);
@@ -198,7 +199,7 @@ export function registerTier3(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T3-10', tier: 3, feature: 'F12', milestone: 'M3', name: 'Admin 4-tab dock roundtrip: Tổng quan -> Người dùng -> Nội dung -> Menu drawer -> song-ngu' },
+    { id: 'T3-10', tier: 3, feature: 'F12', milestone: 'M3', name: 'Admin 5-tab dock roundtrip: Tổng quan -> Người dùng -> Nội dung -> .ad-subnav song-ngu -> Kinh doanh -> Hệ thống' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
       await cdp.click('.ad-m-tab a[href="/app/quan-tri/hoc-vien"]');
@@ -209,9 +210,7 @@ export function registerTier3(suite, ctx) {
       await cdp.waitForAppSettled({ expectAdmin: true });
       assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/quan-tri/ngoai-ngu');
 
-      await cdp.click('#adMTabMenu');
-      assert.strictEqual(await cdp.evalJs(() => document.getElementById('ad')?.classList.contains('nav')), true);
-      await cdp.click('.ad-nav a[href="/app/quan-tri/song-ngu"]');
+      await cdp.click('.ad-subnav a[href="/app/quan-tri/song-ngu"]');
       await cdp.waitForAppSettled({ expectAdmin: true });
       const dock = await cdp.evalJs(() => document.querySelector('.ad-m-tab-it.on')?.textContent.trim() || '');
       assert.strictEqual(dock, 'Nội dung', `M3: song-ngu must highlight Nội dung (got "${dock}")`);
