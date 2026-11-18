@@ -7,6 +7,10 @@
 (function () {
   var base = window.LR_API_BASE;
   if (!base) return;
+  // iOS tự phóng to trang khi ô nhập có cỡ chữ dưới 16px (ví dụ khung đăng nhập 14px), nên ép 16px cho ô nhập trong app.
+  var zoomFix = document.createElement("style");
+  zoomFix.textContent = "input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px!important}";
+  (document.head || document.documentElement).appendChild(zoomFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
 
