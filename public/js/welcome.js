@@ -229,6 +229,22 @@ function renderClassicPicker(main, lang, ctx) {
 
     ${resumeHtml}
 
+    <section class="sw-picker-sec" aria-label="Chọn ngôn ngữ bắt đầu">
+      <div class="sw-picker-head">
+        <div>
+          <h2>Chọn ngoại ngữ &amp; người bạn của bạn</h2>
+          <p>Bấm mục tiêu bên dưới nếu bạn chưa biết chọn môn nào:</p>
+        </div>
+        <div class="sw-goal-pills" role="group" aria-label="Lọc theo mục tiêu">
+          <button type="button" class="chip on" data-goal="all">Tất cả 6 môn</button>
+          <button type="button" class="chip" data-goal="starter">Mất gốc · từ đầu</button>
+          <button type="button" class="chip" data-goal="speaking">Giao tiếp &amp; Phỏng vấn AI</button>
+          <button type="button" class="chip" data-goal="abroad">Đi Nhật / Hàn / Du học</button>
+        </div>
+      </div>
+      <div class="sw-chibi-grid">${list.map(card).join("")}</div>
+    </section>
+
     <section class="sw-roadmap" aria-label="${esc(RH.title)}">
       <div class="sw-roadmap-head">
         <div>
@@ -263,22 +279,6 @@ function renderClassicPicker(main, lang, ctx) {
       </div>
       ${companionPickerHtml(S.prefs && S.prefs.companion || "")}
       <p class="cp-picker-say" aria-live="polite"></p>
-    </section>
-
-    <section class="sw-picker-sec" aria-label="Chọn ngôn ngữ bắt đầu">
-      <div class="sw-picker-head">
-        <div>
-          <h2>Chọn ngoại ngữ &amp; người bạn của bạn</h2>
-          <p>Bấm mục tiêu bên dưới nếu bạn chưa biết chọn môn nào:</p>
-        </div>
-        <div class="sw-goal-pills" role="group" aria-label="Lọc theo mục tiêu">
-          <button type="button" class="chip on" data-goal="all">Tất cả 6 môn</button>
-          <button type="button" class="chip" data-goal="starter">Mất gốc · từ đầu</button>
-          <button type="button" class="chip" data-goal="speaking">Giao tiếp &amp; Phỏng vấn AI</button>
-          <button type="button" class="chip" data-goal="abroad">Đi Nhật / Hàn / Du học</button>
-        </div>
-      </div>
-      <div class="sw-chibi-grid">${list.map(card).join("")}</div>
     </section>
   </div>`;
 

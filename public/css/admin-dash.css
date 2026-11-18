@@ -181,7 +181,7 @@ body.ax-on { background: #F8FAFC !important; background-image: none !important; 
 /* Các trang quản trị khác: thẻ và bảng dùng chung màu */
 .ad-content .sheet, .ad-content .card, .ad-content .kpi { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
 .ad-content .adm-layout, .ad-content .adm-main { display: block; }
-.ad-m-drawer-head, .ad-m-back, .ad-m-titles, .ad-m-more, .ad-m-tab, .ad-m-dash-head, .ad-m-quick, .ad-m-search-btn, .ad-m-home-btn { display: none; }
+.ad-m-drawer-head, .ad-m-back, .ad-m-titles, .ad-m-tab, .ad-m-dash-head, .ad-m-quick, .ad-m-search-btn, .ad-m-home-btn { display: none; }
 
 /* Thanh chuyển nhanh các mục cùng phân khu (.ad-subnav) */
 .ad-subnav {
@@ -310,9 +310,6 @@ html:root body.in-app.ax-on #mTab {
     box-shadow: none !important;
     cursor: pointer;
     flex: none;
-  }
-  html:root body.in-app.ax-on .ad-m-more {
-    display: none !important;
   }
   html:root body.in-app.ax-on .ad-m-back svg {
     width: 18px;

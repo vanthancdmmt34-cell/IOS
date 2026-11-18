@@ -190,6 +190,13 @@ export async function pageProfile(main, _p, _q, ctx) {
   const actSt = activityStats();
   const roleLabel = ({ admin: "Quản trị", teacher: "Giáo viên", student: "Học viên", parent: "Phụ huynh" })[S.me.role] || "Học viên";
   const roleAvatar = S.me.role === "admin" ? "dragon" : S.me.role === "teacher" ? "owl" : S.me.role === "parent" ? "cat" : "bunny";
+  const subj = getSubject();
+  const isTeacher = S.me.role === "teacher";
+  const isAdmin = S.me.role === "admin";
+  const isParent = S.me.role === "parent";
+  const hints = S.nav || {};
+  const showClass = !!hints.hasClass || ["admin", "teacher", "student", "parent"].includes(S.me.role);
+  const showFamily = !!hints.hasFamily || isParent || isAdmin;
   main.innerHTML = `
     <div class="pf-m-hero sheet sheet-pad">
       <div class="pf-m-av"><img src="/img/kit/chibi-${roleAvatar}.webp" alt="" width="84" height="84" /></div>
@@ -203,15 +210,30 @@ export async function pageProfile(main, _p, _q, ctx) {
     </div>
     <div class="page-head pf-desk-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
       <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${roleLabel}</p></div></div></div>
-    <div class="pf-m-nav">
-      <h2>Tài khoản</h2>
+    <div class="pf-m-nav pf-hub-nav">
+      <h2>Cá nhân</h2>
       <div class="pf-m-links">
-        <button type="button" class="pf-m-link" data-pf-open="#emailDetails"><span class="pf-m-ico">👤</span><b>Thông tin cá nhân</b><span class="pf-m-arr">›</span></button>
-        <button type="button" class="pf-m-link" data-pf-open="#pwDetails"><span class="pf-m-ico">🔒</span><b>Bảo mật</b><span class="pf-m-arr">›</span></button>
-        <a class="pf-m-link" href="/app/cai-dat"><span class="pf-m-ico">⚙️</span><b>Cài đặt</b><span class="pf-m-arr">›</span></a>
-        <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">💳</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
-        <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">🔔</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
-        <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">❓</span><b>Trợ giúp</b><span class="pf-m-arr">›</span></a>
+        <button type="button" class="pf-m-link" data-pf-open="#emailDetails"><span class="pf-m-ico">${lineIcon("user")}</span><b>Thông tin cá nhân</b><span class="pf-m-arr">›</span></button>
+        <button type="button" class="pf-m-link" data-pf-open="#pwDetails"><span class="pf-m-ico">${lineIcon("lock")}</span><b>Bảo mật</b><span class="pf-m-arr">›</span></button>
+        ${(isTeacher || isAdmin) ? `<a class="pf-m-link" href="/app/giao-vien"><span class="pf-m-ico">${lineIcon("home")}</span><b>Trang giáo viên</b><span class="pf-m-arr">›</span></a>` : ""}
+        ${showClass ? `<a class="pf-m-link" href="/app/lop"><span class="pf-m-ico">${lineIcon("book")}</span><b>Lớp của tôi</b><span class="pf-m-arr">›</span></a>` : ""}
+        ${showFamily ? `<a class="pf-m-link" href="/app/gia-dinh"><span class="pf-m-ico">${lineIcon("users")}</span><b>Gia đình</b><span class="pf-m-arr">›</span></a>` : ""}
+        ${!isTeacher ? `
+          <a class="pf-m-link" href="${subj ? "/app/co-vu" : "/app/chon-mon"}"><span class="pf-m-ico">${lineIcon("sparkle")}</span><b>Cổ vũ & Chuỗi ngày</b><span class="pf-m-arr">›</span></a>
+          <a class="pf-m-link" href="/app/so-tay"><span class="pf-m-ico">${lineIcon("lesson")}</span><b>Sổ tay từ vựng</b><span class="pf-m-arr">›</span></a>
+          ${subj ? `
+            <a class="pf-m-link" href="/app/tro-choi/${esc(subj)}"><span class="pf-m-ico">${lineIcon("star")}</span><b>Trò chơi học tập</b><span class="pf-m-arr">›</span></a>
+            ${on("aiEnabled") ? `<a class="pf-m-link" href="/app/ngoai-ngu/tro-chuyen/${esc(subj)}"><span class="pf-m-ico">${lineIcon("chat")}</span><b>Hội thoại AI</b><span class="pf-m-arr">›</span></a>` : ""}
+            <a class="pf-m-link" href="/app/ngoai-ngu/chung-nhan-cua-toi/${esc(subj)}"><span class="pf-m-ico">${lineIcon("award")}</span><b>Chứng nhận</b><span class="pf-m-arr">›</span></a>
+            ${on("leaderboard") ? `<a class="pf-m-link" href="/app/ngoai-ngu/xep-hang/${esc(subj)}"><span class="pf-m-ico">${lineIcon("trophy")}</span><b>Xếp hạng</b><span class="pf-m-arr">›</span></a>` : ""}
+            ${on("gamification") ? `<a class="pf-m-link" href="/app/ngoai-ngu/huy-hieu/${esc(subj)}"><span class="pf-m-ico">${lineIcon("star")}</span><b>Huy hiệu</b><span class="pf-m-arr">›</span></a>` : ""}
+          ` : `
+            <a class="pf-m-link" href="/app/chon-mon"><span class="pf-m-ico">${lineIcon("globe")}</span><b>Chọn ngoại ngữ</b><span class="pf-m-arr">›</span></a>
+            ${aiOn() && on("aiEnabled") ? `<a class="pf-m-link" href="/app/ai"><span class="pf-m-ico">${lineIcon("chat")}</span><b>Hội thoại AI</b><span class="pf-m-arr">›</span></a>` : ""}
+          `}
+        ` : ""}
+        <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">${lineIcon("key")}</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
+        ${on("proEnabled") && !isTeacher && !isAdmin && !(S.membership && S.membership.pro) ? `<a class="pf-m-link" href="/app/bang-gia"><span class="pf-m-ico">${lineIcon("star")}</span><b>Nâng cấp Pro</b><span class="pf-m-arr">›</span></a>` : ""}
       </div>
     </div>
     <div class="stack" style="margin-top:16px;max-width:760px">
@@ -243,6 +265,18 @@ export async function pageProfile(main, _p, _q, ctx) {
       </div>
       <div class="stack">
         <h3 style="margin:14px 0 2px;font-size:14px;font-weight:700;color:var(--ink-2);padding-bottom:8px;border-bottom:1px solid var(--line,#e5e5ea)">Hệ thống</h3>
+        <div class="pf-sys-nav">
+          <div class="pf-m-links">
+            <a class="pf-m-link" href="/app/cai-dat"><span class="pf-m-ico">${lineIcon("cog")}</span><b>Cài đặt</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">${lineIcon("bell")}</span><b>${isTeacher ? "Thông báo lớp" : "Thông báo"}</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">${lineIcon("life-buoy")}</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
+            ${!isTeacher ? `<a class="pf-m-link" href="/app/chon-mon"><span class="pf-m-ico">${lineIcon("globe")}</span><b>Chọn ngoại ngữ</b><span class="pf-m-arr">›</span></a>` : ""}
+            ${isAdmin ? `<a class="pf-m-link" href="/app/quan-tri"><span class="pf-m-ico">${lineIcon("settings")}</span><b>Quản trị hệ thống</b><span class="pf-m-arr">›</span></a>` : ""}
+            <button type="button" class="pf-m-link" id="pfQuickSearch"><span class="pf-m-ico">${lineIcon("search")}</span><b>Tìm kiếm nhanh</b><span class="pf-m-arr">›</span></button>
+            <button type="button" class="pf-m-link" id="pfGuideBtn"><span class="pf-m-ico">${lineIcon("bulb")}</span><b>Xem lại hướng dẫn</b><span class="pf-m-arr">›</span></button>
+            <button type="button" class="pf-m-link is-danger" data-logout><span class="pf-m-ico">${lineIcon("logout")}</span><b>Đăng xuất</b><span class="pf-m-arr">›</span></button>
+          </div>
+        </div>
         <details class="sheet sheet-pad" id="proSection" open>
           <summary><h2>Pro và mã quà tặng</h2></summary>
           <div id="proStatus" class="small" style="margin-top:8px"></div>
@@ -294,6 +328,8 @@ export async function pageProfile(main, _p, _q, ctx) {
       }
     });
   });
+  $("#pfQuickSearch", main)?.addEventListener("click", () => document.getElementById("searchBtn")?.click());
+  $("#pfGuideBtn", main)?.addEventListener("click", () => import("./guide.js").then((m) => m.openGuide({ force: true })).catch(() => {}));
   main.querySelectorAll("[data-s]").forEach((b) => {
     b.addEventListener("click", () => { stars = Number(b.dataset.s); paintStars(stars); });
     b.addEventListener("mouseenter", () => paintStars(Number(b.dataset.s)));

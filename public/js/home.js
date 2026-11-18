@@ -242,7 +242,6 @@ export async function pageStudentHome(main, params, query, ctx) {
           ${lineIcon("bell")}
           <i class="hm-bell-pill${unread > 0 ? " has-unread" : ""}"></i>
         </a>
-        <button type="button" class="hm-more-btn" data-open-nav aria-label="Menu">•••</button>
         <span class="hm-star-pill">⭐ <b>${fmtN(starCount)}</b> <small>SAO</small></span>
         ${scoped ? `<a class="hm-link" href="/app/chon-mon">${L("Đổi môn", "Switch subject")}</a>` : `<a class="hm-link" href="/app/chon-mon">${L("Chọn môn", "Pick subject")}</a>`}
       </div>
@@ -669,15 +668,35 @@ export async function pageStudentHome(main, params, query, ctx) {
         <div class="hm-ai-foot"><small>${esc(aiLine)}</small><a class="hm-btn hm-btn-primary" href="${heroSub ? `/app/ngoai-ngu/tro-chuyen/${esc(heroSub.id)}` : "/app/ai"}">${L("Hỏi gia sư AI", "Ask the AI tutor")}</a></div>
       </section>`;
 
+    const pickOverviewHtml = (!scoped || started.length === 0) ? `
+      <section class="hm-pick-overview" aria-label="${L("Chọn ngoại ngữ để bắt đầu", "Choose a language to start")}">
+        <div class="hm-skills-head">
+          <h2>${L("Chọn ngoại ngữ để bắt đầu", "Choose a language to start")}</h2>
+          <a class="hm-link" href="/app/chon-mon">${L("Hướng dẫn lộ trình", "Roadmap guide")} →</a>
+        </div>
+        <div class="hm-pick-grid">${subjects.map((c) => `
+          <a class="hm-pick-card" href="/app/${esc(c.id)}" style="--c:${esc(c.color || "#3F97D3")}">
+            <div class="hm-pick-top">
+              <span class="hm-flag">${c.flag}</span>
+              <span class="hm-pick-pct">${c.pct || 0}%</span>
+            </div>
+            <b>${esc(trUi(c.name))}</b>
+            <small>${esc(c.framework || "CEFR")} · ${fmtN(c.done)}/${fmtN(c.total)} ${L("bài", "lessons")}</small>
+            <span class="hm-pick-go">${c.started ? L("Học tiếp", "Continue") : L("Chọn môn này", "Start learning")} →</span>
+          </a>`).join("")}
+        </div>
+      </section>` : "";
+
+    const bottomGridHtml = `<div class="hm-bottom-grid">${unfinished}${aiCard}</div>`;
     const order = [
       ...take(":scope > .hm-chibi-banner"),
       ...nodes(langStripHtml),
+      ...nodes(pickOverviewHtml),
       ...nodes(overviewKpisHtml),
       ...nodes(current),
       ...nodes(skillsBlock),
       ...nodes(exploreToolsHtml),
-      ...nodes(unfinished),
-      ...nodes(aiCard),
+      ...nodes(bottomGridHtml),
     ];
     // Cắt sạch các khối trùng với trang Cổ Vũ (Bạn đồng hành, Mục tiêu, Kế hoạch, Nhiệm vụ), Ôn tập và Luyện nói (#lhExplore) khỏi Tổng quan
     root.querySelectorAll(":scope > .hm-studio-grid, :scope > .hm-goal, :scope > .hm-missions-row, :scope > .hm-daily, :scope > .hm-courses, :scope > .hm-kpis, :scope > .hm-focus-empty, :scope > .hm-insights, :scope > .hm-quick, :scope > .hm-pro, :scope > #lhExplore, :scope > section[aria-labelledby='hmSubjectTitle'], :scope > section[aria-labelledby='hmSubjectsTitle']").forEach((el) => el.remove());

@@ -4759,7 +4759,17 @@
     "Hãy tạo lớp đầu tiên trong trang Giáo viên trước khi giao bài hoặc tạo kiểm tra.": "Create your first class on the Teacher page before assigning exercises or tests.",
     "Mở trang lớp": "Open class page",
     "Theo dõi mức hoàn thành, điểm số và học viên cần hỗ trợ.": "Track completion, scores and learners needing support.",
-    "Khi có lớp và bài giao, báo cáo tiến độ học viên sẽ hiện tại đây.": "Once you have classes and assignments, learner progress reports will appear here."
+    "Khi có lớp và bài giao, báo cáo tiến độ học viên sẽ hiện tại đây.": "Once you have classes and assignments, learner progress reports will appear here.",
+    "Sổ tay": "Notebook",
+    "Tìm kiếm nhanh": "Quick search",
+    "Cổ vũ & Chuỗi ngày": "Cheer & Streak",
+    "Bảng điều khiển giáo viên": "Teacher dashboard",
+    "Thông tin cá nhân": "Personal info",
+    "Trợ giúp": "Help",
+    "Trò chơi học tập": "Mini Games",
+    "Hệ thống & Tiện ích": "System & Utilities",
+    "Thanh toán và gói": "Billing & plans",
+    "Chọn môn": "Choose subject"
   },
   "patterns": [
     [

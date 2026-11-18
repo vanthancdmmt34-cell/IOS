@@ -9,7 +9,7 @@ export function registerTier3(suite, ctx) {
   const { cdp, seed } = ctx;
 
   suite.test(
-    { id: 'T3-01', tier: 3, feature: 'F4', milestone: 'M1', name: 'Học ngay fan-out -> Luyện nói -> inner drawer -> Lớp của tôi navigation' },
+    { id: 'T3-01', tier: 3, feature: 'F4', milestone: 'M1', name: 'Học ngay fan-out -> Luyện nói -> Cá nhân fan-out -> Lớp của tôi navigation' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabLearnBtn');
@@ -23,16 +23,17 @@ export function registerTier3(suite, ctx) {
       assert.strictEqual(p1.path, '/app/ngoai-ngu/luyen-noi/en');
       assert.strictEqual(p1.learnOn, true);
 
-      await cdp.click('#mTopMore[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/lop"]');
+      await cdp.click('#mTabAcctBtn');
+      assert.ok(await ctx.waitForFanPill('mTabAcctBtn', '/app/lop'), 'Expected Lớp học pill in Cá nhân fan-out');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/lop');
       await cdp.waitForAppSettled({ selector: '#main' });
       const p2 = await cdp.evalJs(() => ({
         path: location.pathname,
-        navOpen: document.body.classList.contains('nav-open'),
+        acctOn: document.getElementById('mTabAcctBtn')?.classList.contains('on') || false,
         text: document.getElementById('main')?.textContent || '',
       }));
       assert.strictEqual(p2.path, '/app/lop');
-      assert.strictEqual(p2.navOpen, false);
+      assert.strictEqual(p2.acctOn, true);
       assert.ok(p2.text.includes(seed.classroom.name));
     }
   );
@@ -106,17 +107,17 @@ export function registerTier3(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T3-05', tier: 3, feature: 'F8', milestone: 'M2', name: 'Learner drawer -> Bảng xếp hạng (XP + rows) -> drawer -> Huy hiệu (2x2 pastel)' },
+    { id: 'T3-05', tier: 3, feature: 'F8', milestone: 'M2', name: 'Quick Account Menu -> Bảng xếp hạng (XP + rows) -> Quick Account Menu -> Huy hiệu (2x2 pastel)' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/ngoai-ngu/xep-hang/en"]');
+      await cdp.click('.hm-top-avatar-wrap[data-open-account="mobile"]');
+      await cdp.click('#mAcctSheet [data-acct-lb]');
       await cdp.waitForAppSettled({ selector: '.lx-lb-hero' });
       const lbTxt = await cdp.evalJs(() => document.querySelector('.lx-lb')?.textContent || '');
       assert.match(lbTxt, /XP/i, 'M2: Expected XP in leaderboard');
 
-      await cdp.click('#mTopMore[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/ngoai-ngu/huy-hieu/en"]');
+      await cdp.click('#mTopAcct');
+      await cdp.click('#mAcctSheet [data-acct-badge]');
       await cdp.waitForAppSettled({ selector: '.lx-badges' });
       const badgeTxt = await cdp.evalJs(() => document.getElementById('main')?.textContent || '');
       assert.ok(badgeTxt.includes('Huy hiệu của bạn'), 'M2: Expected "Huy hiệu của bạn" mobile heading');
@@ -143,23 +144,25 @@ export function registerTier3(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T3-07', tier: 3, feature: 'F3', milestone: 'M1', name: 'Teacher drawer navigation across Lớp của tôi -> Bài tập -> Tiến độ in EN mode' },
+    { id: 'T3-07', tier: 3, feature: 'F3', milestone: 'M1', name: 'Teacher #mTab & #mAcctSheet navigation across Lớp của tôi -> Bài tập -> Tiến độ -> Thông báo lớp in EN mode' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile', lang: 'en' });
-      await cdp.click('#mTopMore[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/lop"]');
+      await cdp.click('#mTab a[href="/app/lop"]');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.ok(await cdp.evalJs((cls) => (document.getElementById('main')?.textContent || '').includes(cls), seed.classroom.name));
 
-      await cdp.click('#mTopMore[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/giao-vien/bai-tap"]');
+      await cdp.click('#mTab a[href="/app/giao-vien/bai-tap"]');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/giao-vien/bai-tap');
 
-      await cdp.click('#mTopMore[data-open-nav]');
-      await cdp.click('#sideNav a[href="/app/giao-vien/tien-do"]');
+      await cdp.click('#mTab a[href="/app/giao-vien/tien-do"]');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/giao-vien/tien-do');
+
+      await cdp.click('#mTopAcct');
+      await cdp.click('#mAcctSheet a[href="/app/thong-bao"]');
+      await cdp.waitForAppSettled({ selector: '#main' });
+      assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/thong-bao');
     }
   );
 

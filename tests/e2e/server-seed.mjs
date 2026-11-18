@@ -309,6 +309,7 @@ async function seedAccountsAndData(baseUrl, tmpDataDir) {
   const peer2 = await regStudent('e2e_peer2', 'Khánh Vy', 'StudentPass!234');
   const peer3 = await regStudent('e2e_peer3', 'Tuấn Kiệt', 'StudentPass!234');
   const zeroStudent = await regStudent('e2e_zero', 'Học viên mới', 'StudentPass!234');
+  const parent = await regStudent('e2e_parent', 'Phụ huynh Hoa', 'ParentPass!234');
 
   // 4. Teacher creates classroom, enrolls student + zeroStudent, publishes 2 MCQ tests
   const clsRes = await apiRequest(baseUrl, 'POST', '/api/classes', {
@@ -479,6 +480,9 @@ async function seedAccountsAndData(baseUrl, tmpDataDir) {
     // Teacher intentionally has NO subject so teacher drawer never leaks subject subtext
     upsertPref.run(teacher.user.id, JSON.stringify({ guideSeen: true }), nowIso);
     upsertPref.run(admin.user.id, JSON.stringify({ guideSeen: true }), nowIso);
+    db.prepare("UPDATE users SET role = 'parent' WHERE id = ?").run(parent.user.id);
+    parent.user.role = 'parent';
+    upsertPref.run(parent.user.id, JSON.stringify({ guideSeen: true }), nowIso);
 
     db.exec('COMMIT');
   } catch (err) {
@@ -491,6 +495,7 @@ async function seedAccountsAndData(baseUrl, tmpDataDir) {
   return {
     admin,
     teacher,
+    parent,
     student,
     peer1,
     peer2,

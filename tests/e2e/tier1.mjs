@@ -53,7 +53,7 @@ export function registerTier1(suite, ctx) {
         if (!root) return [];
         return [...root.querySelectorAll('a')].map((a) => a.textContent.trim().replace(/\s+/g, ' '));
       });
-      assert.deepStrictEqual(labels, ['Roadmap', 'Speaking', 'Learn', 'Review', 'TOEIC']);
+      assert.deepStrictEqual(labels, ['AI Chat', 'Speaking', 'Learn', 'Review', 'TOEIC']);
     }
   );
 
@@ -83,128 +83,178 @@ export function registerTier1(suite, ctx) {
     }
   );
 
-  // ================= F2: Learner Mobile Drawer =================
+  // ================= F2: Consolidated Navigation & Drawer Removal =================
   suite.test(
-    { id: 'T1-F2-01', tier: 1, feature: 'F2', milestone: 'M1', name: 'Tapping .hm-more-btn opens learner drawer on mobile' },
+    { id: 'T1-F2-01', tier: 1, feature: 'F2', milestone: 'M1', name: 'Redundant ••• triggers (.hm-more-btn, #mTopMore) removed and mobile #side/#scrim hidden' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      assert.ok(await ctx.existsVisible('.hm-more-btn[data-open-nav]'), 'Expected visible .hm-more-btn on student home');
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      await cdp.waitForCondition(() => (document.getElementById('side')?.getBoundingClientRect().left ?? -999) >= -2, 2000, 40);
-      const opened = await cdp.evalJs(() => {
-        const side = document.getElementById('side');
-        const r = side?.getBoundingClientRect();
-        return {
-          hasClass: document.body.classList.contains('nav-open'),
-          left: r?.left ?? -999,
-          width: r?.width ?? 0,
-        };
-      });
-      assert.ok(opened.hasClass, 'body must have class nav-open');
-      assert.ok(opened.left >= -2 && opened.width >= 200, `Drawer #side should be visible on screen (left=${opened.left}, width=${opened.width})`);
-    }
-  );
-
-  suite.test(
-    { id: 'T1-F2-02', tier: 1, feature: 'F2', milestone: 'M1', name: 'Learner drawer shows Chibi bunny avatar, display name, and learner role' },
-    async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      const head = await cdp.evalJs(() => {
-        const av = document.querySelector('.side-m-avatar');
-        return {
-          src: av?.getAttribute('src') || '',
-          complete: !!av?.complete && (av?.naturalWidth || 0) > 0,
-          name: document.querySelector('.side-m-who b')?.textContent.trim() || '',
-          sub: document.querySelector('.side-m-who small')?.textContent.trim() || '',
-        };
-      });
-      assert.ok(head.src.includes('chibi-bunny.webp') && head.complete, `Expected loaded chibi-bunny avatar, got ${head.src}`);
-      assert.ok(head.name.includes('Minh Anh'), `Expected student name Minh Anh, got "${head.name}"`);
-      assert.ok(head.sub.includes('Học viên'), `Expected role subtitle containing Học viên, got "${head.sub}"`);
-    }
-  );
-
-  suite.test(
-    { id: 'T1-F2-03', tier: 1, feature: 'F2', milestone: 'M1', name: 'Learner drawer includes Cài đặt link and mobile Đăng xuất action' },
-    async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      const items = await cdp.evalJs(() => ({
-        settingsHref: document.querySelector('#sideNav a[href="/app/cai-dat"]')?.textContent.trim() || '',
-        logoutVis: !!document.querySelector('#sideNav [data-logout]'),
-        logoutText: document.querySelector('#sideNav [data-logout]')?.textContent.trim() || '',
+      const homeCheck = await cdp.evalJs(() => ({
+        hasHmMore: !!document.querySelector('.hm-more-btn, [data-open-nav]'),
+        hasTopMore: !!document.getElementById('mTopMore'),
+        sideDisp: getComputedStyle(document.getElementById('side')).display,
+        scrimDisp: getComputedStyle(document.getElementById('scrim')).display,
       }));
-      assert.ok(items.settingsHref.includes('Cài đặt'), `Expected Cài đặt nav link, got "${items.settingsHref}"`);
-      assert.ok(items.logoutVis && items.logoutText.includes('Đăng xuất'), `Expected mobile Đăng xuất button, got "${items.logoutText}"`);
-    }
-  );
+      assert.strictEqual(homeCheck.hasHmMore, false, '.hm-more-btn / [data-open-nav] must be removed');
+      assert.strictEqual(homeCheck.hasTopMore, false, '#mTopMore must be removed');
+      assert.strictEqual(homeCheck.sideDisp, 'none', '#side must be hidden on <=760px mobile');
+      assert.strictEqual(homeCheck.scrimDisp, 'none', '#scrim must be hidden on <=760px mobile');
 
-  suite.test(
-    { id: 'T1-F2-04', tier: 1, feature: 'F2', milestone: 'M1', name: 'Learner drawer hides desktop .side-foot card on mobile' },
-    async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      const footDisplay = await cdp.evalJs(() => {
-        const f = document.querySelector('#side .side-foot');
-        return f ? getComputedStyle(f).display : 'missing';
-      });
-      assert.strictEqual(footDisplay, 'none', `.side-foot must be hidden on mobile (got ${footDisplay})`);
-    }
-  );
-
-  suite.test(
-    { id: 'T1-F2-05', tier: 1, feature: 'F2', milestone: 'M1', name: 'Tapping #sideCloseBtn closes learner drawer cleanly' },
-    async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      assert.ok(await cdp.evalJs(() => document.body.classList.contains('nav-open')));
-      await cdp.click('#sideCloseBtn');
-      const openAfter = await cdp.evalJs(() => document.body.classList.contains('nav-open'));
-      assert.strictEqual(openAfter, false, 'nav-open class must be removed after clicking #sideCloseBtn');
-    }
-  );
-
-  // ================= F3: Teacher Mobile Drawer & Routes =================
-  suite.test(
-    { id: 'T1-F3-01', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher drawer displays Pippa owl avatar and "Tài khoản giáo viên"' },
-    async () => {
-      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
-      await cdp.click('#mTopMore[data-open-nav]');
-      const head = await cdp.evalJs(() => ({
-        src: document.querySelector('.side-m-avatar')?.getAttribute('src') || '',
-        name: document.querySelector('.side-m-who b')?.textContent.trim() || '',
-        sub: document.querySelector('.side-m-who small')?.textContent.trim() || '',
+      await ctx.visit('/app/ca-nhan', { role: 'student', viewport: 'mobile' });
+      const hub = await cdp.evalJs(() => ({
+        hasTopMore: !!document.getElementById('mTopMore'),
+        personalLinks: [...document.querySelectorAll('.pf-hub-nav a, .pf-hub-nav button')].map((e) => e.getAttribute('href') || e.dataset.pfOpen || ''),
+        systemLinks: [...document.querySelectorAll('.pf-sys-nav a, .pf-sys-nav button')].map((e) => e.getAttribute('href') || e.id || (e.hasAttribute('data-logout') ? 'logout' : '')),
       }));
-      assert.ok(head.src.includes('chibi-owl.webp'), `Expected owl avatar, got ${head.src}`);
-      assert.ok(head.name.toLowerCase().includes('giáo viên linh'), `Expected Giáo viên Linh, got "${head.name}"`);
-      assert.strictEqual(head.sub, 'Tài khoản giáo viên', `Expected "Tài khoản giáo viên", got "${head.sub}"`);
+      assert.strictEqual(hub.hasTopMore, false, '#mTopMore must be absent on inner mobile pages');
+      assert.ok(hub.personalLinks.includes('/app/lop'), 'Cá nhân hub must expose /app/lop');
+      assert.ok(hub.personalLinks.includes('/app/so-tay'), 'Cá nhân hub must expose /app/so-tay');
+      assert.ok(hub.personalLinks.includes('/app/tro-choi/en'), 'Cá nhân hub must expose /app/tro-choi/en');
+      assert.ok(hub.personalLinks.includes('/app/ngoai-ngu/xep-hang/en'), 'Cá nhân hub must expose /app/ngoai-ngu/xep-hang/en');
+      assert.ok(hub.personalLinks.includes('/app/ngoai-ngu/huy-hieu/en'), 'Cá nhân hub must expose /app/ngoai-ngu/huy-hieu/en');
+      assert.ok(hub.systemLinks.includes('/app/cai-dat') && hub.systemLinks.includes('/app/thong-bao') && hub.systemLinks.includes('/app/ho-tro') && hub.systemLinks.includes('logout'), 'Hệ thống hub must expose settings, notices, support, and logout');
     }
   );
 
   suite.test(
-    { id: 'T1-F3-02', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher drawer has 6 GIẢNG DẠY items + 3 TÀI KHOẢN items without learner clutter' },
+    { id: 'T1-F2-02', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Learner #sideNav consolidates Học tập, Cá nhân, Hệ thống and deduplicates .me-card' },
     async () => {
-      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
-      await cdp.click('#mTopMore[data-open-nav]');
-      const data = await cdp.evalJs(() => {
+      await ctx.visit('/app/en', { role: 'student', viewport: 'desktop' });
+      const nav = await cdp.evalJs(() => {
         const cats = [...document.querySelectorAll('#sideNav details.nav-cat')].map((d) => ({
           id: d.dataset.cat,
           label: d.querySelector('.nav-cat-lbl')?.textContent.trim() || '',
-          links: [...d.querySelectorAll('a, button[data-logout]')].map((el) => ({
-            text: el.querySelector('.nav-lbl span')?.textContent.trim() || el.textContent.trim(),
-            href: el.getAttribute('href') || 'logout',
-          })),
+          hrefs: [...d.querySelectorAll('a')].map((a) => a.getAttribute('href')),
         }));
-        return cats;
+        return {
+          cats,
+          hasSbSearch: !!document.getElementById('sbSearch'),
+          hasSideTheme: !!document.querySelector('.side-foot [data-theme-toggle]'),
+          hasSbGuide: !!document.getElementById('sbGuide'),
+          hasLogoutBtn: !!document.getElementById('logoutBtn'),
+        };
       });
-      assert.strictEqual(data.length, 2, `Expected 2 drawer sections for teacher, got ${data.length}`);
-      assert.strictEqual(data[0].links.length, 6, `GIẢNG DẠY must have 6 items (got ${data[0].links.length})`);
-      assert.strictEqual(data[1].links.length, 3, `TÀI KHOẢN must have 3 items (got ${data[1].links.length})`);
+      assert.deepStrictEqual(nav.cats.map((c) => c.label), ['Học tập', 'Cá nhân', 'Hệ thống']);
+      const personal = nav.cats.find((c) => c.id === 'personal')?.hrefs || [];
+      const system = nav.cats.find((c) => c.id === 'system')?.hrefs || [];
+      assert.ok(personal.includes('/app/ca-nhan') && personal.includes('/app/co-vu') && personal.includes('/app/lop'), 'Cá nhân group missing expected learner links');
+      assert.ok(system.includes('/app/thong-bao') && system.includes('/app/cai-dat') && system.includes('/app/ho-tro'), 'Hệ thống group must expose /app/ho-tro to learners');
+      assert.strictEqual(nav.hasSbSearch, false, 'Redundant #sbSearch must be removed from .me-card');
+      assert.strictEqual(nav.hasSideTheme, false, 'Redundant [data-theme-toggle] must be removed from .me-card');
+      assert.ok(nav.hasSbGuide && nav.hasLogoutBtn, '.me-card must retain #sbGuide and #logoutBtn');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F2-03', tier: 1, feature: 'F2', milestone: 'M1', name: 'Desktop 1440x900 Admin #sideNav unifies Giảng dạy (incl. bai-tap & tien-do), Học tập, Cá nhân, Hệ thống' },
+    async () => {
+      await ctx.visit('/app/en', { role: 'admin', viewport: 'desktop' });
+      const cats = await cdp.evalJs(() =>
+        [...document.querySelectorAll('#sideNav details.nav-cat')].map((d) => ({
+          id: d.dataset.cat,
+          label: d.querySelector('.nav-cat-lbl')?.textContent.trim() || '',
+          hrefs: [...d.querySelectorAll('a')].map((a) => a.getAttribute('href')),
+        }))
+      );
+      assert.deepStrictEqual(cats.map((c) => c.label), ['Giảng dạy', 'Học tập', 'Cá nhân', 'Hệ thống']);
+      const teach = cats.find((c) => c.id === 'teach')?.hrefs || [];
+      const sys = cats.find((c) => c.id === 'system')?.hrefs || [];
+      assert.ok(teach.includes('/app/giao-vien/bai-tap') && teach.includes('/app/giao-vien/tien-do') && teach.includes('/app/lop'), 'Admin Giảng dạy must include bai-tap, tien-do, and lop');
+      assert.ok(sys.includes('/app/quan-tri') && sys.includes('/app/ho-tro') && sys.includes('/app/cai-dat'), 'Admin Hệ thống must include quan-tri, ho-tro, cai-dat');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F2-04', tier: 1, feature: 'F2', milestone: 'M1', name: 'Parent role accesses Gia đình, Lớp học, Thông báo, Cá nhân fan-out & Hệ thống hub cleanly' },
+    async () => {
+      await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'mobile' });
+      await ctx.assertNoOverflow('T1-F2-04 parent mobile gia-dinh');
+      const dock = await cdp.evalJs(() => ({
+        count: document.querySelectorAll('#mTab > a, #mTab > button').length,
+        labels: [...document.querySelectorAll('#mTab .mtab-lbl')].map((e) => e.textContent.trim()),
+        hasAcctBtn: document.getElementById('mTabAcctBtn')?.tagName === 'BUTTON',
+        hasTopMore: !!document.getElementById('mTopMore'),
+      }));
+      assert.strictEqual(dock.count, 4);
+      assert.deepStrictEqual(dock.labels, ['Gia đình', 'Lớp học', 'Thông báo', 'Cá nhân']);
+      assert.ok(dock.hasAcctBtn, 'Parent Cá nhân dock tab must open #mAcctFan');
+      assert.strictEqual(dock.hasTopMore, false);
+
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 200));
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 4 });
+
+      await ctx.clickFanPill('mTabAcctBtn', '/app/ca-nhan');
+      await cdp.waitForAppSettled({ selector: '.pf-hub-nav' });
+      await ctx.assertNoOverflow('T1-F2-04 parent mobile ca-nhan');
+      const hasFamilyHub = await cdp.evalJs(() => !!document.querySelector('.pf-hub-nav a[href="/app/gia-dinh"]'));
+      assert.ok(hasFamilyHub, 'Parent /app/ca-nhan hub must link /app/gia-dinh');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F2-05', tier: 1, feature: 'F2', milestone: 'M1', name: 'Tablet 900x700 preserves #menuBtn toggle of #side drawer and closes via #scrim' },
+    async () => {
+      await ctx.visit('/app/en', { role: 'student', viewport: { width: 900, height: 700, dpr: 1, isMobile: false } });
+      assert.ok(await ctx.existsVisible('#menuBtn'), '#menuBtn must remain visible on tablet 900x700');
+      await cdp.click('#menuBtn');
+      await cdp.waitForCondition(() => {
+        const r = document.getElementById('side')?.getBoundingClientRect();
+        return document.body.classList.contains('nav-open') && !!r && r.left >= -2;
+      }, 2000, 40);
+      const sideRect = await cdp.evalJs(() => {
+        const r = document.getElementById('side')?.getBoundingClientRect();
+        return r ? { left: r.left, width: r.width } : null;
+      });
+      assert.ok(sideRect && sideRect.left >= -2 && sideRect.width >= 240, 'Tablet #side drawer must open on #menuBtn click');
+      await cdp.click('#scrim');
+      assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), false, 'Tablet #side drawer must close on #scrim click');
+    }
+  );
+
+  // ================= F3: Teacher Consolidated Navigation & Routes =================
+  suite.test(
+    { id: 'T1-F3-01', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher #mTopAcct opens role-aware #mAcctSheet with Thông báo lớp and zero learner cert leak' },
+    async () => {
+      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
+      assert.strictEqual(await cdp.evalJs(() => !!document.getElementById('mTopMore')), false, '#mTopMore must be removed for teacher');
+      await cdp.click('#mTopAcct');
+      const info = await cdp.evalJs(() => ({
+        hidden: document.getElementById('mAcctSheet')?.hidden ?? true,
+        src: document.querySelector('#mAcctSheet .m-acct-av')?.getAttribute('src') || '',
+        sub: document.querySelector('#mAcctSheet .m-acct-who small')?.textContent.trim() || '',
+        hrefs: [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((e) => e.getAttribute('href') || e.id || ''),
+        labels: [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((e) => e.textContent.trim()),
+      }));
+      assert.strictEqual(info.hidden, false, '#mAcctSheet must open from #mTopAcct');
+      assert.ok(info.src.includes('chibi-owl.webp'), `Expected owl avatar, got ${info.src}`);
+      assert.ok(info.sub.includes('Giáo viên'), `Expected Giáo viên role, got "${info.sub}"`);
+      assert.ok(info.hrefs.includes('/app/thong-bao') && info.labels.includes('Thông báo lớp'), 'Teacher #mAcctSheet must include Thông báo lớp');
+      assert.ok(info.hrefs.includes('/app/ho-tro') && info.hrefs.includes('/app/cai-dat'), 'Teacher #mAcctSheet must include Hỗ trợ and Cài đặt');
+      assert.strictEqual(info.hrefs.some((h) => h.includes('chung-nhan')), false, 'Teacher #mAcctSheet must NOT leak learner Chứng nhận');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F3-02', tier: 1, feature: 'F3', milestone: 'M1', name: 'Teacher desktop 1440x900 #sideNav uses unified Giảng dạy, Cá nhân, Hệ thống without learner clutter' },
+    async () => {
+      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'desktop' });
+      const data = await cdp.evalJs(() =>
+        [...document.querySelectorAll('#sideNav details.nav-cat')].map((d) => ({
+          id: d.dataset.cat,
+          label: d.querySelector('.nav-cat-lbl')?.textContent.trim() || '',
+          links: [...d.querySelectorAll('a')].map((el) => ({
+            text: el.querySelector('.nav-lbl span')?.textContent.trim() || el.textContent.trim(),
+            href: el.getAttribute('href') || '',
+          })),
+        }))
+      );
+      assert.deepStrictEqual(data.map((c) => c.label), ['Giảng dạy', 'Cá nhân', 'Hệ thống']);
+      assert.strictEqual(data[0].links.length, 5, `Giảng dạy must have 5 items (got ${data[0].links.length})`);
       const allHrefs = data.flatMap((c) => c.links.map((l) => l.href));
-      assert.ok(allHrefs.includes('/app/giao-vien/bai-tap'), 'Missing /app/giao-vien/bai-tap in teacher drawer');
-      assert.ok(allHrefs.includes('/app/giao-vien/tien-do'), 'Missing /app/giao-vien/tien-do in teacher drawer');
-      assert.ok(!allHrefs.some((h) => h.includes('phong-van') || h.includes('toeic')), 'Teacher drawer must not leak student routes');
+      assert.ok(allHrefs.includes('/app/giao-vien/bai-tap'), 'Missing /app/giao-vien/bai-tap');
+      assert.ok(allHrefs.includes('/app/giao-vien/tien-do'), 'Missing /app/giao-vien/tien-do');
+      assert.ok(allHrefs.includes('/app/thong-bao') && allHrefs.includes('/app/cai-dat') && allHrefs.includes('/app/ho-tro'), 'Missing Hệ thống items');
+      assert.ok(!allHrefs.some((h) => h.includes('phong-van') || h.includes('toeic')), 'Teacher #sideNav must not leak student routes');
     }
   );
 
@@ -262,66 +312,16 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F4-02', tier: 1, feature: 'F4', milestone: 'M1', name: 'Tapping #mTabLearnBtn opens radial fan-out ("xòe quạt") of 5 floating study pills (no Tổng quan)' },
+    { id: 'T1-F4-02', tier: 1, feature: 'F4', milestone: 'M1', name: 'Tapping #mTabLearnBtn opens radial fan-out ("xòe quạt") of 5 floating study pills (no Tổng quan / Lộ trình duplicate)' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabLearnBtn');
       await new Promise((r) => setTimeout(r, 220));
-      const fan = await cdp.evalJs(() => {
-        const btn = document.getElementById('mTabLearnBtn');
-        const ctrl = btn?.getAttribute('aria-controls');
-        const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, .m-fan-learn');
-        if (!menu || menu.hidden) return { open: false };
-        const items = [...menu.querySelectorAll('a')].map((a) => {
-          const r = a.getBoundingClientRect();
-          return {
-            label: a.textContent.trim().replace(/\s+/g, ' '),
-            href: a.getAttribute('href') || '',
-            left: r.left,
-            right: r.right,
-            top: r.top,
-            bottom: r.bottom,
-          };
-        });
-        const hasModalBox = !!menu.querySelector('.m-sheet-card, .m-learn-card');
-        const distinctX = new Set(items.map((x) => Math.round(x.left / 15))).size;
-        const distinctY = new Set(items.map((x) => Math.round(x.top / 15))).size;
-        const scrim = menu.querySelector('.m-fan-scrim, .m-sheet-scrim, [data-close-learn]') || menu;
-        const scrimSt = getComputedStyle(scrim);
-        const scrimBlur = scrimSt.backdropFilter || scrimSt.webkitBackdropFilter || '';
-        const orbRadii = [...menu.querySelectorAll('a > span:first-child, a .m-fan-orb, a .m-learn-ic')].map((el) => parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0);
-        const dockTop = document.getElementById('mTab')?.getBoundingClientRect().top ?? window.innerHeight;
-        return {
-          open: true,
-          expanded: btn?.getAttribute('aria-expanded') === 'true',
-          hasModalBox,
-          distinctX,
-          distinctY,
-          scrimBlur,
-          orbRadii,
-          items,
-          dockTop,
-          innerW: window.innerWidth,
-        };
-      });
-      assert.ok(fan.open && fan.expanded, 'Học ngay radial fan-out menu must open');
-      assert.strictEqual(fan.hasModalBox, false, 'Học ngay must render floating radial pills, NOT a rectangular .m-sheet-card modal box');
-      assert.strictEqual(fan.items.length, 5, `Expected 5 floating pills (got ${fan.items.length})`);
-      assert.ok(!fan.items.some((x) => x.label === 'Tổng quan'), 'Tổng quan must NOT be duplicated inside Học ngay fan-out');
-      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Lộ trình', 'Luyện nói', 'Học', 'Ôn tập', 'TOEIC']);
+      const fan = await ctx.assertFanMenuGeometry('mTabLearnBtn', { expectedCount: 5 });
+      assert.ok(!fan.items.some((x) => x.label === 'Tổng quan' || x.label === 'Lộ trình'), 'Tổng quan and Lộ trình must NOT be duplicated inside Học ngay fan-out');
+      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Hội thoại AI', 'Luyện nói', 'Học', 'Ôn tập', 'TOEIC']);
       assert.ok(fan.distinctX >= 3 && fan.distinctY >= 2, `Expected symmetric fan-out arc across X/Y (distinctX=${fan.distinctX}, distinctY=${fan.distinctY})`);
       assert.ok(/blur\(/i.test(fan.scrimBlur), `Expected blurred scrim backdrop-filter on fan-out (got "${fan.scrimBlur}")`);
-      assert.ok(fan.orbRadii.length >= 5 && fan.orbRadii.every((r) => r >= 20), `Expected circular pastel orbs (>=20px radius, got ${JSON.stringify(fan.orbRadii)})`);
-      for (let i = 0; i < fan.items.length; i++) {
-        const it = fan.items[i];
-        assert.ok(it.left >= 10 && it.right <= fan.innerW - 10, `Pill "${it.label}" out of [10, ${fan.innerW - 10}] bounds: [${it.left}, ${it.right}]`);
-        assert.ok(it.bottom <= fan.dockTop, `Pill "${it.label}" overlaps #mTab (bottom=${it.bottom}, dockTop=${fan.dockTop})`);
-        for (let j = i + 1; j < fan.items.length; j++) {
-          const other = fan.items[j];
-          const overlaps = !(it.right <= other.left || other.right <= it.left || it.bottom <= other.top || other.bottom <= it.top);
-          assert.strictEqual(overlaps, false, `Học ngay fan-out pills "${it.label}" and "${other.label}" overlap`);
-        }
-      }
     }
   );
 
@@ -336,7 +336,7 @@ export function registerTier1(suite, ctx) {
         return menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
       });
       assert.deepStrictEqual(hrefs, [
-        '/app/mon-hoc',
+        '/app/ngoai-ngu/tro-chuyen/en',
         '/app/ngoai-ngu/luyen-noi/en',
         '/app/ngoai-ngu/en',
         '/app/ngoai-ngu/on-tap/en',
@@ -409,45 +409,15 @@ export function registerTier1(suite, ctx) {
 
   // ================= F5: "Cá nhân" Fan-Out Menu, Separate /app/co-vu & /app/cai-dat =================
   suite.test(
-    { id: 'T1-F5-01', tier: 1, feature: 'F5', milestone: 'M1', name: 'Tapping #mTabAcctBtn ("Cá nhân") fans out 4 floating pills right above Cá nhân within bounds' },
+    { id: 'T1-F5-01', tier: 1, feature: 'F5', milestone: 'M1', name: 'Tapping #mTabAcctBtn ("Cá nhân") fans out 5 floating pills right above Cá nhân within bounds' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       assert.ok(await ctx.existsVisible('#mTabAcctBtn'), 'Expected #mTabAcctBtn button on #mTab');
       await cdp.click('#mTabAcctBtn');
       await new Promise((r) => setTimeout(r, 220));
-      const fan = await cdp.evalJs(() => {
-        const btn = document.getElementById('mTabAcctBtn');
-        const ctrl = btn?.getAttribute('aria-controls');
-        const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mAcctFan, .m-fan-acct');
-        if (!menu || menu.hidden) return { open: false };
-        const items = [...menu.querySelectorAll('a')].map((a) => {
-          const r = a.getBoundingClientRect();
-          return {
-            label: a.textContent.trim().replace(/\s+/g, ' '),
-            href: a.getAttribute('href') || '',
-            left: r.left,
-            right: r.right,
-            top: r.top,
-            bottom: r.bottom,
-          };
-        });
-        const dockTop = document.getElementById('mTab')?.getBoundingClientRect().top ?? window.innerHeight;
-        return { open: true, expanded: btn?.getAttribute('aria-expanded') === 'true', items, dockTop, innerW: window.innerWidth };
-      });
-      assert.ok(fan.open && fan.expanded, 'Cá nhân fan-out menu must open');
-      assert.strictEqual(fan.items.length, 4, `Expected 4 floating pills above Cá nhân (got ${fan.items.length})`);
-      assert.deepStrictEqual(fan.items.map((x) => x.href), ['/app/co-vu', '/app/ca-nhan', '/app/goi-cua-toi', '/app/cai-dat']);
-      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Cổ vũ', 'Hồ sơ', 'Gói & Chứng nhận', 'Cài đặt']);
-      for (let i = 0; i < fan.items.length; i++) {
-        const it = fan.items[i];
-        assert.ok(it.left >= 10 && it.right <= fan.innerW - 10, `Pill "${it.label}" out of [10, ${fan.innerW - 10}] bounds: [${it.left}, ${it.right}]`);
-        assert.ok(it.bottom <= fan.dockTop, `Pill "${it.label}" overlaps #mTab (bottom=${it.bottom}, dockTop=${fan.dockTop})`);
-        for (let j = i + 1; j < fan.items.length; j++) {
-          const other = fan.items[j];
-          const overlaps = !(it.right <= other.left || other.right <= it.left || it.bottom <= other.top || other.bottom <= it.top);
-          assert.strictEqual(overlaps, false, `Cá nhân fan-out pills "${it.label}" and "${other.label}" overlap`);
-        }
-      }
+      const fan = await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 5 });
+      assert.deepStrictEqual(fan.items.map((x) => x.href), ['/app/co-vu', '/app/lop', '/app/ca-nhan', '/app/goi-cua-toi', '/app/cai-dat']);
+      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Cổ vũ', 'Lớp học', 'Hồ sơ', 'Gói của tôi', 'Cài đặt']);
     }
   );
 
@@ -578,21 +548,22 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F6-04', tier: 1, feature: 'F6', milestone: 'M1', name: '#mAcctSheet lists all 6 required learner action rows' },
+    { id: 'T1-F6-04', tier: 1, feature: 'F6', milestone: 'M1', name: '#mAcctSheet lists consolidated learner Cá nhân & Hệ thống actions with scrollable card' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('.hm-top-avatar-wrap[data-open-account="mobile"]');
-      const rows = await cdp.evalJs(() =>
-        [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((el) => el.textContent.trim())
-      );
-      assert.deepStrictEqual(rows, [
-        'Hồ sơ của tôi',
-        'Gói của tôi',
-        'Chứng nhận',
-        'Xem lại hướng dẫn',
-        'Cài đặt',
-        'Đăng xuất',
-      ]);
+      const info = await cdp.evalJs(() => {
+        const card = document.querySelector('#mAcctSheet .m-acct-card');
+        const st = card ? getComputedStyle(card) : null;
+        return {
+          rows: [...document.querySelectorAll('#mAcctSheet .m-acct-item')].map((el) => el.textContent.trim()),
+          overflowY: st?.overflowY || '',
+        };
+      });
+      for (const req of ['Hồ sơ của tôi', 'Lớp của tôi', 'Xếp hạng', 'Huy hiệu', 'Chứng nhận', 'Gói của tôi', 'Thông báo', 'Hỗ trợ', 'Xem lại hướng dẫn', 'Cài đặt', 'Đăng xuất']) {
+        assert.ok(info.rows.includes(req), `Missing "${req}" in learner #mAcctSheet: ${JSON.stringify(info.rows)}`);
+      }
+      assert.strictEqual(info.overflowY, 'auto', 'Expected overflow-y: auto on .m-acct-card');
     }
   );
 

@@ -74,82 +74,125 @@ export function registerTier2(suite, ctx) {
     }
   );
 
-  // ================= F2: Learner Mobile Drawer Boundaries =================
+  // ================= F2: Consolidated Navigation & Drawer Removal Boundaries =================
   suite.test(
-    { id: 'T2-F2-01', tier: 2, feature: 'F2', milestone: 'M1', name: 'Learner drawer fits cleanly at narrow 320x844 with zero horizontal overflow' },
+    { id: 'T2-F2-01', tier: 2, feature: 'F2', milestone: 'M1', name: 'Narrow 320x844 mobile has no ••• triggers, hidden #side/#scrim, and zero overflow on /app/en & /app/ca-nhan hub' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'narrow' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      await ctx.assertNoOverflow('T2-F2-01 learner drawer 320px');
-      const w = await cdp.evalJs(() => document.getElementById('side')?.getBoundingClientRect().width || 0);
-      assert.ok(w > 0 && w <= 320, `Drawer width ${w} exceeds 320px viewport`);
+      await ctx.assertNoOverflow('T2-F2-01 student home 320px');
+      const home = await cdp.evalJs(() => ({
+        hasMore: !!document.querySelector('.hm-more-btn, #mTopMore, [data-open-nav]'),
+        sideDisp: getComputedStyle(document.getElementById('side')).display,
+        scrimDisp: getComputedStyle(document.getElementById('scrim')).display,
+      }));
+      assert.strictEqual(home.hasMore, false);
+      assert.strictEqual(home.sideDisp, 'none');
+      assert.strictEqual(home.scrimDisp, 'none');
+
+      await ctx.visit('/app/ca-nhan', { role: 'student', viewport: 'narrow' });
+      await ctx.assertNoOverflow('T2-F2-01 ca-nhan hub 320px');
+      assert.ok(await ctx.existsVisible('.pf-hub-nav'), 'Expected visible Cá nhân hub on 320px');
+      assert.ok(await ctx.existsVisible('.pf-sys-nav'), 'Expected visible Hệ thống hub on 320px');
     }
   );
 
   suite.test(
-    { id: 'T2-F2-02', tier: 2, feature: 'F2', milestone: 'M1', name: 'Clicking #scrim closes open learner drawer' },
+    { id: 'T2-F2-02', tier: 2, feature: 'F2', milestone: 'M1', name: 'Clicking scrim or pressing Escape closes open #mAcctFan cleanly' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      assert.ok(await cdp.evalJs(() => document.body.classList.contains('nav-open')));
-      await cdp.click('#scrim');
-      assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), false);
-    }
-  );
+      await cdp.click('#mTabAcctBtn');
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), false);
+      await cdp.click('[data-close-acct-fan]');
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), true);
 
-  suite.test(
-    { id: 'T2-F2-03', tier: 2, feature: 'F2', milestone: 'M1', name: 'Pressing Escape key closes open learner drawer' },
-    async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      assert.ok(await cdp.evalJs(() => document.body.classList.contains('nav-open')));
+      await cdp.click('#mTabAcctBtn');
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), false);
       await cdp.evalJs(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
       await new Promise((r) => setTimeout(r, 80));
-      assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), false);
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), true);
     }
   );
 
   suite.test(
-    { id: 'T2-F2-04', tier: 2, feature: 'F2', milestone: 'M1', name: 'Repeated 3x drawer open/close toggling remains deterministic' },
+    { id: 'T2-F2-03', tier: 2, feature: 'F2', milestone: 'M1', name: 'Repeated 3x #mTabAcctBtn fan-out open/close toggling remains deterministic' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       for (let i = 0; i < 3; i++) {
-        await cdp.click('.hm-more-btn[data-open-nav]');
-        assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), true);
-        await cdp.click('#sideCloseBtn');
-        assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), false);
+        await cdp.click('#mTabAcctBtn');
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), false);
+        await cdp.click('#mTabAcctBtn');
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('mAcctFan')?.hidden), true);
       }
     }
   );
 
   suite.test(
-    { id: 'T2-F2-05', tier: 2, feature: 'F2', milestone: 'M1', name: 'Learner drawer on /app/chon-mon without subject renders fallback links cleanly' },
+    { id: 'T2-F2-04', tier: 2, feature: 'F2', milestone: 'M1', name: 'Parent role fits 320x844 (no overlap on #mAcctFan) and 1440x900 desktop #sideNav cleanly' },
+    async () => {
+      await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'narrow' });
+      await ctx.assertNoOverflow('T2-F2-04 parent 320px');
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 4 });
+
+      await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'desktop' });
+      await ctx.assertNoOverflow('T2-F2-04 parent 1440px');
+      const labels = await cdp.evalJs(() => [...document.querySelectorAll('#sideNav .nav-cat-lbl')].map((e) => e.textContent.trim()));
+      assert.deepStrictEqual(labels, ['Học tập', 'Cá nhân', 'Hệ thống']);
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F2-05', tier: 2, feature: 'F2', milestone: 'M1', name: 'zeroStudent on /app/chon-mon without subject renders fans, #mAcctSheet, /app/ca-nhan, and #sideNav without "undefined"' },
     async () => {
       await ctx.visit('/app/chon-mon', { role: 'zeroStudent', viewport: 'mobile', subject: null });
-      await cdp.click('#mTopMore[data-open-nav]');
-      const navText = await cdp.evalJs(() => document.getElementById('side')?.textContent || '');
-      assert.ok(!navText.includes('undefined'), 'Drawer must never contain "undefined" when subject is unset');
-      assert.ok(navText.includes('Hồ sơ cá nhân') || navText.includes('Cài đặt'));
+      await cdp.click('#mTabLearnBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      await ctx.assertFanMenuGeometry('mTabLearnBtn', { expectedCount: 5 });
+      await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 180));
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 5 });
+      const badHrefs = await cdp.evalJs(() =>
+        [...document.querySelectorAll('#mLearnFan a, #mAcctFan a, #mAcctSheet a, #sideNav a')]
+          .map((a) => a.getAttribute('href') || '')
+          .filter((h) => h.includes('undefined') || h.includes('null'))
+      );
+      assert.deepStrictEqual(badHrefs, [], `Found broken hrefs when subject is null: ${JSON.stringify(badHrefs)}`);
+      await ctx.visit('/app/ca-nhan', { role: 'zeroStudent', viewport: 'mobile', subject: null });
+      const hubText = await cdp.evalJs(() => document.getElementById('main')?.textContent || '');
+      assert.ok(!hubText.includes('undefined') && hubText.includes('Chọn ngoại ngữ'));
     }
   );
 
-  // ================= F3: Teacher Mobile Drawer & Routes Boundaries =================
+  // ================= F3: Teacher Consolidated Navigation & Routes Boundaries =================
   suite.test(
-    { id: 'T2-F3-01', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher drawer fits cleanly on narrow 320x844 without horizontal overflow' },
+    { id: 'T2-F3-01', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher #mAcctSheet and /app/ca-nhan hub fit narrow 320x844 without horizontal overflow' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'narrow' });
-      await cdp.click('#mTopMore[data-open-nav]');
-      await ctx.assertNoOverflow('T2-F3-01 teacher drawer 320px');
+      await ctx.assertNoOverflow('T2-F3-01 teacher home 320px');
+      await cdp.click('#mTopAcct');
+      const rect = await cdp.evalJs(() => {
+        const c = document.querySelector('#mAcctSheet .m-acct-card');
+        const r = c?.getBoundingClientRect();
+        return { hidden: document.getElementById('mAcctSheet')?.hidden ?? true, left: r?.left ?? -1, right: r?.right ?? 999, innerW: window.innerWidth };
+      });
+      assert.strictEqual(rect.hidden, false);
+      assert.ok(rect.left >= 0 && rect.right <= rect.innerW + 1, `Teacher sheet overflows 320px (${rect.left}..${rect.right})`);
+      await ctx.visit('/app/ca-nhan', { role: 'teacher', viewport: 'narrow' });
+      await ctx.assertNoOverflow('T2-F3-01 teacher ca-nhan 320px');
     }
   );
 
   suite.test(
-    { id: 'T2-F3-02', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher drawer subtitle stays "Tài khoản giáo viên" even when pl:subject is polluted' },
+    { id: 'T2-F3-02', tier: 2, feature: 'F3', milestone: 'M1', name: 'Teacher #mAcctSheet & desktop #sideNav stay free of student routes even when pl:subject is polluted' },
     async () => {
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile', subject: 'ja' });
-      await cdp.click('#mTopMore[data-open-nav]');
-      const sub = await cdp.evalJs(() => document.querySelector('.side-m-who small')?.textContent.trim() || '');
-      assert.strictEqual(sub, 'Tài khoản giáo viên', `Expected "Tài khoản giáo viên", got "${sub}"`);
+      await cdp.click('#mTopAcct');
+      const mHrefs = await cdp.evalJs(() => [...document.querySelectorAll('#mAcctSheet a')].map((a) => a.getAttribute('href') || ''));
+      assert.ok(!mHrefs.some((h) => h.includes('chung-nhan') || h.includes('xep-hang')), `Teacher sheet leaked student route: ${JSON.stringify(mHrefs)}`);
+      await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'desktop', subject: 'ja' });
+      const dHrefs = await cdp.evalJs(() => [...document.querySelectorAll('#sideNav a')].map((a) => a.getAttribute('href') || ''));
+      assert.ok(!dHrefs.some((h) => h.includes('phong-van') || h.includes('toeic') || h.includes('chung-nhan')), `Teacher #sideNav leaked student route: ${JSON.stringify(dHrefs)}`);
       // Clean subject back to null for teacher
       await cdp.evalJs(() => localStorage.removeItem('pl:subject'));
     }
@@ -182,11 +225,12 @@ export function registerTier2(suite, ctx) {
 
   // ================= F4: Student 5-Tab #mTab & "Học ngay" Fan-Out Boundaries =================
   suite.test(
-    { id: 'T2-F4-01', tier: 2, feature: 'F4', milestone: 'M1', name: '5-tab #mTab & Học ngay 5-pill fan-out fit 320x844 within [10, 310] without overflow' },
+    { id: 'T2-F4-01', tier: 2, feature: 'F4', milestone: 'M1', name: '5-tab #mTab & Học ngay 5-pill fan-out fit 320x844 with zero pairwise overlap & zero clipping' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'narrow' });
       await ctx.assertNoOverflow('T2-F4-01 mTab 320px');
       await cdp.click('#mTabLearnBtn');
+      await new Promise((r) => setTimeout(r, 200));
       await ctx.assertNoOverflow('T2-F4-01 learn fan-out 320px');
       const m = await cdp.evalJs(() => {
         const nav = document.getElementById('mTab');
@@ -196,21 +240,12 @@ export function registerTier2(suite, ctx) {
         for (let i = 1; i < items.length; i++) {
           if (items[i].left < items[i - 1].right - 2) overlap = true;
         }
-        const ctrl = document.getElementById('mTabLearnBtn')?.getAttribute('aria-controls');
-        const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, .m-fan-learn');
-        const pills = menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => {
-          const r = a.getBoundingClientRect();
-          return { text: a.textContent.trim(), left: r.left, right: r.right, bottom: r.bottom };
-        }) : [];
-        return { bottom: nr.bottom, innerH: window.innerHeight, innerW: window.innerWidth, overlap, minW: Math.min(...items.map((x) => x.width)), pills };
+        return { bottom: nr.bottom, innerH: window.innerHeight, overlap, minW: Math.min(...items.map((x) => x.width)) };
       });
       assert.ok(m.bottom <= m.innerH + 1, `#mTab clipped vertically (${m.bottom} > ${m.innerH})`);
       assert.strictEqual(m.overlap, false, 'Dock tabs overlap at 320px');
       assert.ok(m.minW >= 48, `Tab width too narrow (${m.minW}px)`);
-      assert.strictEqual(m.pills.length, 5, `Expected 5 fan-out pills at 320px (got ${m.pills.length})`);
-      for (const p of m.pills) {
-        assert.ok(p.left >= 10 && p.right <= m.innerW - 10, `320px pill "${p.text}" out of [10, ${m.innerW - 10}] bounds: [${p.left}, ${p.right}]`);
-      }
+      await ctx.assertFanMenuGeometry('mTabLearnBtn', { expectedCount: 5 });
     }
   );
 
@@ -257,7 +292,7 @@ export function registerTier2(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T2-F4-04', tier: 2, feature: 'F4', milestone: 'M1', name: 'Switching to /app/ja dynamically updates Học ngay fan-out hrefs to ja' },
+    { id: 'T2-F4-04', tier: 2, feature: 'F4', milestone: 'M1', name: 'Switching to /app/ja dynamically updates Học ngay fan-out hrefs to ja & Sổ tay' },
     async () => {
       await ctx.visit('/app/ja', { role: 'student', viewport: 'mobile', subject: 'ja' });
       await cdp.click('#mTabLearnBtn');
@@ -266,7 +301,7 @@ export function registerTier2(suite, ctx) {
         const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, .m-fan-learn');
         return menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
       });
-      assert.ok(hrefs.includes('/app/ngoai-ngu/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja'), `Expected ja hrefs, got ${JSON.stringify(hrefs)}`);
+      assert.ok(hrefs.includes('/app/ngoai-ngu/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja') && hrefs.includes('/app/ngoai-ngu/tro-chuyen/ja') && hrefs.includes('/app/so-tay'), `Expected ja hrefs + Sổ tay, got ${JSON.stringify(hrefs)}`);
       // Restore student subject back to en
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile', subject: 'en' });
     }
@@ -317,27 +352,14 @@ export function registerTier2(suite, ctx) {
 
   // ================= F5: "Cá nhân" Fan-Out, /app/co-vu & /app/cai-dat Boundaries =================
   suite.test(
-    { id: 'T2-F5-01', tier: 2, feature: 'F5', milestone: 'M1', name: 'Cá nhân 4-pill fan-out fits 320x844 within [10, 310] without overflow' },
+    { id: 'T2-F5-01', tier: 2, feature: 'F5', milestone: 'M1', name: 'Cá nhân 5-pill fan-out fits 320x844 with zero pairwise overlap, bottom <= dockTop & >=24px orbs' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'narrow' });
       assert.ok(await ctx.existsVisible('#mTabAcctBtn'), 'Expected #mTabAcctBtn on dock');
       await cdp.click('#mTabAcctBtn');
+      await new Promise((r) => setTimeout(r, 200));
       await ctx.assertNoOverflow('T2-F5-01 acct fan-out 320px');
-      const res = await cdp.evalJs(() => {
-        const ctrl = document.getElementById('mTabAcctBtn')?.getAttribute('aria-controls');
-        const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mAcctFan, .m-fan-acct');
-        if (!menu || menu.hidden) return { open: false, pills: [], innerW: window.innerWidth };
-        const pills = [...menu.querySelectorAll('a')].map((a) => {
-          const r = a.getBoundingClientRect();
-          return { text: a.textContent.trim(), left: r.left, right: r.right, top: r.top };
-        });
-        return { open: true, pills, innerW: window.innerWidth };
-      });
-      assert.ok(res.open, 'Cá nhân fan-out must open on 320x844');
-      assert.strictEqual(res.pills.length, 4, `Expected 4 floating pills on 320x844 (got ${res.pills.length})`);
-      for (const p of res.pills) {
-        assert.ok(p.left >= 10 && p.right <= res.innerW - 10, `320px Cá nhân pill "${p.text}" out of [10, ${res.innerW - 10}] bounds: [${p.left}, ${p.right}]`);
-      }
+      await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 5 });
     }
   );
 

@@ -53,6 +53,18 @@ const EXTRA_EN = {
   "Học ngay": "Learn now",
   "Cổ vũ": "Cheer",
   "Gói & Chứng nhận": "Plan & Certificates",
+  "Sổ tay": "Notebook",
+  "Hội thoại AI": "AI Chat",
+  "Lớp học": "Classes",
+  "Tìm kiếm nhanh": "Quick search",
+  "Cổ vũ & Chuỗi ngày": "Cheer & Streak",
+  "Bảng điều khiển giáo viên": "Teacher dashboard",
+  "Thông tin cá nhân": "Personal info",
+  "Trợ giúp": "Help",
+  "Trò chơi học tập": "Mini Games",
+  "Hệ thống & Tiện ích": "System & Utilities",
+  "Thanh toán và gói": "Billing & plans",
+  "Chọn môn": "Choose subject",
 };
 async function loadDict() {
   if (DICT) return;

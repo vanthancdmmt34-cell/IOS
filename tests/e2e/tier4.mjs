@@ -94,21 +94,21 @@ export function registerTier4(suite, ctx) {
     }
   );
 
-  // T4-03: Learner & Teacher Role Drawers + Teacher Routes + Desktop Teacher
+  // T4-03: Consolidated Cá nhân/Hệ thống Hub & Teacher Role Flows + Desktop Teacher
   suite.test(
-    { id: 'T4-03', tier: 4, feature: 'F3', milestone: 'M1', name: 'E2E Journey 3: Learner Drawer & Teacher Drawer + /app/lop + /bai-tap + /tien-do' },
+    { id: 'T4-03', tier: 4, feature: 'F3', milestone: 'M1', name: 'E2E Journey 3: Cá nhân/Hệ thống Hub & Teacher Sheet + /app/lop + /bai-tap + /tien-do' },
     async () => {
-      await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
-      await cdp.click('.hm-more-btn[data-open-nav]');
-      await new Promise((r) => setTimeout(r, 180));
-      await ctx.shot('14-learner-drawer-390.png');
+      await ctx.visit('/app/ca-nhan', { role: 'student', viewport: 'mobile' });
+      assert.strictEqual(await cdp.evalJs(() => !!document.querySelector('.hm-more-btn, #mTopMore')), false);
+      await ctx.shot('14-ca-nhan-hub-390.png');
 
       await ctx.visit('/app/giao-vien', { role: 'teacher', viewport: 'mobile' });
-      await cdp.click('#mTopMore[data-open-nav]');
+      await cdp.click('#mTopAcct');
       await new Promise((r) => setTimeout(r, 180));
-      await ctx.shot('15-teacher-drawer-390.png');
+      await ctx.shot('15-teacher-acct-sheet-390.png');
+      await cdp.click('#mAcctSheet [data-close-acct]');
 
-      await cdp.click('#sideNav a[href="/app/lop"]');
+      await cdp.click('#mTab a[href="/app/lop"]');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.ok(await cdp.evalJs((cls) => (document.getElementById('main')?.textContent || '').includes(cls), seed.classroom.name));
       await ctx.shot('16-teacher-classes-390.png');

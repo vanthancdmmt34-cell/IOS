@@ -38,6 +38,7 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
   function getSessionForRole(role) {
     if (role === 'admin') return seed.admin;
     if (role === 'teacher') return seed.teacher;
+    if (role === 'parent') return seed.parent;
     if (role === 'student') return seed.student;
     if (role === 'zeroStudent') return seed.zeroStudent;
     if (role === 'peer1') return seed.peer1;
@@ -223,6 +224,72 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     await new Promise((r) => setTimeout(r, 80));
   }
 
+  async function assertFanMenuGeometry(btnId, { minLeft = 10, minRightMargin = 10, expectedCount = null } = {}) {
+    const fan = await cdp.evalJs((bid) => {
+      const btn = document.getElementById(bid);
+      const ctrl = btn?.getAttribute('aria-controls');
+      const menu = (ctrl && document.getElementById(ctrl)) || null;
+      if (!menu || menu.hidden) return { open: false };
+      const items = [...menu.querySelectorAll('a')].map((a) => {
+        const r = a.getBoundingClientRect();
+        const orb = a.querySelector('.m-fan-orb');
+        const or = orb ? orb.getBoundingClientRect() : null;
+        const pill = a.querySelector('.m-fan-pill');
+        return {
+          label: a.textContent.trim().replace(/\s+/g, ' '),
+          href: a.getAttribute('href') || '',
+          left: r.left,
+          right: r.right,
+          top: r.top,
+          bottom: r.bottom,
+          orbW: or ? or.width : 0,
+          orbH: or ? or.height : 0,
+          orbRadius: orb ? parseFloat(getComputedStyle(orb).borderTopLeftRadius) || 0 : 0,
+          pillClipped: pill ? pill.scrollWidth > pill.clientWidth + 1 : false,
+        };
+      });
+      const hasModalBox = !!menu.querySelector('.m-sheet-card, .m-learn-card');
+      const distinctX = new Set(items.map((x) => Math.round(x.left / 15))).size;
+      const distinctY = new Set(items.map((x) => Math.round(x.top / 15))).size;
+      const scrim = menu.querySelector('.m-fan-scrim, .m-sheet-scrim') || menu;
+      const scrimSt = getComputedStyle(scrim);
+      const scrimBlur = scrimSt.backdropFilter || scrimSt.webkitBackdropFilter || '';
+      const dockTop = document.getElementById('mTab')?.getBoundingClientRect().top ?? window.innerHeight;
+      return {
+        open: true,
+        expanded: btn?.getAttribute('aria-expanded') === 'true',
+        hasModalBox,
+        distinctX,
+        distinctY,
+        scrimBlur,
+        items,
+        dockTop,
+        innerW: window.innerWidth,
+      };
+    }, btnId);
+
+    assert.ok(fan.open && fan.expanded, `#${btnId} fan-out menu must be open and aria-expanded="true"`);
+    assert.strictEqual(fan.hasModalBox, false, `#${btnId} must render floating radial pills, NOT a rectangular modal box`);
+    if (expectedCount != null) {
+      assert.strictEqual(fan.items.length, expectedCount, `Expected ${expectedCount} pills in #${btnId} (got ${fan.items.length})`);
+    }
+    for (let i = 0; i < fan.items.length; i++) {
+      const it = fan.items[i];
+      assert.ok(it.orbW >= 24 && it.orbH >= 24, `Pill "${it.label}" orb too small (${it.orbW}x${it.orbH}px < 24px)`);
+      assert.ok(it.orbRadius >= 20, `Pill "${it.label}" orb radius < 20px (${it.orbRadius}px)`);
+      assert.strictEqual(it.pillClipped, false, `Pill "${it.label}" text clipped`);
+      assert.ok(it.top >= 8, `Pill "${it.label}" clipped at top (${it.top})`);
+      assert.ok(it.left >= minLeft && it.right <= fan.innerW - minRightMargin, `Pill "${it.label}" out of [${minLeft}, ${fan.innerW - minRightMargin}] bounds: [${it.left}, ${it.right}]`);
+      assert.ok(it.bottom <= fan.dockTop, `Pill "${it.label}" overlaps #mTab (bottom=${it.bottom}, dockTop=${fan.dockTop})`);
+      for (let j = i + 1; j < fan.items.length; j++) {
+        const other = fan.items[j];
+        const overlaps = !(it.right <= other.left || other.right <= it.left || it.bottom <= other.top || other.bottom <= it.top);
+        assert.strictEqual(overlaps, false, `#${btnId} fan-out pills "${it.label}" and "${other.label}" overlap at width ${fan.innerW}px`);
+      }
+    }
+    return fan;
+  }
+
   async function inspectAdminVisuals() {
     return cdp.evalJs(() => {
       const isVis = (el) => {
@@ -308,6 +375,7 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     waitForVisible,
     waitForFanPill,
     clickFanPill,
+    assertFanMenuGeometry,
     inspectAdminVisuals,
     shot,
     invalidateRoleCache,
