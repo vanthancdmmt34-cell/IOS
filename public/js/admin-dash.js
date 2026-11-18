@@ -1,6 +1,6 @@
 /* Admin area (ad-): shell + learning-focused dashboard. Real metrics from admin API. */
 import {  } from "./core.js";
-import { S, api, esc, icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, brandHtml, roleLabel, $ } from "./core.js";
+import { S, api, esc, lineIcon as icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, roleLabel, setAppHash, $ } from "./core.js";
 import { currentLang } from "./i18n.js";
 
 const IP = {
@@ -31,8 +31,8 @@ export function adminShell(main, { tab, groups, ctx }) {
   }
   const nav = groups.map((g) => `<div class="ad-grp"><span class="ad-grp-l">${esc(g.label)}</span>
     ${g.items.map(([k, l, ic, d]) => `<a href="${k.startsWith("#") ? k : "/app/quan-tri/" + k}" class="${k === tab ? "on" : ""}" title="${esc(d || "")}">${I(k === "tong-quan" ? "grid" : (ic || "file"))}<span>${esc(l)}</span></a>`).join("")}</div>`).join("");
-  const isUserTab = ["hoc-vien", "giao-vien", "lop"].includes(tab);
-  const isContentTab = ["ngoai-ngu", "ban-dich"].includes(tab);
+  const isUserTab = ["hoc-vien", "giao-vien", "lop", "lop-giay-phep"].includes(tab);
+  const isContentTab = ["ngoai-ngu", "ban-dich", "song-ngu"].includes(tab);
   const isMoreTab = !["tong-quan"].includes(tab) && !isUserTab && !isContentTab;
   main.innerHTML = `
   <div class="ad" id="ad">
@@ -41,11 +41,11 @@ export function adminShell(main, { tab, groups, ctx }) {
         <img class="ad-m-drawer-av" src="/img/kit/chibi-dragon.webp" alt="Admin" width="52" height="52" />
         <div class="ad-m-drawer-user">
           <b>Quản trị viên</b>
-          <span>${esc(S.me.displayName || "LifeRivo")} · Admin</span>
+          <span>LifeRivo · Admin</span>
         </div>
         <button type="button" class="ad-m-drawer-close" id="adMClose" aria-label="Đóng">×</button>
       </div>
-      <a class="ad-brand" href="/app/quan-tri">${brandHtml()}</a>
+      <a class="ad-brand" href="/app/quan-tri"><img class="me-mark" src="/img/kit/chibi-dragon.webp" alt="" width="32" height="32" style="border-radius:10px;object-fit:cover" /><span class="me-word"><b>${esc(siteName())}</b></span></a>
       <span class="ad-badge">Khu quản trị</span>
       <nav class="ad-nav">${nav}</nav>
       <a class="ad-back" href="/app/">${icon("left")}<span>Về trang học</span></a>
@@ -89,8 +89,8 @@ export function adminShell(main, { tab, groups, ctx }) {
   $("#adMClose", main)?.addEventListener("click", () => ad.classList.remove("nav"));
   $("#adScrim", main).addEventListener("click", () => ad.classList.remove("nav"));
   $("#adMBack", main)?.addEventListener("click", () => {
-    if (tab !== "tong-quan") location.href = "/app/quan-tri/tong-quan";
-    else location.href = "/app/";
+    if (tab !== "tong-quan") setAppHash("/app/quan-tri/tong-quan");
+    else setAppHash("/app/");
   });
   $("#adSearch", main).addEventListener("click", () => document.getElementById("searchBtn")?.click());
   const drop = $("#adDrop", main), ub = $("#adUser", main);
@@ -205,7 +205,7 @@ export async function dashPage(host, DATA, { onReload } = {}) {
       <a class="ad-m-qcard" href="/app/quan-tri/hoc-vien"><span class="ad-m-qic">${icon("users")}</span><b>Người dùng</b><span>Tài khoản</span></a>
       <a class="ad-m-qcard" href="/app/quan-tri/ngoai-ngu"><span class="ad-m-qic">${icon("book")}</span><b>Nội dung</b><span>Ngoại ngữ</span></a>
       <a class="ad-m-qcard" href="/app/quan-tri/kinh-doanh"><span class="ad-m-qic">${icon("star")}</span><b>Kinh doanh</b><span>Gói Pro</span></a>
-      <a class="ad-m-qcard" href="/app/quan-tri/cai-dat-he-thong"><span class="ad-m-qic">${icon("settings")}</span><b>Hệ thống</b><span>Cấu hình</span></a>
+      <a class="ad-m-qcard" href="/app/quan-tri/he-thong"><span class="ad-m-qic">${icon("settings")}</span><b>Hệ thống</b><span>Cấu hình</span></a>
     </div>
   </div>
 

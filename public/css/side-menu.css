@@ -488,7 +488,7 @@ html body .m-fan-wrap { display: none; }
     inset: 0;
     display: grid;
     place-items: center;
-    transition: transform .26s cubic-bezier(0.22, 1.28, 0.36, 1), opacity .18s ease;
+    transition: transform .22s cubic-bezier(0.22, 1.28, 0.36, 1), opacity .14s ease;
   }
   html body.in-app .mtab .mtab-center .mtab-ic-x {
     opacity: 0;
@@ -780,28 +780,28 @@ html body .m-fan-wrap { display: none; }
   }
 
   /* Tọa độ xòe quạt Học ngay (5 nút đối xứng) & Cá nhân (4 nút cung góc tư trên-trái) */
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -126px; --fy: -56px; --fd: 0ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -68px; --fy: -122px; --fd: 30ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -148px; --fd: 60ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 68px; --fy: -122px; --fd: 90ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 126px; --fy: -56px; --fd: 120ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -8px; --fy: -224px; --fd: 0ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -92px; --fy: -190px; --fd: 30ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -166px; --fy: -124px; --fd: 60ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -210px; --fy: -52px; --fd: 90ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -130px; --fy: -78px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -68px; --fy: -158px; --fd: 30ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -188px; --fd: 60ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 68px; --fy: -158px; --fd: 90ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 130px; --fy: -78px; --fd: 120ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -8px; --fy: -270px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -92px; --fy: -234px; --fd: 30ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -168px; --fy: -158px; --fd: 60ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -214px; --fy: -76px; --fd: 90ms; }
   @media (max-width: 360px) {
     html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc { right: 38px; }
     html body.in-app:not(.ax-on) .m-fan-orb { width: 44px; height: 44px; }
     html body.in-app:not(.ax-on) .m-fan-pill { font-size: 10.5px; padding: 2.5px 8px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -104px; --fy: -48px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -58px; --fy: -112px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -136px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 58px; --fy: -112px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 104px; --fy: -48px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -6px; --fy: -214px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -82px; --fy: -178px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -148px; --fy: -118px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -190px; --fy: -50px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -108px; --fy: -74px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -58px; --fy: -150px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -180px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 58px; --fy: -150px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 108px; --fy: -74px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -6px; --fy: -258px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -82px; --fy: -222px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -148px; --fy: -150px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -192px; --fy: -72px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html body.in-app:not(.ax-on) .m-fan-petal,

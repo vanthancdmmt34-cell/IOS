@@ -1,5 +1,5 @@
 /* LifeRivo — Admin: bản dịch giao diện tiếng Anh (ghi đè chuỗi giao diện, không sửa mã nguồn). */
-import { api, esc, icon, fmtDate, toast, $ } from "./core.js";
+import { api, esc, lineIcon as icon, fmtDate, toast, $ } from "./core.js";
 
 // English UI string overrides
 async function uiOverrides(sec) {

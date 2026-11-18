@@ -73,8 +73,8 @@ export function registerTier4(suite, ctx) {
 
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabAcctBtn');
-      assert.ok(await ctx.existsVisible('a[href="/app/co-vu"]'), 'Expected Cổ vũ fan-out pill');
-      await cdp.click('a[href="/app/co-vu"]');
+      assert.ok(await ctx.waitForFanPill('mTabAcctBtn', '/app/co-vu'), 'Expected Cổ vũ fan-out pill');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/co-vu');
       await cdp.waitForAppSettled({ selector: '#hmPetCard' });
       await cdp.click('#hmPetCheerBtn');
       await new Promise((r) => setTimeout(r, 250));
@@ -247,8 +247,9 @@ export function registerTier4(suite, ctx) {
 
       await ctx.visit('/app/cai-dat', { role: 'student', viewport: 'mobile', lang: 'en' });
       await ctx.shot('35-settings-en-390.png');
+      await cdp.evalJs(() => { window.__preLangReload = 1; });
       await cdp.click('[data-set-lang="vi"]');
-      await cdp.waitForCondition(() => document.documentElement.lang === 'vi', 10000, 80);
+      await cdp.waitForCondition(() => !window.__preLangReload && document.documentElement.lang === 'vi', 10000, 80);
       await cdp.waitForAppSettled({ selector: '[data-set-lang="en"]' });
 
       assert.ok(ctx.capturedShots.length >= 15, `Expected >= 15 captured PNG screenshots (got ${ctx.capturedShots.length})`);

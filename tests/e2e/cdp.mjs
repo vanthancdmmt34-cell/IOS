@@ -258,13 +258,15 @@ export class CdpClient {
   }
 
   async goto(url, { timeoutMs = 15000 } = {}) {
+    await this.evalJs(() => { window.__cdpNavPending = 1; }).catch(() => {});
     await this.send('Page.navigate', { url }, timeoutMs);
-    await this.waitForCondition(() => document.readyState === 'complete', timeoutMs, 60);
+    await this.waitForCondition(() => !window.__cdpNavPending && document.readyState === 'complete', timeoutMs, 60);
   }
 
   async reload({ timeoutMs = 15000 } = {}) {
+    await this.evalJs(() => { window.__cdpReloadPending = 1; }).catch(() => {});
     await this.send('Page.reload', { ignoreCache: false }, timeoutMs);
-    await this.waitForCondition(() => document.readyState === 'complete', timeoutMs, 60);
+    await this.waitForCondition(() => !window.__cdpReloadPending && document.readyState === 'complete', timeoutMs, 60);
   }
 
   async waitForAppSettled({ expectAdmin = false, allowDenied = false, dismissGuide = true, selector = null, timeoutMs = 12000 } = {}) {

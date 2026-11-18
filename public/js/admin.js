@@ -9,7 +9,7 @@ import { i18nAdminPage } from "./admin-i18n.js";
 import { teachersAdminPage } from "./teacher-students.js";
 import { pageLangAdmin } from "./lang.js";
 import { roleLabel, cfg, refreshBrand } from "./core.js";
-import { S, api, esc, icon, avatar, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, promptBox, findEx, chapterNum, chapterShort, $ } from "./core.js";
+import { S, api, esc, lineIcon as icon, avatar, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, promptBox, findEx, chapterNum, chapterShort, $ } from "./core.js";
 
 // Admin feature groups — categorized sidebar for easy navigation
 const ADMIN_GROUPS = [
@@ -19,7 +19,7 @@ const ADMIN_GROUPS = [
   { id: "people", label: "Học viên và lớp", items: [
     ["hoc-vien", "Tài khoản người dùng", "user", "Học viên, phụ huynh, khóa tài khoản, đặt lại mật khẩu"],
     ["giao-vien", "Giáo viên", "users", "Tài khoản và giấy phép giáo viên"],
-    ["lop-giay-phep", "Lớp học", "book", "Lớp học và giấy phép Teacher"],
+    ["lop-giay-phep", "Lớp học và giấy phép", "book", "Lớp học và giấy phép Teacher"],
   ] },
   { id: "content", label: "Nội dung học", items: [
     ["ngoai-ngu", "Khóa ngoại ngữ", "globe", "Quản lý nội dung ngoại ngữ"],
@@ -79,8 +79,9 @@ async function monitorPage(body) {
         <div><b>${fmtN(d.ai.total.i + d.ai.total.o)}</b><span>Tổng token</span></div>
         <div><b>${fmtN(d.ai.total.c)}</b><span>Tổng lượt</span></div>
         <div><b>${fmtN(d.ai.total.failed)}</b><span>Lượt lỗi</span></div>
-        <div><b>${fmtUSD(d.ai.today.cost)}</b><span>Hôm nay</span></div>
+        <div><b>${fmtUSD(d.ai.today.cost)}</b><span>Chi phí AI hôm nay</span></div>
         <div><b>${fmtUSD(d.ai.last7d.cost)}</b><span>7 ngày</span></div>
+        <div><b>Bình thường</b><span>Trạng thái dịch vụ</span></div>
       </div>
       ${d.ai.byModel.length ? `<div class="table-wrap" style="border:0"><table><thead><tr><th>Model</th><th class="num">Lượt</th><th class="num">Token vào</th><th class="num">Token ra</th><th class="num">Chi phí</th></tr></thead><tbody>${d.ai.byModel.map((m) => `<tr><td><code>${esc(m.model || "(trống)")}</code></td><td class="num">${fmtN(m.c)}</td><td class="num">${fmtN(m.i)}</td><td class="num">${fmtN(m.o)}</td><td class="num">${fmtUSD(m.cost)}</td></tr>`).join("")}</tbody></table></div>` : ""}
     </section>`;

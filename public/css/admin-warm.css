@@ -97,3 +97,47 @@ body.ax-on .ad-content .tabs a, body.ax-on .ad-content .tabs button, body.ax-on 
 body.ax-on .ad-content .tabs .on, body.ax-on .ad-content .seg .on { background: #1D1C27; color: #fff; }
 body.ax-on .ad-content .tag-tim { background: #F7EBC0; color: #1D1C27; }
 body.ax-on .modal { background: #FFFDF6; border-radius: 22px; border-color: var(--line); }
+
+@media (max-width: 760px) {
+  html:root body.in-app.ax-on {
+    background: #F4F7FB !important;
+    background-image: none !important;
+    font-family: Inter, system-ui, -apple-system, sans-serif !important;
+    overflow-x: hidden !important;
+  }
+  html:root body.in-app.ax-on .ad {
+    background: #F4F7FB !important;
+    background-image: none !important;
+    font-family: Inter, system-ui, -apple-system, sans-serif !important;
+  }
+  html:root body.in-app.ax-on .ad :is(h1, h2, h3, .ax-head h1, .ad-hello h1, .page-head h1, .stats b, .kpi b, .biz-stats b) {
+    font-family: Inter, system-ui, -apple-system, sans-serif !important;
+    color: #162B3D !important;
+  }
+  html:root body.in-app.ax-on .ad-kpi,
+  html:root body.in-app.ax-on .ad-m-qcard,
+  html:root body.in-app.ax-on .ad-content .stats > div,
+  html:root body.in-app.ax-on .ad-content .kpi,
+  html:root body.in-app.ax-on .ad-content .biz-stats > div {
+    background: #FFFFFF !important;
+    border: 1px solid #E6EAF0 !important;
+    border-radius: 18px !important;
+    box-shadow: 0 2px 10px rgba(22, 43, 61, 0.03) !important;
+  }
+  html:root body.in-app.ax-on .ad :is(.btn-primary, .ad-btn.pri, .chips .chip.on),
+  html:root body.in-app.ax-on .modal .btn-primary {
+    background: #3F97D3 !important;
+    border-color: #3F97D3 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(63, 151, 211, 0.22) !important;
+  }
+  html:root body.in-app.ax-on .ad-content :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+  html:root body.in-app.ax-on .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    background: #FFFFFF !important;
+    border: 1px solid #DCE3EC !important;
+    border-radius: 12px !important;
+    color: #162B3D !important;
+    font-family: Inter, system-ui, -apple-system, sans-serif !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,4 +1,3 @@
-import { appHash } from "./core.js";
 /* Nut chuyen ngon ngu VI/EN — classic script (khong dung ES module) de chay
    doc lap, ke ca khi he module chinh gap van de. Dung event delegation tren
    document nen bat duoc nut du render lai sau. */
@@ -10,7 +9,7 @@ import { appHash } from "./core.js";
     try { localStorage.setItem("pl-lang", lang); } catch (e) {}
     var p = location.pathname || "/";
     if (/^\/(?:(?:vi|vn|en)\/?)?$/i.test(p)) {
-      location.href = target + location.search + appHash();
+      location.href = target + location.search + (location.hash || "");
     } else {
       location.reload();
     }

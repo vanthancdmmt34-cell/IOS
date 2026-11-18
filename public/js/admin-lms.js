@@ -1,6 +1,6 @@
 /* LifeRivo 4.0 — Admin: system-wide classrooms (assign teachers) and Teacher licenses (issue, revoke). */
 import {  } from "./core.js";
-import { api, esc, icon, fmtDate, toast, promptBox, openModal, $ } from "./core.js";
+import { api, esc, lineIcon as icon, fmtDate, toast, promptBox, openModal, $ } from "./core.js";
 
 export async function lmsAdminPage(body) {
   body.innerHTML = `<div class="skel" style="height:260px"></div>`;

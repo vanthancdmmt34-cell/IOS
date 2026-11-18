@@ -1278,7 +1278,7 @@ export async function langApi(ctx) {
       FROM lang_progress lp JOIN users u ON u.id = lp.user_id
       WHERE lp.item_id LIKE ? AND lp.best_score >= ${PASS_SCORE}
       GROUP BY u.id, u.display_name ORDER BY passed DESC, points DESC LIMIT 10`).all(m[1] + "-%");
-    sendJson(res, 200, { top: rows.map((r, i) => ({ rank: i + 1, name: r.name, passed: Number(r.passed), me: r.id === user.id })) });
+    sendJson(res, 200, { top: rows.map((r, i) => ({ rank: i + 1, name: r.name, passed: Number(r.passed), points: Number(r.points) || Number(r.passed) * 100 || 100, me: r.id === user.id })) });
     return true;
   }
   // ----- Level completion certificate -----

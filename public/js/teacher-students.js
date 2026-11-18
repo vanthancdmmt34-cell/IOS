@@ -5,7 +5,7 @@
      lock / unlock, reset password, grant license, transfer classes + students to another teacher.
    The server enforces permissions on all APIs; the UI only shows buttons the user is allowed to use. */
 import {  } from "./core.js";
-import { S, api, esc, icon, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, $ } from "./core.js";
+import { S, api, esc, lineIcon as icon, fmtN, fmtDate, timeAgo, toast, openModal, confirmBox, $ } from "./core.js";
 
 const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
 function download(name, text) {

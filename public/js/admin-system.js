@@ -2,7 +2,7 @@
    Combines general settings (/api/admin/settings) and connection config (/api/admin/system) into one page with a single Save button.
    Secret keys are write-only: the browser never receives the value back, only "configured" and the last 4 characters. */
 import {  } from "./core.js";
-import { api, esc, icon, toast, promptBox, confirmBox, $ } from "./core.js";
+import { api, esc, lineIcon as icon, toast, promptBox, confirmBox, $ } from "./core.js";
 
 const PANELS = [
   ["thanh-toan", "Thanh toán", { settings: ["commerce"], sys: ["pay"] }],

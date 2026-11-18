@@ -1086,18 +1086,19 @@ export async function pageLangCertList(main, [langId], query, ctx) {
   ctx.setCrumbs([[c.name, `/app/ngoai-ngu/${c.id}`], [tx("Chứng nhận", "Certificates")]]);
   const featLv = c.levels.find((l) => l.pct === 100) || c.levels[0];
   const nextLv = c.levels.find((l) => l.pct < 100 && !l.locked) || c.levels[1] || c.levels[0];
-  main.innerHTML = `<div class="page-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>Chứng nhận ${esc(c.name)}</h1><p>Đạt toàn bộ bài tập và bài kiểm tra của một cấp để nhận chứng nhận cấp đó.</p></div></div>
+  const featCode = String(featLv?.id || featLv?.code || "A1").replace(/^cefr\s+/i, "").trim().toUpperCase();
+  main.innerHTML = `<div class="page-head lx-cert-m-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>${tx("Chứng nhận của bạn", "Your certificates")}</h1><p>${tx("Mỗi chứng nhận đánh dấu một cấp độ bạn đã hoàn thành.", "Each certificate marks a completed level.")}</p></div></div>
   ${featLv ? `<div class="lx-cert-featured">
     <div class="lx-cert-feat-ico">🎖️</div>
-    <h2>${tx("Chứng nhận", "Certificate")} ${esc(c.name)} ${esc(featLv.code || featLv.title.split(/[—·]/)[0].trim())}</h2>
-    <p>${featLv.pct === 100 ? tx("Đã hoàn thành cấp độ cơ bản", "Completed basic level") : `${featLv.done}/${featLv.total} ${tx("bài đạt", "lessons passed")} · ${featLv.pct}%`}</p>
+    <h2>${tx("Chứng nhận", "Certificate")} ${esc(featCode)}</h2>
+    <p>${esc(c.name)} · ${featLv.pct === 100 ? tx("Hoàn thành cấp độ", "Level completed") : `${featLv.done}/${featLv.total} ${tx("bài đạt", "lessons passed")} · ${featLv.pct}%`}</p>
     <span class="lx-cert-feat-tag ${featLv.pct === 100 ? "is-done" : ""}">${featLv.pct === 100 ? tx("Đã đạt", "Earned") : tx("Đang học", "In progress")}</span>
     <a class="btn btn-primary btn-block lx-cert-feat-btn" href="${featLv.pct === 100 ? `/app/ngoai-ngu/chung-nhan/${c.id}/${featLv.id}` : `/app/ngoai-ngu/${c.id}/${featLv.id}`}">${featLv.pct === 100 ? tx("Xem chứng nhận", "View certificate") : tx("Học tiếp", "Continue learning")}</a>
   </div>` : ""}
   ${nextLv && nextLv !== featLv ? `<div class="sheet sheet-pad lx-cert-next">
     <b>${tx("Tiến độ cấp độ tiếp theo", "Next level progress")}</b>
     <p>${esc(c.name)} ${esc(nextLv.title)} · ${tx("Đã hoàn thành", "Completed")} ${nextLv.pct}%</p>
-    ${pctBar(nextLv.pct, "#22B573")}
+    ${pctBar(nextLv.pct, "#3F97D3")}
   </div>` : ""}
   <div class="lx-cert-list">${c.levels.map((l) => `<div class="sheet lx-cert-item ${l.pct === 100 ? "done" : ""}" style="--c:${esc(c.color)}">
     <div class="lx-cert-ico">${li(l.pct === 100 ? "cap" : l.locked ? "lock" : "page", 26)}</div>
@@ -1122,7 +1123,7 @@ export async function pageLangLeaderboard(main, [langId], query, ctx) {
       <span>${tx("Tiếp tục học để tăng điểm XP.", "Keep learning to earn more XP.")}</span>
     </div>
   </div>
-  <div class="sheet lx-lb lx-lb-big">${d.top.length ? d.top.map((r, idx) => `<div class="lx-lb-row ${r.me ? "me" : ""}"><span class="lx-lb-rank">${r.rank <= 3 ? `<i class="lx-medal m${r.rank}">${r.rank}</i>` : r.rank}</span><img class="lx-lb-av" src="/img/kit/chibi-${r.me ? "bunny" : kits[idx % kits.length]}.webp" alt="" width="38" height="38" loading="lazy" /><b>${esc(r.name)}${r.me ? " (bạn)" : ""}</b><span>${r.passed} bài đạt</span></div>`).join("") : `<div class="empty small muted" style="padding:16px">Chưa có ai đạt bài nào. Hãy là người đầu tiên!</div>`}</div>`;
+  <div class="sheet lx-lb lx-lb-big">${d.top.length ? d.top.map((r, idx) => { const xp = Number(r.points) || (Number(r.passed) || 1) * 100; return `<div class="lx-lb-row ${r.me ? "me" : ""}"><span class="lx-lb-rank">${r.rank <= 3 ? `<i class="lx-medal m${r.rank}">#${r.rank}</i>` : `#${r.rank}`}</span><img class="lx-lb-av" src="/img/kit/chibi-${r.me ? "bunny" : kits[idx % kits.length]}.webp" alt="" width="38" height="38" loading="lazy" /><b>${esc(r.name)}${r.me ? " (bạn)" : ""}</b><span class="lx-lb-xp">${xp} XP</span></div>`; }).join("") : `<div class="empty small muted" style="padding:16px">Chưa có ai đạt bài nào. Hãy là người đầu tiên!</div>`}</div>`;
 }
 export async function pageLangBadges(main, [langId], query, ctx) {
   const { data, c } = await courseOf(langId, ctx);
@@ -1150,7 +1151,7 @@ export async function pageLangBadges(main, [langId], query, ctx) {
     ...c.levels.map((l) => ["🎓", `Hoàn thành ${l.title}`, `Đạt hết bài của ${l.title}`, l.done, l.total || 1]),
   ];
   const got = B.filter((b) => b[3] >= b[4]).length;
-  main.innerHTML = `<div class="page-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>Huy hiệu ${esc(c.name)}</h1><p>Đã đạt <b>${got}/${B.length}</b> huy hiệu.</p></div>${ChibiMascot({ state: "achievement", size: 80 })}</div>
+  main.innerHTML = `<div class="page-head lx-badge-m-head"><div><span class="edu-eyebrow">${c.flag} ${esc(c.name)} · THÀNH TÍCH</span><h1>${tx("Huy hiệu của bạn", "Your badges")}</h1><p>${tx("Đã đạt", "Unlocked")} <b>${got}/${B.length}</b> ${tx("huy hiệu", "badges")}.</p></div>${ChibiMascot({ state: "achievement", size: 80 })}</div>
   <div class="lx-badges">${B.map(([ic, t, d, v, need], idx) => AchievementCard({ icon: ic, title: t, desc: d, value: v, need, color: c.color, idx })).join("")}</div>`;
 }
 

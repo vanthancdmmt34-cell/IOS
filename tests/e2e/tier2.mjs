@@ -266,7 +266,7 @@ export function registerTier2(suite, ctx) {
         const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, .m-fan-learn');
         return menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
       });
-      assert.ok(hrefs.includes('/app/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja'), `Expected ja hrefs, got ${JSON.stringify(hrefs)}`);
+      assert.ok(hrefs.includes('/app/ngoai-ngu/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja'), `Expected ja hrefs, got ${JSON.stringify(hrefs)}`);
       // Restore student subject back to en
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile', subject: 'en' });
     }

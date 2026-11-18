@@ -1291,7 +1291,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     if (!closeTopModal()) {
       setNavOpen(false);
-      setLearnSheet(false);
+      setLearnFan(false);
+      setAcctFan(false);
       setAcctSheet(false);
     }
   }

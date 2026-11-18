@@ -585,24 +585,44 @@ async function testForm(j, reload) {
 
 
 function takeTest(main, s, ctx) {
+  const total = Math.max(1, s.questions.length);
+  let idx = 0;
+  const initLeft = Math.max(0, Math.floor((Date.parse(s.endsAt) - Date.now()) / 1000));
+  const initTxt = `${String(Math.floor(initLeft / 60)).padStart(2, "0")}:${String(initLeft % 60).padStart(2, "0")}`;
   main.innerHTML = `
     <div class="lx-ex-top-meta cl-test-meta">
       <div class="lx-ex-top-row">
         <span class="lx-ex-pill">BÀI KIỂM TRA</span>
-        <span class="lx-ex-cnt">${s.questions.length} câu</span>
+        <span class="lx-ex-cnt" id="clTestCnt">Câu 1/${total}</span>
       </div>
-      <div class="lx-ex-prog"><i style="width:100%"></i></div>
+      <div class="lx-ex-prog"><i id="clTestProg" style="width:${Math.round((1 / total) * 100)}%"></i></div>
     </div>
     <div class="cl-m-kpis">
-      <div class="cl-m-kpi"><b id="timerKpi">${s.test.durationMin}:00</b><span>Thời gian còn lại</span></div>
-      <div class="cl-m-kpi"><b>${s.questions.length} câu</b><span>Tổng số câu</span></div>
+      <div class="cl-m-kpi"><b id="timerKpi">${initTxt}</b><span>Thời gian còn lại</span></div>
+      <div class="cl-m-kpi"><b>${total} câu</b><span>Tổng số câu</span></div>
     </div>
-    <div class="test-head sheet sheet-pad"><b>${esc(s.test.title)}</b><span class="spacer"></span><span class="timer" id="timer"></span><button class="btn btn-primary btn-sm" id="submitT">Nộp bài</button></div>
-    <form id="tf">${s.questions.map((q, i) => `<section class="sheet sheet-pad q-block"><p class="kicker">Câu ${i + 1} · ${q.points} điểm</p>
+    <div class="test-head sheet sheet-pad"><b>${esc(s.test.title)}</b><span class="spacer"></span><span class="timer" id="timer">${initTxt}</span><button class="btn btn-primary btn-sm" id="submitT">Nộp bài</button></div>
+    <form id="tf">${s.questions.map((q, i) => `<section class="sheet sheet-pad q-block ${i === 0 ? "is-active" : ""}" data-q-idx="${i}"><p class="kicker">Câu ${i + 1} · ${q.points} điểm</p>
       <p><b>${esc(q.q)}</b></p><div class="cl-test-opts">${q.options.map((o, k) => `<label class="check cl-test-opt"><input type="radio" name="q${q.id}" value="${k}"><span class="lx-opt-let">${String.fromCharCode(65 + k)}</span><span>${esc(o)}</span></label>`).join("")}</div>
-    </section>`).join("")}</form>`;
+    </section>`).join("")}
+      <div class="cl-test-m-foot">
+        <span class="cl-test-m-note">Bài kiểm tra lớp · Không có trợ giúp AI</span>
+        <button type="button" class="btn btn-primary cl-test-m-next" id="clTestNextBtn">${total > 1 ? "Tiếp theo" : "Nộp bài"}</button>
+      </div>
+    </form>`;
   let done = false;
   const end = Date.parse(s.endsAt);
+  const blocks = [...main.querySelectorAll("#tf .q-block")];
+  const cntEl = $("#clTestCnt", main);
+  const progEl = $("#clTestProg", main);
+  const nextBtn = $("#clTestNextBtn", main);
+  const syncStep = () => {
+    blocks.forEach((b, bi) => b.classList.toggle("is-active", bi === idx));
+    if (cntEl) cntEl.textContent = `Câu ${idx + 1}/${total}`;
+    if (progEl) progEl.style.width = `${Math.round(((idx + 1) / total) * 100)}%`;
+    if (nextBtn) nextBtn.textContent = idx < total - 1 ? "Tiếp theo" : "Nộp bài";
+  };
+  syncStep();
   const submit = async (auto = false) => {
     if (done) return; done = true;
     const answers = {};
@@ -614,6 +634,17 @@ function takeTest(main, s, ctx) {
         ${r.detail ? `<ol>${r.detail.map((d) => `<li>${d.correct ? "Đúng" : "Sai"}</li>`).join("")}</ol>` : `<p class="muted">Chi tiết đúng/sai hiện sau hạn nộp của bài kiểm tra.</p>`}</div>`;
     } catch (e) { done = false; toast(e.message, "err"); }
   };
+  const confirmSubmit = async () => {
+    if (await confirmBox("Nộp bài?", "Sau khi nộp không sửa được.", "Nộp bài")) submit();
+  };
+  nextBtn?.addEventListener("click", () => {
+    if (idx < total - 1) {
+      idx += 1;
+      syncStep();
+    } else {
+      confirmSubmit();
+    }
+  });
   const tick = setInterval(() => {
     const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
     const el = document.getElementById("timer"); if (!el) return clearInterval(tick);
@@ -625,7 +656,7 @@ function takeTest(main, s, ctx) {
     if (!left) submit(true);
   }, 1000);
   ctx.onLeave(() => clearInterval(tick));
-  $("#submitT", main).addEventListener("click", async () => { if (await confirmBox("Nộp bài?", "Sau khi nộp không sửa được.", "Nộp bài")) submit(); });
+  $("#submitT", main).addEventListener("click", confirmSubmit);
 }
 
 /* =================== TEACHER: ASSIGNMENTS & PROGRESS ROUTES =================== */

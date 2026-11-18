@@ -76,12 +76,12 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     const changed = await cdp.evalJs(
       (wantLang, wantTheme, wantSubj) => {
         let dirty = false;
-        const curLang = localStorage.getItem('pl-lang') || 'vi';
+        const curLang = localStorage.getItem('pl-lang');
         if (curLang !== wantLang) {
           localStorage.setItem('pl-lang', wantLang);
           dirty = true;
         }
-        const curTheme = localStorage.getItem('me:theme') || 'light';
+        const curTheme = localStorage.getItem('me:theme');
         if (curTheme !== wantTheme) {
           localStorage.setItem('me:theme', wantTheme);
           dirty = true;
@@ -123,9 +123,21 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     await setViewport(viewport);
     const roleChanged = activeRole !== role || forceReset;
     await switchRole(role, { forceReset });
-    await cdp.goto(`${baseUrl}${routePath}`);
+    const initScript = `try {
+      localStorage.setItem('pl-lang', ${JSON.stringify(lang)});
+      localStorage.setItem('me:theme', ${JSON.stringify(theme)});
+      ${subject === null ? "localStorage.removeItem('pl:subject');" : subject !== undefined ? `localStorage.setItem('pl:subject', ${JSON.stringify(subject)});` : ""}
+    } catch {}`;
+    const { identifier } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: initScript });
+    try {
+      await cdp.goto(`${baseUrl}${routePath}`);
+    } finally {
+      if (identifier) {
+        await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier }).catch(() => {});
+      }
+    }
     const storageDirty = await ensureStorageState({ lang, theme, subject });
-    if (storageDirty || (roleChanged && lang !== 'vi')) {
+    if (storageDirty) {
       await cdp.reload();
     }
     await cdp.waitForAppSettled({ expectAdmin, allowDenied, dismissGuide, selector });
@@ -174,6 +186,41 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
       await new Promise((r) => setTimeout(r, 60));
     }
     return false;
+  }
+
+  async function waitForFanPill(btnId, href, timeoutMs = 1200) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const ok = await cdp.evalJs((bid, h) => {
+        const btn = document.getElementById(bid);
+        const ctrl = btn?.getAttribute('aria-controls');
+        const root = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, #mAcctFan, .m-fan-learn, .m-fan-acct');
+        if (!root || root.hidden) return false;
+        const a = root.querySelector(`a[href="${h}"]`);
+        if (!a) return false;
+        const st = getComputedStyle(a);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = a.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      }, btnId, href);
+      if (ok) return true;
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    return false;
+  }
+
+  async function clickFanPill(btnId, href) {
+    const clicked = await cdp.evalJs((bid, h) => {
+      const btn = document.getElementById(bid);
+      const ctrl = btn?.getAttribute('aria-controls');
+      const root = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, #mAcctFan, .m-fan-learn, .m-fan-acct');
+      const a = root?.querySelector(`a[href="${h}"]`);
+      if (!a) return false;
+      a.click();
+      return true;
+    }, btnId, href);
+    if (!clicked) throw new Error(`clickFanPill: "${href}" not found under #${btnId}`);
+    await new Promise((r) => setTimeout(r, 80));
   }
 
   async function inspectAdminVisuals() {
@@ -259,6 +306,8 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     assertNoOverflow,
     existsVisible,
     waitForVisible,
+    waitForFanPill,
+    clickFanPill,
     inspectAdminVisuals,
     shot,
     invalidateRoleCache,

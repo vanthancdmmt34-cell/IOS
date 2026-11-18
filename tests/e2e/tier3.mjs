@@ -13,8 +13,8 @@ export function registerTier3(suite, ctx) {
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabLearnBtn');
-      assert.ok(await ctx.waitForVisible('a[href="/app/ngoai-ngu/luyen-noi/en"]'), 'Expected Luyện nói fan-out pill');
-      await cdp.click('a[href="/app/ngoai-ngu/luyen-noi/en"]');
+      assert.ok(await ctx.waitForFanPill('mTabLearnBtn', '/app/ngoai-ngu/luyen-noi/en'), 'Expected Luyện nói fan-out pill');
+      await ctx.clickFanPill('mTabLearnBtn', '/app/ngoai-ngu/luyen-noi/en');
       await cdp.waitForAppSettled({ selector: '#main h1' });
       const p1 = await cdp.evalJs(() => ({
         path: location.pathname,
@@ -43,8 +43,8 @@ export function registerTier3(suite, ctx) {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       assert.ok(await ctx.existsVisible('#mTabAcctBtn'), 'Expected #mTabAcctBtn');
       await cdp.click('#mTabAcctBtn');
-      assert.ok(await ctx.waitForVisible('a[href="/app/co-vu"]'), 'Expected Cổ vũ fan-out pill');
-      await cdp.click('a[href="/app/co-vu"]');
+      assert.ok(await ctx.waitForFanPill('mTabAcctBtn', '/app/co-vu'), 'Expected Cổ vũ fan-out pill');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/co-vu');
       await cdp.waitForAppSettled({ selector: '#hmPetCard' });
       const before = await cdp.evalJs(() => parseInt(document.getElementById('hmPetKnowVal')?.textContent || '0', 10));
       await cdp.click('#hmPetCheerBtn');
@@ -68,14 +68,16 @@ export function registerTier3(suite, ctx) {
       await cdp.click('#mAcctSheet a[href="/app/cai-dat"]');
       await cdp.waitForAppSettled({ selector: '[data-set-lang="en"]' });
 
+      await cdp.evalJs(() => { window.__preLangReload = 1; });
       await cdp.click('[data-set-lang="en"]');
-      await cdp.waitForCondition(() => document.documentElement.lang === 'en', 10000, 80);
+      await cdp.waitForCondition(() => !window.__preLangReload && document.documentElement.lang === 'en', 10000, 80);
       await cdp.waitForAppSettled({ selector: '[data-set-lang="vi"]' });
       const enDock = await cdp.evalJs(() => [...document.querySelectorAll('#mTab .mtab-lbl')].map((e) => e.textContent.trim()));
       assert.strictEqual(enDock[0], 'Overview', 'EN toggle in /app/cai-dat must translate dock');
 
+      await cdp.evalJs(() => { window.__preLangReload = 1; });
       await cdp.click('[data-set-lang="vi"]');
-      await cdp.waitForCondition(() => document.documentElement.lang === 'vi', 10000, 80);
+      await cdp.waitForCondition(() => !window.__preLangReload && document.documentElement.lang === 'vi', 10000, 80);
       await cdp.waitForAppSettled({ selector: '[data-set-lang="en"]' });
       const viDock = await cdp.evalJs(() => [...document.querySelectorAll('#mTab .mtab-lbl')].map((e) => e.textContent.trim()));
       assert.strictEqual(viDock[0], 'Tổng quan', 'VI toggle in /app/cai-dat must restore dock');
@@ -166,8 +168,8 @@ export function registerTier3(suite, ctx) {
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabLearnBtn');
-      assert.ok(await ctx.waitForVisible('a[href="/app/toeic"]'), 'Expected TOEIC fan-out pill');
-      await cdp.click('a[href="/app/toeic"]');
+      assert.ok(await ctx.waitForFanPill('mTabLearnBtn', '/app/toeic'), 'Expected TOEIC fan-out pill');
+      await ctx.clickFanPill('mTabLearnBtn', '/app/toeic');
       await cdp.waitForAppSettled({ selector: '#main' });
       assert.strictEqual(await cdp.evalJs(() => document.getElementById('mTabLearnBtn')?.classList.contains('on')), true);
 
@@ -300,8 +302,8 @@ export function registerTier3(suite, ctx) {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       assert.ok(await ctx.existsVisible('#mTabAcctBtn'), 'Expected #mTabAcctBtn');
       await cdp.click('#mTabAcctBtn');
-      assert.ok(await ctx.waitForVisible('a[href="/app/ca-nhan"]'), 'Expected Hồ sơ fan-out pill');
-      await cdp.click('a[href="/app/ca-nhan"]');
+      assert.ok(await ctx.waitForFanPill('mTabAcctBtn', '/app/ca-nhan'), 'Expected Hồ sơ fan-out pill');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/ca-nhan');
       await cdp.waitForAppSettled({ selector: '.pf-m-hero' });
       assert.strictEqual(await cdp.evalJs(() => !!document.querySelector('#main #hmPetCard')), false, '/app/ca-nhan must stay short without #hmPetCard');
       await cdp.click('[data-pf-open="#pwDetails"]');

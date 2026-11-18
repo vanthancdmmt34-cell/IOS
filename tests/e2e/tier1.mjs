@@ -341,9 +341,9 @@ export function registerTier1(suite, ctx) {
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('#mTabLearnBtn');
-      const hasSpeak = await ctx.existsVisible('a[href="/app/ngoai-ngu/luyen-noi/en"]');
+      const hasSpeak = await ctx.waitForFanPill('mTabLearnBtn', '/app/ngoai-ngu/luyen-noi/en');
       assert.ok(hasSpeak, 'Expected visible Luyện nói fan-out pill');
-      await cdp.click('a[href="/app/ngoai-ngu/luyen-noi/en"]');
+      await ctx.clickFanPill('mTabLearnBtn', '/app/ngoai-ngu/luyen-noi/en');
       await cdp.waitForAppSettled({ selector: '#main h1' });
       const info = await cdp.evalJs(() => ({
         path: location.pathname,
@@ -454,9 +454,9 @@ export function registerTier1(suite, ctx) {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       assert.ok(await ctx.existsVisible('#mTabAcctBtn'), 'Expected #mTabAcctBtn button');
       await cdp.click('#mTabAcctBtn');
-      const hasCheerPill = await ctx.waitForVisible('a[href="/app/co-vu"]');
+      const hasCheerPill = await ctx.waitForFanPill('mTabAcctBtn', '/app/co-vu');
       assert.ok(hasCheerPill, 'Expected Cổ vũ floating pill in Cá nhân fan-out');
-      await cdp.click('a[href="/app/co-vu"]');
+      await ctx.clickFanPill('mTabAcctBtn', '/app/co-vu');
       await cdp.waitForAppSettled({ selector: '#hmPetCard' });
 
       const before = await cdp.evalJs(() => ({

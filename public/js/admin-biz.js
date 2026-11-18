@@ -1,6 +1,6 @@
 /* LifeRivo 3.0 — Business admin: real analytics, orders, transactions, plans, memberships, AI, audit logs */
 import { appHash } from "./core.js";
-import { api, esc, icon, fmtN, fmtDate, toast, promptBox, confirmBox, openModal, $ } from "./core.js";
+import { api, esc, lineIcon as icon, fmtN, fmtDate, toast, promptBox, confirmBox, openModal, $ } from "./core.js";
 
 const vnd = (n) => fmtN(n) + "đ";
 const SUB = [["thanh-toan", "Tài khoản nhận tiền"], ["thong-ke", "Thống kê"], ["don-hang", "Đơn hàng"], ["giao-dich", "Giao dịch ngân hàng"], ["thanh-vien", "Thành viên Pro"], ["goi", "Gói và giá"], ["ai", "Chi phí AI"], ["webhook", "Nhật ký webhook"], ["nhat-ky", "Nhật ký"]];

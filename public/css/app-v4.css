@@ -2960,24 +2960,29 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
     font: 500 14px/1.4 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
   }
-  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-tag {
-    display: inline-flex;
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: #EAF4FB;
-    color: #2B7CB8;
-    font: 800 12px/1 var(--cp-font);
-  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-feat-tag,
   html:root body.in-app:not(.ax-on) #main .lx-cert-feat-tag.is-done {
-    background: #E7F8EF;
-    color: #169C5D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 36px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: #EAF4FB !important;
+    color: #2B7CB8 !important;
+    font: 800 13px/1 var(--cp-font);
   }
   html:root body.in-app:not(.ax-on) #main .lx-cert-feat-btn {
+    width: 100%;
     min-height: 46px !important;
-    border-radius: 16px !important;
+    border-radius: 999px !important;
     background: #3F97D3 !important;
     color: #FFFFFF !important;
     margin-top: 6px;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-list {
+    display: none !important;
   }
   html:root body.in-app:not(.ax-on) #main .lx-cert-next {
     display: grid;
@@ -2985,11 +2990,17 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
     border-radius: 20px !important;
     margin-bottom: 14px;
   }
+  html:root body.in-app:not(.ax-on) #main .lx-cert-next :is(.bar i, .lx-bar i, .cds-prog i) {
+    background: #3F97D3 !important;
+  }
   html:root body.in-app:not(.ax-on) #main .lx-lb-hero {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding: 18px 16px;
     border-radius: 20px;
     border: 1.5px solid #F3D9A4;
     background: #FFFBF2;
@@ -3004,6 +3015,24 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
   html:root body.in-app:not(.ax-on) #main .lx-lb-hero span {
     font: 500 13.5px/1.35 var(--cp-font);
     color: var(--cp-ink-3, #64748B);
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-row {
+    display: grid !important;
+    grid-template-columns: 36px 38px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-row b {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .lx-lb-row .lx-lb-xp {
+    white-space: nowrap;
+    font: 800 13px/1.2 var(--cp-font);
+    color: #2B7CB8;
   }
   html:root body.in-app:not(.ax-on) #main .lx-lb-av {
     display: block;
@@ -3027,6 +3056,9 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
     padding: 16px 12px !important;
     border-radius: 20px !important;
     border: 1px solid rgba(22, 43, 61, 0.06) !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cds-ach .cds-prog {
+    display: none !important;
   }
   html:root body.in-app:not(.ax-on) #main .cds-ach-t0 { background: #FFF3E8 !important; }
   html:root body.in-app:not(.ax-on) #main .cds-ach-t1 { background: #EAF4FB !important; }
@@ -3459,6 +3491,33 @@ html body #main :is(.lx-th-hero, .lx-ex-top-meta, .sp-m-hub, .sp-m-coach, .sp-m-
     background: #3F97D3;
     border-color: #3F97D3;
     color: #FFFFFF;
+  }
+  html:root body.in-app:not(.ax-on) #main .test-head {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main #tf .q-block:not(.is-active) {
+    display: none !important;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-m-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-m-note {
+    font: 600 12.5px/1.35 var(--cp-font);
+    color: var(--cp-ink-3, #64748B);
+    flex: 1 1 0;
+  }
+  html:root body.in-app:not(.ax-on) #main .cl-test-m-next {
+    min-height: 44px !important;
+    padding: 0 22px !important;
+    border-radius: 999px !important;
+    background: #3F97D3 !important;
+    color: #FFFFFF !important;
+    font: 800 14.5px/1 var(--cp-font) !important;
+    flex: none;
   }
 
   /* 32-gia-dinh.webp: Gia đình / phụ huynh */
