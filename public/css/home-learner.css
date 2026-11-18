@@ -722,7 +722,7 @@ body.in-app .lx-ai-recommend > svg { width: 15px; height: 15px; }
 body.in-app .lx-ai-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px dashed var(--line-2); }
 body.in-app .lx-ai-footer > span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: 10px; }
 body.in-app .lx-ai-footer > span svg { width: 14px; height: 14px; flex: none; }
-body.in-app .lx-ai-coach-link { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: #7753C8; font-size: 11px; font-weight: 850; white-space: nowrap; }
+body.in-app .lx-ai-coach-link { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 4px 0; margin: 0; color: #7753C8; font-size: 11px; font-weight: 850; white-space: nowrap; }
 body.in-app .lx-ai-coach-link svg { width: 14px; height: 14px; }
 
 /* Course path cards show state, completed count and actual level progress. */
@@ -894,7 +894,7 @@ body.in-app .lx-ai-speaking-top b { font-size:12px; }
 body.in-app .lx-ai-speaking-top small { color:var(--ink-2); font-size:10px; }
 body.in-app .lx-ai-speaking-top strong { color:#6941B5; font-size:17px; font-weight:900; }
 body.in-app .lx-ai-speaking-card p { color:var(--ink-2); font-size:10.5px; line-height:1.5; }
-body.in-app .lx-ai-speaking-link { display:inline-flex; align-items:center; gap:5px; color:#6941B5; font-size:10px; font-weight:850; }
+body.in-app .lx-ai-speaking-link { display:inline-flex; align-items:center; gap:5px; min-height:30px; padding:4px 0; color:#6941B5; font-size:10px; font-weight:850; }
 body.in-app .lx-ai-speaking-link svg { width:13px; height:13px; }
 body.in-app .lx-ai-report-panel { display:grid; gap:12px; padding:16px; border:1.5px solid #1C1917; border-radius:14px 9px 15px 8px; background:linear-gradient(110deg,#F3EDFF 0%,var(--paper) 72%); box-shadow:2px 3px 0 #1C1917; }
 body.in-app .lx-ai-report-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
