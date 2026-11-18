@@ -27,6 +27,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        lockWebViewZoom()
+    }
+
+    // Khóa mức phóng to của WKWebView ở 100%: khi chạm vào ô nhập hoặc nút, iOS tự phóng to trang và giữ mức đó sau khi bàn phím đóng.
+    private func lockWebViewZoom() {
+        guard let controller = window?.rootViewController as? CAPBridgeViewController,
+              let scrollView = controller.webView?.scrollView else { return }
+        scrollView.minimumZoomScale = 1
+        scrollView.maximumZoomScale = 1
+        scrollView.zoomScale = 1
+        scrollView.bouncesZoom = false
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

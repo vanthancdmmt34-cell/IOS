@@ -15,7 +15,9 @@
   var topFix = document.createElement("style");
   topFix.textContent = "html body.in-app .main > .topbar,html body.in-app .toeic-timer-bar{top:env(safe-area-inset-top)!important}"
     // Thanh menu dưới nằm sát mép dưới màn hình; khoảng trống cho thanh Home nằm trong padding của thanh.
-    + "html body.in-app .mtab{bottom:0!important;left:0!important;right:0!important;border-radius:24px 24px 0 0!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))!important}";
+    + "html body.in-app .mtab{bottom:0!important;left:0!important;right:0!important;border-radius:24px 24px 0 0!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))!important}"
+    // Tắt chạm đúp để phóng to (double-tap zoom) khi người dùng bấm nhanh liên tiếp.
+    + "html{touch-action:manipulation}";
   (document.head || document.documentElement).appendChild(topFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
@@ -73,5 +75,11 @@
     }).catch(function () {
       alert("Không tải được file. Kiểm tra mạng rồi thử lại.");
     });
+  }, true);
+
+  // Ẩn bàn phím trước khi gửi form. Nếu ô nhập còn focus khi giao diện đổi (đăng nhập xong, báo lỗi), WKWebView hay giữ nguyên mức phóng to.
+  document.addEventListener("submit", function () {
+    var ae = document.activeElement;
+    if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) && ae.blur) ae.blur();
   }, true);
 })();
