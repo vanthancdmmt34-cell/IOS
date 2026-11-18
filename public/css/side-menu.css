@@ -337,29 +337,29 @@ html body .m-fan-wrap { display: none; }
   /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
   html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
 
-  /* Thanh điều hướng dưới nổi (Flagship Floating Frosted Pill Dock) */
+  /* Thanh điều hướng dưới nổi (Flagship Floating Frosted Pill Dock — Gọn nhẹ) */
   html body.in-app .mtab {
     position: fixed;
     z-index: 60;
     display: grid;
-    left: 12px;
-    right: 12px;
-    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: 14px;
+    right: 14px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 2px;
-    padding: 5px 8px;
-    border-radius: 26px;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(22px) saturate(180%);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 12px 32px rgba(15, 36, 56, 0.11);
+    padding: 3px 6px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 36, 56, 0.09);
   }
   html[data-theme="dark"] body.in-app .mtab,
   body.dark.in-app .mtab {
-    background: rgba(15, 23, 42, 0.86);
+    background: rgba(15, 23, 42, 0.88);
     border-color: rgba(148, 163, 184, 0.22);
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 14px 36px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.42);
   }
   html body.in-app .mtab.mtab-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -372,19 +372,19 @@ html body .m-fan-wrap { display: none; }
   }
   html body.in-app .mtab.mtab-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    padding: 4px 5px;
+    padding: 3px 4px;
   }
   html body.in-app .mtab.mtab-7 a,
   html body.in-app .mtab.mtab-7 .mtab-more {
-    font-size: 8.3px;
+    font-size: 8px;
     letter-spacing: -0.02em;
-    padding: 2px 0;
+    padding: 1px 0;
   }
   html body.in-app .mtab.mtab-8 a,
   html body.in-app .mtab.mtab-8 .mtab-more {
-    font-size: 7.4px;
+    font-size: 7.2px;
     letter-spacing: -0.03em;
-    padding: 2px 0;
+    padding: 1px 0;
   }
   html body.in-app .mtab :is(a, button, .mtab-more) {
     position: relative;
@@ -393,15 +393,15 @@ html body .m-fan-wrap { display: none; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    min-height: 46px;
+    gap: 1px;
+    min-height: 38px;
     min-width: 0;
     padding: 2px 1px;
     border: 0;
-    border-radius: 16px;
+    border-radius: 14px;
     background: transparent;
     color: #64748B;
-    font: 600 10px/1.1 var(--cp-font);
+    font: 600 9.5px/1.1 var(--cp-font);
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -418,8 +418,8 @@ html body .m-fan-wrap { display: none; }
     text-overflow: ellipsis;
   }
   @media (max-width: 360px) {
-    html body.in-app .mtab { left: 8px; right: 8px; padding: 4px 5px; border-radius: 24px; }
-    html body.in-app .mtab :is(a, button, .mtab-more) { font-size: 8.5px; letter-spacing: -0.02em; min-height: 44px; padding: 2px 0; }
+    html body.in-app .mtab { left: 10px; right: 10px; padding: 3px 4px; border-radius: 20px; }
+    html body.in-app .mtab :is(a, button, .mtab-more) { font-size: 8.5px; letter-spacing: -0.02em; min-height: 36px; padding: 1px 0; }
     html body.in-app .mtab.mtab-6 a,
     html body.in-app .mtab.mtab-6 .mtab-more,
     html body.in-app .mtab.mtab-7 a,
@@ -435,12 +435,12 @@ html body .m-fan-wrap { display: none; }
   html body.in-app .mtab .mtab-ic {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 28px;
+    width: 32px;
+    height: 22px;
     border-radius: 999px;
     transition: background .2s ease, color .2s ease, transform .22s cubic-bezier(0.22, 1.28, 0.36, 1);
   }
-  html body.in-app .mtab .mtab-ic svg { width: 20px !important; height: 20px !important; stroke-width: 1.75; }
+  html body.in-app .mtab .mtab-ic svg { width: 17px !important; height: 17px !important; stroke-width: 1.8; }
   html body.in-app .mtab :is(a, button).on,
   html body.in-app .mtab :is(a, button)[aria-expanded="true"],
   html body.in-app .mtab .mtab-more[aria-expanded="true"] {
@@ -465,22 +465,22 @@ html body .m-fan-wrap { display: none; }
     color: #7CC4F8;
   }
 
-  /* Nút Học ngay ở giữa nổi bật với viên ngọc gradient & vòng hào quang trắng */
-  html body.in-app .mtab .mtab-center { transform: translateY(-7px); }
-  html body.in-app .mtab .mtab-center:active { transform: translateY(-5px) scale(0.95); }
+  /* Nút Học ngay ở giữa gọn gàng, không phồng to lấn màn hình */
+  html body.in-app .mtab .mtab-center { transform: translateY(-2px); }
+  html body.in-app .mtab .mtab-center:active { transform: translateY(-1px) scale(0.95); }
   html body.in-app .mtab .mtab-center .mtab-ic,
   html body.in-app .mtab .mtab-center.on .mtab-ic,
   html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic {
     position: relative;
-    width: 44px;
-    height: 44px;
-    border-radius: 15px;
+    width: 34px;
+    height: 30px;
+    border-radius: 11px;
     background: linear-gradient(135deg, #56AEEC 0%, #2577B8 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 20px rgba(43, 124, 184, 0.36);
+    box-shadow: 0 3px 10px rgba(43, 124, 184, 0.28);
   }
   html body.in-app .mtab .mtab-center[aria-expanded="true"] .mtab-ic {
-    transform: scale(1.06) translateY(-1px);
+    transform: scale(1.02);
   }
   html body.in-app .mtab .mtab-center .mtab-ic-main,
   html body.in-app .mtab .mtab-center .mtab-ic-x {
@@ -660,15 +660,15 @@ html body .m-fan-wrap { display: none; }
   html body.in-app:not(.ax-on) .m-fan-scrim {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.24);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
     opacity: 0;
-    transition: opacity .22s ease;
+    transition: opacity .18s ease;
   }
   html body.in-app:not(.ax-on) .m-fan-wrap.is-open .m-fan-scrim { opacity: 1; }
   html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-scrim {
-    background: rgba(2, 6, 23, 0.52);
+    background: rgba(2, 6, 23, 0.28);
   }
   html body.in-app:not(.ax-on) .m-fan-arc {
     position: fixed;
@@ -679,11 +679,11 @@ html body .m-fan-wrap { display: none; }
   }
   html body.in-app:not(.ax-on) .m-learn-fan .m-fan-arc {
     left: 50%;
-    bottom: calc(52px + env(safe-area-inset-bottom));
+    bottom: calc(42px + env(safe-area-inset-bottom));
   }
   html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc {
-    right: 48px;
-    bottom: calc(52px + env(safe-area-inset-bottom));
+    right: 42px;
+    bottom: calc(42px + env(safe-area-inset-bottom));
   }
   html body.in-app:not(.ax-on) .m-fan-petal {
     position: absolute;
@@ -692,12 +692,12 @@ html body .m-fan-wrap { display: none; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
     text-decoration: none;
     pointer-events: auto;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.35);
-    transition: transform 0.32s cubic-bezier(0.22, 1.28, 0.36, 1) var(--fd, 0ms), opacity 0.2s ease var(--fd, 0ms);
+    transition: transform 0.26s cubic-bezier(0.22, 1.24, 0.36, 1) var(--fd, 0ms), opacity 0.16s ease var(--fd, 0ms);
     -webkit-tap-highlight-color: transparent;
   }
   html body.in-app:not(.ax-on) .m-fan-wrap.is-open .m-fan-petal {
@@ -707,23 +707,23 @@ html body .m-fan-wrap { display: none; }
   html body.in-app:not(.ax-on) .m-fan-petal:active .m-fan-orb { transform: scale(0.92); }
   html body.in-app:not(.ax-on) .m-fan-petal:focus-visible { outline: none; }
   html body.in-app:not(.ax-on) .m-fan-petal:focus-visible .m-fan-orb {
-    outline: 3px solid var(--cp-primary, #3F97D3);
+    outline: 2px solid var(--cp-primary, #3F97D3);
     outline-offset: 2px;
   }
   html body.in-app:not(.ax-on) .m-fan-orb {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
     display: grid;
     place-items: center;
-    border: 2px solid rgba(255, 255, 255, 0.96);
-    box-shadow: 0 10px 24px rgba(15, 36, 56, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.72);
-    transition: transform .18s ease, box-shadow .18s ease;
+    border: 1.5px solid rgba(255, 255, 255, 0.96);
+    box-shadow: 0 6px 16px rgba(15, 36, 56, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    transition: transform .16s ease, box-shadow .16s ease;
   }
   html body.in-app:not(.ax-on) .m-fan-orb svg {
-    width: 20px !important;
-    height: 20px !important;
-    stroke-width: 1.75;
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 1.85;
   }
   html body.in-app:not(.ax-on) .m-fan-orb.is-sky { background: linear-gradient(145deg, #F0F9FF 0%, #D9EFFD 100%); color: #1E6FA8; }
   html body.in-app:not(.ax-on) .m-fan-orb.is-indigo { background: linear-gradient(145deg, #F3F5FF 0%, #E0E7FF 100%); color: #4338CA; }
@@ -735,16 +735,16 @@ html body .m-fan-wrap { display: none; }
     background: linear-gradient(135deg, #EAF4FB 0%, #CFE8F9 100%);
     color: #1E6FA8;
     border-color: #3F97D3;
-    box-shadow: 0 0 0 3px rgba(63, 151, 211, 0.2), 0 10px 24px rgba(30, 111, 168, 0.22);
+    box-shadow: 0 0 0 2px rgba(63, 151, 211, 0.2), 0 6px 16px rgba(30, 111, 168, 0.18);
   }
   html body.in-app:not(.ax-on) .m-fan-pill {
-    padding: 3px 9px;
+    padding: 2px 7px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid #E6EEF6;
-    box-shadow: 0 4px 12px rgba(15, 36, 56, 0.08);
+    box-shadow: 0 3px 10px rgba(15, 36, 56, 0.07);
     color: #162B3D;
-    font: 700 11px/1.2 var(--cp-font);
+    font: 700 10px/1.2 var(--cp-font);
     white-space: nowrap;
   }
   html body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-pill {
@@ -754,7 +754,7 @@ html body .m-fan-wrap { display: none; }
   }
   html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb {
     border-color: rgba(51, 65, 85, 0.92);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
   }
   html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-sky { background: linear-gradient(145deg, #1E3A5F 0%, #172554 100%); color: #7CC4F8; }
   html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-orb.is-indigo { background: linear-gradient(145deg, #272959 0%, #1E1B4B 100%); color: #A5B4FC; }
@@ -771,7 +771,7 @@ html body .m-fan-wrap { display: none; }
     background: rgba(15, 23, 42, 0.94);
     border-color: rgba(71, 85, 105, 0.65);
     color: #F1F5F9;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.36);
   }
   html[data-theme="dark"] body.in-app:not(.ax-on) .m-fan-petal.on .m-fan-pill {
     background: #173452;
@@ -779,29 +779,29 @@ html body .m-fan-wrap { display: none; }
     color: #93D5FF;
   }
 
-  /* Tọa độ xòe quạt Học ngay (5 nút đối xứng) & Cá nhân (4 nút cung góc tư trên-trái) */
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -130px; --fy: -78px; --fd: 0ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -68px; --fy: -158px; --fd: 30ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -188px; --fd: 60ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 68px; --fy: -158px; --fd: 90ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 130px; --fy: -78px; --fd: 120ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -8px; --fy: -270px; --fd: 0ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -92px; --fy: -234px; --fd: 30ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -168px; --fy: -158px; --fd: 60ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -214px; --fy: -76px; --fd: 90ms; }
+  /* Tọa độ xòe quạt gọn gàng ngay sát trên nút bấm (không che màn hình) */
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -98px; --fy: -42px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -52px; --fy: -88px; --fd: 25ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -106px; --fd: 50ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 52px; --fy: -88px; --fd: 75ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 98px; --fy: -42px; --fd: 100ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: 0px; --fy: -124px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -48px; --fy: -102px; --fd: 25ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -94px; --fy: -66px; --fd: 50ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -126px; --fy: -24px; --fd: 75ms; }
   @media (max-width: 360px) {
-    html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc { right: 38px; }
-    html body.in-app:not(.ax-on) .m-fan-orb { width: 44px; height: 44px; }
-    html body.in-app:not(.ax-on) .m-fan-pill { font-size: 10.5px; padding: 2.5px 8px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -108px; --fy: -74px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -58px; --fy: -150px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -180px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 58px; --fy: -150px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 108px; --fy: -74px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -6px; --fy: -258px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -82px; --fy: -222px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -148px; --fy: -150px; }
-    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -192px; --fy: -72px; }
+    html body.in-app:not(.ax-on) .m-acct-fan .m-fan-arc { right: 36px; }
+    html body.in-app:not(.ax-on) .m-fan-orb { width: 30px; height: 30px; }
+    html body.in-app:not(.ax-on) .m-fan-pill { font-size: 9.5px; padding: 1.5px 6px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i0 { --fx: -88px; --fy: -38px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i1 { --fx: -46px; --fy: -80px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -98px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 46px; --fy: -80px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 88px; --fy: -38px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: 0px; --fy: -116px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -44px; --fy: -96px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -86px; --fy: -62px; }
+    html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -116px; --fy: -22px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html body.in-app:not(.ax-on) .m-fan-petal,

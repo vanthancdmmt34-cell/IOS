@@ -167,16 +167,16 @@ const P = {
 };
 // Biểu tượng nét đơn, không có nhân vật: dùng ở thanh trên để giao diện gọn
 export function lineIcon(name, extra = "") {
-  return `<svg class="line-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[name] || ""}</svg>`;
+  return `<svg class="line-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[name] || ""}</svg>`;
 }
 export function icon(name, extra = "") {
   if (typeof document !== "undefined" && document.body?.classList.contains("ax-on")) {
     return lineIcon(name, extra);
   }
   if (SKETCH_ICONS[name]) {
-    return `<svg class="sk-ic chibi-ic" viewBox="0 0 32 32" fill="none" aria-hidden="true" ${extra}>${SKETCH_ICONS[name]}</svg>`;
+    return `<svg class="sk-ic chibi-ic" width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true" ${extra}>${SKETCH_ICONS[name]}</svg>`;
   }
-  return `<svg class="chibi-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[name] || ""}</svg>`;
+  return `<svg class="chibi-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[name] || ""}</svg>`;
 }
 
 /* Cel-shaded Multi-Species 2D Chibi Character Engine (18 species x 6 moods x 7 hats)
