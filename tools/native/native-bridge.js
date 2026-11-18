@@ -13,7 +13,9 @@
   (document.head || document.documentElement).appendChild(zoomFix);
   // Thanh tiêu đề dính (sticky top:0) nằm dưới thanh trạng thái/tai thỏ, nên dời xuống đúng vùng an toàn.
   var topFix = document.createElement("style");
-  topFix.textContent = "html body.in-app .main > .topbar,html body.in-app .toeic-timer-bar{top:env(safe-area-inset-top)!important}";
+  topFix.textContent = "html body.in-app .main > .topbar,html body.in-app .toeic-timer-bar{top:env(safe-area-inset-top)!important}"
+    // Thanh menu dưới nằm sát mép dưới màn hình; khoảng trống cho thanh Home nằm trong padding của thanh.
+    + "html body.in-app .mtab{bottom:0!important;left:0!important;right:0!important;border-radius:24px 24px 0 0!important;padding-bottom:calc(6px + env(safe-area-inset-bottom))!important}";
   (document.head || document.documentElement).appendChild(topFix);
   var KEY = "lr_token";
   var origFetch = window.fetch.bind(window);
