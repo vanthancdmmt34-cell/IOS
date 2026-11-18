@@ -445,13 +445,13 @@ html:root body.in-app.ax-on #mTab {
     align-items: center;
     justify-content: center;
     gap: 1px;
-    min-height: 38px !important;
+    min-height: 36px !important;
     padding: 2px 1px !important;
     border: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
     color: #64748B !important;
-    font: 600 9.5px/1.15 Inter, system-ui, sans-serif !important;
+    font: 600 9px/1.15 Inter, system-ui, sans-serif !important;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -480,13 +480,13 @@ html:root body.in-app.ax-on #mTab {
   html:root body.in-app.ax-on .ad-m-tab-ic {
     display: inline-grid;
     place-items: center;
-    width: 32px;
-    height: 22px;
+    width: 28px;
+    height: 19px;
     border-radius: 999px;
   }
   html:root body.in-app.ax-on .ad-m-tab-ic svg {
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
   }
   html:root body.in-app.ax-on .ad-m-tab-it.on {
     color: #2B84C2 !important;

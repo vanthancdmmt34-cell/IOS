@@ -290,6 +290,7 @@ export function registerTier1(suite, ctx) {
         const scrimSt = getComputedStyle(scrim);
         const scrimBlur = scrimSt.backdropFilter || scrimSt.webkitBackdropFilter || '';
         const orbRadii = [...menu.querySelectorAll('a > span:first-child, a .m-fan-orb, a .m-learn-ic')].map((el) => parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0);
+        const dockTop = document.getElementById('mTab')?.getBoundingClientRect().top ?? window.innerHeight;
         return {
           open: true,
           expanded: btn?.getAttribute('aria-expanded') === 'true',
@@ -299,6 +300,7 @@ export function registerTier1(suite, ctx) {
           scrimBlur,
           orbRadii,
           items,
+          dockTop,
           innerW: window.innerWidth,
         };
       });
@@ -310,8 +312,15 @@ export function registerTier1(suite, ctx) {
       assert.ok(fan.distinctX >= 3 && fan.distinctY >= 2, `Expected symmetric fan-out arc across X/Y (distinctX=${fan.distinctX}, distinctY=${fan.distinctY})`);
       assert.ok(/blur\(/i.test(fan.scrimBlur), `Expected blurred scrim backdrop-filter on fan-out (got "${fan.scrimBlur}")`);
       assert.ok(fan.orbRadii.length >= 5 && fan.orbRadii.every((r) => r >= 20), `Expected circular pastel orbs (>=20px radius, got ${JSON.stringify(fan.orbRadii)})`);
-      for (const it of fan.items) {
+      for (let i = 0; i < fan.items.length; i++) {
+        const it = fan.items[i];
         assert.ok(it.left >= 10 && it.right <= fan.innerW - 10, `Pill "${it.label}" out of [10, ${fan.innerW - 10}] bounds: [${it.left}, ${it.right}]`);
+        assert.ok(it.bottom <= fan.dockTop, `Pill "${it.label}" overlaps #mTab (bottom=${it.bottom}, dockTop=${fan.dockTop})`);
+        for (let j = i + 1; j < fan.items.length; j++) {
+          const other = fan.items[j];
+          const overlaps = !(it.right <= other.left || other.right <= it.left || it.bottom <= other.top || other.bottom <= it.top);
+          assert.strictEqual(overlaps, false, `Học ngay fan-out pills "${it.label}" and "${other.label}" overlap`);
+        }
       }
     }
   );
@@ -419,16 +428,25 @@ export function registerTier1(suite, ctx) {
             left: r.left,
             right: r.right,
             top: r.top,
+            bottom: r.bottom,
           };
         });
-        return { open: true, expanded: btn?.getAttribute('aria-expanded') === 'true', items, innerW: window.innerWidth };
+        const dockTop = document.getElementById('mTab')?.getBoundingClientRect().top ?? window.innerHeight;
+        return { open: true, expanded: btn?.getAttribute('aria-expanded') === 'true', items, dockTop, innerW: window.innerWidth };
       });
       assert.ok(fan.open && fan.expanded, 'Cá nhân fan-out menu must open');
       assert.strictEqual(fan.items.length, 4, `Expected 4 floating pills above Cá nhân (got ${fan.items.length})`);
       assert.deepStrictEqual(fan.items.map((x) => x.href), ['/app/co-vu', '/app/ca-nhan', '/app/goi-cua-toi', '/app/cai-dat']);
       assert.deepStrictEqual(fan.items.map((x) => x.label), ['Cổ vũ', 'Hồ sơ', 'Gói & Chứng nhận', 'Cài đặt']);
-      for (const it of fan.items) {
+      for (let i = 0; i < fan.items.length; i++) {
+        const it = fan.items[i];
         assert.ok(it.left >= 10 && it.right <= fan.innerW - 10, `Pill "${it.label}" out of [10, ${fan.innerW - 10}] bounds: [${it.left}, ${it.right}]`);
+        assert.ok(it.bottom <= fan.dockTop, `Pill "${it.label}" overlaps #mTab (bottom=${it.bottom}, dockTop=${fan.dockTop})`);
+        for (let j = i + 1; j < fan.items.length; j++) {
+          const other = fan.items[j];
+          const overlaps = !(it.right <= other.left || other.right <= it.left || it.bottom <= other.top || other.bottom <= it.top);
+          assert.strictEqual(overlaps, false, `Cá nhân fan-out pills "${it.label}" and "${other.label}" overlap`);
+        }
       }
     }
   );
