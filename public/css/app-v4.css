@@ -76,8 +76,20 @@ html body.in-app:not(.ax-on) .tag {
 }
 
 /* ---------- Giai đoạn 2: ngôn ngữ thị giác của trang chủ ---------- */
-/* Nền trang đồng màu, không gradient */
-html body.in-app:not(.ax-on) .shell > .main { background: var(--cp-bg); }
+/* Nền trang nhẹ nhàng có chiều sâu nhẹ để các nút & thẻ kính mờ nổi bật tinh tế */
+html body.in-app:not(.ax-on) .shell > .main {
+  background:
+    radial-gradient(circle at 12% -4%, rgba(125, 211, 252, 0.20), transparent 42%),
+    radial-gradient(circle at 92% 14%, rgba(196, 181, 253, 0.16), transparent 38%),
+    var(--cp-bg);
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) .shell > .main,
+html body.dark.in-app:not(.ax-on) .shell > .main {
+  background:
+    radial-gradient(circle at 12% -4%, rgba(56, 189, 248, 0.10), transparent 44%),
+    radial-gradient(circle at 92% 14%, rgba(139, 92, 246, 0.09), transparent 40%),
+    var(--cp-bg);
+}
 
 /* Tiêu đề: đậm 900, màu ink, chữ hơi khít như trang chủ */
 html body.in-app:not(.ax-on) .main :is(h1, h2, h3) {
@@ -148,11 +160,8 @@ html body.in-app:not(.ax-on) .lx-kpis .lx-kpi-icon {
 html body.in-app:not(.ax-on) .lx-kpis span { color: var(--cp-ink-2); }
 html body.in-app:not(.ax-on) .lx-kpis small { color: var(--cp-ink-3); }
 
-/* ---------- Giai đoạn 5: nút bấm dùng chung ----------
-   Họ nút: .btn (mặc định), .btn-primary (nút chính), .btn-ghost (nút phụ không viền), .btn-danger,
-   kích thước .btn-xs / .btn-sm / .btn-lg, .btn-block, .icon-btn, và .hm-btn / .hm-btn-primary của tổng quan.
-   Cùng một bộ trạng thái: hover, bấm (co nhẹ), focus bằng bàn phím, vô hiệu hóa.
-   Điện thoại: chiều cao tối thiểu 44 px để dễ chạm. */
+/* ---------- Giai đoạn 5: nút bấm kính mờ trong suốt nhẹ (Frosted Glass Pills) ----------
+   Nút phụ dùng nền kính trong mờ + viền sáng mảnh; nút chính giữ sắc xanh trong nổi nhẹ. */
 html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) {
   display: inline-flex;
   align-items: center;
@@ -161,71 +170,81 @@ html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) {
   min-height: 44px;
   padding: 0 18px;
   border-radius: 999px !important;
-  border: 1.5px solid var(--cp-border-strong) !important;
-  background: var(--cp-surface) !important;
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  backdrop-filter: blur(12px) saturate(165%);
+  -webkit-backdrop-filter: blur(12px) saturate(165%);
   color: var(--cp-ink) !important;
   font: 800 14px/1.1 var(--cp-font);
   text-decoration: none;
-  /* Nút phụ kiểu 2D: viền và một bóng đáy phẳng, không đổ bóng mềm */
-  box-shadow: 0 3px 0 var(--cp-border-strong) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 4px 14px rgba(22, 43, 61, 0.06) !important;
   cursor: pointer;
-  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease, box-shadow .15s ease;
+  transition: background .16s ease, border-color .16s ease, color .16s ease, transform .12s ease, box-shadow .16s ease;
 }
 html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn) svg { flex: none; width: 18px; height: 18px; }
 html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):hover {
-  background: var(--cp-surface-2) !important;
-  border-color: var(--cp-primary) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  border-color: rgba(63, 151, 211, 0.55) !important;
   color: var(--cp-primary-ink) !important;
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 8px 18px rgba(63, 151, 211, 0.14) !important;
 }
-html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--cp-border-strong) !important; }
+html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):active {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 6px rgba(22, 43, 61, 0.06) !important;
+}
 html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
 html:root body.in-app:not(.ax-on) #main :is(.btn, .hm-btn):is(:disabled, [aria-disabled="true"]) {
   opacity: .5;
   cursor: not-allowed;
   transform: none;
-  background: var(--cp-surface-2) !important;
+  background: rgba(241, 245, 249, 0.55) !important;
 }
 
-/* Nút chính: màu nhấn đậm, chữ trắng, bóng nhẹ */
+/* Nút chính: xanh trong suốt nhẹ (glass tint), nổi mượt */
 html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary) {
-  background: var(--cp-primary-strong) !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, rgba(84, 172, 234, 0.86) 0%, rgba(41, 128, 196, 0.90) 100%) !important;
+  backdrop-filter: blur(12px) saturate(170%);
+  -webkit-backdrop-filter: blur(12px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
   color: var(--cp-on-primary) !important;
-  /* Nút chính kiểu 3D: bậc dày bên dưới màu nhấn đậm, nhấn xuống khi bấm */
-  box-shadow: 0 4px 0 var(--v4-btn-lip), var(--v4-shadow-btn) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48), 0 6px 18px rgba(45, 133, 200, 0.25) !important;
 }
 html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary):hover {
-  background: var(--cp-primary-hover) !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, rgba(96, 182, 242, 0.94) 0%, rgba(47, 138, 208, 0.96) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.56) !important;
   color: var(--cp-on-primary) !important;
-  box-shadow: 0 4px 0 var(--v4-btn-lip), var(--v4-shadow-btn) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 10px 24px rgba(45, 133, 200, 0.32) !important;
 }
 html:root body.in-app:not(.ax-on) #main :is(.btn-primary, .hm-btn-primary):active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--v4-btn-lip) !important;
+  transform: translateY(1px) scale(0.985);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 3px 10px rgba(45, 133, 200, 0.22) !important;
 }
 
 /* Nút phụ không viền: chỉ chữ màu nhấn */
 html:root body.in-app:not(.ax-on) #main .btn-ghost {
   background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-color: transparent !important;
   color: var(--cp-primary-ink) !important;
   box-shadow: none !important;
 }
 html:root body.in-app:not(.ax-on) #main .btn-ghost:hover {
-  background: var(--cp-primary-soft) !important;
+  background: rgba(63, 151, 211, 0.12) !important;
   border-color: transparent !important;
   color: var(--cp-primary-ink) !important;
+  box-shadow: none !important;
 }
 
 /* Nút nguy hiểm (xóa, đăng xuất trong trang) */
 html:root body.in-app:not(.ax-on) #main .btn-danger {
-  background: var(--cp-bad) !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, rgba(225, 45, 72, 0.88) 0%, rgba(185, 24, 52, 0.92) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 0 #8F1A2B !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px rgba(211, 38, 58, 0.24) !important;
 }
-html:root body.in-app:not(.ax-on) #main .btn-danger:hover { filter: brightness(.95); color: #FFFFFF !important; }
+html:root body.in-app:not(.ax-on) #main .btn-danger:hover { filter: brightness(1.04); color: #FFFFFF !important; }
 
 /* Kích thước */
 html:root body.in-app:not(.ax-on) #main .btn-xs { min-height: 30px; padding: 0 10px; font-size: 12px; }
@@ -233,7 +252,7 @@ html:root body.in-app:not(.ax-on) #main .btn-sm { min-height: 38px; padding: 0 1
 html:root body.in-app:not(.ax-on) #main .btn-lg { min-height: 52px; padding: 0 24px; font-size: 16px; }
 html:root body.in-app:not(.ax-on) #main .btn-block { display: flex; width: 100%; }
 
-/* Nút biểu tượng: tròn, cùng viền với nút chữ */
+/* Nút biểu tượng: tròn kính mờ */
 html:root body.in-app:not(.ax-on) #main .icon-btn {
   width: 40px;
   height: 40px;
@@ -242,16 +261,20 @@ html:root body.in-app:not(.ax-on) #main .icon-btn {
   display: inline-grid;
   place-items: center;
   border-radius: 999px;
-  border: 1.5px solid var(--cp-border-strong);
-  background: var(--cp-surface);
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  background: rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--cp-ink-2);
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 2px 8px rgba(22, 43, 61, 0.05);
   cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .12s ease;
 }
 html:root body.in-app:not(.ax-on) #main .icon-btn:hover {
-  background: var(--cp-surface-2);
-  border-color: var(--cp-primary);
+  background: rgba(255, 255, 255, 0.90);
+  border-color: rgba(63, 151, 211, 0.55);
   color: var(--cp-primary-ink);
+  transform: translateY(-1px);
 }
 html:root body.in-app:not(.ax-on) #main .icon-btn:focus-visible { outline: 3px solid var(--cp-primary); outline-offset: 2px; }
 
@@ -332,57 +355,62 @@ html:root body.in-app:not(.ax-on) #main .lx-submit-bar {
    Các khối lớn dùng cùng một kiểu: thẻ trắng, viền mảnh, bo lớn, đế 2D như nút chibi.
    Khối môn đang học giữ vạch màu bên trái theo môn. Các ô kế hoạch có đế 3D khi bấm. */
 html:root body.in-app:not(.ax-on) #main :is(.hm-current, .hm-goal, .hm-focus, .hm-plan-card, .hm-pet-card, .hm-insights, .hm-quick, .hm-chibi-banner) {
-  background: var(--cp-surface);
-  border: 1.5px solid var(--cp-border);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   border-radius: var(--v4-radius);
-  box-shadow: 0 4px 0 var(--cp-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 24px rgba(15, 36, 56, 0.05);
 }
 html:root body.in-app:not(.ax-on) #main .hm-current {
-  border-left: 6px solid var(--c, var(--cp-primary-strong));
+  border-left: 5px solid var(--c, var(--cp-primary-strong));
 }
 html:root body.in-app:not(.ax-on) #main .hm-star-pill {
-  border: 1.5px solid color-mix(in srgb, #F59E0B 40%, var(--cp-border));
-  box-shadow: 0 3px 0 color-mix(in srgb, #F59E0B 40%, var(--cp-border));
+  border: 1px solid color-mix(in srgb, #F59E0B 36%, rgba(255, 255, 255, 0.8));
+  background: rgba(255, 251, 235, 0.78);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 4px 12px rgba(245, 158, 11, 0.14);
   border-radius: 999px;
 }
 html:root body.in-app:not(.ax-on) #main .hm-plan-tile {
-  border: 1.5px solid var(--cp-border-strong);
+  border: 1px solid rgba(203, 213, 225, 0.72);
   border-radius: 20px;
-  box-shadow: 0 4px 0 var(--cp-border-strong);
-  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 6px 18px rgba(15, 36, 56, 0.05);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
-html:root body.in-app:not(.ax-on) #main .hm-plan-tile:hover { transform: translateY(-2px); }
+html:root body.in-app:not(.ax-on) #main .hm-plan-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 36, 56, 0.08); }
 html:root body.in-app:not(.ax-on) #main .hm-plan-tile:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--cp-border-strong);
+  transform: translateY(1px) scale(0.99);
 }
 
 /* ---------- Giai đoạn 10: luyện nói, luyện viết, TOEIC, phỏng vấn ----------
-   Thẻ (lx-card, sp-scene, toeic-part, ô số liệu) cùng một kiểu 2D; icon trong thẻ là chip nhạt;
-   tab là viên thuốc có đế 2D, tab đang chọn là nút chính; thanh tiến độ bo tròn. */
+   Thẻ (lx-card, sp-scene, toeic-part, ô số liệu) kính mờ thanh thoát;
+   tab dạng viên thuốc kính trong suốt. */
 html:root body.in-app:not(.ax-on) #main :is(.lx-card, .sp-scene, .toeic-part, .toeic-stats > *) {
-  background: var(--cp-surface);
-  border: 1.5px solid var(--cp-border);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   border-radius: var(--v4-radius);
-  box-shadow: 0 4px 0 var(--cp-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 6px 20px rgba(15, 36, 56, 0.05);
 }
 html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part) {
-  transition: transform .12s ease, box-shadow .12s ease, border-color .15s ease;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part):hover {
   transform: translateY(-2px);
-  border-color: var(--cp-primary);
+  border-color: rgba(63, 151, 211, 0.55);
+  box-shadow: 0 10px 24px rgba(15, 36, 56, 0.08);
 }
 html:root body.in-app:not(.ax-on) #main :is(a, button):is(.lx-card, .sp-scene, .toeic-part):active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--cp-border);
+  transform: translateY(1px) scale(0.99);
 }
 html:root body.in-app:not(.ax-on) #main :is(.lx-card-ico, .toeic-no, .sp-scene-ico) {
-  background: var(--cp-primary-soft);
+  background: rgba(234, 244, 251, 0.85);
   color: var(--cp-primary-ink);
-  border: 0;
+  border: 1px solid rgba(147, 197, 253, 0.45);
   border-radius: 14px;
-  box-shadow: 0 3px 0 var(--cp-border-strong);
+  box-shadow: none;
 }
 html:root body.in-app:not(.ax-on) #main .toeic-bar {
   height: 8px;
@@ -397,20 +425,28 @@ html:root body.in-app:not(.ax-on) #main .toeic-bar > i {
   background: var(--cp-primary-strong);
 }
 html:root body.in-app:not(.ax-on) #main .tabs > * {
-  min-height: 40px;
+  min-height: 38px;
   padding: 0 16px;
   border-radius: 999px;
-  border: 1.5px solid var(--cp-border-strong);
-  background: var(--cp-surface);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--cp-ink-2);
-  box-shadow: 0 3px 0 var(--cp-border-strong);
-  font: 800 13px/1 var(--cp-font);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 3px 10px rgba(15, 36, 56, 0.04);
+  font: 700 13px/1 var(--cp-font);
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .12s ease;
+}
+html:root body.in-app:not(.ax-on) #main .tabs > *:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(63, 151, 211, 0.5);
+  color: var(--cp-primary-ink);
 }
 html:root body.in-app:not(.ax-on) #main .tabs > .on {
-  background: var(--cp-primary-strong);
-  border-color: transparent;
+  background: linear-gradient(135deg, rgba(84, 172, 234, 0.86) 0%, rgba(41, 128, 196, 0.92) 100%);
+  border-color: rgba(255, 255, 255, 0.42);
   color: var(--cp-on-primary);
-  box-shadow: 0 3px 0 var(--v4-btn-lip);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 16px rgba(45, 133, 200, 0.24);
 }
 
 /* ---------- Giai đoạn 11: tổng quan theo bố cục "Bài học của bạn" ----------
@@ -4976,6 +5012,90 @@ html:root body.in-app:not(.ax-on) #main .hm-bottom-grid > section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
+}
+
+/* ---------- Nâng cấp Kính mờ Trong suốt & Thẩm mỹ đồng bộ (Light + Dark) ---------- */
+html:root body.in-app:not(.ax-on) .topbar {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.75) !important;
+}
+html:root body.in-app:not(.ax-on) .topbar :is(.search-btn, .theme-btn, .ud-bell, .icon-btn, .m-top-back, .m-top-acct) {
+  background: rgba(255, 255, 255, 0.62) !important;
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(203, 213, 225, 0.65) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 2px 8px rgba(15, 36, 56, 0.04) !important;
+  transition: background .15s ease, border-color .15s ease, transform .12s ease;
+}
+html:root body.in-app:not(.ax-on) .topbar :is(.search-btn, .theme-btn, .ud-bell, .icon-btn, .m-top-back, .m-top-acct):hover {
+  background: rgba(255, 255, 255, 0.90) !important;
+  border-color: rgba(63, 151, 211, 0.50) !important;
+}
+html:root body.in-app:not(.ax-on) .topbar .streak-badge {
+  background: rgba(255, 247, 237, 0.72) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(253, 186, 116, 0.55) !important;
+}
+
+html:root body.in-app:not(.ax-on) #main .hm-skill {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 22px rgba(15, 36, 56, 0.05);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(15, 36, 56, 0.09);
+}
+html:root body.in-app:not(.ax-on) #main .hm-skill-band {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--k) 82%, white) 0%, var(--k) 100%);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+}
+html:root body.in-app:not(.ax-on) #main :is(.hm-lang-chip, .hm-step-chip, .hm-tool-card, .hm-pick-card, .pf-m-link, .hm-ov-kpi, .lx-opt) {
+  background: rgba(255, 255, 255, 0.70);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 4px 12px rgba(15, 36, 56, 0.04);
+}
+html:root body.in-app:not(.ax-on) #main .hm-lang-chip.on {
+  background: rgba(234, 244, 251, 0.88);
+  border-color: rgba(63, 151, 211, 0.65);
+}
+
+html[data-theme="dark"] body.in-app:not(.ax-on) .topbar,
+html body.dark.in-app:not(.ax-on) .topbar {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border-bottom-color: rgba(51, 65, 85, 0.7) !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) .topbar :is(.search-btn, .theme-btn, .ud-bell, .icon-btn, .m-top-back, .m-top-acct),
+html body.dark.in-app:not(.ax-on) .topbar :is(.search-btn, .theme-btn, .ud-bell, .icon-btn, .m-top-back, .m-top-acct) {
+  background: rgba(30, 41, 59, 0.68) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  color: #E2E8F0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.28) !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.btn, .hm-btn, .icon-btn, .tabs > *:not(.on)),
+html body.dark.in-app:not(.ax-on) #main :is(.btn, .hm-btn, .icon-btn, .tabs > *:not(.on)) {
+  background: rgba(30, 41, 59, 0.64) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #F1F5F9 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.26) !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.btn, .hm-btn, .icon-btn, .tabs > *:not(.on)):hover,
+html body.dark.in-app:not(.ax-on) #main :is(.btn, .hm-btn, .icon-btn, .tabs > *:not(.on)):hover {
+  background: rgba(51, 65, 85, 0.78) !important;
+  border-color: rgba(125, 211, 252, 0.45) !important;
+  color: #7DD3FC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.hm-current, .hm-goal, .hm-focus, .hm-plan-card, .hm-pet-card, .hm-insights, .hm-quick, .hm-chibi-banner, .hm-skill, .hm-pick-card, .pf-m-link, .lx-card, .lx-opt),
+html body.dark.in-app:not(.ax-on) #main :is(.hm-current, .hm-goal, .hm-focus, .hm-plan-card, .hm-pet-card, .hm-insights, .hm-quick, .hm-chibi-banner, .hm-skill, .hm-pick-card, .pf-m-link, .lx-card, .lx-opt) {
+  background: rgba(30, 41, 59, 0.70) !important;
+  border-color: rgba(71, 85, 105, 0.55) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.28) !important;
 }
 
 /* Chặn kéo đàn hồi (bounce) của trang khi chạy trong app iOS: thanh menu dưới không bị trôi theo. */

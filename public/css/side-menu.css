@@ -353,7 +353,7 @@ html body .m-fan-wrap { display: none; }
   /* Điện thoại: một cột, sidebar không chiếm ô lưới (đã thành tấm trượt) */
   html body.in-app:not(.ax-on) .shell { grid-template-columns: minmax(0, 1fr) !important; }
 
-  /* Thanh điều hướng dưới nổi (Flagship Floating Frosted Pill Dock — Gọn nhẹ) */
+  /* Thanh điều hướng dưới nổi (Flagship Floating Frosted Pill Dock — Kính mờ trong suốt) */
   html body.in-app .mtab {
     position: fixed;
     z-index: 60;
@@ -365,17 +365,17 @@ html body .m-fan-wrap { display: none; }
     gap: 2px;
     padding: 2px 5px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
     border: 1px solid rgba(255, 255, 255, 0.82);
-    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 8px 22px rgba(15, 36, 56, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 8px 24px rgba(15, 36, 56, 0.10);
   }
   html[data-theme="dark"] body.in-app .mtab,
   body.dark.in-app .mtab {
-    background: rgba(15, 23, 42, 0.88);
-    border-color: rgba(148, 163, 184, 0.22);
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.42);
+    background: rgba(15, 23, 42, 0.72);
+    border-color: rgba(148, 163, 184, 0.24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 28px rgba(0, 0, 0, 0.44);
   }
   html body.in-app .mtab.mtab-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -491,9 +491,12 @@ html body .m-fan-wrap { display: none; }
     width: 26px;
     height: 21px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #56AEEC 0%, #2577B8 100%) !important;
+    background: linear-gradient(135deg, rgba(86, 174, 236, 0.86) 0%, rgba(37, 119, 184, 0.90) 100%) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
     color: #FFFFFF !important;
-    box-shadow: 0 2px 6px rgba(43, 124, 184, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 3px 10px rgba(43, 124, 184, 0.25);
   }
   html body.in-app .mtab .mtab-center .mtab-ic svg {
     width: 13px !important;
@@ -609,8 +612,10 @@ html body .m-fan-wrap { display: none; }
     border-radius: 999px;
     display: grid;
     place-items: center;
-    border: 1.5px solid rgba(255, 255, 255, 0.96);
-    box-shadow: 0 3px 10px rgba(15, 36, 56, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(15, 36, 56, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.78);
     transition: transform .16s ease, box-shadow .16s ease;
   }
   html body.in-app:not(.ax-on) .m-fan-orb svg {
@@ -633,9 +638,11 @@ html body .m-fan-wrap { display: none; }
   html body.in-app:not(.ax-on) .m-fan-pill {
     padding: 1px 5.5px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid #E6EEF6;
-    box-shadow: 0 2px 6px rgba(15, 36, 56, 0.06);
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 3px 10px rgba(15, 36, 56, 0.08);
     color: #162B3D;
     font: 700 8.5px/1.15 var(--cp-font);
     white-space: nowrap;
