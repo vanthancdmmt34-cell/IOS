@@ -44,6 +44,9 @@ html = html
   .replaceAll(' nonce="__CSP_NONCE__"', "");
 const inject = `<script>window.LR_API_BASE=${JSON.stringify(apiBase)};</script>\n<script src="/js/native-bridge.js"></script>`;
 html = html.replace("<head>", `<head>\n${inject}`);
+// Chặn phóng to trong app: WKWebView tự zoom khi chạm ô nhập có chữ nhỏ và không trả về 100% sau khi bàn phím đóng.
+// maximum-scale=1 + user-scalable=no giữ trang ở 100% (chỉ áp dụng cho bản đóng gói, không đổi web).
+html = html.replace(/<meta name="viewport"[^>]*>/, '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">');
 fs.writeFileSync(path.join(OUT, "index.html"), html, "utf8");
 
 const leftovers = [...html.matchAll(/__[A-Z_]+__/g)].map((m) => m[0]);
