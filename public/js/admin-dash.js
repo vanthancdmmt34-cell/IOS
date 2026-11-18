@@ -1,6 +1,6 @@
 /* Admin area (ad-): shell + learning-focused dashboard. Real metrics from admin API. */
 import {  } from "./core.js";
-import { S, api, esc, lineIcon as icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, roleLabel, setAppHash, $ } from "./core.js";
+import { S, api, esc, lineIcon as icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, brandCleanHtml, roleLabel, setAppHash, $ } from "./core.js";
 import { currentLang } from "./i18n.js";
 
 const IP = {
@@ -48,7 +48,7 @@ export function adminShell(main, { tab, groups, ctx }) {
         </div>
         <button type="button" class="ad-m-drawer-close" id="adMClose" aria-label="Đóng">×</button>
       </div>
-      <a class="ad-brand" href="/app/quan-tri"><img class="me-mark" src="/img/kit/chibi-dragon.webp" alt="" width="32" height="32" style="border-radius:10px;object-fit:cover" /><span class="me-word"><b>${esc(siteName())}</b></span></a>
+      <a class="ad-brand brand-clean" href="/app/quan-tri">${brandCleanHtml()}</a>
       <span class="ad-badge">Khu quản trị</span>
       <nav class="ad-nav">${nav}</nav>
       <a class="ad-back" href="/app/">${icon("left")}<span>Về trang học</span></a>

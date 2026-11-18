@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CSS_DIR = path.join(ROOT, "public", "css");
-export const BUNDLE_SOURCES = ["app.css", "ui-unified.css", "speak.css", "theme.css", "home-learner.css", "handwritten-sync.css", "modern-learn.css", "chibi-ui.css", "chibi-premium.css", "side-menu.css", "app-v4.css", "admin-dash.css", "admin-warm.css"];
+export const BUNDLE_SOURCES = ["app.css", "ui-unified.css", "speak.css", "theme.css", "home-learner.css", "handwritten-sync.css", "modern-learn.css", "chibi-ui.css", "chibi-premium.css", "side-menu.css", "app-v4.css", "download.css", "admin-dash.css", "admin-warm.css"];
 const OUT = path.join(CSS_DIR, "bundle.min.css");
 
 // Protect strings and url(...) so that whitespace/comment rules never touch them.

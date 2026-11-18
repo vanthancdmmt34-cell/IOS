@@ -1,6 +1,6 @@
 /* LifeRivo 2.0 - bootstrap, app shell, and router */
 import { appHash, setAppHash } from "./core.js";
-import { S, api, esc, icon, lineIcon, sketchIcon, avatar, fmtN, timeAgo, onScores, setScores, totalStats, closeTopModal, openModal, chapterShort, toast, $, cfg, applyBrand, siteName, brandHtml, themeBtnHtml, refreshAiStatus, aiOn, paintProBadges } from "./core.js";
+import { S, api, esc, icon, lineIcon, sketchIcon, avatar, fmtN, timeAgo, onScores, setScores, totalStats, closeTopModal, openModal, chapterShort, toast, $, cfg, applyBrand, siteName, brandHtml, brandCleanHtml, themeBtnHtml, refreshAiStatus, aiOn, paintProBadges } from "./core.js";
 import { renderLanding, openAuth } from "./landing.js";
 // Admin chi tai khi vao route quan-tri (khach khong can admin.js -> nhe LCP).
 let _pageAdmin = null;
@@ -65,7 +65,7 @@ async function boot() {
   await applyLang(initialLang(me && me.user ? me.user.lang : null));
   if (!me) {
     // Khách mở thẳng link /app/... (link chia sẻ, bookmark, tải lại trang): lưu đích, về trang chủ, mở hộp đăng nhập.
-    if (/^\/app\/[a-z]/.test(appHash()) && !/^\/app\/(dang|dat-lai-mat-khau)/.test(appHash())) {
+    if (/^\/app\/[a-z]/.test(appHash()) && !/^\/app\/(dang|dat-lai-mat-khau|tai-ung-dung)/.test(appHash())) {
       try { sessionStorage.setItem("pl:after-auth", appHash()); } catch {}
       history.replaceState(null, "", "/");
       showLanding();
@@ -77,9 +77,30 @@ async function boot() {
   await enterApp(me);
 }
 
+let _dlPublicCleanup = null;
 function showLanding() {
   S.me = null;
   document.body.classList.remove("in-app");
+  if (_dlPublicCleanup) { try { _dlPublicCleanup(); } catch {} _dlPublicCleanup = null; }
+  const onAuthed = async (isNew) => {
+    try {
+      const me = await api("/api/me");
+      await enterApp(me, isNew, true);
+    } catch (e) { toast(e.message, "err"); }
+  };
+  const pathNow = (location.pathname || "/").replace(/\/+$/, "") || "/";
+  if (/^\/(?:tai-ung-dung|download|vi\/download|en\/download|app\/tai-ung-dung)$/.test(pathNow)) {
+    import("./download.js").then(({ mountDownloadView }) => {
+      if (S.me) return;
+      _dlPublicCleanup = mountDownloadView(root, {
+        inApp: false,
+        onNavigateHome: () => { history.pushState(null, "", "/"); showLanding(); },
+        onAuth: (mode) => openAuth(mode, onAuthed),
+      });
+      window.scrollTo({ top: 0 });
+    }).catch((e) => toast(e.message, "err"));
+    return;
+  }
   // Public password reset page (with token in URL)
   if (/^\/app\/dat-lai-mat-khau/.test(appHash())) {
     root.innerHTML = `<div class="main" style="max-width:560px;margin:40px auto;padding:0 16px"><div class="page" id="publicPage"></div>
@@ -90,13 +111,10 @@ function showLanding() {
     });
     return;
   }
-  renderLanding(root, async (isNew) => {
-    try {
-      const me = await api("/api/me");
-      await enterApp(me, isNew, true);
-    } catch (e) { toast(e.message, "err"); }
-  });
+  renderLanding(root, onAuthed);
 }
+window.addEventListener("pl:open-download", () => { if (!S.me) showLanding(); });
+window.addEventListener("popstate", () => { if (!S.me) showLanding(); });
 
 function maintenanceScreen() {
   root.innerHTML = `<div class="boot" style="text-align:center;padding:24px"><div style="font-size:54px" aria-hidden="true">🛠️</div><h1>Đang bảo trì</h1>
@@ -191,7 +209,7 @@ async function enterApp(me, isNew = false, fromAuth = false) {
 
 /* ---------- Shell ---------- */
 // Unified Left Sidebar Shell: keep navigation grouped cleanly on the left across learning and account pages.
-const ACCOUNT_ROUTES = new Set(["ca-nhan", "cai-dat", "goi-cua-toi", "chung-nhan", "huy-hieu", "xep-hang", "thong-bao", "gia-dinh", "bang-gia", "ho-tro", "giao-vien", "giao-vien/hoc-vien", "giao-vien/bai-tap", "giao-vien/tien-do", "quan-tri-ngoai-ngu", "quan-tri", "quan-tri/kinh-doanh"]);
+const ACCOUNT_ROUTES = new Set(["ca-nhan", "cai-dat", "goi-cua-toi", "chung-nhan", "huy-hieu", "xep-hang", "thong-bao", "gia-dinh", "bang-gia", "tai-ung-dung", "ho-tro", "giao-vien", "giao-vien/hoc-vien", "giao-vien/bai-tap", "giao-vien/tien-do", "quan-tri-ngoai-ngu", "quan-tri", "quan-tri/kinh-doanh"]);
 const zoneOf = (r) => ACCOUNT_ROUTES.has(r) ? "acct" : "learn";
 // Consolidated navigation categories: Giảng dạy, Học tập, Cá nhân (cài đặt & quản trị nằm gọn trong Cá nhân)
 const NAV = [
@@ -220,6 +238,7 @@ const NAV = [
   ["gia-dinh", "users", "Gia đình", ["student", "parent", "admin"], "family"],
   ["thong-bao", "bell", "Thông báo"],
   ["cai-dat", "cog", "Cài đặt"],
+  ["tai-ung-dung", "download", "Tải ứng dụng"],
   ["ho-tro", "life-buoy", "Hỗ trợ"],
 ];
 
@@ -238,7 +257,7 @@ const NAV_HINT = {
 const NAV_CATS = [
   { id: "teach", icon: "cat-teach", label: "Giảng dạy", roles: new Set(["teacher", "admin"]), routes: new Set(["giao-vien", "giao-vien/hoc-vien", "lop", "giao-vien/bai-tap", "giao-vien/tien-do"]) },
   { id: "learn", icon: "cat-learn", label: "Học tập", roles: new Set(["student", "parent", "admin"]), routes: new Set(["tong-quan", "mon-hoc", "luyen-noi", "on-tap", "tro-chuyen", "ai", "phong-van", "chon-mon"]) },
-  { id: "personal", icon: "cat-acct", label: "Cá nhân", routes: new Set(["ca-nhan", "co-vu", "lop", "gia-dinh", "thong-bao", "cai-dat", "quan-tri", "ho-tro"]) },
+  { id: "personal", icon: "cat-acct", label: "Cá nhân", routes: new Set(["ca-nhan", "co-vu", "lop", "gia-dinh", "thong-bao", "cai-dat", "quan-tri", "tai-ung-dung", "ho-tro"]) },
 ];
 
 // Feature can be disabled by the teacher in Settings. Teachers still see it for preview.
@@ -649,7 +668,7 @@ function renderShell() {
   root.innerHTML = `
   <div class="shell">
     <aside class="side" id="side" aria-label="Điều hướng chính">
-      <a class="brand" href="/app/">${brandHtml()}</a>
+      <a class="brand brand-clean" href="/app/">${brandCleanHtml()}</a>
       ${subjMeta ? `<div class="side-subj" style="--c:${esc(subjMeta.color || "#0EA5E9")}">
         <span class="side-subj-flag">${subjMeta.flag}</span>
         <div class="side-subj-info"><small>Môn đang học</small><b>${esc(subjMeta.name)}</b></div>
@@ -668,7 +687,7 @@ function renderShell() {
       </nav>
       <div class="side-foot">
         ${!isPro && showProUpsell ? `<div class="ud-prem">
-          <img class="art chibi-ic" src="/img/kit/chibi-bunny.webp" width="56" height="56" alt="" loading="lazy" decoding="async" aria-hidden="true">
+          <span class="ud-prem-ic" aria-hidden="true">${lineIcon("sparkle", 16)}</span>
           <b>Nâng cấp Pro</b><p>Phỏng vấn AI không giới hạn, báo cáo chi tiết và nhiều hơn nữa.</p>
           <a href="/app/bang-gia">Nâng cấp ngay</a>
         </div>` : ""}
@@ -694,7 +713,7 @@ function renderShell() {
       <header class="topbar">
         <button class="icon-btn menu-btn" id="menuBtn" aria-label="Mở menu">${lineIcon("menu")}</button>
         <button type="button" class="icon-btn m-top-back" id="mTopBack" aria-label="Quay lại"><svg class="line-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
-        <a class="brand top-brand" href="${subj ? "/app/mon-hoc" : "/app/"}" aria-label="${esc(siteName())}">${brandHtml()}</a>
+        <a class="brand brand-clean top-brand" href="${subj ? "/app/mon-hoc" : "/app/"}" aria-label="${esc(siteName())}">${brandCleanHtml()}</a>
         <div class="m-top-titles" id="mTopTitles">
           <b id="mTopTitle">${esc(siteName())}</b>
           <small id="mTopSub">${esc(roleLabel(S.me.role))} · LifeRivo Study</small>
@@ -981,6 +1000,7 @@ const ROUTES = [
   [/^cai-dat$/, pageFn("pageSettings"), "cai-dat"],
   [/^thong-bao$/, pageFn("pageNotices"), "thong-bao"],
   [/^dat-lai-mat-khau$/, pageFn("pageResetPassword"), "dat-lai-mat-khau"],
+  [/^tai-ung-dung$/, (m, p, q, c) => import("./download.js").then((x) => x.pageDownload(m, p, q, c)), "tai-ung-dung"],
   [/^ho-tro$/, pageFn("pageLearningHelp"), "ho-tro"],
   [/^bang-gia$/, pagePricing, "bang-gia"],
   [/^chinh-sach\/(terms|privacy|payment|refund|membership)$/, pagePolicy, "chinh-sach"],
@@ -1250,6 +1270,7 @@ function openPalette() {
     ["Trò chơi học tập", `/app/tro-choi/${curSubj}`, "Vừa chơi vừa nhớ từ", "sparkle"],
     ["Phỏng vấn thử", `/app/phong-van/${curSubj}`, "Tập trả lời phỏng vấn", "briefcase"],
     ["Đổi môn học", "/app/chon-mon", "Ngoại ngữ", "globe"],
+    ["Tải ứng dụng Mobile & PC", "/app/tai-ung-dung", "Windows, Mac, iOS, Android", "download"],
     ["Hỗ trợ học tập", "/app/ho-tro", "Hướng dẫn & trợ giúp", "life-buoy"],
     ["Thông báo", "/app/thong-bao", "Thông báo hệ thống", "bell"],
     ["Hồ sơ của tôi", "/app/ca-nhan", "Tài khoản & cài đặt", "user"],

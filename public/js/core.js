@@ -125,6 +125,10 @@ const P = {
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
   play: '<path d="M7 4.5v15l12-7.5z"/>',
   speaker: '<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/>',
+  monitor: '<rect x="2" y="3" width="20" height="14" rx="2.5"/><path d="M8 21h8M12 17v4"/>',
+  smartphone: '<rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M12 18h.01"/>',
+  zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  "shield-check": '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
   send: '<path d="M4 12 20 4l-6 16-3-7z"/><path d="m11 13 9-9"/>',
   reset: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/>',
   eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
@@ -617,7 +621,13 @@ export function applyBrand(c) {
   if (c.brand) { root.style.setProperty("--brand", c.brand[1]); root.style.setProperty("--brand-deep", c.brand[2]); const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", c.brand[1]); }
 }
 export const siteName = () => cfg("siteName", "LifeRivo") || "LifeRivo";
-export const brandInitials = () => { const w = String(siteName()).trim().split(/\s+/).filter(Boolean); return (w.length > 1 ? w[0][0] + w[1][0] : (w[0] || "H").slice(0, 2)).toUpperCase(); };
+export const brandInitials = () => {
+  const w = String(siteName()).trim().split(/\s+/).filter(Boolean);
+  if (w.length > 1) return (w[0][0] + w[1][0]).toUpperCase();
+  const caps = (w[0] || "").match(/[A-Z]/g);
+  if (caps && caps.length >= 2) return caps[0] + caps[1];
+  return (w[0] || "LR").slice(0, 2).toUpperCase();
+};
 // 4.0.1: logo uploaded in Admin (if any); "Logo only" hides the name (still kept for screen readers)
 export const brandHtml = () => {
   const logo = cfg("logoUrl", "");
@@ -628,8 +638,17 @@ export const brandHtml = () => {
   const only = cfg("logoMode", "with_name") === "only";
   return `<img class="brand-logo${only ? " only" : ""}" src="${esc(logo)}" alt="${only ? esc(siteName()) : ""}">${only ? "" : esc(siteName())}`;
 };
+export const brandCleanHtml = () => {
+  const logo = cfg("logoUrl", "");
+  if (!logo) {
+    const m = /^(.*\S)\s+(study)$/i.exec(siteName());
+    return `<span class="lr-mark" aria-hidden="true">${esc(brandInitials())}</span><span class="me-word"><b>${esc(m ? m[1] : siteName())}</b>${m ? "<i>STUDY</i>" : ""}</span>`;
+  }
+  const only = cfg("logoMode", "with_name") === "only";
+  return `<img class="brand-logo${only ? " only" : ""}" src="${esc(logo)}" alt="${only ? esc(siteName()) : ""}">${only ? "" : esc(siteName())}`;
+};
 export function refreshBrand() {
-  document.querySelectorAll(".brand").forEach((el) => { el.innerHTML = brandHtml(); });
+  document.querySelectorAll(".brand").forEach((el) => { el.innerHTML = el.classList.contains("brand-clean") ? brandCleanHtml() : brandHtml(); });
   setFavicon();
 }
 function setFavicon() {

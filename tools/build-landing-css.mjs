@@ -17,7 +17,7 @@ import { minifyCss } from "./build-css.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CSS_DIR = path.join(ROOT, "public", "css");
 const OUT = path.join(CSS_DIR, "landing.min.css");
-const SOURCES = ["app.css", "ui-unified.css", "speak.css", "theme.css", "chibi-ui.css"];
+const SOURCES = ["app.css", "ui-unified.css", "speak.css", "theme.css", "chibi-ui.css", "download.css"];
 
 const usedClass = new Set(), usedId = new Set(), usedTag = new Set();
 function scanHtml(html) {
@@ -27,7 +27,7 @@ function scanHtml(html) {
   for (const m of html.matchAll(/<([a-z][a-z0-9]*)\b/g)) usedTag.add(m[1]);
 }
 scanHtml(fs.readFileSync(path.join(ROOT, "public", "index.html"), "utf8"));
-for (const f of ["public/js/landing.js", "public/js/core.js", "public/js/i18n.js"]) {
+for (const f of ["public/js/landing.js", "public/js/download.js", "public/js/core.js", "public/js/i18n.js"]) {
   const src = fs.readFileSync(path.join(ROOT, f), "utf8");
   for (const m of src.matchAll(/class="([^"]+)"/g))
     for (const c of m[1].split(/\s+/)) if (/^[A-Za-z_][\w-]*$/.test(c)) usedClass.add(c);

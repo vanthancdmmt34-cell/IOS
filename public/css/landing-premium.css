@@ -31,13 +31,18 @@
 }
 
 /* ---------- Nền và chữ ---------- */
-html body:has(.landing-page) {
+html body:has(:is(.landing-page, .dl-public-shell)) {
   background: var(--cp-bg) !important;
   background-image: none !important;
   color: var(--cp-ink);
 }
-html body:not(.in-app) .landing-page,
-html body:not(.in-app) .landing-page *:not(code):not(pre):not(kbd) {
+html[data-theme="dark"] body:has(.dl-public-shell),
+html body.dark:has(.dl-public-shell) {
+  background: #0B1220 !important;
+  color: #F1F5F9;
+}
+html body:not(.in-app) :is(.landing-page, .dl-public-shell),
+html body:not(.in-app) :is(.landing-page, .dl-public-shell) *:not(code):not(pre):not(kbd) {
   font-family: var(--cp-font) !important;
 }
 html body:not(.in-app) .landing-page { background: var(--cp-bg) !important; color: var(--cp-ink); }
@@ -91,11 +96,86 @@ html body:not(.in-app) .landing-page .brand-lockup {
 
 /* ---------- Thanh đầu trang ---------- */
 html body:not(.in-app) .landing-page .aw-top {
-  background: color-mix(in srgb, var(--cp-surface) 92%, transparent) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
   background-image: none !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
   border: 0 !important;
-  border-bottom: 1px solid var(--cp-border) !important;
+  border-bottom: 1px solid rgba(203, 213, 225, 0.65) !important;
   box-shadow: none !important;
+}
+html body:not(.in-app) .landing-page .aw-top .brand-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--cp-ink) !important;
+}
+html body:not(.in-app) .landing-page .aw-top .brand-clean .brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+html body:not(.in-app) .landing-page .aw-top .brand-clean .me-word b {
+  font: 900 18px/1 var(--cp-font, "Nunito", system-ui, sans-serif);
+  letter-spacing: -.02em;
+}
+html body:not(.in-app) .landing-page .aw-nav {
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(241, 245, 249, 0.82);
+  border: 1px solid rgba(203, 213, 225, 0.7);
+}
+@media (min-width: 961px) {
+  html body:not(.in-app) .landing-page .aw-nav { display: flex; }
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-top,
+html body.dark:not(.in-app) .landing-page .aw-top {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-bottom-color: rgba(148, 163, 184, 0.2) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav,
+html body.dark:not(.in-app) .landing-page .aw-nav {
+  background: rgba(30, 41, 59, 0.82);
+  border-color: rgba(148, 163, 184, 0.24);
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav > a,
+html body.dark:not(.in-app) .landing-page .aw-nav > a {
+  color: #CBD5E1 !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav > a:hover,
+html body.dark:not(.in-app) .landing-page .aw-nav > a:hover {
+  background: rgba(51, 65, 85, 0.9) !important;
+  color: #FFFFFF !important;
+}
+html body:not(.in-app) .landing-page .aw-nav > a {
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font: 700 13.5px/1.1 var(--cp-font, "Nunito", system-ui, sans-serif) !important;
+  color: #334155 !important;
+  white-space: nowrap;
+}
+html body:not(.in-app) .landing-page .aw-nav > a:hover {
+  background: #FFFFFF !important;
+  color: #1D4ED8 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
+  transform: none !important;
+}
+html body:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl {
+  background: rgba(37, 99, 235, 0.10) !important;
+  color: #1D4ED8 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+html body:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl:hover {
+  background: #1D4ED8 !important;
+  color: #FFFFFF !important;
 }
 html body:not(.in-app) .landing-page .aw-top a { color: var(--cp-ink-2); }
 html body:not(.in-app) .landing-page .aw-top a:hover { color: var(--cp-primary-ink); }

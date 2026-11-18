@@ -237,6 +237,7 @@ export async function pageProfile(main, _p, _q, ctx) {
         <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">${lineIcon("key")}</span><b>Gói thành viên</b><span class="pf-m-arr">›</span></a>
         ${on("proEnabled") && !isTeacher && !isAdmin && !(S.membership && S.membership.pro) ? `<a class="pf-m-link" href="/app/bang-gia"><span class="pf-m-ico">${lineIcon("star")}</span><b>Nâng cấp Pro</b><span class="pf-m-arr">›</span></a>` : ""}
         <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">${lineIcon("bell")}</span><b>${isTeacher ? "Thông báo lớp" : "Thông báo"}</b><span class="pf-m-arr">›</span></a>
+        <a class="pf-m-link" href="/app/tai-ung-dung"><span class="pf-m-ico">${lineIcon("download")}</span><b>Tải ứng dụng Mobile & PC</b><span class="pf-m-arr">›</span></a>
         <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">${lineIcon("life-buoy")}</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
         <button type="button" class="pf-m-link" id="pfQuickSearch"><span class="pf-m-ico">${lineIcon("search")}</span><b>Tìm kiếm nhanh</b><span class="pf-m-arr">›</span></button>
         <button type="button" class="pf-m-link" id="pfGuideBtn"><span class="pf-m-ico">${lineIcon("bulb")}</span><b>Xem lại hướng dẫn</b><span class="pf-m-arr">›</span></button>

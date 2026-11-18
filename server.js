@@ -30,6 +30,7 @@ import { initLanguages, langApi, langDailyReminders, langPublicSummary } from ".
 import { initSpeaking, speakApi } from "./modules/speaking.js";
 import { initToeic, toeicApi } from "./modules/toeic.js";
 import { ttsApi } from "./modules/tts.js";
+import { qrDataUrl } from "./modules/vietqr.js";
 import { cleanEmail, maskEmail, mailConfigured, sendMail, otpMail } from "./modules/mailer.js";
 import { SETTINGS_SCHEMA, SETTINGS_GROUPS, BRAND_COLORS, defaultSettings, cleanSettings, publicSettings, clientSettings } from "./settings.js";
 
@@ -634,6 +635,13 @@ if (method === "POST" && url.pathname === "/api/login") {
   }
 
   if (method === "GET" && url.pathname === "/api/public/config") return sendJson(res, 200, { config: { ...publicSettings(SETTINGS), ...brandInfo() }, version: VERSION });
+  if (method === "GET" && url.pathname === "/api/public/qr") {
+    const rawPath = String(url.searchParams.get("path") || "/tai-ung-dung");
+    const safePath = /^\/(?:tai-ung-dung|download|app\/tai-ung-dung)?$/.test(rawPath) ? rawPath : "/tai-ung-dung";
+    const reqBase = publicUrl() || `${isHttps(req) ? "https" : "http"}://${String(req.headers.host || "localhost").replace(/[^A-Za-z0-9.:-]/g, "")}`;
+    const targetUrl = reqBase + safePath;
+    return sendJson(res, 200, { url: targetUrl, qr: qrDataUrl(targetUrl) });
+  }
 
   // ----- Forgot password (public, does not reveal whether user exists) -----
   if (method === "POST" && url.pathname === "/api/password/forgot") {

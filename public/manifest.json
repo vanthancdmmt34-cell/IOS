@@ -7,7 +7,7 @@
   "scope": "/",
   "lang": "vi",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#F3F2EB",
   "theme_color": "#F3F2EB",
   "icons": [

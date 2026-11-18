@@ -1,6 +1,6 @@
 /* LifeRivo - Landing Page & Client Hydration */
 import { appHash, setAppHash } from "./core.js";
-import { S, api, esc, icon, lineIcon, fmtN, openModal, animateCount, smoothScrollTo, store, cfg, siteName, brandHtml, themeBtnHtml } from "./core.js";
+import { S, api, esc, icon, lineIcon, fmtN, openModal, animateCount, smoothScrollTo, store, cfg, siteName, brandHtml, brandCleanHtml, themeBtnHtml } from "./core.js";
 import { langSwitchHtml, bindLangSwitch, currentLang, syncLangSwitchUI, t } from "./i18n.js";
 
 // ── Funnel tracking ─────────────────────────────────────────────────────────
@@ -639,19 +639,16 @@ export function buildLandingMarkup() {
     <!-- Top Hand-Drawn Sketchbook Menu + Pinned Mega-Menus + Mobile Drawer -->
     <header class="aw-top lp-top sketch-top" id="lpTop">
       <div class="aw-wrap aw-top-in">
-        <a class="brand brand-os brand-sketch" href="/app/" aria-label="${esc(siteName())}, trang chủ">
-            <span class="brand-lockup">
-            <span class="brand-text">${esc(siteName())}</span>
-          </span>
-        </a>
+        <a class="brand brand-clean" href="/app/" aria-label="${esc(siteName())}, trang chủ">${brandCleanHtml()}</a>
 
         <nav class="aw-nav" aria-label="Điều hướng chính">
-          <a href="#mon-hoc"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 9 4 4l4 2.5M19 9l1-5-4 2.5" fill="#FFFDF9" stroke="#4A3728" stroke-width="1.8" stroke-linejoin="round"/><ellipse cx="12" cy="13" rx="7.5" ry="6.2" fill="#FEF08A" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.2" cy="12.6" r="1.1" fill="#4A3728"/><circle cx="14.8" cy="12.6" r="1.1" fill="#4A3728"/><ellipse cx="7.4" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.6" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Khóa học</a>
-          <a href="#cach-hoc"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 8 4 3.5 8 6M19 8l1-4.5L16 6" fill="#DDD6FE" stroke="#4A3728" stroke-width="1.8" stroke-linejoin="round"/><ellipse cx="12" cy="13" rx="7.5" ry="6.2" fill="#DDD6FE" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.2" cy="12.6" r="1.1" fill="#4A3728"/><circle cx="14.8" cy="12.6" r="1.1" fill="#4A3728"/><ellipse cx="7.4" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.6" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Đồ nghề AI</a>
-          <a href="#demoBox"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="7" cy="6.5" r="2.5" fill="#FDE68A" stroke="#4A3728" stroke-width="1.7"/><circle cx="17" cy="6.5" r="2.5" fill="#FDE68A" stroke="#4A3728" stroke-width="1.7"/><ellipse cx="12" cy="13" rx="7.5" ry="6.2" fill="#BBF7D0" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.2" cy="12.6" r="1.1" fill="#4A3728"/><circle cx="14.8" cy="12.6" r="1.1" fill="#4A3728"/><ellipse cx="7.4" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.6" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Chơi thử</a>
-          <a href="#muc-dich"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><ellipse cx="8.5" cy="5.5" rx="2" ry="4" fill="#FBCFE8" stroke="#4A3728" stroke-width="1.7"/><ellipse cx="15.5" cy="5.5" rx="2" ry="4" fill="#FBCFE8" stroke="#4A3728" stroke-width="1.7"/><ellipse cx="12" cy="13.5" rx="7.2" ry="6" fill="#FFFDF9" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.4" cy="13.2" r="1.1" fill="#4A3728"/><circle cx="14.6" cy="13.2" r="1.1" fill="#4A3728"/><ellipse cx="7.6" cy="15" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.4" cy="15" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Lộ trình</a>
-          <a href="/${currentLang()}/pricing"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><circle cx="7" cy="6.5" r="2.5" fill="#4A3728"/><circle cx="17" cy="6.5" r="2.5" fill="#4A3728"/><ellipse cx="12" cy="13" rx="7.5" ry="6.2" fill="#BAE6FD" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.2" cy="12.6" r="1.1" fill="#4A3728"/><circle cx="14.8" cy="12.6" r="1.1" fill="#4A3728"/><ellipse cx="7.4" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.6" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Bảng giá</a>
-          <a href="#hoi-dap"><svg class="chibi-nav-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><ellipse cx="12" cy="13" rx="7.5" ry="6.5" fill="#FED7AA" stroke="#4A3728" stroke-width="1.8"/><circle cx="9.2" cy="12.6" r="1.1" fill="#4A3728"/><circle cx="14.8" cy="12.6" r="1.1" fill="#4A3728"/><ellipse cx="7.4" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/><ellipse cx="16.6" cy="14.4" rx="1.2" ry=".7" fill="#FDA4AF"/></svg>Hỏi đáp</a>
+          <a href="#mon-hoc">Khóa học</a>
+          <a href="#cach-hoc">Đồ nghề AI</a>
+          <a href="#demoBox">Chơi thử</a>
+          <a href="#muc-dich">Lộ trình</a>
+          <a href="/${currentLang()}/pricing">Bảng giá</a>
+          <a href="#hoi-dap">Hỏi đáp</a>
+          <a href="/tai-ung-dung" class="aw-nav-dl">${lineIcon("download", 15)}<span>Tải ứng dụng</span></a>
         </nav>
 
         <span class="spacer"></span>
@@ -676,6 +673,7 @@ export function buildLandingMarkup() {
             <a href="#mon-hoc">🌍 Chương trình 6 ngoại ngữ</a>
             <a href="#cach-hoc">⚡ Phương pháp 3 bước &amp; SRS</a>
             <a href="/${currentLang()}/pricing">💳 Bảng giá Free vs Pro</a>
+            <a href="/tai-ung-dung">📲 Tải ứng dụng Mobile &amp; PC</a>
             <a href="#hoi-dap">❓ Câu hỏi thường gặp</a>
           </div>
           <div class="mobile-drawer-langs">
@@ -1387,6 +1385,7 @@ export function buildLandingMarkup() {
         </div>
         <nav class="aw-foot-nav footer-col footer-nav" aria-label="Pháp lý">
           <h4>Pháp lý</h4>
+          <a href="/tai-ung-dung">Tải ứng dụng Mobile &amp; PC</a>
           ${[["terms", "Điều khoản sử dụng"], ["privacy", "Chính sách bảo mật"], ["payment", "Chính sách thanh toán"], ["refund", "Chính sách hoàn tiền"], ["membership", "Quy định gói thành viên"]].filter(([k]) => !(cfg("hiddenFooterLinks", []) || []).includes(k)).map(([k, l]) => `<a href="/${currentLang()}/${k}">${l}</a>`).join("")}
         </nav>
       </div>
@@ -1427,6 +1426,16 @@ export function hydrateLanding(root = document, onAuthed = null) {
       if (!m) return;
       if (_hiddenFoot.has(m[2])) { a.remove(); return; }
       a.setAttribute("href", `/${_lang}/${m[2]}`);
+    });
+    root.querySelectorAll('a[href="/tai-ung-dung"], a[href="/download"], a[href="/vi/download"], a[href="/en/download"]').forEach((a) => {
+      if (a.dataset.dlNavBound) return;
+      a.dataset.dlNavBound = "1";
+      a.addEventListener("click", (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        history.pushState(null, "", "/tai-ung-dung");
+        window.dispatchEvent(new CustomEvent("pl:open-download"));
+      });
     });
   }
 
