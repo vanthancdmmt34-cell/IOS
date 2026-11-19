@@ -5,7 +5,7 @@
 
 import assert from 'node:assert/strict';
 import { ADMIN_ROUTES } from './helpers.mjs';
-import { assertWorkspaceFilesUntouched } from './server-seed.mjs';
+import { apiRequest, assertWorkspaceFilesUntouched } from './server-seed.mjs';
 
 export function registerTier2(suite, ctx) {
   const { cdp, srv, seed } = ctx;
@@ -957,6 +957,563 @@ export function registerTier2(suite, ctx) {
     { id: 'T2-F14-05', tier: 2, feature: 'F14', milestone: 'Core', name: 'Protected workspace files remain untouched after Tier 2 mutations' },
     async () => {
       assertWorkspaceFilesUntouched(srv.workspaceSnap);
+    }
+  );
+
+  // ================= F11/F12/F13 Admin Boundaries, Dark Mode, Listeners & Leaks =================
+  suite.test(
+    { id: 'T2-F11-06', tier: 2, feature: 'F11', milestone: 'M3', name: 'Admin mobile dead drawer cleanup: no orphan #adMClose/#adScrim without open trigger and no .ad.nav trap' },
+    async () => {
+      await ctx.visit('/app/quan-tri/hoc-vien', { role: 'admin', viewport: 'mobile', expectAdmin: true });
+      const drawerState = await cdp.evalJs(() => {
+        const ad = document.getElementById('ad');
+        const closeBtn = document.getElementById('adMClose');
+        const scrim = document.getElementById('adScrim');
+        const opener = document.querySelector('#adMOpen, #adMenuBtn, .ad-menu-btn, [data-ad-nav-open]');
+        return {
+          hasNavClass: ad ? ad.classList.contains('nav') : false,
+          hasDeadControls: (!!closeBtn || !!scrim) && !opener,
+        };
+      });
+      assert.strictEqual(drawerState.hasNavClass, false, 'Admin shell must not trap scroll in .ad.nav');
+      assert.strictEqual(drawerState.hasDeadControls, false, 'M3: Dead #adMClose/#adScrim must either be removed or wired to a visible drawer opener');
+
+      await cdp.evalJs(() => { window.__e2eAdBackSpa = 1; });
+      assert.ok(await ctx.existsVisible('#adMBack'), 'Expected visible #adMBack');
+      await cdp.click('#adMBack');
+      await cdp.waitForAppSettled({ expectAdmin: true });
+      assert.strictEqual(await cdp.evalJs(() => window.__e2eAdBackSpa), 1, '#adMBack must navigate via SPA');
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F12-06', tier: 2, feature: 'F12', milestone: 'M3', name: 'Admin /app/quan-tri/cai-dat default logo mark renders "LR" (never legacy "Py")' },
+    async () => {
+      await ctx.visit('/app/quan-tri/cai-dat', { role: 'admin', viewport: 'desktop', expectAdmin: true });
+      const mark = await cdp.evalJs(() => document.querySelector('#logoPrev .brand-mark')?.textContent.trim() || '');
+      assert.strictEqual(mark, 'LR', `M3: Expected default brand mark "LR" in #logoPrev, got "${mark}"`);
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F12-07', tier: 2, feature: 'F12', milestone: 'M3', name: 'Admin /app/quan-tri/hoc-vien preserves active #sq and #sr filters after adding/updating a user' },
+    async () => {
+      let createdUid = null;
+      const tmpUsername = `e2e_flt_${Date.now().toString(36)}`;
+      try {
+        await ctx.visit('/app/quan-tri/hoc-vien', { role: 'admin', viewport: 'desktop', expectAdmin: true });
+        assert.ok(await ctx.existsVisible('#sq'), 'Expected #sq filter');
+        assert.ok(await ctx.existsVisible('#sr'), 'Expected #sr role select');
+        await cdp.fill('#sq', 'Minh');
+        await cdp.evalJs(() => {
+          const sr = document.getElementById('sr');
+          if (sr) { sr.value = 'student'; sr.dispatchEvent(new Event('change', { bubbles: true })); }
+        });
+        await new Promise((r) => setTimeout(r, 120));
+
+        assert.ok(await ctx.existsVisible('#addU'), 'Expected #addU button');
+        await cdp.click('#addU');
+        assert.ok(await ctx.waitForVisible('.modal [data-f] input[name="u"]', 3000), 'Expected add user modal form');
+        await cdp.fill('.modal [data-f] input[name="u"]', tmpUsername);
+        await cdp.fill('.modal [data-f] input[name="n"]', 'Minh Temp Filter');
+        await cdp.click('.modal [data-f] button.btn-primary');
+        await cdp.waitForCondition(() => !document.querySelector('.modal [data-f]'), 5000, 80);
+        await new Promise((r) => setTimeout(r, 350));
+
+        const after = await cdp.evalJs(() => ({
+          sq: document.getElementById('sq')?.value || '',
+          sr: document.getElementById('sr')?.value || '',
+          rowsText: document.getElementById('sb')?.textContent || '',
+        }));
+        assert.strictEqual(after.sq, 'Minh', `M3: #sq filter must be preserved after user mutation (got "${after.sq}")`);
+        assert.strictEqual(after.sr, 'student', `M3: #sr filter must be preserved after user mutation (got "${after.sr}")`);
+        assert.ok(after.rowsText.includes('Minh Anh') && after.rowsText.includes('Minh Temp Filter'), 'Filtered table must include both matching Minh students');
+      } finally {
+        const listRes = await apiRequest(srv.baseUrl, 'GET', `/api/admin/biz/users?q=${encodeURIComponent(tmpUsername)}`, { session: seed.admin });
+        const found = (listRes.json?.users || []).find((u) => u.username === tmpUsername);
+        if (found) createdUid = found.id;
+        if (createdUid) {
+          await apiRequest(srv.baseUrl, 'DELETE', `/api/admin/users/${createdUid}`, { session: seed.admin }).catch(() => {});
+        }
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F13-06', tier: 2, feature: 'F13', milestone: 'M3', name: 'Admin /app/quan-tri/cai-dat #stSave resets dirty buttons and SPA leave leaks zero beforeunload guards' },
+    async () => {
+      try {
+        await ctx.visit('/app/quan-tri/cai-dat', { role: 'admin', viewport: 'desktop', expectAdmin: true });
+        const swSel = '[data-row="allowRegister"] .switch';
+        assert.ok(await ctx.existsVisible(swSel), 'Expected visible allowRegister switch');
+        const initialChecked = await cdp.evalJs(() => !!document.getElementById('st-allowRegister')?.checked);
+
+        // Toggle dirty -> Save -> verify #stSave and #stUndo reset to disabled
+        await cdp.click(swSel);
+        await new Promise((r) => setTimeout(r, 100));
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('stSave')?.disabled), false, '#stSave must enable on dirty edit');
+        await cdp.click('#stSave');
+        await cdp.waitForCondition(() => document.getElementById('stSave')?.disabled === true, 5000, 80);
+        const afterSave = await cdp.evalJs(() => ({
+          saveDisabled: document.getElementById('stSave')?.disabled,
+          undoDisabled: document.getElementById('stUndo')?.disabled,
+        }));
+        assert.strictEqual(afterSave.saveDisabled, true, 'M3: #stSave must return to disabled after save');
+        assert.strictEqual(afterSave.undoDisabled, true, 'M3: #stUndo must return to disabled after save');
+
+        // Toggle dirty again -> leave via SPA link -> probe beforeunload leak
+        await cdp.click(swSel);
+        await new Promise((r) => setTimeout(r, 100));
+        assert.ok(await ctx.existsVisible('.ad-nav a[href="/app/quan-tri/he-thong"]'), 'Expected SPA nav link to he-thong');
+        const leak = await ctx.probeBeforeUnloadLeak(async () => {
+          await cdp.click('.ad-nav a[href="/app/quan-tri/he-thong"]');
+          await cdp.waitForCondition(() => location.pathname === '/app/quan-tri/he-thong', 5000, 60);
+          await cdp.waitForAppSettled({ expectAdmin: true });
+        });
+        assert.strictEqual(leak.leaked, false, `M3: SPA leave from /app/quan-tri/cai-dat leaked active beforeunload listener (${JSON.stringify(leak)})`);
+
+        // Restore original allowRegister value
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', {
+          session: seed.admin,
+          body: { values: { allowRegister: initialChecked } },
+        }).catch(() => {});
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F13-07', tier: 2, feature: 'F13', milestone: 'M3', name: 'Admin /app/quan-tri/he-thong 3x #cfUndo + #cfSave sends exactly 1 PUT request (zero listener multiplication)' },
+    async () => {
+      try {
+        await ctx.visit('/app/quan-tri/he-thong', { role: 'admin', viewport: 'desktop', expectAdmin: true });
+        assert.ok(await ctx.existsVisible('.chips button[data-panel="website"]'), 'Expected website panel chip');
+        await cdp.click('.chips button[data-panel="website"]');
+        assert.ok(await ctx.waitForVisible('#cy-PUBLIC_URL', 3000), 'Expected #cy-PUBLIC_URL');
+
+        for (let i = 0; i < 3; i++) {
+          await cdp.fill('#cy-PUBLIC_URL', `https://e2e-${i}.example.com`);
+          assert.ok(await ctx.existsVisible('#cfUndo'), 'Expected visible #cfUndo');
+          await cdp.click('#cfUndo');
+          assert.ok(await ctx.waitForVisible('.chips button[data-panel="website"]', 4000), 'Expected panel chip after undo');
+          await cdp.click('.chips button[data-panel="website"]');
+          assert.ok(await ctx.waitForVisible('#cy-PUBLIC_URL', 3000), 'Expected #cy-PUBLIC_URL after undo');
+        }
+
+        await cdp.fill('#cy-PUBLIC_URL', 'https://e2e-final.example.com');
+        assert.ok(await ctx.existsVisible('#cfSave'), 'Expected visible #cfSave');
+        const reqs = await ctx.trackRequests(
+          async () => {
+            await cdp.click('#cfSave');
+            await new Promise((r) => setTimeout(r, 450));
+          },
+          { urlPattern: /\/api\/admin\/(system|settings)/, method: 'PUT' }
+        );
+        assert.strictEqual(reqs.total, 1, `M3: Expected exactly 1 PUT request after 3x #cfUndo (got ${reqs.total} from listener multiplication)`);
+      } finally {
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', {
+          session: seed.admin,
+          body: { values: { PUBLIC_URL: '' }, secrets: {} },
+        }).catch(() => {});
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F13-08', tier: 2, feature: 'F13', milestone: 'M3', name: 'Admin kinh-doanh & song-ngu Dark Mode inputs/selects have >= 4.5:1 contrast & 0 overflow on tablet & mobile' },
+    async () => {
+      try {
+        for (const vp of ['tablet', 'mobile']) {
+          await ctx.visit('/app/quan-tri/kinh-doanh?sub=don-hang', { role: 'admin', viewport: vp, expectAdmin: true, theme: 'dark' });
+          await ctx.assertNoOverflow(`T2-F13-08 don-hang ${vp}`);
+          await ctx.assertContrast('#st, #q', 4.5, `T2-F13-08 don-hang controls ${vp}`, { includeNonText: true });
+
+          await ctx.visit('/app/quan-tri/kinh-doanh?sub=goi', { role: 'admin', viewport: vp, expectAdmin: true, theme: 'dark' });
+          await ctx.assertNoOverflow(`T2-F13-08 goi ${vp}`);
+          await ctx.assertContrast('.ad-content input:not([type=checkbox]):not([type=radio])', 4.5, `T2-F13-08 goi inputs ${vp}`, { includeNonText: true });
+
+          await ctx.visit('/app/quan-tri/song-ngu', { role: 'admin', viewport: vp, expectAdmin: true, theme: 'dark' });
+          await ctx.assertNoOverflow(`T2-F13-08 song-ngu ${vp}`);
+          await ctx.assertContrast('#q, #ui input[data-src]', 4.5, `T2-F13-08 song-ngu inputs ${vp}`, { includeNonText: true });
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  // ================= F15: Landing Dark Contrast, Breakpoints & Drawer Edge Cases =================
+  suite.test(
+    { id: 'T2-F15-01', tier: 2, feature: 'F15', milestone: 'M1', name: 'Landing Dark Mode WCAG contrast >= 4.5:1 on desktop (1440x900), mobile (390x844), narrow (320x844)' },
+    async () => {
+      try {
+        await ctx.visitLanding({ viewport: 'desktop', pathName: '/', theme: 'dark' });
+        assert.strictEqual((await ctx.getThemeState()).attr, 'dark', 'M1: Expected html[data-theme="dark"] on Landing');
+        await ctx.assertNoOverflow('T2-F15-01 landing dark desktop');
+        await ctx.assertContrast('.aw-top a, .hero-title, .hero-sub, .subj-card h3, .aw-foot a', 4.5, 'T2-F15-01 desktop dark');
+
+        for (const vp of ['mobile', 'narrow']) {
+          await ctx.visitLanding({ viewport: vp, pathName: '/', theme: 'dark' });
+          await ctx.assertNoOverflow(`T2-F15-01 landing dark ${vp}`);
+          await ctx.assertContrast('#lpMobileHome .lp-m-hero-copy h1, #lpMobileHome .lp-m-hero-copy p, #lpMobileHome .lp-m-lang-card b, #lpMobileHome .lp-m-dock a', 4.5, `T2-F15-01 ${vp} dark`);
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F15-02', tier: 2, feature: 'F15', milestone: 'M1', name: '.lp-auth-sheet Light & Dark Mode contrast >= 4.5:1 and viewport bounds at 1440x900, 390x844, 320x844' },
+    async () => {
+      try {
+        for (const theme of ['light', 'dark']) {
+          for (const vp of ['desktop', 'mobile', 'narrow']) {
+            await ctx.visitLanding({ viewport: vp, pathName: '/', theme });
+            assert.ok(await ctx.existsVisible('[data-auth="login"]'), `Expected [data-auth="login"] on ${vp}`);
+            await cdp.click('[data-auth="login"]');
+            assert.ok(await ctx.waitForVisible('#modalHost .modal.lp-auth-sheet', 3000), `Expected .lp-auth-sheet on ${vp} ${theme}`);
+            await ctx.assertAllVisibleInViewport('#modalHost .modal.lp-auth-sheet', `T2-F15-02 ${vp} ${theme}`);
+            if (theme === 'dark') {
+              const lum = await ctx.getSurfaceLuminance('#modalHost .modal.lp-auth-sheet');
+              assert.ok(lum.luminance < 0.2, `M1: Expected dark .lp-auth-sheet bg in Dark Mode (${vp}, lum=${lum.luminance})`);
+            }
+            await ctx.assertContrast('.lp-auth-head h2, .lp-auth-head .lead, .lp-auth-card label, .lp-auth-card input[name="u"], .lp-auth-card [data-submit]', 4.5, `T2-F15-02 ${vp} ${theme}`, { includeNonText: true });
+          }
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F15-03', tier: 2, feature: 'F15', milestone: 'M1', name: 'Landing breakpoints 1000x700, 900x700, 320x844 have 0 overflow & .demo-nav visible < 640px' },
+    async () => {
+      for (const vp of ['tabletWide', 'tablet', 'narrow']) {
+        await ctx.visitLanding({ viewport: vp, pathName: '/' });
+        await ctx.assertNoOverflow(`T2-F15-03 ${vp}`);
+        if (vp === 'tabletWide' || vp === 'tablet') {
+          const navVis = await ctx.existsVisible('.aw-nav');
+          const burgerVis = await ctx.existsVisible('#mobileMenuBtn');
+          assert.strictEqual(navVis && burgerVis, false, `M1: ${vp} must never display both .aw-nav and #mobileMenuBtn`);
+        }
+      }
+      // Verify .demo-nav visibility when viewport width < 640px and #demoCarousel is visible
+      await ctx.visitLanding({ viewport: { width: 600, height: 800, dpr: 1, isMobile: false }, pathName: '/' });
+      await ctx.assertNoOverflow('T2-F15-03 600x800');
+      const demoVis = await ctx.existsVisible('#demoCarousel');
+      if (demoVis) {
+        assert.ok(await ctx.existsVisible('#demoCarousel .demo-nav'), 'M1: .demo-nav must stay visible on < 640px');
+        assert.ok(await ctx.existsVisible('#demoDots [data-dot="0"]'), 'M1: #demoDots controls must stay visible on < 640px');
+        await ctx.assertAllVisibleInViewport('#demoCarousel .demo-nav button', 'T2-F15-03 .demo-nav 600x800');
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F15-04', tier: 2, feature: 'F15', milestone: 'M1', name: 'Landing EN mode (/en) has zero mixed VI+EN leaks in #lpMobileHome & #mobileDrawer' },
+    async () => {
+      try {
+        for (const vp of ['mobile', 'tablet']) {
+          await ctx.visitLanding({ viewport: vp, pathName: '/en', lang: 'en' });
+          if (vp === 'mobile') {
+            await ctx.assertNoViLeaksInEn('#lpMobileHome');
+          }
+          assert.ok(await ctx.existsVisible('#mobileMenuBtn'), `Expected #mobileMenuBtn on ${vp}`);
+          await cdp.click('#mobileMenuBtn');
+          assert.ok(await ctx.existsVisible('#mobileDrawer'), `Expected #mobileDrawer open on ${vp}`);
+          await ctx.assertNoViLeaksInEn('#mobileDrawer');
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F15-05', tier: 2, feature: 'F15', milestone: 'M1', name: 'Landing #mobileDrawer closes cleanly on Escape, outside click, and link tap with 0 console errors' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      for (const vp of ['tablet', 'mobile']) {
+        await ctx.visitLanding({ viewport: vp, pathName: '/' });
+        assert.ok(await ctx.existsVisible('#mobileMenuBtn'), `Expected #mobileMenuBtn on ${vp}`);
+        await cdp.click('#mobileMenuBtn');
+        assert.ok(await ctx.existsVisible('#mobileDrawer'), `Expected #mobileDrawer open on ${vp}`);
+        await cdp.evalJs(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+        await new Promise((r) => setTimeout(r, 80));
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('mobileDrawer')?.hidden), true, `${vp}: Escape must close #mobileDrawer`);
+
+        await cdp.click('#mobileMenuBtn');
+        assert.ok(await ctx.existsVisible('#mobileDrawer'), `Expected #mobileDrawer re-opened on ${vp}`);
+        await cdp.evalJs(() => {
+          const target = document.getElementById('lpMobileHome') || document.querySelector('main#main') || document.body;
+          target.click();
+        });
+        await new Promise((r) => setTimeout(r, 80));
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('mobileDrawer')?.hidden), true, `${vp}: Outside click must close #mobileDrawer`);
+      }
+      ctx.assertNoConsoleErrors(ceStart, 'T2-F15-05');
+    }
+  );
+
+  // ================= F16: Download Dark Contrast, Specificity & VI/EN Parity =================
+  suite.test(
+    { id: 'T2-F16-01', tier: 2, feature: 'F16', milestone: 'M1', name: 'Public /tai-ung-dung Dark Mode contrast >= 4.5:1 across tabs, card subs, bento icons, mockups & brand' },
+    async () => {
+      try {
+        await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop', theme: 'dark' });
+        assert.strictEqual((await ctx.getThemeState()).attr, 'dark', 'M1: Expected html[data-theme="dark"] on /tai-ung-dung');
+        await ctx.assertContrast(
+          '.dl-filter-tabs button, .dl-card-sub, .dl-bento-ic, .dl-sk-brand b, .dl-pub-brand .me-word i',
+          4.5,
+          'T2-F16-01 download dark contrast',
+          { includeNonText: true }
+        );
+        const dockLum = await ctx.getSurfaceLuminance('.dl-mob-dock');
+        const screenLum = await ctx.getSurfaceLuminance('.dl-mob-screen');
+        assert.ok(Math.abs(dockLum.luminance - screenLum.luminance) >= 0.02 || dockLum.bg !== screenLum.bg, 'M1: .dl-mob-dock must stay visually distinct from .dl-mob-screen in Dark Mode');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F16-02', tier: 2, feature: 'F16', milestone: 'M1', name: 'In-app /app/tai-ung-dung .dl-wrap .btn preserves crisp Light & Dark button contrast without clipping at 320x844' },
+    async () => {
+      try {
+        for (const theme of ['light', 'dark']) {
+          for (const vp of ['desktop', 'narrow']) {
+            await ctx.visit('/app/tai-ung-dung', { role: 'student', viewport: vp, theme });
+            await ctx.assertNoOverflow(`T2-F16-02 ${vp} ${theme}`);
+            await ctx.assertAllVisibleInViewport('#main .dl-wrap .btn', `T2-F16-02 btns ${vp} ${theme}`);
+            await ctx.assertContrast('#main .dl-wrap #dlPrimaryBtn, #main .dl-wrap .dl-secondary-cta, #main .dl-wrap [data-dl-guide]', 4.5, `T2-F16-02 ${vp} ${theme}`);
+          }
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F16-03', tier: 2, feature: 'F16', milestone: 'M1', name: 'Download VI/EN parity on /tai-ung-dung & /app/tai-ung-dung switches in-place with zero VI leaks' },
+    async () => {
+      try {
+        await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop', lang: 'vi' });
+        await cdp.evalJs(() => { window.__e2eDlNoReload = 1; });
+        await ctx.switchLangViaUi('en');
+        assert.strictEqual(await cdp.evalJs(() => window.__e2eDlNoReload), 1, 'M1: Public Download lang switch must re-render in-place without location.reload()');
+        await ctx.assertNoViLeaksInEn('.dl-public-shell');
+
+        await ctx.visit('/app/tai-ung-dung', { role: 'student', viewport: 'desktop', lang: 'en' });
+        await ctx.assertNoViLeaksInEn('#main .dl-wrap');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F16-04', tier: 2, feature: 'F16', milestone: 'M1', name: 'Download narrow 320x844 & tablet 900x700 have 0 overflow across all filter tabs & open guides' },
+    async () => {
+      for (const vp of ['narrow', 'tablet']) {
+        await ctx.visitPublic('/tai-ung-dung', { viewport: vp });
+        for (const tab of ['all', 'pc', 'mobile']) {
+          assert.ok(await ctx.existsVisible(`[data-dl-filter="${tab}"]`), `Expected filter ${tab} on ${vp}`);
+          await cdp.click(`[data-dl-filter="${tab}"]`);
+          await ctx.assertNoOverflow(`T2-F16-04 ${vp} filter=${tab}`);
+        }
+        await cdp.click('[data-dl-filter="all"]');
+        if (await ctx.existsVisible('[data-dl-guide="windows"]')) {
+          await cdp.click('[data-dl-guide="windows"]');
+        }
+        await ctx.assertNoOverflow(`T2-F16-04 ${vp} guide-open`);
+        await ctx.assertAllVisibleInViewport('.dl-hero-actions .btn, .dl-hero-actions a', `T2-F16-04 hero actions ${vp}`);
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F16-05', tier: 2, feature: 'F16', milestone: 'M1', name: 'Rapid [data-dl-filter] switching + "Dùng ngay trên Web" produces single modal and 0 console/5xx errors' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      await ctx.visitPublic('/tai-ung-dung', { viewport: 'mobile' });
+      for (const tab of ['pc', 'mobile', 'all', 'pc', 'all']) {
+        assert.ok(await ctx.existsVisible(`[data-dl-filter="${tab}"]`), `Expected filter ${tab}`);
+        await cdp.click(`[data-dl-filter="${tab}"]`);
+      }
+      assert.ok(await ctx.existsVisible('a.dl-secondary-cta[href="/app/dang-nhap"]'), 'Expected "Dùng ngay trên Web" CTA');
+      await cdp.click('a.dl-secondary-cta[href="/app/dang-nhap"]');
+      await cdp.waitForCondition(() => document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length >= 1, 5000, 60);
+      await new Promise((r) => setTimeout(r, 200));
+      const modalCount = await cdp.evalJs(() => document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length);
+      assert.strictEqual(modalCount, 1, `M1: Expected single .lp-auth-sheet modal (got ${modalCount})`);
+      ctx.assertNoConsoleErrors(ceStart, 'T2-F16-05');
+    }
+  );
+
+  // ================= F17: In-App Dark Contrast, Tablet/Narrow, AI Widget & Lang Consolidation =================
+  suite.test(
+    { id: 'T2-F17-01', tier: 2, feature: 'F17', milestone: 'M2', name: 'In-App Dark Mode contrast >= 4.5:1 on .sp-chatbar/.sp-hints, .cds-game-card, .lx-roomnav, .cl-test-opt:checked' },
+    async () => {
+      try {
+        // 1. Speaking chat / studio dark contrast & .sp-msgs bottom padding
+        await ctx.visit('/app/ngoai-ngu/tro-chuyen/en', { role: 'student', viewport: 'mobile', theme: 'dark' });
+        if (await ctx.existsVisible('.sp-chatbar')) {
+          await ctx.assertContrast('.sp-chatbar, .sp-chatbar input, .sp-chatbar textarea, .sp-hints, .sp-hints button', 4.5, 'T2-F17-01 sp-chatbar', { includeNonText: true });
+        }
+        const spClearance = await cdp.evalJs(() => {
+          const msgs = document.querySelector('.sp-msgs');
+          const dock = document.querySelector('.sp-dock');
+          if (!msgs || !dock) return { check: false };
+          const padBottom = parseFloat(getComputedStyle(msgs).paddingBottom) || 0;
+          const dockH = dock.getBoundingClientRect().height || 0;
+          return { check: true, padBottom, dockH };
+        });
+        if (spClearance.check) {
+          assert.ok(spClearance.padBottom >= spClearance.dockH * 0.7, `M2: .sp-msgs paddingBottom (${spClearance.padBottom}px) too small above .sp-dock (${spClearance.dockH}px)`);
+        }
+
+        // 2. Games hub dark contrast
+        await ctx.visit('/app/tro-choi/en', { role: 'student', viewport: 'mobile', theme: 'dark' });
+        assert.ok(await ctx.waitForVisible('.cds-game-card', 5000), 'Expected .cds-game-card on /app/tro-choi/en');
+        await ctx.assertContrast('.cds-game-card, .cds-game-card b, .cds-game-card p', 4.5, 'T2-F17-01 cds-game-card');
+
+        // 3. Language exercise .lx-roomnav dark contrast
+        await ctx.visit('/app/ngoai-ngu/en', { role: 'student', viewport: 'mobile', theme: 'dark' });
+        const firstExHref = await cdp.evalJs(() => document.querySelector('a[href^="/app/ngoai-ngu/bai/"]')?.getAttribute('href') || '');
+        assert.ok(firstExHref, 'Expected at least one EN exercise link on /app/ngoai-ngu/en');
+        await ctx.visit(firstExHref, { role: 'student', viewport: 'mobile', theme: 'dark' });
+        if (await ctx.existsVisible('.lx-roomnav')) {
+          await ctx.assertContrast('.lx-roomnav, .lx-roomnav a, .lx-roomnav button', 4.5, 'T2-F17-01 lx-roomnav');
+        }
+
+        // 4. Classroom test checked option dark contrast
+        await ctx.visit(`/app/kiem-tra-lop/${seed.testMain.id}`, { role: 'student', viewport: 'mobile', theme: 'dark' });
+        assert.ok(await ctx.existsVisible('#start'), 'Expected #start on classroom test');
+        await cdp.click('#start');
+        await new Promise((r) => setTimeout(r, 150));
+        if (await ctx.existsVisible('.modal [data-ok]')) await cdp.click('.modal [data-ok]');
+        await cdp.waitForCondition(() => !!document.getElementById('tf'), 6000, 80);
+        await cdp.evalJs(() => {
+          const vis = [...document.querySelectorAll('#tf .q-block')].find((b) => getComputedStyle(b).display !== 'none');
+          vis?.querySelector('label.cl-test-opt')?.click();
+        });
+        await ctx.assertContrast('.cl-test-opt:has(input:checked), .cl-test-opt:has(input:checked) span', 4.5, 'T2-F17-01 cl-test-opt checked');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F17-02', tier: 2, feature: 'F17', milestone: 'M1', name: 'Tablet 900x700 & Narrow 320x844 In-App routes have 0 overflow & #menuBtn opens #side on /app/ngoai-ngu' },
+    async () => {
+      const routes = ['/app/toeic', '/app/so-tay', '/app/tro-choi/en', '/app/ngoai-ngu', '/app/phong-van'];
+      for (const vp of ['tablet', 'narrow']) {
+        for (const r of routes) {
+          await ctx.visit(r, { role: 'student', viewport: vp });
+          await ctx.assertNoOverflow(`T2-F17-02 ${r} ${vp}`);
+        }
+      }
+      await ctx.visit('/app/ngoai-ngu', { role: 'student', viewport: 'tablet' });
+      assert.ok(await ctx.existsVisible('#menuBtn'), 'M1: Expected visible #menuBtn on 900x700 /app/ngoai-ngu');
+      await cdp.click('#menuBtn');
+      assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('nav-open')), true, '#menuBtn must open #side drawer on 900x700');
+      assert.ok(await ctx.existsVisible('#side'), 'M1: #side must be visible when opened via #menuBtn on /app/ngoai-ngu');
+      await cdp.click('#scrim');
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F17-03', tier: 2, feature: 'F17', milestone: 'M1', name: 'Topbar #udBell/#udUser outside-click & Esc close + #ivQuickStart sample track SPA boundary' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      await ctx.visit('/app/en', { role: 'student', viewport: 'desktop' });
+      assert.ok(await ctx.existsVisible('#udBell'), 'Expected #udBell');
+      await cdp.click('#udBell');
+      await cdp.waitForCondition(() => document.getElementById('udBellDrop')?.hidden === false, 3000, 60);
+      await cdp.click('#main');
+      await new Promise((r) => setTimeout(r, 80));
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('udBellDrop')?.hidden), true, 'Outside click must close #udBellDrop');
+
+      await ctx.visit('/app/phong-van', { role: 'student', viewport: 'mobile' });
+      assert.ok(await ctx.existsVisible('#ivFieldSelect'), 'Expected #ivFieldSelect on mobile /app/phong-van');
+      assert.ok(await ctx.existsVisible('#ivQuickStart'), 'Expected #ivQuickStart on mobile /app/phong-van');
+      await cdp.evalJs(() => {
+        window.__e2eIvSampleSpa = 1;
+        const f = document.getElementById('ivFieldSelect');
+        if (f) { f.value = 'sample'; f.dispatchEvent(new Event('change', { bubbles: true })); }
+      });
+      await cdp.click('#ivQuickStart');
+      await cdp.waitForCondition(() => /^\/app\/phong-van\/en\/[\w-]+/.test(location.pathname), 5000, 60);
+      assert.strictEqual(await cdp.evalJs(() => window.__e2eIvSampleSpa), 1, 'M2: #ivQuickStart sample track must navigate via SPA');
+      ctx.assertNoConsoleErrors(ceStart, 'T2-F17-03');
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F17-04', tier: 2, feature: 'F17', milestone: 'M2', name: 'AI Widget .aiw-fab stays visible under body.cp-on and quota upgrade link routes to /app/bang-gia' },
+    async () => {
+      const prevSettings = await apiRequest(srv.baseUrl, 'GET', '/api/admin/settings', { session: seed.admin });
+      const prevFreeDaily = prevSettings.json?.values?.aiFreeDaily ?? 3;
+      try {
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', {
+          session: seed.admin,
+          body: {
+            values: { AI_PROVIDER: 'gemini' },
+            secrets: { GEMINI_API_KEY: 'AIzaSyTestE2EDummyKeyForWidget0000' },
+            password: seed.admin.password,
+          },
+        });
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', {
+          session: seed.admin,
+          body: { values: { aiFreeDaily: 0 } },
+        });
+
+        await ctx.visit('/app/en', { role: 'student', viewport: 'desktop', theme: 'dark', forceReset: true });
+        assert.ok(await ctx.waitForVisible('.aiw .aiw-fab', 5000), 'M2: Expected visible .aiw-fab when AI is configured');
+        await cdp.click('.aiw .aiw-fab');
+        assert.ok(await ctx.waitForVisible('#aiwPanel .aiw-quota a', 3000), 'Expected upgrade link in .aiw-quota when free quota is 0');
+        const href = await cdp.evalJs(() => document.querySelector('#aiwPanel .aiw-quota a')?.getAttribute('href') || '');
+        assert.strictEqual(href, '/app/bang-gia', `M2: AI Widget upgrade link must be "/app/bang-gia" (got "${href}")`);
+        await ctx.assertContrast('#aiwPanel, #aiwPanel .aiw-head b, #aiwPanel .aiw-hint', 4.5, 'T2-F17-04 aiwPanel dark');
+      } finally {
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', {
+          session: seed.admin,
+          body: { values: { aiFreeDaily: prevFreeDaily } },
+        }).catch(() => {});
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', {
+          session: seed.admin,
+          body: { values: {}, secrets: { GEMINI_API_KEY: null }, password: seed.admin.password },
+        }).catch(() => {});
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T2-F17-05', tier: 2, feature: 'F17', milestone: 'M1', name: 'Consolidated .lang-switch triggers zero competing reloads & zero console.error across F15-F17 routes' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      try {
+        await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop', lang: 'vi' });
+        await cdp.evalJs(() => { window.__e2eSingleLangHandler = 1; });
+        await ctx.switchLangViaUi('en');
+        assert.strictEqual(await cdp.evalJs(() => window.__e2eSingleLangHandler), 1, 'M1: Consolidated .lang-switch must not fire competing location.reload()');
+        await ctx.switchLangViaUi('vi');
+        assert.strictEqual(await cdp.evalJs(() => window.__e2eSingleLangHandler), 1, 'M1: Switching back to VI must stay in-place');
+
+        for (const r of ['/app/en', '/app/toeic', '/app/so-tay', '/app/tai-ung-dung']) {
+          await ctx.visit(r, { role: 'student', viewport: 'desktop' });
+        }
+        ctx.assertNoConsoleErrors(ceStart, 'T2-F17-05');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
     }
   );
 }

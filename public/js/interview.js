@@ -1,7 +1,7 @@
 /* Phỏng vấn thử & Phỏng vấn AI cho 5 ngoại ngữ.
    Đồng bộ cả 2 chế độ ngay trên trang Phỏng vấn: 30 ngành phỏng vấn với AI 2 chiều + 2 vòng phỏng vấn thử theo câu mẫu. */
 import {  } from "./core.js";
-import { S, api, esc, icon, toast, aiOn } from "./core.js";
+import { S, api, esc, icon, toast, aiOn, setAppHash } from "./core.js";
 import { INTERVIEW_LANGS, INTERVIEW_TRACKS, interviewLang, interviewTrack } from "./interview-bank.js";
 import { speakIcon } from "./speak.js";
 import { currentLang } from "./i18n.js";
@@ -17,7 +17,7 @@ function head(title, sub, back, cls = "") {
   return `<div class="page-head ${cls}"><div><span class="edu-eyebrow">PHỎNG VẤN THỬ</span><h1>${title}</h1><p>${sub}</p></div>${back ? `<a class="btn" href="${back}">${icon("left")}Quay lại</a>` : ""}</div>`;
 }
 
-export async function pageInterview(main, [langId, trackId], _q, ctx) {
+export async function pageInterview(main, [langId, trackId], q, ctx) {
   const lang = langId ? interviewLang(langId) : null;
   if (langId && !lang) {
     main.innerHTML = `<div class="sheet sheet-pad empty"><b>Không có môn này</b><a class="btn" href="/app/phong-van">Về danh sách</a></div>`;
@@ -29,8 +29,8 @@ export async function pageInterview(main, [langId, trackId], _q, ctx) {
     main.innerHTML = `<div class="sheet sheet-pad empty"><b>Không có vòng phỏng vấn này</b><a class="btn" href="/app/phong-van/${lang.id}">Về ${esc(lang.name)}</a></div>`;
     return;
   }
-  if (!track) return renderTracks(main, lang, ctx);
-  return renderSession(main, lang, track, ctx);
+  if (!track) return renderTracks(main, lang, ctx, q);
+  return renderSession(main, lang, track, ctx, q);
 }
 
 function renderHub(main, ctx) {
@@ -78,21 +78,27 @@ function renderHub(main, ctx) {
   main.querySelector("#ivQuickStart")?.addEventListener("click", () => {
     const langVal = main.querySelector("#ivLangSelect")?.value || "en";
     const fieldVal = main.querySelector("#ivFieldSelect")?.value || "sample";
+    const roleVal = (main.querySelector("#ivRoleInput")?.value || "").trim();
     const tracks = INTERVIEW_TRACKS[langVal] || [];
+    const qs = new URLSearchParams();
+    if (fieldVal) qs.set("field", fieldVal);
+    if (roleVal) qs.set("role", roleVal);
+    const qStr = qs.toString() ? `?${qs.toString()}` : "";
     if (fieldVal === "sample" || !aiOn()) {
       const tr = tracks[0] ? tracks[0].id : "";
-      location.href = tr ? `/app/phong-van/${langVal}/${tr}` : `/app/phong-van/${langVal}`;
+      setAppHash(tr ? `/app/phong-van/${langVal}/${tr}${qStr}` : `/app/phong-van/${langVal}${qStr}`);
     } else {
-      location.href = `/app/phong-van/${langVal}`;
+      setAppHash(`/app/phong-van/${langVal}${qStr}`);
     }
   });
 }
 
-async function renderTracks(main, lang, ctx) {
+async function renderTracks(main, lang, ctx, q = {}) {
   ctx.setCrumbs([["Phỏng vấn", "/app/phong-van"], [lang.name]]);
   const tracks = INTERVIEW_TRACKS[lang.id] || [];
   const totalQ = tracks.reduce((n, t) => n + t.questions.length, 0);
-  main.innerHTML = `${head(`${lang.flag} ${esc(lang.name)}`, "Đồng bộ đầy đủ 2 chế độ: Phỏng vấn 2 chiều với AI (30 ngành) và Phỏng vấn tự luyện có câu mẫu.", "/app/phong-van")}
+  const roleBanner = q && q.role ? `Vị trí mục tiêu: ${esc(q.role)} · ` : "";
+  main.innerHTML = `${head(`${lang.flag} ${esc(lang.name)}`, `${roleBanner}Đồng bộ đầy đủ 2 chế độ: Phỏng vấn 2 chiều với AI (30 ngành) và Phỏng vấn tự luyện có câu mẫu.`, "/app/phong-van")}
     <section class="lx-sec" style="--c:${esc(lang.color)};--c-soft:color-mix(in srgb,var(--c) 10%,var(--paper-2))">
       <div class="sec-head"><div><h2>Phỏng vấn với AI theo lĩnh vực</h2><p>AI đóng vai nhà tuyển dụng của đúng ngành: hỏi từng câu, sửa lỗi câu trả lời và nhận xét tổng kết sau khoảng 6 câu.</p></div><a class="btn btn-sm" href="${lang.course}">Mở trong Phòng luyện nói →</a></div>
       <div id="ivAiNote"></div>
@@ -124,12 +130,14 @@ async function renderTracks(main, lang, ctx) {
   }
 }
 
-function renderSession(main, lang, track, ctx) {
+function renderSession(main, lang, track, ctx, q = {}) {
   ctx.setCrumbs([["Phỏng vấn", "/app/phong-van"], [lang.name, `/app/phong-van/${lang.id}`], [track.title]]);
   let step = Math.min(savedStep(lang.id, track.id), track.questions.length);
+  const roleBanner = q.role ? `<p class="small muted" style="margin:0 0 8px">Vị trí mục tiêu: <b>${esc(q.role)}</b></p>` : "";
   const draw = () => {
     if (step >= track.questions.length) {
       main.innerHTML = `${head(`${lang.flag} ${esc(track.title)}`, `Bạn đã xem đáp án ${track.questions.length} câu.`, `/app/phong-van/${lang.id}`)}
+        ${roleBanner}
         <div class="sheet sheet-pad"><b>Hết vòng này</b><p>Làm lại từ đầu nếu muốn nói theo cách khác. Câu mẫu chỉ là một cách trả lời đúng, không phải lời duy nhất.</p>
         <div class="row"><button class="btn btn-primary" id="ivRestart">Làm lại</button><a class="btn" href="/app/phong-van/${lang.id}">Vòng khác</a></div></div>`;
       main.querySelector("#ivRestart").addEventListener("click", () => { step = 0; saveStep(lang.id, track.id, 0); draw(); });
@@ -137,6 +145,7 @@ function renderSession(main, lang, track, ctx) {
     }
     const item = track.questions[step];
     main.innerHTML = `${head(`${lang.flag} ${esc(track.title)}`, `Câu ${step + 1}/${track.questions.length}`, `/app/phong-van/${lang.id}`)}
+      ${roleBanner}
       <section class="sheet sheet-pad">
         <p class="kicker">Người phỏng vấn</p>
         <h2 style="margin:6px 0 8px">${esc(item.q)}</h2>

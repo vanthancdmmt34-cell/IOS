@@ -15,8 +15,9 @@
     }
   }
   document.addEventListener("click", function (e) {
+    if (e.defaultPrevented) return;
     var b = e.target && e.target.closest ? e.target.closest(".lang-switch [data-lang]") : null;
-    if (!b) return;
+    if (!b || b.dataset.langBound === "1") return;
     go(b.dataset.lang === "en" ? "en" : "vi");
   });
 })();

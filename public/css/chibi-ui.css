@@ -182,9 +182,9 @@ body.in-app {
   transform: none !important;
   box-shadow: 0 8px 20px rgba(99, 102, 241, .08) !important;
 }
-.hero-metric.sticky-note.s1 { background: #FDF2F8 !important; }
-.hero-metric.sticky-note.s2 { background: #F0FDF4 !important; }
-.hero-metric.sticky-note.s3 { background: #F5F3FF !important; }
+html:not([data-theme="dark"]) .hero-metric.sticky-note.s1 { background: #FDF2F8 !important; }
+html:not([data-theme="dark"]) .hero-metric.sticky-note.s2 { background: #F0FDF4 !important; }
+html:not([data-theme="dark"]) .hero-metric.sticky-note.s3 { background: #F5F3FF !important; }
 
 .chibi-squad-bar {
   display: flex;
@@ -199,9 +199,9 @@ body.in-app {
   gap: 6px;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1.5px solid var(--chibi-border);
-  background: #FFFFFF;
-  color: var(--chibi-ink);
+  border: 1.5px solid var(--cp-border, var(--chibi-border));
+  background: var(--cp-surface, #FFFFFF);
+  color: var(--cp-ink, var(--chibi-ink));
   font-size: 13px;
   font-weight: 800;
   text-decoration: none;
@@ -937,29 +937,29 @@ a.btn:active,
 
 /* Dark Theme Harmony */
 html[data-theme="dark"] .aw,
-html[data-theme="dark"] body,
-html[data-theme="dark"] body.in-app,
-body.dark,
+html[data-theme="dark"] body:not(.ax-on),
+html[data-theme="dark"] body.in-app:not(.ax-on),
+body.dark:not(.ax-on),
 body.dark .aw {
   background: #1B1826 !important;
   color: #F5F3FF !important;
 }
 
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .hm-chibi-banner,
-html[data-theme="dark"] .hm-plan-card,
-html[data-theme="dark"] .hm-pet-card,
-html[data-theme="dark"] .sw-chibi-hero,
-html[data-theme="dark"] .sw-roadmap,
-html[data-theme="dark"] .sw-chibi-card,
-html[data-theme="dark"] .lx-beginner-track,
-html[data-theme="dark"] .cds-card,
-html[data-theme="dark"] .cds-mission,
-html[data-theme="dark"] .cds-ach,
-html[data-theme="dark"] .cds-game-card,
-html[data-theme="dark"] .cg-hero,
-html[data-theme="dark"] .cg-arena,
-html[data-theme="dark"] .cds-modal {
+html[data-theme="dark"] body:not(.ax-on) .card,
+html[data-theme="dark"] body:not(.ax-on) .hm-chibi-banner,
+html[data-theme="dark"] body:not(.ax-on) .hm-plan-card,
+html[data-theme="dark"] body:not(.ax-on) .hm-pet-card,
+html[data-theme="dark"] body:not(.ax-on) .sw-chibi-hero,
+html[data-theme="dark"] body:not(.ax-on) .sw-roadmap,
+html[data-theme="dark"] body:not(.ax-on) .sw-chibi-card,
+html[data-theme="dark"] body:not(.ax-on) .lx-beginner-track,
+html[data-theme="dark"] body:not(.ax-on) .cds-card,
+html[data-theme="dark"] body:not(.ax-on) .cds-mission,
+html[data-theme="dark"] body:not(.ax-on) .cds-ach,
+html[data-theme="dark"] body:not(.ax-on) .cds-game-card,
+html[data-theme="dark"] body:not(.ax-on) .cg-hero,
+html[data-theme="dark"] body:not(.ax-on) .cg-arena,
+html[data-theme="dark"] body:not(.ax-on) .cds-modal {
   background: #252134 !important;
   border-color: rgba(155, 138, 251, .24) !important;
   color: #F5F3FF !important;

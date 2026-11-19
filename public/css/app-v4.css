@@ -5189,6 +5189,102 @@ html body.dark.in-app:not(.ax-on) #main :is(.hm-current, .hm-goal, .hm-focus, .h
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.28) !important;
 }
 
+/* M2: Speaking chat clearance above .sp-dock & complete In-App Dark Mode parity */
+html:root body.in-app:not(.ax-on) #main .sp-msgs {
+  padding-bottom: 168px !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.sp-chat .sp-chatbar, .sp-chatbar),
+html body.dark.in-app:not(.ax-on) #main :is(.sp-chat .sp-chatbar, .sp-chatbar) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.sp-chatbar input, .sp-chatbar textarea),
+html body.dark.in-app:not(.ax-on) #main :is(.sp-chatbar input, .sp-chatbar textarea) {
+  background: #0F172A !important;
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.sp-chat .sp-hints, .sp-hints, .sp-hints button),
+html body.dark.in-app:not(.ax-on) #main :is(.sp-chat .sp-hints, .sp-hints, .sp-hints button) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.30) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.iv-m-intro h1, .iv-m-field span),
+html body.dark.in-app:not(.ax-on) #main :is(.iv-m-intro h1, .iv-m-field span) {
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .iv-m-field :is(input, select),
+html body.dark.in-app:not(.ax-on) #main .iv-m-field :is(input, select) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.cds-game-card, .cg-m-streak-card, .lx-cert-featured, .lx-lb-hero),
+html body.dark.in-app:not(.ax-on) #main :is(.cds-game-card, .cg-m-streak-card, .lx-cert-featured, .lx-lb-hero) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .cds-game-card b,
+html body.dark.in-app:not(.ax-on) #main .cds-game-card b {
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .cds-game-card p,
+html body.dark.in-app:not(.ax-on) #main .cds-game-card p {
+  color: #CBD5E1 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.lx-ex-page .lx-roomnav, .lx-roomnav),
+html body.dark.in-app:not(.ax-on) #main :is(.lx-ex-page .lx-roomnav, .lx-roomnav) {
+  background: #0F172A !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .lx-roomnav :is(a, button),
+html body.dark.in-app:not(.ax-on) #main .lx-roomnav :is(a, button) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked),
+html body.dark.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) {
+  background: #1E3A8A !important;
+  border-color: #60A5FA !important;
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) :is(span, b),
+html body.dark.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) :is(span, b) {
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) :is(.cl-test-k, .lx-opt-let),
+html body.dark.in-app:not(.ax-on) #main .cl-test-opt:has(input:checked) :is(.cl-test-k, .lx-opt-let) {
+  background: #1D4ED8 !important;
+  border-color: #60A5FA !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="dark"] body.in-app:not(.ax-on) #main :is(.cl-m-qico, .tc-m-ico, .plan-m-ico, .hm-lang-chip em, .hm-lang-chip-more, .lx-beg-ic, .sw-m-status-pill),
+html body.dark.in-app:not(.ax-on) #main :is(.cl-m-qico, .tc-m-ico, .plan-m-ico, .hm-lang-chip em, .hm-lang-chip-more, .lx-beg-ic, .sw-m-status-pill) {
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #E2E8F0 !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+}
+html[data-theme="dark"] #aiwPanel,
+html body.dark #aiwPanel {
+  background: #0F172A !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: #F1F5F9 !important;
+}
+html[data-theme="dark"] #aiwPanel .aiw-head b,
+html body.dark #aiwPanel .aiw-head b {
+  color: #F8FAFC !important;
+}
+html[data-theme="dark"] #aiwPanel .aiw-hint,
+html body.dark #aiwPanel .aiw-hint {
+  background: #1E293B !important;
+  color: #E2E8F0 !important;
+}
+
 /* Chặn kéo đàn hồi (bounce) của trang khi chạy trong app iOS: thanh menu dưới không bị trôi theo. */
 html:has(body.in-app) { overscroll-behavior: none; }
 

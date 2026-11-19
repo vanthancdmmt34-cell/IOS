@@ -233,7 +233,7 @@ export async function pageTeacher(main, _p, _q, ctx) {
     ${L ? `<div class="pay-warn" style="margin:0 0 14px">${L.licenses.length ? `Giấy phép: đã dùng <b>${L.used}/${L.seats}</b> chỗ học sinh · ${L.licenses.map((l) => `${esc(l.tier)} ${l.seats} chỗ đến ${fmtDate(l.expiresAt, false)}`).join(" · ")}` : `Giấy phép Teacher của bạn đã hết hạn. Lớp cũ vẫn xem được nhưng học sinh không còn quyền Pro từ lớp và bạn không tạo được lớp mới.`}</div>` : ""}
     <div class="stats biz-stats tc-m-stats">
       <div><b>${fmtN(j.stats.classes)}</b><span>Lớp đang dạy</span></div><div><b>${fmtN(j.stats.students)}</b><span>Học viên</span></div>
-      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${j.stats.avgScore != null ? j.stats.avgScore : fmtN(j.stats.missing)}</b><span>${j.stats.avgScore != null ? "Điểm TB bài tập" : "Bài quá hạn"}</span></div>
+      <div><b>${fmtN(j.stats.assignments)}</b><span>Bài đã giao</span></div><div><b>${fmtN(j.stats.missing)}</b><span>Bài quá hạn</span></div>
       <div class="tc-stat-desk"><b>${j.stats.avgScore ?? "—"}</b><span>Điểm TB bài tập</span></div><div class="tc-stat-desk"><b>${L ? fmtN(Math.max(0, L.seats - L.used)) : "∞"}</b><span>Chỗ giấy phép còn lại</span></div>
     </div>
     ${!j.classes.length && j.canCreate ? `<section class="sheet sheet-pad tc-m-steps" style="margin-bottom:16px">

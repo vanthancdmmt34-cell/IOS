@@ -86,8 +86,8 @@ async function orders(host, reload) {
   const q = host.dataset.q || "";
   const j = await api(`/api/admin/biz/orders?status=${encodeURIComponent(st)}&q=${encodeURIComponent(q)}`);
   host.innerHTML = `
-    <div class="row" style="margin-bottom:10px"><select id="st"><option value="">Mọi trạng thái</option><option value="claimed" ${st === "claimed" ? "selected" : ""}>Học viên báo đã chuyển</option>${Object.entries(ORDER_ST).map(([k, v]) => `<option value="${k}" ${k === st ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
-      <input id="q" placeholder="Mã đơn hoặc tên đăng nhập" value="${esc(q)}"><button class="btn btn-sm" id="go">${icon("search")}Lọc</button></div>
+    <div class="row" style="margin-bottom:10px"><select class="select" id="st"><option value="">Mọi trạng thái</option><option value="claimed" ${st === "claimed" ? "selected" : ""}>Học viên báo đã chuyển</option>${Object.entries(ORDER_ST).map(([k, v]) => `<option value="${k}" ${k === st ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
+      <input class="input" id="q" placeholder="Mã đơn hoặc tên đăng nhập" value="${esc(q)}"><button class="btn btn-sm" id="go">${icon("search")}Lọc</button></div>
     <div class="table-wrap"><table><thead><tr><th>Mã đơn</th><th>Học viên</th><th>Gói</th><th class="num">Số tiền</th><th>Trạng thái</th><th>Tạo lúc</th><th>Thanh toán</th><th></th></tr></thead><tbody>
       ${j.orders.map((o) => `<tr><td><b>${esc(o.code)}</b></td><td>${esc(o.displayName)}<br><span class="small muted">@${esc(o.username)}</span></td><td>${esc(o.planName)}</td><td class="num">${vnd(o.amountVnd)}</td>
         <td>${o.status === "pending" && o.claimedAt ? `<span class="tag tag-cam">Báo đã chuyển</span><br><span class="small muted">${fmtDate(o.claimedAt)}</span>` : `<span class="tag ${ORDER_ST[o.status][1]}">${ORDER_ST[o.status][0]}</span>`}</td><td>${fmtDate(o.createdAt)}</td><td>${o.paidAt ? fmtDate(o.paidAt) : ""}</td>
@@ -107,7 +107,7 @@ async function payments(host) {
   const st = host.dataset.st || "";
   const j = await api(`/api/admin/biz/payments?status=${encodeURIComponent(st)}`);
   host.innerHTML = `
-    <div class="row" style="margin-bottom:10px"><select id="st"><option value="">Mọi trạng thái</option>${Object.entries(PAY_ST).map(([k, v]) => `<option value="${k}" ${k === st ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
+    <div class="row" style="margin-bottom:10px"><select class="select" id="st"><option value="">Mọi trạng thái</option>${Object.entries(PAY_ST).map(([k, v]) => `<option value="${k}" ${k === st ? "selected" : ""}>${v[0]}</option>`).join("")}</select>
       <span class="small muted">Giao dịch do SePay gửi về qua webhook đã xác thực chữ ký. Giao dịch gửi trùng bị bỏ qua tự động.</span></div>
     <div class="table-wrap"><table><thead><tr><th>Mã GD</th><th>Nguồn</th><th class="num">Số tiền</th><th>Nội dung</th><th>Đơn</th><th>Trạng thái</th><th>Nhận lúc</th><th></th></tr></thead><tbody>
       ${j.payments.map((p) => `<tr><td class="small">${esc(p.txnId)}</td><td>${esc(p.provider)}</td><td class="num">${vnd(p.amountVnd)}</td><td class="small" style="max-width:260px">${esc(p.content)}</td><td>${esc(p.orderCode || "")}</td>
@@ -127,7 +127,7 @@ async function members(host) {
   const q = host.dataset.q || "";
   const j = await api(`/api/admin/biz/users?q=${encodeURIComponent(q)}`);
   host.innerHTML = `
-    <div class="row" style="margin-bottom:10px"><input id="q" placeholder="Tìm tên đăng nhập / tên" value="${esc(q)}"><button class="btn btn-sm" id="go">${icon("search")}Tìm</button></div>
+    <div class="row" style="margin-bottom:10px"><input class="input" id="q" placeholder="Tìm tên đăng nhập / tên" value="${esc(q)}"><button class="btn btn-sm" id="go">${icon("search")}Tìm</button></div>
     <div class="table-wrap"><table><thead><tr><th>Người dùng</th><th>Vai trò</th><th>Gói</th><th>Hết hạn</th><th></th></tr></thead><tbody>
       ${j.users.map((u) => `<tr><td>${esc(u.displayName)}<br><span class="small muted">@${esc(u.username)}</span></td><td>${({ admin: "Quản trị", teacher: "Giáo viên", student: "Học viên", parent: "Phụ huynh" })[u.role] || u.role}</td>
         <td>${u.membership.pro ? `<span class="tag tag-pro">PRO</span>${(u.membership.sources || []).length ? ` <span class="small muted">${(u.membership.sources || []).map((x) => esc(x.label)).join(", ")}</span>` : ""}` : "Free"}</td><td>${u.membership.expiresAt ? fmtDate(u.membership.expiresAt, false) : ""}</td>
@@ -146,9 +146,9 @@ async function plans(host) {
   const KIND = { pro: "Pro cá nhân", family: "Family", teacher: "Teacher" };
   host.innerHTML = `<div class="row" style="margin-bottom:10px"><button class="btn btn-primary btn-sm" id="newPlan">${icon("plus")}Thêm gói</button><span class="small muted">Giá, số tháng, số chỗ đều chỉnh ở đây, không có giá nào viết cứng trong mã.</span></div>
   <div class="table-wrap"><table><thead><tr><th>Mã</th><th>Loại</th><th>Tên (VI)</th><th>Tên (EN)</th><th class="num">Tháng</th><th class="num">Chỗ</th><th>Giá (đồng)</th><th>Báo giá</th><th>Đang bán</th><th></th></tr></thead><tbody>
-    ${j.plans.map((p) => `<tr data-plan="${esc(p.id)}"><td class="small">${esc(p.id)}</td><td>${KIND[p.kind] || esc(p.kind)}</td><td><input name="name" value="${esc(p.name)}" maxlength="80"></td><td><input name="nameEn" value="${esc(p.nameEn || "")}" maxlength="80"></td>
-      <td><input name="months" type="number" min="1" max="36" value="${p.months}" style="width:64px"></td><td><input name="seats" type="number" min="1" max="5000" value="${p.seats}" style="width:72px" ${p.kind === "pro" ? "disabled" : ""}></td>
-      <td><input name="price" type="number" min="0" step="1000" value="${p.priceVnd}" style="width:120px"></td><td><input name="quote" type="checkbox" ${p.quoteOnly ? "checked" : ""}></td><td><input name="active" type="checkbox" ${p.active ? "checked" : ""}></td><td><button class="btn btn-xs btn-primary" data-save>Lưu</button></td></tr>`).join("")}
+    ${j.plans.map((p) => `<tr data-plan="${esc(p.id)}"><td class="small">${esc(p.id)}</td><td>${KIND[p.kind] || esc(p.kind)}</td><td><input class="input" name="name" value="${esc(p.name)}" maxlength="80"></td><td><input class="input" name="nameEn" value="${esc(p.nameEn || "")}" maxlength="80"></td>
+      <td><input class="input" name="months" type="number" min="1" max="36" value="${p.months}" style="width:64px"></td><td><input class="input" name="seats" type="number" min="1" max="5000" value="${p.seats}" style="width:72px" ${p.kind === "pro" ? "disabled" : ""}></td>
+      <td><input class="input" name="price" type="number" min="0" step="1000" value="${p.priceVnd}" style="width:120px"></td><td><input name="quote" type="checkbox" ${p.quoteOnly ? "checked" : ""}></td><td><input name="active" type="checkbox" ${p.active ? "checked" : ""}></td><td><button class="btn btn-xs btn-primary" data-save>Lưu</button></td></tr>`).join("")}
   </tbody></table></div><p class="small muted" style="margin-top:8px">Đổi giá chỉ áp dụng cho đơn tạo sau đó; đơn đang chờ giữ giá cũ. Gói "Báo giá" không bán trực tiếp, người dùng được hướng dẫn liên hệ. Mọi thay đổi được ghi nhật ký.</p>`;
   host.querySelectorAll("[data-save]").forEach((b) => b.addEventListener("click", async () => {
     const tr = b.closest("tr"), v = (n) => tr.querySelector(`[name=${n}]`);

@@ -29,6 +29,48 @@
   --cp-shadow: 0 1px 2px rgba(48, 48, 71, .04), 0 10px 28px rgba(103, 83, 224, .09);
   --cp-shadow-lg: 0 2px 4px rgba(48, 48, 71, .05), 0 22px 48px rgba(103, 83, 224, .16);
 }
+html[data-theme="dark"],
+html:has(body.dark) {
+  --cp-bg: #0B1220;
+  --cp-surface: #111C30;
+  --cp-surface-2: #182640;
+  --cp-ink: #F1F5F9;
+  --cp-ink-2: #CBD5E1;
+  --cp-ink-3: #94A3B8;
+  --cp-border: rgba(148, 163, 184, 0.22);
+  --cp-border-strong: rgba(148, 163, 184, 0.36);
+  --cp-primary: #9B8AFB;
+  --cp-primary-strong: #7C6AEF;
+  --cp-primary-hover: #8F7FF7;
+  --cp-primary-ink: #C4B5FD;
+  --cp-primary-soft: rgba(139, 92, 246, 0.18);
+  --cp-pink: rgba(244, 114, 182, 0.28);
+  --cp-pink-soft: rgba(244, 114, 182, 0.16);
+  --cp-mint: rgba(52, 211, 153, 0.26);
+  --cp-mint-soft: rgba(52, 211, 153, 0.16);
+  --cp-sky: rgba(56, 189, 248, 0.26);
+  --cp-sky-soft: rgba(56, 189, 248, 0.16);
+  --cp-cream: #1E2538;
+  --cp-shadow-sm: 0 1px 2px rgba(2, 6, 23, .35), 0 2px 10px rgba(2, 6, 23, .35);
+  --cp-shadow: 0 2px 6px rgba(2, 6, 23, .40), 0 14px 32px rgba(2, 6, 23, .45);
+  --cp-shadow-lg: 0 4px 10px rgba(2, 6, 23, .45), 0 24px 48px rgba(2, 6, 23, .55);
+}
+html[data-theme="dark"] body:not(.in-app),
+html body.dark:not(.in-app) {
+  --paper: #0B1220;
+  --paper-card: #111C30;
+  --paper-warm: #182640;
+  --ink: #F1F5F9;
+  --ink-soft: #CBD5E1;
+  --ink-muted: #94A3B8;
+  --pen-blue: #7DD3FC;
+  --pen-red: #FCA5A5;
+  --pen-green: #6EE7B7;
+  color-scheme: dark;
+  background-color: var(--cp-bg) !important;
+  background-image: none !important;
+  color: var(--cp-ink);
+}
 
 /* ---------- Nền và chữ ---------- */
 html body:has(:is(.landing-page, .dl-public-shell)) {
@@ -128,13 +170,21 @@ html body:not(.in-app) .landing-page .aw-nav {
   background: rgba(241, 245, 249, 0.82);
   border: 1px solid rgba(203, 213, 225, 0.7);
 }
-@media (min-width: 961px) {
+@media (min-width: 1021px) {
   html body:not(.in-app) .landing-page .aw-nav { display: flex; }
+  html body:not(.in-app) .landing-page .mobile-menu-btn { display: none !important; }
+}
+@media (max-width: 1020px) {
+  html body:not(.in-app) .landing-page .aw-nav { display: none !important; }
 }
 html[data-theme="dark"] body:not(.in-app) .landing-page .aw-top,
 html body.dark:not(.in-app) .landing-page .aw-top {
   background: rgba(15, 23, 42, 0.85) !important;
   border-bottom-color: rgba(148, 163, 184, 0.2) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-top .brand-clean,
+html body.dark:not(.in-app) .landing-page .aw-top .brand-clean {
+  color: #F1F5F9 !important;
 }
 html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav,
 html body.dark:not(.in-app) .landing-page .aw-nav {
@@ -148,6 +198,16 @@ html body.dark:not(.in-app) .landing-page .aw-nav > a {
 html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav > a:hover,
 html body.dark:not(.in-app) .landing-page .aw-nav > a:hover {
   background: rgba(51, 65, 85, 0.9) !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl,
+html body.dark:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl {
+  background: rgba(56, 189, 248, 0.18) !important;
+  color: #93C5FD !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl:hover,
+html body.dark:not(.in-app) .landing-page .aw-nav > a.aw-nav-dl:hover {
+  background: #2563EB !important;
   color: #FFFFFF !important;
 }
 html body:not(.in-app) .landing-page .aw-nav > a {
@@ -354,7 +414,7 @@ html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head h2 {
 html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head .lead {
   margin: 4px 0 0 !important;
   font: 500 13px/1.4 var(--cp-font) !important;
-  color: #64748B !important;
+  color: #475569 !important;
 }
 html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-card {
   background: #FFFFFF;
@@ -376,7 +436,7 @@ html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-field-lbl {
   font: 800 10.5px/1.2 var(--cp-font);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #7B8BA1;
+  color: #475569;
   margin-bottom: 5px;
 }
 html body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
@@ -444,7 +504,7 @@ html body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-links .linkish,
 html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch-btn {
   border: 0 !important;
   background: transparent !important;
-  color: #3F97D3 !important;
+  color: #1E6FA8 !important;
   font: 700 12px/1.2 var(--cp-font) !important;
   padding: 2px 3px !important;
   text-decoration: none !important;
@@ -459,7 +519,7 @@ html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch {
   padding-top: 2px;
   text-align: center;
   font: 600 12.5px/1.3 var(--cp-font);
-  color: #64748B;
+  color: #475569;
 }
 html body:not(.in-app) #modalHost .modal.lp-auth-sheet.is-reg .lp-field-lbl { display: none; }
 html body:not(.in-app) #modalHost .modal.lp-auth-sheet.is-reg .lp-auth-card { padding: 15px 15px 14px; }
@@ -473,21 +533,21 @@ html body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-terms {
   margin: 2px 0 0;
   text-align: center;
   font: 500 11px/1.35 var(--cp-font);
-  color: #7B8BA1;
+  color: #475569;
 }
 html body:not(.in-app) #modalHost .modal .btn-primary,
 html body:not(.in-app) #modalHost .modal button.on:not(.seg > button) {
-  background: #3F97D3 !important;
-  border-color: #3F97D3 !important;
+  background: #1E6FA8 !important;
+  border-color: #1E6FA8 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 6px 16px rgba(63, 151, 211, 0.28) !important;
+  box-shadow: 0 6px 16px rgba(30, 111, 168, 0.28) !important;
   border-radius: 999px !important;
   min-height: 43px;
   font: 800 14px/1 var(--cp-font) !important;
 }
-html body:not(.in-app) #modalHost .modal .btn-primary:hover { background: #2B7CB8 !important; border-color: #2B7CB8 !important; }
+html body:not(.in-app) #modalHost .modal .btn-primary:hover { background: #10548E !important; border-color: #10548E !important; }
 html body:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn) { background: #FFFFFF !important; border: 1px solid #E2EBF4 !important; border-radius: 50% !important; color: #475569 !important; }
-html body:not(.in-app) #modalHost .modal a { color: #3F97D3 !important; }
+html body:not(.in-app) #modalHost .modal a { color: #1E6FA8 !important; }
 @media (max-width: 760px) {
   html body:not(.in-app) #modalHost .modal-wrap:has(.lp-auth-sheet) {
     padding: 0 !important;
@@ -692,7 +752,7 @@ html body:not(.in-app) .landing-page .chibi-live-speech {
   min-height: 46px;
   padding: 9px 16px;
   border-radius: 999px;
-  background: #FFFFFF;
+  background: var(--cp-surface);
   border: 1.5px solid var(--cp-border-strong);
   box-shadow: var(--cp-shadow-sm);
   color: var(--cp-ink);
@@ -712,7 +772,7 @@ html body:not(.in-app) .landing-page .chibi-live-speech::after {
   bottom: -6px;
   width: 10px;
   height: 10px;
-  background: #FFFFFF;
+  background: var(--cp-surface);
   border-right: 1.5px solid var(--cp-border-strong);
   border-bottom: 1.5px solid var(--cp-border-strong);
   transform: translateX(-50%) rotate(45deg);
@@ -785,11 +845,19 @@ html body:not(.in-app) .landing-page .chibi-hero-figure.is-react .chibi-hero-pho
 }
 
 /* Nút sáng / tối trên trang chủ: luôn hiện (bấm là đổi cả giao diện) */
-html body:not(.in-app) .landing-page .theme-btn.theme-btn { display: inline-flex !important; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px !important; border: 1px solid var(--cp-border) !important; background: var(--cp-surface) !important; color: var(--cp-ink-2) !important; box-shadow: var(--cp-shadow-sm) !important; font: 800 12.5px/1 var(--cp-font); cursor: pointer; }
+html body:not(.in-app) .landing-page .theme-btn.theme-btn { display: inline-flex !important; align-items: center; gap: 6px; height: 38px; padding: 0 12px; border-radius: 999px !important; border: 1px solid var(--cp-border) !important; background: var(--cp-surface) !important; color: var(--cp-ink-2) !important; box-shadow: var(--cp-shadow-sm) !important; font: 800 12.5px/1 var(--cp-font); cursor: pointer; white-space: nowrap; flex: none; }
 html body:not(.in-app) .landing-page .theme-btn.theme-btn svg { width: 17px; height: 17px; flex: none; }
 html[data-theme="light"] body:not(.in-app) .landing-page .theme-btn .t-sun, html[data-theme="dark"] body:not(.in-app) .landing-page .theme-btn .t-moon { display: none; }
 html[data-theme="light"] body:not(.in-app) .landing-page .theme-btn .tt-light, html[data-theme="dark"] body:not(.in-app) .landing-page .theme-btn .tt-dark { display: none; }
-@media (max-width: 560px) { html body:not(.in-app) .landing-page .theme-btn.theme-btn { width: 38px; padding: 0; justify-content: center; } html body:not(.in-app) .landing-page .theme-btn .theme-btn-txt { display: none; } }
+html body:not(.in-app) .landing-page .mobile-drawer-tools { display: flex; }
+html body:not(.in-app) .landing-page .mobile-drawer .theme-btn.theme-btn { width: 100%; justify-content: center; }
+@media (max-width: 1240px) {
+  html body:not(.in-app) .landing-page .aw-top .theme-btn.theme-btn { width: 38px; padding: 0; justify-content: center; }
+  html body:not(.in-app) .landing-page .aw-top .theme-btn .theme-btn-txt { display: none; }
+}
+@media (max-width: 560px) {
+  html body:not(.in-app) .landing-page .mobile-drawer .theme-btn .theme-btn-txt { display: inline; }
+}
 
 /* Menu trang chủ: link rõ ràng, cỡ chạm đủ lớn, có nền khi rê chuột hoặc dùng bàn phím */
 html body:not(.in-app) .landing-page .aw-nav a {
@@ -1408,9 +1476,10 @@ html body:not(.in-app) #lpMobileHome { display: none; }
   html body:not(.in-app) #lpMobileHome .lp-m-cta-card p { margin: 4px 0 0; font: 500 12px/1.4 var(--cp-font); color: rgba(255, 255, 255, 0.85); }
   html body:not(.in-app) #lpMobileHome .lp-m-cta-btns { display: grid; gap: 7px; }
   html body:not(.in-app) #lpMobileHome .lp-m-cta-card .lp-m-btn-primary {
-    background: linear-gradient(135deg, #5BB2E8 0%, #3F97D3 100%);
+    background-color: #1E6FA8;
+    background-image: linear-gradient(135deg, #1E6FA8 0%, #10548E 100%);
     color: #FFFFFF;
-    box-shadow: 0 6px 16px rgba(63, 151, 211, 0.35);
+    box-shadow: 0 6px 16px rgba(30, 111, 168, 0.35);
   }
   html body:not(.in-app) #lpMobileHome .lp-m-btn-outline {
     min-height: 38px;
@@ -1487,12 +1556,14 @@ html body:not(.in-app) #lpMobileHome { display: none; }
     box-shadow: 0 3px 10px rgba(43, 124, 184, 0.28);
   }
   @media (max-width: 359px) {
-    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top-in { gap: 6px !important; padding-inline: 8px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top-in { gap: 4px !important; padding-inline: 8px !important; }
     html body:not(.in-app) #landingPage:has(#lpMobileHome) .brand.brand-sketch { min-height: 32px; display: inline-flex; align-items: center; }
-    html body:not(.in-app) #landingPage:has(#lpMobileHome) .brand-text { font-size: 15.5px !important; }
-    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth { gap: 4px !important; }
-    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .aw-login-link { padding: 5px 8px !important; font-size: 11px !important; }
-    html body:not(.in-app) .landing-page.aw .mobile-menu-btn { min-width: 36px; min-height: 36px; width: 36px; height: 36px; border-radius: 11px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .brand-text { font-size: 15px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth { gap: 3px !important; padding: 2px 4px; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top .theme-btn.theme-btn { width: 30px; height: 30px; min-width: 30px; padding: 0; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top .theme-btn.theme-btn svg { width: 15px; height: 15px; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .aw-login-link { padding: 4px 6px !important; font-size: 11px !important; }
+    html body:not(.in-app) .landing-page.aw .mobile-menu-btn { min-width: 34px; min-height: 34px; width: 34px; height: 34px; border-radius: 10px !important; }
     html body:not(.in-app) #lpMobileHome .lp-m-hero-art { width: 58px; height: 58px; }
     html body:not(.in-app) #lpMobileHome .lp-m-hero-copy h1 { font-size: 17.5px !important; }
     html body:not(.in-app) #lpMobileHome .lp-m-hero-actions { grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.88fr); gap: 6px; }
@@ -1504,4 +1575,477 @@ html body:not(.in-app) #lpMobileHome { display: none; }
     html body:not(.in-app) #lpMobileHome .lp-m-dock { left: 8px; right: 8px; padding: 2.5px 4px; }
     html body:not(.in-app) #lpMobileHome .lp-m-dock-it { font-size: 8.2px; min-height: 34px; }
   }
+}
+
+/* ==========================================================================
+   LANDING DARK MODE — COMPLETE COVERAGE (Desktop, Tablet, Mobile, Auth Modal)
+   ========================================================================== */
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-login-link,
+html body.dark:not(.in-app) .landing-page .aw-login-link { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-login-link:hover,
+html body.dark:not(.in-app) .landing-page .aw-login-link:hover {
+  background: var(--cp-surface-2) !important;
+  border-color: var(--cp-border-strong) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .lang-switch button,
+html body.dark:not(.in-app) .landing-page .lang-switch button { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .theme-btn.theme-btn,
+html body.dark:not(.in-app) .landing-page .theme-btn.theme-btn {
+  background: var(--cp-surface-2) !important;
+  border-color: var(--cp-border-strong) !important;
+  color: var(--cp-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page.aw .mobile-menu-btn,
+html body.dark:not(.in-app) .landing-page.aw .mobile-menu-btn {
+  background: var(--cp-primary-soft) !important;
+  color: var(--cp-primary-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page.aw .mobile-menu-btn span,
+html body.dark:not(.in-app) .landing-page.aw .mobile-menu-btn span { background: currentColor !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .mobile-drawer,
+html body.dark:not(.in-app) .landing-page .mobile-drawer {
+  background: var(--cp-surface) !important;
+  border-color: var(--cp-border) !important;
+}
+
+/* Hero & Showcase */
+html[data-theme="dark"] body:not(.in-app) .landing-page #hero p.hero-sub,
+html body.dark:not(.in-app) .landing-page #hero p.hero-sub { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page #hero .rotator-word,
+html body.dark:not(.in-app) .landing-page #hero .rotator-word { color: var(--cp-primary-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-note,
+html body.dark:not(.in-app) .landing-page .hero-note { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s1,
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s2,
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s3,
+html body.dark:not(.in-app) .landing-page .hero-metric.sticky-note.s1,
+html body.dark:not(.in-app) .landing-page .hero-metric.sticky-note.s2,
+html body.dark:not(.in-app) .landing-page .hero-metric.sticky-note.s3 {
+  background: var(--cp-surface) !important;
+  border-color: var(--cp-border-strong) !important;
+  box-shadow: var(--cp-shadow-sm) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s1 { border-color: rgba(244, 114, 182, 0.4) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s2 { border-color: rgba(52, 211, 153, 0.4) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric.sticky-note.s3 { border-color: rgba(139, 92, 246, 0.45) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric b,
+html body.dark:not(.in-app) .landing-page .hero-metric b { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .hero-metric span,
+html body.dark:not(.in-app) .landing-page .hero-metric span { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .chibi-squad-pill,
+html body.dark:not(.in-app) .landing-page .chibi-squad-pill {
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  border-color: var(--cp-border-strong) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .os-speak-panel.sketch-speak-box,
+html body.dark:not(.in-app) .landing-page .os-speak-panel.sketch-speak-box { background: var(--cp-surface-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .os-lang-panel.sketch-pinned-card,
+html body.dark:not(.in-app) .landing-page .os-lang-panel.sketch-pinned-card { background: var(--cp-surface-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .sketch-mic-label,
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-title,
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-q,
+html body.dark:not(.in-app) .landing-page .sketch-mic-label,
+html body.dark:not(.in-app) .landing-page .mockup-title,
+html body.dark:not(.in-app) .landing-page .mockup-q { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .os-wave-note,
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-phonetic,
+html body.dark:not(.in-app) .landing-page .os-wave-note,
+html body.dark:not(.in-app) .landing-page .mockup-phonetic { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .badge-grade,
+html body.dark:not(.in-app) .landing-page .badge-grade {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  color: #6EE7B7 !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-level-pill,
+html body.dark:not(.in-app) .landing-page .mockup-level-pill {
+  background: rgba(56, 189, 248, 0.2) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #7DD3FC !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-opt.ok,
+html body.dark:not(.in-app) .landing-page .mockup-opt.ok {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  color: #A7F3D0 !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .mockup-ai-tip,
+html body.dark:not(.in-app) .landing-page .mockup-ai-tip {
+  background: var(--cp-surface) !important;
+  border-color: rgba(125, 211, 252, 0.45) !important;
+  color: #BAE6FD !important;
+}
+
+/* Demo, Sections & Footer */
+html[data-theme="dark"] body:not(.in-app) .landing-page .sec-head-split.dark .sec-sub,
+html body.dark:not(.in-app) .landing-page .sec-head-split.dark .sec-sub { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-rail-title b,
+html body.dark:not(.in-app) .landing-page .demo-rail-title b { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-rail-title small,
+html body.dark:not(.in-app) .landing-page .demo-rail-title small { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-dot,
+html body.dark:not(.in-app) .landing-page .demo-dot {
+  background: var(--cp-surface) !important;
+  color: var(--cp-ink) !important;
+  border-color: var(--cp-border-strong) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-dot:hover,
+html body.dark:not(.in-app) .landing-page .demo-dot:hover { background: var(--cp-surface-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-dot.on,
+html body.dark:not(.in-app) .landing-page .demo-dot.on {
+  background: var(--cp-primary-strong) !important;
+  border-color: var(--cp-primary-strong) !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-try-body,
+html body.dark:not(.in-app) .landing-page .aw-try-body {
+  background-color: var(--cp-surface) !important;
+  background-image: none !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-lang-badge,
+html body.dark:not(.in-app) .landing-page .demo-lang-badge {
+  background: var(--cp-surface-2) !important;
+  border-color: var(--cp-border-strong) !important;
+  color: var(--cp-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-try-task,
+html body.dark:not(.in-app) .landing-page .aw-try-task { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .demo-phonetic,
+html body.dark:not(.in-app) .landing-page .demo-phonetic { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-opts > button::before,
+html body.dark:not(.in-app) .landing-page .aw-quiz-opts > button::before {
+  background: var(--cp-surface-2) !important;
+  border-color: var(--cp-border-strong) !important;
+  color: var(--cp-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-opts > button.ok,
+html body.dark:not(.in-app) .landing-page .aw-quiz-opts > button.ok {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(52, 211, 153, 0.55) !important;
+  color: #A7F3D0 !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-opts > button.bad,
+html body.dark:not(.in-app) .landing-page .aw-quiz-opts > button.bad {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(248, 113, 113, 0.55) !important;
+  color: #FECACA !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-msg,
+html body.dark:not(.in-app) .landing-page .aw-quiz-msg { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-msg.ok { color: #6EE7B7 !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-quiz-msg.bad { color: #FCA5A5 !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .purpose-card.featured.bento-main,
+html body.dark:not(.in-app) .landing-page .purpose-card.featured.bento-main { background: var(--cp-surface-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .purpose-suggest,
+html[data-theme="dark"] body:not(.in-app) .landing-page .purpose-detail,
+html[data-theme="dark"] body:not(.in-app) .landing-page .purpose-bullets,
+html body.dark:not(.in-app) .landing-page .purpose-suggest,
+html body.dark:not(.in-app) .landing-page .purpose-detail,
+html body.dark:not(.in-app) .landing-page .purpose-bullets { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .purpose-suggest strong,
+html body.dark:not(.in-app) .landing-page .purpose-suggest strong { color: #7DD3FC !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .subj-name,
+html[data-theme="dark"] body:not(.in-app) .landing-page .step-title,
+html[data-theme="dark"] body:not(.in-app) .landing-page .streak-text,
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-name,
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-link-lead,
+html[data-theme="dark"] body:not(.in-app) .landing-page .pcm-col b,
+html body.dark:not(.in-app) .landing-page .subj-name,
+html body.dark:not(.in-app) .landing-page .step-title,
+html body.dark:not(.in-app) .landing-page .streak-text,
+html body.dark:not(.in-app) .landing-page .rk-name,
+html body.dark:not(.in-app) .landing-page .aw-link-lead,
+html body.dark:not(.in-app) .landing-page .pcm-col b { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .subj-flag,
+html[data-theme="dark"] body:not(.in-app) .landing-page .story-avatar,
+html body.dark:not(.in-app) .landing-page .subj-flag,
+html body.dark:not(.in-app) .landing-page .story-avatar {
+  background: var(--cp-surface-2) !important;
+  color: var(--cp-ink) !important;
+  border-color: var(--cp-border) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .subj-sketch-landmark,
+html body.dark:not(.in-app) .landing-page .subj-sketch-landmark { color: rgba(203, 213, 225, 0.14) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .step-num,
+html body.dark:not(.in-app) .landing-page .step-num { color: rgba(203, 213, 225, 0.48) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .step-desc,
+html[data-theme="dark"] body:not(.in-app) .landing-page .stories-note,
+html[data-theme="dark"] body:not(.in-app) .landing-page .story-goal,
+html[data-theme="dark"] body:not(.in-app) .landing-page .pricing-banner-sub,
+html[data-theme="dark"] body:not(.in-app) .landing-page .pcm-tier,
+html[data-theme="dark"] body:not(.in-app) .landing-page .pcm-col span:last-child,
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-text,
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-score span,
+html body.dark:not(.in-app) .landing-page .step-desc,
+html body.dark:not(.in-app) .landing-page .stories-note,
+html body.dark:not(.in-app) .landing-page .story-goal,
+html body.dark:not(.in-app) .landing-page .pricing-banner-sub,
+html body.dark:not(.in-app) .landing-page .pcm-tier,
+html body.dark:not(.in-app) .landing-page .pcm-col span:last-child,
+html body.dark:not(.in-app) .landing-page .rk-text,
+html body.dark:not(.in-app) .landing-page .rk-score span { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .step-preview,
+html[data-theme="dark"] body:not(.in-app) .landing-page .story-quote,
+html body.dark:not(.in-app) .landing-page .step-preview,
+html body.dark:not(.in-app) .landing-page .story-quote {
+  background: var(--cp-surface-2) !important;
+  color: var(--cp-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .step-preview.ok,
+html body.dark:not(.in-app) .landing-page .step-preview.ok {
+  background: rgba(16, 185, 129, 0.18) !important;
+  color: #A7F3D0 !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-score,
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-card,
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-card:nth-child(3n+2),
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-card:nth-child(3n),
+html body.dark:not(.in-app) .landing-page .rk-score,
+html body.dark:not(.in-app) .landing-page .rk-card,
+html body.dark:not(.in-app) .landing-page .rk-card:nth-child(3n+2),
+html body.dark:not(.in-app) .landing-page .rk-card:nth-child(3n) {
+  background: var(--cp-surface) !important;
+  border-color: var(--cp-border) !important;
+  color: var(--cp-ink) !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .rk-score b,
+html body.dark:not(.in-app) .landing-page .rk-score b { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .pricing-split .aw-pill.dark.lg,
+html body.dark:not(.in-app) .landing-page .pricing-split .aw-pill.dark.lg {
+  background: var(--cp-primary-strong) !important;
+  border-color: var(--cp-primary-strong) !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-foot :is(.footer-brand, .footer-col h4),
+html body.dark:not(.in-app) .landing-page .aw-foot :is(.footer-brand, .footer-col h4) { color: var(--cp-ink) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-foot :is(.footer-tagline, .footer-note, .footer-copy),
+html body.dark:not(.in-app) .landing-page .aw-foot :is(.footer-tagline, .footer-note, .footer-copy) { color: var(--cp-ink-2) !important; }
+html[data-theme="dark"] body:not(.in-app) .landing-page .aw-foot .footer-contact a,
+html body.dark:not(.in-app) .landing-page .aw-foot .footer-contact a { color: #7DD3FC !important; }
+
+/* Auth Sheet & Landing Modals (#modalHost) */
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal,
+html body.dark:not(.in-app) #modalHost .modal {
+  background: #111C30 !important;
+  color: #F1F5F9 !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet {
+  background: #0F172A !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-top {
+  background: #111C30 !important;
+  border-bottom-color: rgba(148, 163, 184, 0.2) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-brand,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-brand { color: #F1F5F9 !important; }
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-back,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-back { color: #CBD5E1 !important; }
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-word b,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-word b { color: #7DD3FC !important; }
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help-note,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-help-note,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-mascot {
+  background: rgba(56, 189, 248, 0.16) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  color: #BAE6FD !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head h2,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head h2 { color: #F8FAFC !important; }
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head .lead,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-field-lbl,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-terms,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal .auth-remember,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-head .lead,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-field-lbl,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-terms,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch,
+html body.dark:not(.in-app) #modalHost .modal .auth-remember { color: #94A3B8 !important; }
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-card,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-card {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet.is-reg :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+html body.dark:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet.is-reg :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  background: #0F172A !important;
+  color: #F8FAFC !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)::placeholder,
+html body.dark:not(.in-app) #modalHost .modal :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)::placeholder {
+  color: #64748B !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal button:not(.btn-primary):not(.on):not(.modal-x):not(.icon-btn),
+html body.dark:not(.in-app) #modalHost .modal button:not(.btn-primary):not(.on):not(.modal-x):not(.icon-btn) {
+  background: #1E293B !important;
+  color: #F1F5F9 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal .pass-wrap button,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-forgot-link,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-links .linkish,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch-btn,
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal a,
+html body.dark:not(.in-app) #modalHost .modal .pass-wrap button,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-forgot-link,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .auth-links .linkish,
+html body.dark:not(.in-app) #modalHost .modal.lp-auth-sheet .lp-auth-switch-btn,
+html body.dark:not(.in-app) #modalHost .modal a {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #7DD3FC !important;
+}
+html[data-theme="dark"] body:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn),
+html body.dark:not(.in-app) #modalHost .modal :is(.modal-x, .icon-btn) {
+  background: #1E293B !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #E2E8F0 !important;
+}
+
+/* Mobile Landing (#lpMobileHome) Dark Mode */
+@media (max-width: 760px) {
+  html[data-theme="dark"] body:not(.in-app):has(#lpMobileHome),
+  html body.dark:not(.in-app):has(#lpMobileHome) {
+    background: #0B1220 !important;
+  }
+  html[data-theme="dark"] body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top,
+  html body.dark:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top {
+    background: rgba(15, 23, 42, 0.92) !important;
+    border-bottom-color: rgba(148, 163, 184, 0.2) !important;
+  }
+  html[data-theme="dark"] body:not(.in-app) #landingPage:has(#lpMobileHome) .brand-text,
+  html body.dark:not(.in-app) #landingPage:has(#lpMobileHome) .brand-text { color: #F8FAFC !important; }
+  html[data-theme="dark"] body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .aw-login-link,
+  html body.dark:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .aw-login-link {
+    background: rgba(56, 189, 248, 0.16) !important;
+    color: #7DD3FC !important;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome,
+  html body.dark:not(.in-app) #lpMobileHome { color: #F1F5F9; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi.is-blue,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi.is-green,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi.is-purple,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-card,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-lang-card,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi.is-blue,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi.is-green,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi.is-purple,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-card,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-lang-card,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-feat {
+    background: #111C30 !important;
+    border-color: rgba(148, 163, 184, 0.22) !important;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi b,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-sec-head h2,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-q b,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-lang-name b,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat b,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-steps b,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi b,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-sec-head h2,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-q b,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-lang-name b,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-feat b,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-steps b { color: #F1F5F9 !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-kpi span,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-q small,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-lang-card small,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat span:not(.lp-m-feat-ic),
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-steps span,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-kpi span,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-q small,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-lang-card small,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-feat span:not(.lp-m-feat-ic),
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-steps span { color: #94A3B8 !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-pill-tag,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-pill-tag {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #6EE7B7 !important;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-link-btn,
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-badge,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-link-btn,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-badge { color: #7DD3FC !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-dtab,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-dtab {
+    background: #182640;
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #CBD5E1;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-dtab.on,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-dtab.on {
+    background: #3F97D3;
+    border-color: #3F97D3;
+    color: #FFFFFF;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-q,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-q {
+    background: #182640;
+    border-color: rgba(148, 163, 184, 0.22);
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-say-btn,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-say-btn {
+    background: #0F172A;
+    border-color: rgba(148, 163, 184, 0.3);
+    color: #7DD3FC;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-opt,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-opt {
+    background: #182640;
+    border-color: rgba(148, 163, 184, 0.24);
+    color: #F1F5F9;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-opt em,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-opt em {
+    background: #0F172A;
+    color: #CBD5E1;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-opt.is-ok,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-opt.is-ok {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(52, 211, 153, 0.5);
+    color: #A7F3D0;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-opt.is-bad,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-opt.is-bad {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(248, 113, 113, 0.5);
+    color: #FECACA;
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-msg.is-ok,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-msg.is-ok { background: rgba(16, 185, 129, 0.18); color: #A7F3D0; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-demo-msg.is-bad,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-demo-msg.is-bad { background: rgba(239, 68, 68, 0.18); color: #FECACA; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-lang-card img,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-lang-card img { background: rgba(15, 23, 42, 0.72); }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat-ic,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-feat-ic { background: #182640 !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat.is-sky .lp-m-feat-ic { color: #7DD3FC !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat.is-lavender .lp-m-feat-ic { color: #C4B5FD !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat.is-mint .lp-m-feat-ic { color: #6EE7B7 !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-feat.is-peach .lp-m-feat-ic { color: #FDBA74 !important; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-dock,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-dock {
+    background: rgba(15, 23, 42, 0.92);
+    border-color: rgba(148, 163, 184, 0.24);
+  }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-dock-it,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-dock-it { color: #94A3B8; }
+  html[data-theme="dark"] body:not(.in-app) #lpMobileHome .lp-m-dock-it.is-center,
+  html body.dark:not(.in-app) #lpMobileHome .lp-m-dock-it.is-center { color: #7DD3FC; }
 }

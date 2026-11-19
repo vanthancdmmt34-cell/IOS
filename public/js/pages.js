@@ -9,7 +9,7 @@ import {
 import { getSubject, setSubject } from "./lang.js";
 import { proDashCard, openAiInline } from "./pro.js";
 import { mascot, levelOf, LEVELS, loadActivity, activityStats, dayKey, loadPrefs, savePrefs, isBookmarked, toggleBookmark, BADGES, badgeState, badgeHtml, newBadges, markBadgesSeen, celebrate, goalRing, G } from "./game.js";
-import { currentLang, applyLang } from "./i18n.js";
+import { currentLang, applyLang, t } from "./i18n.js";
 
 /* ================= Shared utilities ================= */
 /* ================= Goal selection (Batch 2) ================= */
@@ -560,10 +560,10 @@ export async function pageSettings(main, _p, _q, ctx) {
         <section class="sheet sheet-pad st-card">
           <h2 style="margin:0 0 10px">Tài khoản & Bảo mật</h2>
           <div class="pf-m-links" style="display:grid;gap:8px">
-            <a class="pf-m-link" href="/app/ca-nhan"><span class="pf-m-ico">🔐</span><b>Email khôi phục & Đổi mật khẩu</b><span class="pf-m-arr">›</span></a>
-            <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">💳</span><b>Gói của tôi</b><span class="pf-m-arr">›</span></a>
-            <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">🔔</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
-            <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">❓</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/ca-nhan"><span class="pf-m-ico">${lineIcon("lock")}</span><b>Email khôi phục & Đổi mật khẩu</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/goi-cua-toi"><span class="pf-m-ico">${lineIcon("key")}</span><b>Gói của tôi</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/thong-bao"><span class="pf-m-ico">${lineIcon("bell")}</span><b>Thông báo</b><span class="pf-m-arr">›</span></a>
+            <a class="pf-m-link" href="/app/ho-tro"><span class="pf-m-ico">${lineIcon("life-buoy")}</span><b>Hỗ trợ</b><span class="pf-m-arr">›</span></a>
           </div>
           <div style="margin-top:14px;display:flex;justify-content:flex-end">
             <button type="button" class="btn btn-ghost is-danger" data-logout>${lineIcon("logout")}<span>Đăng xuất</span></button>
@@ -576,8 +576,8 @@ export async function pageSettings(main, _p, _q, ctx) {
     const next = toggleTheme();
     const st = main.querySelector("#stThemeState");
     const btn = main.querySelector("#stThemeBtn");
-    if (st) st.textContent = next === "dark" ? "Tối" : "Sáng";
-    if (btn) btn.innerHTML = `${lineIcon(next === "dark" ? "sun" : "moon")}<span>${next === "dark" ? "Chế độ sáng" : "Chế độ tối"}</span>`;
+    if (st) st.textContent = t(next === "dark" ? "Tối" : "Sáng");
+    if (btn) btn.innerHTML = `${lineIcon(next === "dark" ? "sun" : "moon")}<span>${t(next === "dark" ? "Chế độ sáng" : "Chế độ tối")}</span>`;
   });
 
   main.querySelectorAll("[data-set-lang]").forEach((btn) => {

@@ -258,3 +258,206 @@ body.ax-on .modal { background: #FFFFFF !important; border-radius: 20px !importa
     box-shadow: none !important;
   }
 }
+
+/* Theme toggle button in Admin topbar */
+body.ax-on .ad-top .theme-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  border: 1px solid var(--ad-line, #E2E8F0);
+  background: var(--ad-card, #FFFFFF);
+  color: var(--ad-ink, #0F172A);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background .15s, border-color .15s, color .15s;
+}
+body.ax-on .ad-top .theme-btn:hover {
+  border-color: #38BDF8;
+  color: #0284C7;
+}
+
+/* Tablet (761px - 1024px) Admin layout — non-overlapping sidebar & content, zero horizontal overflow */
+@media (min-width: 761px) and (max-width: 1024px) {
+  body.ax-on .ad {
+    grid-template-columns: 204px minmax(0, 1fr) !important;
+  }
+  body.ax-on .ad-side {
+    width: 204px !important;
+    padding: 14px 10px !important;
+  }
+  body.ax-on .ad-main {
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+  body.ax-on .ad-top {
+    padding: 0 14px !important;
+    gap: 8px !important;
+  }
+  body.ax-on .ad-search {
+    max-width: 240px !important;
+    min-width: 140px !important;
+  }
+  body.ax-on .ad-content {
+    padding: 16px 14px 32px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  body.ax-on .ad-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  body.ax-on .ad-grid,
+  body.ax-on .ad-content .two-col,
+  body.ax-on .ad-content .set-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  body.ax-on .ad-card.span2 {
+    grid-column: span 1 !important;
+  }
+  body.ax-on .ad-content .set-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+  body.ax-on .ad-content .toolbar,
+  body.ax-on .ad-content .save-bar,
+  body.ax-on .ad-content .chips,
+  body.ax-on .ad-content .tabs {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+  }
+  body.ax-on .ad-content .table-wrap,
+  body.ax-on .ad-content .tbl-wrap {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ==========================================================================
+   Admin Dark Mode Parity (Desktop, Tablet, Mobile & Modals)
+   ========================================================================== */
+html:root[data-theme="dark"] body.ax-on,
+html:root[data-theme="dark"] body.in-app.ax-on {
+  --bg: #0B1220;
+  --bg-2: #0F172A;
+  --card: #1E293B;
+  --text: #F8FAFC;
+  --muted: #CBD5E1;
+  --line: #334155;
+  --line-2: #475569;
+  background: #0B1220 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.ax-on .ad,
+html:root[data-theme="dark"] body.in-app.ax-on .ad {
+  --ad-bg: #0B1220;
+  --ad-card: #1E293B;
+  --ad-side: #0F172A;
+  --ad-side-2: #1E293B;
+  --ad-ink: #F8FAFC;
+  --ad-ink-2: #E2E8F0;
+  --ad-mut: #CBD5E1;
+  --ad-line: #334155;
+  --ad-line-2: #1E293B;
+  --ad-pri: #38BDF8;
+  --ad-pri-2: #0284C7;
+  --ad-pri-soft: rgba(56, 189, 248, 0.16);
+  background: #0B1220 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-side,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-top,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-tab {
+  background: #0F172A !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-brand,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-brand .brand-text,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-titles b,
+html:root[data-theme="dark"] body.in-app.ax-on .ad :is(h1, h2, h3, h4, b, strong, .ax-head h1, .ad-hello h1, .page-head h1, .stats b, .kpi b, .biz-stats b, .ad-kpi b) {
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad :is(p, .muted, .small, .ad-kpi span, .ad-kpi .l, .ad-kpi .f, .ad-ch p, .ad-hello p, .page-head p, .ax-head p, .ad-m-titles span, .ad-m-dash-head p, .ad-m-qhead span, .lbl span) {
+  color: #CBD5E1 !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-nav a,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-back,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-tab-it {
+  color: #CBD5E1 !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-nav a.on,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-tab-it.on {
+  background: rgba(56, 189, 248, 0.16) !important;
+  color: #38BDF8 !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-search,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-ib,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-top .theme-btn,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-user > button,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-back {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-kpi,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-card,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-todo,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-task,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-allgood,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-qcard,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-drop,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .sheet,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .card,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .table-wrap,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .tbl-wrap,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .set-nav,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .save-bar,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .stats > div,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .kpi,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .biz-stats > div {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 4px 16px rgba(2, 6, 23, 0.35) !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-m-qlinks a,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .btn:not(.btn-primary):not(.btn-danger),
+html:root[data-theme="dark"] body.in-app.ax-on .ad-btn:not(.pri),
+html:root[data-theme="dark"] body.in-app.ax-on .ax-ghost,
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content .chips .chip:not(.on),
+html:root[data-theme="dark"] body.in-app.ax-on .modal .btn:not(.btn-primary):not(.btn-danger) {
+  background: #0F172A !important;
+  border-color: #475569 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content th {
+  background: #0F172A !important;
+  color: #CBD5E1 !important;
+  border-color: #334155 !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content td {
+  color: #F1F5F9 !important;
+  border-color: #334155 !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .ad-content :is(.input, .select, input:not([type="checkbox"]):not([type="radio"]), select, textarea),
+html:root[data-theme="dark"] body.in-app.ax-on .modal :is(.input, .select, input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  background: #0F172A !important;
+  border: 1px solid #475569 !important;
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .modal {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 24px 48px rgba(2, 6, 23, 0.65) !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .modal :is(h1, h2, h3, b, strong, label.field) {
+  color: #F8FAFC !important;
+}
+html:root[data-theme="dark"] body.in-app.ax-on .modal :is(p, .lead, .muted, .small, label.field small, label.field span) {
+  color: #CBD5E1 !important;
+}

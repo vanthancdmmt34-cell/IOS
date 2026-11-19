@@ -621,9 +621,12 @@ export async function openBuyModal(kind = "pro") {
   try { [pl, me] = await Promise.all([api("/api/billing/plans"), api("/api/billing/me")]); }
   catch (e) { buyOpen = false; toast(e.message, "err"); return; }
   const mem = me.membership || {};
-  const m = openModal(`<div class="buy" id="buyBox"></div>`, { cls: "wide buy-modal", label: "Nâng cấp", onClose: () => { buyOpen = false; } });
+  const leaveFns = [];
+  const onPop = () => { while (leaveFns.length) { try { leaveFns.pop()(); } catch {} } };
+  window.addEventListener("popstate", onPop, { once: true });
+  const m = openModal(`<div class="buy" id="buyBox"></div>`, { cls: "wide buy-modal", label: "Nâng cấp", onClose: () => { buyOpen = false; window.removeEventListener("popstate", onPop); onPop(); } });
   const box = m.el.querySelector("#buyBox");
-  const fakeCtx = { onLeave: (fn) => window.addEventListener("hashchange", fn, { once: true }) };
+  const fakeCtx = { onLeave: (fn) => leaveFns.push(fn) };
   const paint = () => {
     const plans = pl.plans.filter((p) => (p.kind || "pro") === kind);
     const base = plans.find((p) => p.months === 1);

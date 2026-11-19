@@ -1021,7 +1021,7 @@ html body.in-app:not(.ax-on) #main :is(.lx-practice-card:hover, .lx-ex:hover) {
 }
 .cp-follow { position: fixed; }
 .cp-follow-btn { position: relative; }
-body.cp-on .aiw:not(.open) .aiw-fab { display: none; }
+body.cp-on .aiw { bottom: 18px !important; right: 112px !important; z-index: 50 !important; }
 
 /* Chọn bạn đồng hành (màn chọn môn) */
 .cp-picker { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin: 12px 0 6px; padding: 0; }

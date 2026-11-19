@@ -12,7 +12,11 @@ const PANELS = [
 ];
 const SRC = { admin: ["Đặt trong Quản trị", "tag-tim"], env: ["Từ biến môi trường máy chủ", "tag-line"], default: ["Mặc định", "tag-line"] };
 
-export async function systemPage(body) {
+export async function systemPage(body, ctx) {
+  if (body._sysAc) body._sysAc.abort();
+  const sysAc = new AbortController();
+  body._sysAc = sysAc;
+  ctx?.onLeave?.(() => sysAc.abort());
   body.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let st, sy;
   try { [st, sy] = await Promise.all([api("/api/admin/settings"), api("/api/admin/system")]); }
@@ -114,13 +118,13 @@ export async function systemPage(body) {
     if (t.dataset.y) yCur[t.dataset.y] = t.value.trim();
     if (t.dataset.secret) { if (t.value.trim()) secrets[t.dataset.secret] = t.value.trim(); else delete secrets[t.dataset.secret]; }
     paint();
-  });
+  }, { signal: sysAc.signal });
   body.addEventListener("click", async (e) => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.panel) { panel = b.dataset.panel; try { sessionStorage.setItem("pl-sys-panel", panel); } catch {} render(); return; }
     if (b.dataset.copy) { navigator.clipboard?.writeText(b.dataset.copy).then(() => toast("Đã sao chép.", "ok")).catch(() => {}); return; }
     if (b.dataset.clear) { secrets[b.dataset.clear] = null; render(); return; }
-    if (b.id === "cfUndo") { systemPage(body); return; }
+    if (b.id === "cfUndo") { systemPage(body, ctx); return; }
     if (b.id === "cfSave") return save(b);
     if (b.id === "testAi") {
       if (changes().length) return toast("Hãy lưu cấu hình trước khi kiểm tra.", "info");
@@ -151,7 +155,7 @@ export async function systemPage(body) {
       }
       b.disabled = false;
     }
-  });
+  }, { signal: sysAc.signal });
 
   async function save(btn) {
     btn.disabled = true;
@@ -171,7 +175,7 @@ export async function systemPage(body) {
       toast("Đã lưu cấu hình. Có hiệu lực ngay.", "ok");
       if (warning) toast(warning, "err", 8000);
       window.dispatchEvent(new Event("pl:config-changed"));
-      systemPage(body);
+      systemPage(body, ctx);
     } catch (e) { toast(e.message, "err", 6000); btn.disabled = false; }
   }
   render();

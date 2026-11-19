@@ -6,9 +6,6 @@ export const S = {
   me: null,
   csrf: "",
   scores: null,
-  chapters: [],
-  groups: [],
-  paths: [],
   topics: [],
   chapters: [], groups: [], paths: [], // dữ liệu bài tập đã gỡ: giữ rỗng để các hàm dùng chung không lỗi
   exams: null, // exam state per chapter
@@ -458,7 +455,7 @@ export function toggleTheme() {
 }
 // Shared light / dark toggle button (app topbar, landing page); a single handler manages clicks everywhere.
 // Nút sáng / tối: bấm là đổi cả giao diện (toàn bộ CSS đọc cùng một thuộc tính data-theme trên <html>).
-export const themeBtnHtml = () => `<button type="button" class="theme-btn" data-theme-toggle aria-label="Đổi giao diện sáng / tối" title="Đổi giao diện sáng / tối"><span class="t-moon">${icon("moon")}</span><span class="t-sun">${icon("sun")}</span><span class="theme-btn-txt"><b class="tt-dark">Chế độ tối</b><b class="tt-light">Chế độ sáng</b></span></button>`;
+export const themeBtnHtml = () => `<button type="button" class="theme-btn" data-theme-toggle aria-label="Đổi giao diện sáng / tối" title="Đổi giao diện sáng / tối"><span class="t-moon">${lineIcon("moon")}</span><span class="t-sun">${lineIcon("sun")}</span><span class="theme-btn-txt"><b class="tt-dark">Chế độ tối</b><b class="tt-light">Chế độ sáng</b></span></button>`;
 if (typeof document !== "undefined") document.addEventListener("click", (e) => { if (e.target.closest && e.target.closest("[data-theme-toggle]")) toggleTheme(); });
 
 /* ---------- Shared components (5.1.0) ---------- */

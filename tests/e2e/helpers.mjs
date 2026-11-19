@@ -10,6 +10,8 @@ import path from 'node:path';
 export const VIEWPORTS = {
   mobile: { width: 390, height: 844, dpr: 3, isMobile: true },
   narrow: { width: 320, height: 844, dpr: 2, isMobile: true },
+  tablet: { width: 900, height: 700, dpr: 1, isMobile: false },
+  tabletWide: { width: 1000, height: 700, dpr: 1, isMobile: false },
   desktop: { width: 1440, height: 900, dpr: 1, isMobile: false },
 };
 
@@ -52,6 +54,7 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
       activeViewport &&
       activeViewport.width === vp.width &&
       activeViewport.height === vp.height &&
+      activeViewport.dpr === vp.dpr &&
       activeViewport.isMobile === vp.isMobile
     ) {
       return;
@@ -144,13 +147,104 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     await cdp.waitForAppSettled({ expectAdmin, allowDenied, dismissGuide, selector });
   }
 
-  async function visitLanding({ viewport = 'mobile', pathName = '/', clearAuth = true } = {}) {
+  async function visitLanding({
+    viewport = 'mobile',
+    pathName = '/',
+    clearAuth = true,
+    lang = undefined,
+    theme = undefined,
+    selector = '#landingPage',
+  } = {}) {
     await setViewport(viewport);
     if (clearAuth) {
       await switchRole(null);
     }
-    await cdp.goto(`${baseUrl}${pathName}`);
-    await cdp.waitForLandingSettled({ selector: '#landingPage' });
+    const seedLines = [];
+    if (lang !== undefined) seedLines.push(`localStorage.setItem('pl-lang', ${JSON.stringify(lang)});`);
+    if (theme !== undefined) seedLines.push(`localStorage.setItem('me:theme', ${JSON.stringify(theme)});`);
+    let identifier = null;
+    if (seedLines.length) {
+      const res = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+        source: `try { ${seedLines.join(' ')} } catch {}`,
+      });
+      identifier = res?.identifier || null;
+    }
+    try {
+      await cdp.goto(`${baseUrl}${pathName}`);
+    } finally {
+      if (identifier) {
+        await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier }).catch(() => {});
+      }
+    }
+    if (lang !== undefined || theme !== undefined) {
+      const dirty = await cdp.evalJs((wLang, wTheme) => {
+        let changed = false;
+        if (wLang !== undefined && localStorage.getItem('pl-lang') !== wLang) {
+          localStorage.setItem('pl-lang', wLang);
+          changed = true;
+        }
+        if (wTheme !== undefined && localStorage.getItem('me:theme') !== wTheme) {
+          localStorage.setItem('me:theme', wTheme);
+          changed = true;
+        }
+        return changed;
+      }, lang, theme);
+      if (dirty) {
+        await cdp.reload();
+      }
+    }
+    await cdp.waitForLandingSettled({ selector });
+  }
+
+  async function visitPublic(
+    routePath,
+    {
+      viewport = 'desktop',
+      lang = undefined,
+      theme = undefined,
+      clearAuth = true,
+      selector = '.dl-public-shell, #landingPage, main',
+    } = {}
+  ) {
+    await setViewport(viewport);
+    if (clearAuth) {
+      await switchRole(null);
+    }
+    const seedLines = [];
+    if (lang !== undefined) seedLines.push(`localStorage.setItem('pl-lang', ${JSON.stringify(lang)});`);
+    if (theme !== undefined) seedLines.push(`localStorage.setItem('me:theme', ${JSON.stringify(theme)});`);
+    let identifier = null;
+    if (seedLines.length) {
+      const res = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+        source: `try { ${seedLines.join(' ')} } catch {}`,
+      });
+      identifier = res?.identifier || null;
+    }
+    try {
+      await cdp.goto(`${baseUrl}${routePath}`);
+    } finally {
+      if (identifier) {
+        await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier }).catch(() => {});
+      }
+    }
+    if (lang !== undefined || theme !== undefined) {
+      const dirty = await cdp.evalJs((wLang, wTheme) => {
+        let changed = false;
+        if (wLang !== undefined && localStorage.getItem('pl-lang') !== wLang) {
+          localStorage.setItem('pl-lang', wLang);
+          changed = true;
+        }
+        if (wTheme !== undefined && localStorage.getItem('me:theme') !== wTheme) {
+          localStorage.setItem('me:theme', wTheme);
+          changed = true;
+        }
+        return changed;
+      }, lang, theme);
+      if (dirty) {
+        await cdp.reload();
+      }
+    }
+    await cdp.waitForLandingSettled({ selector });
   }
 
   async function measureOverflow() {
@@ -358,6 +452,397 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     activeRole = null;
   }
 
+  async function getThemeState() {
+    return cdp.evalJs(() => ({
+      attr: document.documentElement.getAttribute('data-theme'),
+      storage: localStorage.getItem('me:theme'),
+    }));
+  }
+
+  async function toggleThemeViaUi(selector = '[data-theme-toggle]') {
+    const found = await cdp.evalJs((sel) => {
+      const els = [...document.querySelectorAll(sel)];
+      const vis = els.find((el) => {
+        const st = getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+      if (!vis) return false;
+      vis.scrollIntoView({ block: 'center', inline: 'center' });
+      vis.click();
+      return true;
+    }, selector);
+    assert.ok(found, `Expected visible theme toggle matching "${selector}"`);
+    await new Promise((r) => setTimeout(r, 120));
+    return getThemeState();
+  }
+
+  async function switchThemeAndAssert(expectedNext, selector = '[data-theme-toggle]') {
+    const st = await toggleThemeViaUi(selector);
+    assert.strictEqual(st.attr, expectedNext, `Expected html[data-theme="${expectedNext}"] after toggle, got "${st.attr}"`);
+    assert.strictEqual(st.storage, expectedNext, `Expected localStorage["me:theme"]="${expectedNext}" after toggle, got "${st.storage}"`);
+    return st;
+  }
+
+  async function restoreLightAndVi() {
+    await cdp.evalJs(() => {
+      try {
+        localStorage.setItem('me:theme', 'light');
+        localStorage.setItem('pl-lang', 'vi');
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.lang = 'vi';
+      } catch {}
+    }).catch(() => {});
+  }
+
+  async function measureContrast(selector, opts = {}) {
+    return cdp.evalJs((sel, options) => {
+      const parseColor = (str) => {
+        if (!str || str === 'transparent') return [0, 0, 0, 0];
+        const m = /rgba?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)(?:\s*,\s*(\d+(?:\.\d+)?))?\s*\)/i.exec(str);
+        if (!m) return null;
+        return [Number(m[1]), Number(m[2]), Number(m[3]), m[4] === undefined ? 1 : Number(m[4])];
+      };
+      const composite = (fg, bg) => {
+        const a = fg[3];
+        if (a >= 0.999) return [fg[0], fg[1], fg[2], 1];
+        if (a <= 0.001) return bg;
+        return [
+          fg[0] * a + bg[0] * (1 - a),
+          fg[1] * a + bg[1] * (1 - a),
+          fg[2] * a + bg[2] * (1 - a),
+          1,
+        ];
+      };
+      const resolveBg = (el) => {
+        const layers = [];
+        let cur = el;
+        while (cur && cur.nodeType === 1) {
+          const c = parseColor(getComputedStyle(cur).backgroundColor);
+          if (c && c[3] > 0.001) layers.push(c);
+          cur = cur.parentElement;
+        }
+        let acc = [255, 255, 255, 1];
+        for (let i = layers.length - 1; i >= 0; i--) {
+          acc = composite(layers[i], acc);
+        }
+        return acc;
+      };
+      const relLum = ([r, g, b]) => {
+        const lin = (c) => {
+          const s = c / 255;
+          return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      };
+      const ratioOf = (c1, c2) => {
+        const l1 = relLum(c1);
+        const l2 = relLum(c2);
+        return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+      };
+      const isVis = (el) => {
+        const st = getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      };
+
+      const includeNonText = !!options?.includeNonText;
+      const els = [...document.querySelectorAll(sel)].filter(isVis);
+      const samples = [];
+      for (const el of els) {
+        const tag = el.tagName;
+        const isInput = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA';
+        const txt = (isInput ? (el.value || el.getAttribute('placeholder') || el.tagName) : (el.textContent || '')).trim().replace(/\s+/g, ' ');
+        if (!includeNonText && !isInput && !txt) continue;
+        const st = getComputedStyle(el);
+        const fg = parseColor(st.color);
+        if (!fg) continue;
+        const bg = resolveBg(el);
+        const effFg = composite(fg, bg);
+        const ratio = Math.round(ratioOf(effFg, bg) * 100) / 100;
+        samples.push({
+          tag,
+          text: txt.slice(0, 48),
+          fg: `rgb(${Math.round(effFg[0])}, ${Math.round(effFg[1])}, ${Math.round(effFg[2])})`,
+          bg: `rgb(${Math.round(bg[0])}, ${Math.round(bg[1])}, ${Math.round(bg[2])})`,
+          ratio,
+        });
+      }
+      const minRatio = samples.length ? Math.min(...samples.map((s) => s.ratio)) : 0;
+      return { count: samples.length, minRatio, samples };
+    }, selector, opts);
+  }
+
+  async function assertContrast(selector, minRatio = 4.5, label = selector, opts = {}) {
+    const res = await measureContrast(selector, opts);
+    assert.ok(res.count > 0, `${label}: no visible elements matched "${selector}" for contrast check`);
+    const bad = res.samples.filter((s) => s.ratio < minRatio);
+    assert.strictEqual(
+      bad.length,
+      0,
+      `${label}: WCAG contrast < ${minRatio}:1 on ${bad.length}/${res.count} element(s): ${bad.slice(0, 3).map((b) => `"${b.text}" (${b.fg} on ${b.bg} = ${b.ratio}:1)`).join('; ')}`
+    );
+    return res;
+  }
+
+  async function getSurfaceLuminance(selector = 'body') {
+    const res = await cdp.evalJs((sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return { found: false };
+      const parseColor = (str) => {
+        if (!str || str === 'transparent') return [0, 0, 0, 0];
+        const m = /rgba?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)(?:\s*,\s*(\d+(?:\.\d+)?))?\s*\)/i.exec(str);
+        if (!m) return null;
+        return [Number(m[1]), Number(m[2]), Number(m[3]), m[4] === undefined ? 1 : Number(m[4])];
+      };
+      const composite = (fg, bg) => {
+        const a = fg[3];
+        if (a >= 0.999) return [fg[0], fg[1], fg[2], 1];
+        if (a <= 0.001) return bg;
+        return [fg[0] * a + bg[0] * (1 - a), fg[1] * a + bg[1] * (1 - a), fg[2] * a + bg[2] * (1 - a), 1];
+      };
+      const layers = [];
+      let cur = el;
+      while (cur && cur.nodeType === 1) {
+        const c = parseColor(getComputedStyle(cur).backgroundColor);
+        if (c && c[3] > 0.001) layers.push(c);
+        cur = cur.parentElement;
+      }
+      let acc = [255, 255, 255, 1];
+      for (let i = layers.length - 1; i >= 0; i--) acc = composite(layers[i], acc);
+      const lin = (c) => {
+        const s = c / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      };
+      const luminance = 0.2126 * lin(acc[0]) + 0.7152 * lin(acc[1]) + 0.0722 * lin(acc[2]);
+      return {
+        found: true,
+        bg: `rgb(${Math.round(acc[0])}, ${Math.round(acc[1])}, ${Math.round(acc[2])})`,
+        luminance: Math.round(luminance * 10000) / 10000,
+      };
+    }, selector);
+    assert.ok(res.found, `getSurfaceLuminance: element not found for "${selector}"`);
+    return res;
+  }
+
+  async function assertAllVisibleInViewport(selector, label = selector, { allowEmpty = false } = {}) {
+    const res = await cdp.evalJs((sel) => {
+      const els = [...document.querySelectorAll(sel)].filter((el) => {
+        const st = getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+      const vw = window.innerWidth;
+      const oob = els
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return {
+            tag: el.tagName,
+            id: el.id || '',
+            cls: String(el.className || '').slice(0, 40),
+            left: Math.round(r.left),
+            right: Math.round(r.right),
+            vw,
+          };
+        })
+        .filter((x) => x.left < -1 || x.right > vw + 1);
+      return { count: els.length, oob };
+    }, selector);
+    if (!allowEmpty) {
+      assert.ok(res.count > 0, `${label}: expected >= 1 visible element matching "${selector}"`);
+    }
+    assert.strictEqual(
+      res.oob.length,
+      0,
+      `${label}: element(s) outside viewport [0..${res.oob[0]?.vw}]: ${JSON.stringify(res.oob.slice(0, 3))}`
+    );
+    return res;
+  }
+
+  async function assertNoElementOverlap(selectorA, selectorB, label = `${selectorA} vs ${selectorB}`) {
+    const res = await cdp.evalJs((selA, selB) => {
+      const visRects = (sel) => [...document.querySelectorAll(sel)]
+        .filter((el) => {
+          const st = getComputedStyle(el);
+          if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        })
+        .map((el) => ({ tag: el.tagName, id: el.id || '', r: el.getBoundingClientRect() }));
+      const a = visRects(selA);
+      const b = visRects(selB);
+      const overlaps = [];
+      for (const ea of a) {
+        for (const eb of b) {
+          const inter = !(ea.r.right <= eb.r.left + 1 || eb.r.right <= ea.r.left + 1 || ea.r.bottom <= eb.r.top + 1 || eb.r.bottom <= ea.r.top + 1);
+          if (inter) {
+            overlaps.push({ a: ea.id || ea.tag, b: eb.id || eb.tag, aRect: [ea.r.left, ea.r.top, ea.r.right, ea.r.bottom], bRect: [eb.r.left, eb.r.top, eb.r.right, eb.r.bottom] });
+          }
+        }
+      }
+      return { aCount: a.length, bCount: b.length, overlaps };
+    }, selectorA, selectorB);
+    assert.strictEqual(
+      res.overlaps.length,
+      0,
+      `${label}: overlapping elements detected: ${JSON.stringify(res.overlaps.slice(0, 3))}`
+    );
+    return res;
+  }
+
+  function consoleErrorCount() {
+    return cdp.consoleErrors.length;
+  }
+
+  function assertNoConsoleErrors(sinceIdx, label = 'console') {
+    const errs = cdp.consoleErrors.slice(sinceIdx);
+    assert.strictEqual(
+      errs.length,
+      0,
+      `${label}: unexpected console.error(s): ${errs.map((e) => e.text).join(' | ')}`
+    );
+  }
+
+  async function trackRequests(fn, { urlPattern = /\/api\//, method = null } = {}) {
+    const requests = [];
+    const status4xx = [];
+    const byEndpoint = {};
+    const wantMethod = method ? String(method).toUpperCase() : null;
+    const unsubReq = cdp.on('Network.requestWillBeSent', (params) => {
+      const req = params?.request;
+      if (!req?.url) return;
+      let urlPath = req.url;
+      try { urlPath = new URL(req.url).pathname + new URL(req.url).search; } catch {}
+      if (urlPattern && !urlPattern.test(urlPath) && !urlPattern.test(req.url)) return;
+      const m = String(req.method || 'GET').toUpperCase();
+      if (wantMethod && m !== wantMethod) return;
+      requests.push({ url: urlPath, method: m, ts: Date.now() });
+      const key = `${m} ${urlPath.split('?')[0]}`;
+      byEndpoint[key] = (byEndpoint[key] || 0) + 1;
+    });
+    const unsubRes = cdp.on('Network.responseReceived', (params) => {
+      const resp = params?.response;
+      if (!resp?.url) return;
+      if (typeof resp.status === 'number' && resp.status >= 400 && resp.status < 500) {
+        status4xx.push({ status: resp.status, url: resp.url });
+      }
+    });
+    try {
+      await fn();
+    } finally {
+      unsubReq();
+      unsubRes();
+    }
+    return { total: requests.length, requests, byEndpoint, status4xx };
+  }
+
+  async function probeBeforeUnloadLeak(leaveFn) {
+    let dialogCount = 0;
+    const unsubDlg = cdp.on('Page.javascriptDialogOpening', (params) => {
+      if (params?.type === 'beforeunload') dialogCount++;
+      cdp.send('Page.handleJavaScriptDialog', { accept: true }).catch(() => {});
+    });
+    try {
+      await leaveFn();
+    } finally {
+      unsubDlg();
+    }
+    const probe = await cdp.evalJs(() => {
+      const hadOnBeforeUnload = typeof window.onbeforeunload === 'function';
+      const ev = new Event('beforeunload', { cancelable: true });
+      let returnValSet = false;
+      try {
+        Object.defineProperty(ev, 'returnValue', {
+          configurable: true,
+          get() { return ''; },
+          set(v) { if (v !== undefined && v !== true) returnValSet = true; },
+        });
+      } catch {}
+      const dispatchRes = window.dispatchEvent(ev);
+      const syntheticPrevented = !dispatchRes || ev.defaultPrevented || returnValSet;
+      return { hadOnBeforeUnload, syntheticPrevented };
+    });
+    const leaked = dialogCount > 0 || probe.hadOnBeforeUnload || probe.syntheticPrevented;
+    return { leaked, dialogCount, ...probe };
+  }
+
+  async function switchLangViaUi(targetLang) {
+    const clicked = await cdp.evalJs((lang) => {
+      const els = [...document.querySelectorAll(`.lang-switch [data-lang="${lang}"], [data-set-lang="${lang}"]`)];
+      const vis = els.find((el) => {
+        const st = getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+      if (!vis) return false;
+      vis.scrollIntoView({ block: 'center', inline: 'center' });
+      vis.click();
+      return true;
+    }, targetLang);
+    assert.ok(clicked, `Expected visible language switch button for "${targetLang}"`);
+    await cdp.waitForCondition(
+      (lang) => document.documentElement.lang === lang && localStorage.getItem('pl-lang') === lang,
+      8000,
+      80,
+      targetLang
+    );
+    await new Promise((r) => setTimeout(r, 150));
+  }
+
+  async function detectMixedViEn(
+    rootSelector = '#main',
+    { excludeSelectors = ['[data-i18n="off"]', 'code', 'pre', 'script', 'style'], allowTexts = ['Tiếng Việt'] } = {}
+  ) {
+    return cdp.evalJs((rootSel, excludes, allowed) => {
+      const root = document.querySelector(rootSel);
+      if (!root) return { foundRoot: false, count: 0, leaks: [] };
+      const viRe = /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i;
+      const isVis = (el) => {
+        if (!el || el.nodeType !== 1) return false;
+        if (el.closest('[hidden]')) return false;
+        for (const ex of excludes) {
+          if (el.closest(ex)) return false;
+        }
+        const st = getComputedStyle(el);
+        if (st.display === 'none' || st.visibility === 'hidden' || Number(st.opacity) === 0) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      };
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const leaks = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        const txt = (node.nodeValue || '').trim().replace(/\s+/g, ' ');
+        if (!txt || !viRe.test(txt)) continue;
+        if (/^@[\w.-]+$/.test(txt)) continue;
+        if (allowed.some((a) => txt === a || txt.includes(a))) continue;
+        const el = node.parentElement;
+        if (!isVis(el)) continue;
+        const tag = el.tagName.toLowerCase();
+        const idPart = el.id ? `#${el.id}` : '';
+        leaks.push({ text: txt.slice(0, 80), selector: `${tag}${idPart}` });
+      }
+      return { foundRoot: true, count: leaks.length, leaks };
+    }, rootSelector, excludeSelectors, allowTexts);
+  }
+
+  async function assertNoViLeaksInEn(rootSelector = '#main', opts = {}) {
+    const lang = await cdp.evalJs(() => document.documentElement.lang);
+    assert.strictEqual(lang, 'en', `Expected html[lang="en"], got "${lang}"`);
+    const res = await detectMixedViEn(rootSelector, opts);
+    assert.ok(res.foundRoot, `assertNoViLeaksInEn: root selector "${rootSelector}" not found`);
+    assert.strictEqual(
+      res.count,
+      0,
+      `Mixed VI text leaked in EN (${rootSelector}): ${res.leaks.slice(0, 5).map((l) => `"${l.text}" (${l.selector})`).join(' | ')}`
+    );
+    return res;
+  }
+
   return {
     cdp,
     srv,
@@ -369,6 +854,7 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     switchRole,
     visit,
     visitLanding,
+    visitPublic,
     measureOverflow,
     assertNoOverflow,
     existsVisible,
@@ -379,5 +865,21 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
     inspectAdminVisuals,
     shot,
     invalidateRoleCache,
+    getThemeState,
+    toggleThemeViaUi,
+    switchThemeAndAssert,
+    restoreLightAndVi,
+    measureContrast,
+    assertContrast,
+    getSurfaceLuminance,
+    assertAllVisibleInViewport,
+    assertNoElementOverlap,
+    consoleErrorCount,
+    assertNoConsoleErrors,
+    trackRequests,
+    probeBeforeUnloadLeak,
+    switchLangViaUi,
+    detectMixedViEn,
+    assertNoViLeaksInEn,
   };
 }

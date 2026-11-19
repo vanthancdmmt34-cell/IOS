@@ -1498,7 +1498,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
       if (auto) toast("Hết giờ, bài đã được nộp tự động.", "info");
     } catch (e) {
       toast(e.message, "err");
-      if (btn) { btn.disabled = false; btn.textContent = "Nộp bài"; }
+      if (btn) { btn.disabled = false; btn.innerHTML = `${icon("check")}${tx("Kiểm tra đáp án", "Check answers")}`; }
     }
   }
 
@@ -1725,11 +1725,12 @@ export async function pageLangWrite(main, [langId, levelId], query, ctx) {
     bindSay(main);
     const cv = main.querySelector("#lxCv"), g = cv.getContext("2d");
     const draw = () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
       g.clearRect(0, 0, SIZE, SIZE);
-      g.strokeStyle = "#d9dde5"; g.lineWidth = 1; g.setLineDash([6, 6]);
+      g.strokeStyle = isDark ? "#334155" : "#d9dde5"; g.lineWidth = 1; g.setLineDash([6, 6]);
       g.beginPath(); g.moveTo(SIZE / 2, 0); g.lineTo(SIZE / 2, SIZE); g.moveTo(0, SIZE / 2); g.lineTo(SIZE, SIZE / 2); g.moveTo(0, 0); g.lineTo(SIZE, SIZE); g.moveTo(SIZE, 0); g.lineTo(0, SIZE); g.stroke(); g.setLineDash([]);
-      if (showGuide) glyph(g, c.ch, "rgba(91,63,214,.16)");
-      g.strokeStyle = "#1f2937"; g.lineWidth = INK; g.lineCap = "round"; g.lineJoin = "round";
+      if (showGuide) glyph(g, c.ch, isDark ? "rgba(125,211,252,.22)" : "rgba(91,63,214,.16)");
+      g.strokeStyle = isDark ? "#F1F5F9" : "#1f2937"; g.lineWidth = INK; g.lineCap = "round"; g.lineJoin = "round";
       for (const s of strokes.concat(cur ? [cur] : [])) path(g, s);
     };
     draw();

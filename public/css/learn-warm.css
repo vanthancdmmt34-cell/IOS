@@ -107,7 +107,7 @@ body.in-app:not(.ax-on) .ws-nav { background: #F6F3E6; }
 body.in-app:not(.ax-on) .ed-bar .file { background: #F6F3E6; border-radius: 99px; }
 
 /* ===== Đồng bộ toàn bộ: đổi màu gốc để mọi nút, liên kết, nhãn, tab còn sót theo cùng phong cách ===== */
-:root, :root[data-theme="dark"], :root[data-theme="light"] {
+:root, :root[data-theme="light"] {
   --tim: #1D1C27; --tim-2: #2E2C3D; --tim-soft: #F7EBC0; --tim-ink: #FFFFFF;
   --paper: #F3F2EB; --paper-2: #FFFDF6; --paper-3: #F1EFE5; --ink: #1D1C27; --ink-2: #4A4858; --ink-3: #7A7887;
   --line: #E4E1D3; --line-2: #D9D5C4; --code-bg: #FFFDF6; --code-gutter: #F6F3E6; --console-bg: #1D1C27; --console-ink: #F3F2EB;
@@ -115,8 +115,6 @@ body.in-app:not(.ax-on) .ed-bar .file { background: #F6F3E6; border-radius: 99px
 }
 body { font-family: Quicksand, Nunito, Inter, system-ui, sans-serif; }
 h1, h2, h3, .modal h2 { font-family: "Bricolage Grotesque", Nunito, Inter, system-ui, sans-serif; letter-spacing: -.03em; }
-/* Chỉ còn giao diện sáng */
-.theme-btn, [data-theme-toggle] { display: none !important; }
 /* Mọi nút trong toàn hệ thống */
 .btn { border-radius: 99px !important; font-family: inherit; font-weight: 700; }
 .btn-primary { --b-bg: #1D1C27; --b-ink: #fff; --b-line: #1D1C27; background: #1D1C27 !important; border-color: #1D1C27 !important; color: #fff !important; box-shadow: 0 3px 0 rgba(0, 0, 0, .25) !important; }

@@ -124,7 +124,11 @@ function students(body) {
   const all = DATA.students || [];
   const stats = DATA.userStats || {};
   const byRole = stats.byRole || {};
-  let q = "", sort = "new", role = "all", status = "all";
+  const prevSq = body.querySelector("#sq");
+  let q = prevSq ? prevSq.value : "",
+    sort = body.querySelector("#ss")?.value || "new",
+    role = body.querySelector("#sr")?.value || "all",
+    status = body.querySelector("#st")?.value || "all";
   body.innerHTML = `
     <div class="stats biz-stats" style="margin-bottom:14px">
       <div><b>${fmtN(stats.total ?? all.length)}</b><span>Tổng tài khoản</span></div>
@@ -199,6 +203,10 @@ function students(body) {
   };
   $("#addU", body).addEventListener("click", () => addUser(() => students(body)));
   $("#bulkU", body).addEventListener("click", () => bulkUsers(() => students(body)));
+  if (q) $("#sq", body).value = q;
+  if (role !== "all") $("#sr", body).value = role;
+  if (status !== "all") $("#st", body).value = status;
+  if (sort !== "new") $("#ss", body).value = sort;
   $("#sq", body).addEventListener("input", (e) => { q = e.target.value; paint(); });
   $("#sr", body).addEventListener("change", (e) => { role = e.target.value; paint(); });
   $("#st", body).addEventListener("change", (e) => { status = e.target.value; paint(); });
@@ -258,10 +266,10 @@ function genPass() { const c = "abcdefghjkmnpqrstuvwxyz23456789"; let p = ""; fo
 function addUser(after) {
   const m = openModal(`<h2>Thêm tài khoản</h2><p class="lead">Tạo sẵn tài khoản rồi đưa tên đăng nhập và mật khẩu cho học viên.</p>
     <form class="auth-form" data-f>
-      <label class="field">Tên đăng nhập<input name="u" maxlength="30" autocomplete="off" required><small>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small></label>
-      <label class="field">Tên hiển thị<input name="n" maxlength="40" placeholder="Ví dụ: Nguyễn Văn An"></label>
-      <label class="field">Mật khẩu<input name="p" maxlength="128" value="${genPass()}" autocomplete="off" required><small>Đã tạo sẵn mật khẩu ngẫu nhiên, bạn có thể đổi.</small></label>
-      <label class="field">Vai trò<select name="r"><option value="student">Học viên</option><option value="parent">Phụ huynh</option><option value="teacher">Giáo viên (cần thêm giấy phép để tạo lớp)</option><option value="admin">Quản trị hệ thống</option></select></label>
+      <label class="field">Tên đăng nhập<input class="input" name="u" maxlength="30" autocomplete="off" required><small>3 đến 30 ký tự: chữ không dấu, số, dấu _ . -</small></label>
+      <label class="field">Tên hiển thị<input class="input" name="n" maxlength="40" placeholder="Ví dụ: Nguyễn Văn An"></label>
+      <label class="field">Mật khẩu<input class="input" name="p" maxlength="128" value="${genPass()}" autocomplete="off" required><small>Đã tạo sẵn mật khẩu ngẫu nhiên, bạn có thể đổi.</small></label>
+      <label class="field">Vai trò<select class="select" name="r"><option value="student">Học viên</option><option value="parent">Phụ huynh</option><option value="teacher">Giáo viên (cần thêm giấy phép để tạo lớp)</option><option value="admin">Quản trị hệ thống</option></select></label>
       <p class="form-msg err" data-m></p>
       <div class="modal-actions" style="margin-top:0"><button type="button" class="btn" data-close>Hủy</button><button class="btn btn-primary">Tạo tài khoản</button></div>
     </form>`);
@@ -368,7 +376,7 @@ function userActions(u, after) {
 function logoBox() {
   const url = cfg("logoUrl", "");
   return `<div class="set-row" data-row="logo"><div class="lbl"><b>Logo</b><span>Ảnh PNG, JPG hoặc WebP, tối đa 512 KB (ảnh lớn được tự thu nhỏ). Hiện ở góc trên, trang giới thiệu, trang công khai, chứng nhận và biểu tượng tab. Nên dùng ảnh vuông hoặc ngang, nền trong suốt.</span></div>
-    <div class="logo-box"><div class="logo-prev" id="logoPrev">${url ? `<img src="${esc(url)}" alt="Logo hiện tại">` : `<span class="brand-mark">Py</span><span class="small muted">Đang dùng logo mặc định</span>`}</div>
+    <div class="logo-box"><div class="logo-prev" id="logoPrev">${url ? `<img src="${esc(url)}" alt="Logo hiện tại">` : `<span class="brand-mark">LR</span><span class="small muted">Đang dùng logo mặc định</span>`}</div>
       <div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn btn-sm">${icon("download")}Chọn ảnh…<input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" hidden></label>
       ${url ? `<button class="btn btn-sm btn-ghost" id="logoDel" type="button">${icon("trash")}Dùng logo mặc định</button>` : ""}</div><p class="form-msg err" id="logoMsg"></p></div></div>`;
 }
@@ -385,9 +393,9 @@ async function shrinkLogo(file) {
   }
   throw new Error("Ảnh vẫn quá lớn sau khi thu nhỏ. Hãy chọn ảnh khác.");
 }
-function bindLogo(body) {
+function bindLogo(body, ctx) {
   const msg = () => $("#logoMsg", body);
-  const after = (r) => { S.cfg.logoUrl = r.logoUrl; refreshBrand(); toast(r.logoUrl ? "Đã cập nhật logo." : "Đã quay về logo mặc định.", "ok"); settingsPage(body); };
+  const after = (r) => { S.cfg.logoUrl = r.logoUrl; refreshBrand(); toast(r.logoUrl ? "Đã cập nhật logo." : "Đã quay về logo mặc định.", "ok"); settingsPage(body, ctx); };
   $("#logoFile", body)?.addEventListener("change", async (e) => {
     const f = e.target.files[0]; if (!f) return;
     msg().textContent = "";
@@ -405,7 +413,11 @@ function bindLogo(body) {
   });
 }
 
-async function settingsPage(body) {
+async function settingsPage(body, ctx) {
+  if (body._stAc) body._stAc.abort();
+  const stAc = new AbortController();
+  body._stAc = stAc;
+  ctx?.onLeave?.(() => stAc.abort());
   body.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let d;
   try { d = await api("/api/admin/settings"); } catch (e) { body.innerHTML = `<div class="sheet empty"><b>Không tải được cài đặt</b>${esc(e.message)}</div>`; return; }
@@ -440,7 +452,7 @@ async function settingsPage(body) {
           <button class="btn btn-ghost" id="stReset">Khôi phục mặc định</button><button class="btn" id="stUndo" disabled>Hoàn tác</button><button class="btn btn-primary" id="stSave" disabled>${icon("check")}Lưu cài đặt</button></div>
       </div>
     </div>`;
-  bindLogo(body);
+  bindLogo(body, ctx);
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const changed = () => d.schema.filter((f) => !same(cur[f.key], saved[f.key]));
   const paint = () => {
@@ -460,24 +472,26 @@ async function settingsPage(body) {
     const mul = el.closest("[data-multi]");
     if (mul) cur[mul.dataset.multi] = [...mul.querySelectorAll("input:checked")].map((x) => x.value);
     paint();
-  });
+  }, { signal: stAc.signal });
   body.querySelectorAll("[data-jump]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $(`#st-${a.dataset.jump}`, body).scrollIntoView({ behavior: "smooth", block: "start" }); }));
-  $("#stUndo", body).addEventListener("click", () => { settingsPage(body); window.dispatchEvent(new Event("pl:brand-reset")); });
+  $("#stUndo", body).addEventListener("click", () => { settingsPage(body, ctx); window.dispatchEvent(new Event("pl:brand-reset")); });
   $("#stSave", body).addEventListener("click", async () => {
     const btn = $("#stSave", body); btn.disabled = true;
     try {
       await api("/api/admin/settings", "PUT", { values: cur });
+      Object.assign(saved, JSON.parse(JSON.stringify(cur)));
+      paint();
       toast("Đã lưu cài đặt. Thay đổi có hiệu lực ngay cho mọi người.", "ok");
       window.dispatchEvent(new Event("pl:config-changed"));
     } catch (e) { toast(e.message, "err", 6000); btn.disabled = false; }
   });
   $("#stReset", body).addEventListener("click", async () => {
     if (!(await confirmBox("Khôi phục cài đặt mặc định?", "Mọi cài đặt trong trang này quay về như lúc mới cài. Tài khoản, điểm, bài tập và lịch thi không bị ảnh hưởng.", "Khôi phục", true))) return;
-    try { await api("/api/admin/settings/reset", "POST", {}); toast("Đã khôi phục mặc định.", "ok"); window.dispatchEvent(new Event("pl:config-changed")); } catch (e) { toast(e.message, "err"); }
+    try { await api("/api/admin/settings/reset", "POST", {}); toast("Đã khôi phục mặc định.", "ok"); window.dispatchEvent(new Event("pl:config-changed")); settingsPage(body, ctx); } catch (e) { toast(e.message, "err"); }
   });
-  const guard = (e) => { if (changed().length) { e.preventDefault(); e.returnValue = ""; } };
-  window.addEventListener("beforeunload", guard);
-  window.addEventListener("hashchange", () => window.removeEventListener("beforeunload", guard), { once: true });
+  const guard = (e) => { if (!body.isConnected) return; if (changed().length) { e.preventDefault(); e.returnValue = ""; } };
+  window.addEventListener("beforeunload", guard, { signal: stAc.signal });
+  window.addEventListener("popstate", () => stAc.abort(), { once: true, signal: stAc.signal });
 }
 
 /* ---------- 2.2: Data and backups ---------- */

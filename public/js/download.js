@@ -1,7 +1,7 @@
 /* LifeRivo Study — Modern Cross-Platform Download Center (Mobile & PC)
    Supports both public route (/tai-ung-dung, /download) and in-app route (/app/tai-ung-dung).
    Clean geometric visual language (no chibi), bilingual VI/EN, Light + Dark mode aware. */
-import { S, api, esc, lineIcon, cfg, siteName, toast, brandCleanHtml } from "./core.js";
+import { S, api, esc, lineIcon, cfg, siteName, toast, brandCleanHtml, themeBtnHtml } from "./core.js";
 import { currentLang, langSwitchHtml, bindLangSwitch } from "./i18n.js";
 
 function detectPlatform() {
@@ -153,7 +153,9 @@ function buildDownloadHtml({ inApp, osInfo, filter, openGuideId }) {
             ${lineIcon("download", 18)}
             <span>${osInfo.installed
               ? T("Đang chạy chế độ Ứng dụng", "Running in App mode")
-              : T(`Tải cho ${currentOsLabel}`, `Get for ${currentOsLabel}`)}</span>
+              : (typeof window !== "undefined" && window.__plDeferredPrompt && osInfo.os !== "ios"
+                ? T("Cài đặt ngay (1 chạm)", "Install now (1-tap)")
+                : T(`Tải cho ${currentOsLabel}`, `Get for ${currentOsLabel}`))}</span>
           </button>
           <a class="btn btn-lg dl-secondary-cta" href="${S.me ? "/app/" : "/app/dang-nhap"}">
             ${lineIcon("globe", 18)}
@@ -328,6 +330,7 @@ export function mountDownloadView(container, { inApp = true, onNavigateHome, onA
               <a href="/${en ? "en" : "vi"}/pricing">${T("Bảng giá", "Pricing")}</a>
             </nav>
             <div class="dl-pub-auth">
+              ${themeBtnHtml()}
               ${langSwitchHtml()}
               <button type="button" class="btn btn-sm" data-dl-auth="login">${T("Đăng nhập", "Sign in")}</button>
               <button type="button" class="btn btn-primary btn-sm" data-dl-auth="register">${T("Bắt đầu miễn phí", "Start free")}</button>

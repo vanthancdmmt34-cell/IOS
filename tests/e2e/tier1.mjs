@@ -4,6 +4,8 @@
  */
 
 import assert from 'node:assert/strict';
+import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { ADMIN_ROUTES } from './helpers.mjs';
 import { apiRequest, assertWorkspaceFilesUntouched } from './server-seed.mjs';
 
@@ -1280,6 +1282,592 @@ export function registerTier1(suite, ctx) {
       for (const r of ADMIN_ROUTES) {
         await ctx.visit(r.path, { role: 'admin', viewport: 'desktop', expectAdmin: true });
         await ctx.assertNoOverflow(`T1-F14-06 desktop ${r.tab}`);
+      }
+    }
+  );
+
+  // ================= F11/F12/F13 Admin Theme, Dark Mode, Modal, Tablet, Gift Codes & EN Parity =================
+  suite.test(
+    { id: 'T1-F11-06', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin .ad-top renders visible [data-theme-toggle] and switches Light <-> Dark cleanly' },
+    async () => {
+      try {
+        await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'desktop', expectAdmin: true, theme: 'light' });
+        assert.ok(await ctx.existsVisible('.ad-top [data-theme-toggle]'), 'M3: Expected visible [data-theme-toggle] inside .ad-top');
+        await ctx.switchThemeAndAssert('dark', '.ad-top [data-theme-toggle]');
+        await ctx.switchThemeAndAssert('light', '.ad-top [data-theme-toggle]');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F12-07', tier: 1, feature: 'F12', milestone: 'M3', name: 'Admin Dark Mode renders dark canvas and >= 4.5:1 text contrast on desktop & mobile' },
+    async () => {
+      try {
+        for (const vp of ['desktop', 'mobile']) {
+          await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: vp, expectAdmin: true, theme: 'dark' });
+          const lum = await ctx.getSurfaceLuminance('.ad');
+          assert.ok(lum.luminance < 0.2, `M3: Expected dark .ad surface on ${vp} (luminance=${lum.luminance}, bg=${lum.bg})`);
+          await ctx.assertContrast('.ad h1, .ad-kpi b, .ad-kpi span, .ad-card h2, .ad-card p', 4.5, `T1-F12-07 ${vp}`);
+          await ctx.assertNoOverflow(`T1-F12-07 admin dark ${vp}`);
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F12-08', tier: 1, feature: 'F12', milestone: 'M3', name: 'Admin #addU modal in Dark Mode maintains dark surface and >= 4.5:1 contrast across desktop, tablet, mobile' },
+    async () => {
+      try {
+        for (const vp of ['desktop', 'tablet', 'mobile']) {
+          await ctx.visit('/app/quan-tri/hoc-vien', { role: 'admin', viewport: vp, expectAdmin: true, theme: 'dark' });
+          assert.ok(await ctx.existsVisible('#addU'), `Expected visible #addU on ${vp}`);
+          await cdp.click('#addU');
+          assert.ok(await ctx.waitForVisible('.modal', 3000), `Expected .modal to open on ${vp}`);
+          const modalLum = await ctx.getSurfaceLuminance('.modal');
+          assert.ok(modalLum.luminance < 0.2, `M3: Expected dark .modal background in Dark Mode on ${vp} (got ${modalLum.bg}, lum=${modalLum.luminance})`);
+          await ctx.assertContrast('.modal h2, .modal .lead, .modal label.field, .modal input[name="u"], .modal select[name="r"]', 4.5, `T1-F12-08 modal ${vp}`, { includeNonText: true });
+          if (await ctx.existsVisible('.modal .modal-x, .modal [data-close]')) {
+            await cdp.click('.modal .modal-x, .modal [data-close]');
+          }
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F13-06', tier: 1, feature: 'F13', milestone: 'M3', name: 'Admin Tablet (900x700) keeps sidebar/content non-overlapping and overflow-free in Light & Dark modes' },
+    async () => {
+      const routes = ['tong-quan', 'hoc-vien', 'kinh-doanh', 'ma-qua-tang', 'cai-dat', 'he-thong', 'song-ngu'];
+      try {
+        for (const theme of ['light', 'dark']) {
+          for (const tab of routes) {
+            await ctx.visit(`/app/quan-tri/${tab}`, { role: 'admin', viewport: 'tablet', expectAdmin: true, theme });
+            await ctx.assertNoOverflow(`T1-F13-06 ${tab} ${theme} 900x700`);
+            await ctx.assertNoElementOverlap('.ad-side', '.ad-content', `T1-F13-06 ${tab} ${theme} sidebar vs content`);
+            const mTabVis = await ctx.existsVisible('.ad-m-tab');
+            assert.strictEqual(mTabVis, false, `T1-F13-06 ${tab}: .ad-m-tab must stay hidden on 900x700 tablet`);
+          }
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F13-07', tier: 1, feature: 'F13', milestone: 'M3', name: 'Admin /app/quan-tri/ma-qua-tang #gcForm submission keeps #gcNew visible with generated codes' },
+    async () => {
+      await ctx.visit('/app/quan-tri/ma-qua-tang', { role: 'admin', viewport: 'desktop', expectAdmin: true });
+      assert.ok(await ctx.existsVisible('#gcForm input[name="count"]'), 'Expected #gcForm count input');
+      assert.ok(await ctx.existsVisible('#gcForm button'), 'Expected #gcForm submit button');
+      await cdp.fill('#gcForm input[name="count"]', '2');
+      await cdp.fill('#gcForm input[name="days"]', '7');
+      await cdp.fill('#gcForm input[name="note"]', 'E2E Gift Code');
+      const reqs = await ctx.trackRequests(
+        async () => {
+          await cdp.click('#gcForm button');
+          await new Promise((r) => setTimeout(r, 450));
+        },
+        { urlPattern: /\/api\/admin\/gift-codes/, method: 'POST' }
+      );
+      assert.strictEqual(reqs.total, 1, `Expected 1 POST /api/admin/gift-codes request, got ${reqs.total}`);
+      const box = await cdp.evalJs(() => {
+        const el = document.getElementById('gcNew');
+        const list = document.getElementById('gcList');
+        const copy = document.getElementById('gcCopy');
+        return {
+          exists: !!el,
+          hidden: el ? el.hidden : true,
+          listVal: list ? list.value.trim() : '',
+          hasCopy: !!copy,
+        };
+      });
+      assert.ok(box.exists && !box.hidden, 'M3: #gcNew must remain visible after #gcForm submission (must not be wiped by immediate re-render)');
+      const lines = box.listVal ? box.listVal.split(/\r?\n/).filter(Boolean) : [];
+      assert.strictEqual(lines.length, 2, `M3: Expected 2 generated codes in #gcList, got ${lines.length}`);
+      assert.ok(box.hasCopy, 'M3: Expected #gcCopy button inside #gcNew');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F13-08', tier: 1, feature: 'F13', milestone: 'M3', name: 'Admin EN localization (lang="en") translates dashboard, business, gift codes & system pages without VI leaks' },
+    async () => {
+      try {
+        const checks = [
+          { path: '/app/quan-tri/tong-quan', expectRe: /Admin Panel|Overview/i, ban: ['Phân khu quản trị', 'Cần chú ý', 'Đang học 7 ngày', 'Doanh thu 30 ngày'] },
+          { path: '/app/quan-tri/kinh-doanh', expectRe: /Revenue|Business/i, ban: ['Doanh thu và gói Pro', 'Doanh thu & Pro'] },
+          { path: '/app/quan-tri/ma-qua-tang', expectRe: /gift code/i, ban: ['Mã quà tặng Pro', 'Tạo mã mới', 'Mã chưa dùng'] },
+          { path: '/app/quan-tri/he-thong', expectRe: /Payment|System|AI/i, ban: ['Thanh toán, AI, hệ thống'] },
+        ];
+        for (const c of checks) {
+          await ctx.visit(c.path, { role: 'admin', viewport: 'desktop', expectAdmin: true, lang: 'en' });
+          const htmlLang = await cdp.evalJs(() => document.documentElement.lang);
+          assert.strictEqual(htmlLang, 'en', `${c.path}: expected html[lang="en"]`);
+          const txt = await cdp.evalJs(() => document.querySelector('.ad')?.textContent || '');
+          assert.match(txt, c.expectRe, `M3: ${c.path} missing EN heading/label`);
+          for (const vi of c.ban) {
+            assert.strictEqual(txt.includes(vi), false, `M3: ${c.path} leaked untranslated VI text "${vi}"`);
+          }
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  // ================= F15: Landing Surface (/ , /en , /vi) =================
+  suite.test(
+    { id: 'T1-F15-01', tier: 1, feature: 'F15', milestone: 'M1', name: 'Landing Desktop (1440x900) & Mobile (390x844) [data-theme-toggle] switches Light <-> Dark cleanly' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      try {
+        for (const vp of ['desktop', 'mobile']) {
+          await ctx.visitLanding({ viewport: vp, pathName: '/', theme: 'light' });
+          if (vp === 'mobile' && !(await ctx.existsVisible('[data-theme-toggle]'))) {
+            assert.ok(await ctx.existsVisible('#mobileMenuBtn'), 'Expected #mobileMenuBtn if toggle is inside drawer');
+            await cdp.click('#mobileMenuBtn');
+          }
+          assert.ok(await ctx.existsVisible('[data-theme-toggle]'), `M1: Expected visible [data-theme-toggle] on Landing ${vp}`);
+          await ctx.switchThemeAndAssert('dark');
+          const darkLum = await ctx.getSurfaceLuminance('#landingPage');
+          assert.ok(darkLum.luminance < 0.2, `M1: Expected dark #landingPage bg on ${vp} (lum=${darkLum.luminance}, bg=${darkLum.bg})`);
+          if (vp === 'mobile' && !(await ctx.existsVisible('[data-theme-toggle]')) && (await ctx.existsVisible('#mobileMenuBtn'))) {
+            await cdp.click('#mobileMenuBtn');
+          }
+          await ctx.switchThemeAndAssert('light');
+          const paperToken = await cdp.evalJs(() => getComputedStyle(document.querySelector('#landingPage.aw')).getPropertyValue('--paper').trim().toUpperCase());
+          assert.strictEqual(paperToken, '#FAF6EC', 'Light mode must restore --paper: #FAF6EC');
+        }
+        ctx.assertNoConsoleErrors(ceStart, 'T1-F15-01');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F15-02', tier: 1, feature: 'F15', milestone: 'M1', name: 'Landing Header Breakpoint (1440x900, 1000x700, 900x700) renders mutually exclusive nav vs burger' },
+    async () => {
+      for (const vp of ['desktop', 'tabletWide', 'tablet']) {
+        await ctx.visitLanding({ viewport: vp, pathName: '/' });
+        await ctx.assertNoOverflow(`T1-F15-02 ${vp}`);
+        const navVis = await ctx.existsVisible('.aw-nav');
+        const burgerVis = await ctx.existsVisible('#mobileMenuBtn');
+        assert.ok(navVis || burgerVis, `${vp}: either .aw-nav or #mobileMenuBtn must be visible`);
+        assert.strictEqual(navVis && burgerVis, false, `M1: ${vp} must NEVER show both .aw-nav and #mobileMenuBtn simultaneously`);
+        if (vp === 'desktop') {
+          assert.strictEqual(navVis, true, '1440x900 must show .aw-nav');
+          assert.strictEqual(burgerVis, false, '1440x900 must hide #mobileMenuBtn');
+        }
+        if (burgerVis) {
+          await cdp.click('#mobileMenuBtn');
+          assert.ok(await ctx.existsVisible('#mobileDrawer'), `${vp}: clicking #mobileMenuBtn must open #mobileDrawer`);
+          await cdp.click('#mobileMenuBtn');
+        }
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F15-03', tier: 1, feature: 'F15', milestone: 'M1', name: 'Landing Hero CTAs, Section 2 Demo Carousel & FAQ Accordions respond cleanly' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      await ctx.visitLanding({ viewport: 'desktop', pathName: '/' });
+      assert.ok(await ctx.existsVisible('#heroCta'), 'Expected visible #heroCta');
+      assert.ok(await ctx.existsVisible('.hero-cta-sec'), 'Expected visible .hero-cta-sec');
+      assert.ok(await ctx.existsVisible('#demoDots [data-dot="2"]'), 'Expected visible #demoDots [data-dot="2"]');
+      await cdp.click('#demoDots [data-dot="2"]');
+      const step1 = await cdp.evalJs(() => document.getElementById('demoStepCount')?.textContent.trim() || '');
+      assert.strictEqual(step1, '3 / 6', `Expected step 3 / 6 after clicking dot 2 (got "${step1}")`);
+
+      assert.ok(await ctx.existsVisible('#demoDots [data-dot="3"]'), 'Expected visible #demoDots [data-dot="3"]');
+      await cdp.click('#demoDots [data-dot="3"]');
+      const step2 = await cdp.evalJs(() => document.getElementById('demoStepCount')?.textContent.trim() || '');
+      assert.strictEqual(step2, '4 / 6', `Expected step 4 / 6 after clicking dot 3 (got "${step2}")`);
+
+      assert.ok(await ctx.existsVisible('#demoOpts [data-opt="0"]'), 'Expected visible demo quiz option');
+      await cdp.click('#demoOpts [data-opt="0"]');
+      const msgClass = await cdp.evalJs(() => document.getElementById('demoMsg')?.className || '');
+      assert.match(msgClass, /ok|bad/, 'Clicking demo quiz option must populate #demoMsg');
+
+      if (await ctx.existsVisible('#demoSpeakBtn')) await cdp.click('#demoSpeakBtn');
+      if (await ctx.existsVisible('#demoSlowBtn')) await cdp.click('#demoSlowBtn');
+
+      assert.ok(await ctx.existsVisible('.aw-faq details.faq-item > summary.faq-summary'), 'Expected visible FAQ summary');
+      await cdp.click('.aw-faq details.faq-item > summary.faq-summary');
+      const faqOpen = await cdp.evalJs(() => document.querySelector('.aw-faq details.faq-item')?.open === true);
+      assert.strictEqual(faqOpen, true, 'Clicking FAQ summary must open details.faq-item');
+      ctx.assertNoConsoleErrors(ceStart, 'T1-F15-03');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F15-04', tier: 1, feature: 'F15', milestone: 'M1', name: 'Landing Mobile (390x844) #mobileDrawer links scroll to visible mobile sections & navigate to /tai-ung-dung' },
+    async () => {
+      await ctx.visitLanding({ viewport: 'mobile', pathName: '/' });
+      assert.ok(await ctx.existsVisible('#mobileMenuBtn'), 'Expected visible #mobileMenuBtn');
+      await cdp.click('#mobileMenuBtn');
+      assert.ok(await ctx.existsVisible('#mobileDrawer'), 'Expected #mobileDrawer open');
+      const anchorSel = '#mobileDrawer a[href="#lpMobileDemo"], #mobileDrawer a[href="#demoBox"]';
+      assert.ok(await ctx.existsVisible(anchorSel), 'Expected demo anchor inside #mobileDrawer');
+      await cdp.evalJs(() => { window.scrollTo(0, 0); });
+      await cdp.click(anchorSel);
+      await new Promise((r) => setTimeout(r, 450));
+      const afterScroll = await cdp.evalJs(() => ({
+        drawerHidden: document.getElementById('mobileDrawer')?.hidden === true,
+        scrollY: window.scrollY,
+      }));
+      assert.strictEqual(afterScroll.drawerHidden, true, 'Tapping #mobileDrawer link must close drawer');
+      assert.ok(afterScroll.scrollY > 50, `M1: Tapping #mobileDrawer demo link on 390x844 must scroll to visible mobile demo (got scrollY=${afterScroll.scrollY})`);
+      await ctx.assertNoOverflow('T1-F15-04 mobile anchor');
+
+      await cdp.click('#mobileMenuBtn');
+      assert.ok(await ctx.existsVisible('#mobileDrawer a[href="/tai-ung-dung"]'), 'Expected /tai-ung-dung link in #mobileDrawer');
+      await cdp.click('#mobileDrawer a[href="/tai-ung-dung"]');
+      await cdp.waitForLandingSettled({ selector: '.dl-public-shell' });
+      const dlPath = await cdp.evalJs(() => location.pathname);
+      assert.strictEqual(dlPath, '/tai-ung-dung');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F15-05', tier: 1, feature: 'F15', milestone: 'M1', name: 'Landing VI/EN switch translates #lpMobileHome & does not force-hide #cau-chuyen/#xep-hang via CSS' },
+    async () => {
+      try {
+        await ctx.visitLanding({ viewport: 'mobile', pathName: '/vi', lang: 'vi' });
+        await ctx.switchLangViaUi('en');
+        const mHero = await cdp.evalJs(() => document.querySelector('#lpMobileHome .lp-m-hero-copy h1')?.textContent.trim() || '');
+        assert.strictEqual(mHero, 'Speak foreign languages with confidence.', `M1: Expected EN mobile hero, got "${mHero}"`);
+
+        await ctx.setViewport('desktop');
+        const secCss = await cdp.evalJs(() => {
+          const check = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return { exists: false, disp: '' };
+            const wasHidden = el.hidden;
+            el.hidden = false;
+            const disp = getComputedStyle(el).display;
+            el.hidden = wasHidden;
+            return { exists: true, disp };
+          };
+          return { cauChuyen: check('cau-chuyen'), xepHang: check('xep-hang') };
+        });
+        assert.ok(secCss.cauChuyen.exists && secCss.cauChuyen.disp !== 'none', `M1: html[lang="en"] CSS must not force #cau-chuyen display:none (got "${secCss.cauChuyen.disp}")`);
+        assert.ok(secCss.xepHang.exists && secCss.xepHang.disp !== 'none', `M1: html[lang="en"] CSS must not force #xep-hang display:none (got "${secCss.xepHang.disp}")`);
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  // ================= F16: Public & In-App Download (/tai-ung-dung, /app/tai-ung-dung) =================
+  suite.test(
+    { id: 'T1-F16-01', tier: 1, feature: 'F16', milestone: 'M1', name: 'Public /tai-ung-dung renders visible [data-theme-toggle] and switches Light <-> Dark on desktop & mobile' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      try {
+        for (const vp of ['desktop', 'mobile']) {
+          await ctx.visitPublic('/tai-ung-dung', { viewport: vp, theme: 'light' });
+          await ctx.assertNoOverflow(`T1-F16-01 ${vp} light`);
+          assert.ok(await ctx.existsVisible('.dl-pub-top [data-theme-toggle], .dl-pub-right [data-theme-toggle]'), `M1: Expected visible [data-theme-toggle] in public download header on ${vp}`);
+          await ctx.switchThemeAndAssert('dark', '.dl-pub-top [data-theme-toggle], .dl-pub-right [data-theme-toggle]');
+          const lum = await ctx.getSurfaceLuminance('.dl-public-shell');
+          assert.ok(lum.luminance < 0.2, `M1: Expected dark .dl-public-shell bg on ${vp} (lum=${lum.luminance}, bg=${lum.bg})`);
+          await ctx.assertNoOverflow(`T1-F16-01 ${vp} dark`);
+          await ctx.switchThemeAndAssert('light', '.dl-pub-top [data-theme-toggle], .dl-pub-right [data-theme-toggle]');
+        }
+        ctx.assertNoConsoleErrors(ceStart, 'T1-F16-01');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F16-02', tier: 1, feature: 'F16', milestone: 'M1', name: 'Download OS filter tabs (All/PC/Mobile) & install guide toggles work on public & in-app routes' },
+    async () => {
+      await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop' });
+      assert.strictEqual(await cdp.evalJs(() => document.querySelectorAll('.dl-card').length), 4, 'Expected 4 platform cards under All');
+      assert.ok(await ctx.existsVisible('[data-dl-filter="pc"]'), 'Expected PC filter tab');
+      await cdp.click('[data-dl-filter="pc"]');
+      assert.deepStrictEqual(
+        await cdp.evalJs(() => [...document.querySelectorAll('.dl-card')].map((c) => c.id)),
+        ['dlCard-windows', 'dlCard-macos']
+      );
+      assert.ok(await ctx.existsVisible('[data-dl-filter="mobile"]'), 'Expected Mobile filter tab');
+      await cdp.click('[data-dl-filter="mobile"]');
+      assert.deepStrictEqual(
+        await cdp.evalJs(() => [...document.querySelectorAll('.dl-card')].map((c) => c.id)),
+        ['dlCard-android', 'dlCard-ios']
+      );
+
+      await ctx.visit('/app/tai-ung-dung', { role: 'student', viewport: 'mobile' });
+      assert.ok(await ctx.existsVisible('[data-dl-guide="macos"]'), 'Expected macOS install guide toggle');
+      const beforeExp = await cdp.evalJs(() => document.querySelector('[data-dl-guide="macos"]')?.getAttribute('aria-expanded'));
+      await cdp.click('[data-dl-guide="macos"]');
+      const afterExp = await cdp.evalJs(() => ({
+        exp: document.querySelector('[data-dl-guide="macos"]')?.getAttribute('aria-expanded'),
+        stepsHidden: document.querySelector('#dlCard-macos .dl-steps')?.hidden,
+      }));
+      assert.notStrictEqual(afterExp.exp, beforeExp, 'Clicking [data-dl-guide="macos"] must toggle aria-expanded');
+      assert.strictEqual(afterExp.stepsHidden, afterExp.exp !== 'true');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F16-03', tier: 1, feature: 'F16', milestone: 'M1', name: 'Guest "Dùng ngay trên Web" CTA opens single .lp-auth-sheet modal without duplicate modal or popstate race' },
+    async () => {
+      await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop' });
+      assert.ok(await ctx.existsVisible('a.dl-secondary-cta[href="/app/dang-nhap"]'), 'Expected visible "Dùng ngay trên Web" CTA');
+      await cdp.evalJs(() => {
+        window.__e2ePopCount = 0;
+        window.addEventListener('popstate', () => { window.__e2ePopCount++; });
+      });
+      await cdp.click('a.dl-secondary-cta[href="/app/dang-nhap"]');
+      await cdp.waitForCondition(() => document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length >= 1, 5000, 60);
+      await new Promise((r) => setTimeout(r, 200));
+      const modalState = await cdp.evalJs(() => ({
+        path: location.pathname,
+        wraps: document.querySelectorAll('#modalHost .modal-wrap').length,
+        sheets: document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length,
+        hasUserInput: !!document.querySelector('#modalHost [data-auth-view="login"] input[name="u"]'),
+        popCount: window.__e2ePopCount || 0,
+      }));
+      assert.strictEqual(modalState.path, '/app/dang-nhap');
+      assert.strictEqual(modalState.wraps, 1, `M1: Expected exactly 1 .modal-wrap (got ${modalState.wraps})`);
+      assert.strictEqual(modalState.sheets, 1, `M1: Expected exactly 1 .lp-auth-sheet (got ${modalState.sheets})`);
+      assert.strictEqual(modalState.hasUserInput, true);
+      assert.ok(modalState.popCount <= 1, `M1: Unexpected duplicate popstate count (${modalState.popCount})`);
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F16-04', tier: 1, feature: 'F16', milestone: 'M1', name: 'Logged-in student visiting /tai-ung-dung renders in-app Download Center without 404' },
+    async () => {
+      for (const vp of ['desktop', 'mobile']) {
+        await ctx.visit('/tai-ung-dung', { role: 'student', viewport: vp });
+        await ctx.assertNoOverflow(`T1-F16-04 ${vp}`);
+        const state = await cdp.evalJs(() => ({
+          inApp: document.body.classList.contains('in-app'),
+          hasDlWrap: !!document.querySelector('#main .dl-wrap'),
+          hasPlatforms: !!document.getElementById('dlPlatforms'),
+          isNotFound: (document.getElementById('main')?.textContent || '').includes('Không tìm thấy trang'),
+        }));
+        assert.strictEqual(state.inApp, true, `M1: Expected body.in-app on ${vp}`);
+        assert.strictEqual(state.isNotFound, false, `M1: Logged-in /tai-ung-dung must not hit 404 on ${vp}`);
+        assert.ok(state.hasDlWrap && state.hasPlatforms, `M1: Expected #main .dl-wrap & #dlPlatforms on ${vp}`);
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F16-05', tier: 1, feature: 'F16', milestone: 'M1', name: 'In-app /app/tai-ung-dung loads QR image, #dlCopyLinkBtn works & .topbar theme toggle switches Dark <-> Light' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      try {
+        await ctx.visit('/app/tai-ung-dung', { role: 'student', viewport: 'desktop', theme: 'light' });
+        await cdp.waitForCondition(() => {
+          const img = document.querySelector('#dlQrFrame img');
+          return !!(img && img.complete && img.naturalWidth > 0);
+        }, 6000, 80);
+        assert.ok(await ctx.existsVisible('#dlCopyLinkBtn'), 'Expected visible #dlCopyLinkBtn');
+        await cdp.click('#dlCopyLinkBtn');
+        await ctx.switchThemeAndAssert('dark', '.topbar [data-theme-toggle]');
+        const lum = await ctx.getSurfaceLuminance('body.in-app');
+        assert.ok(lum.luminance < 0.2, `Expected dark in-app surface (lum=${lum.luminance})`);
+        await ctx.switchThemeAndAssert('light', '.topbar [data-theme-toggle]');
+        ctx.assertNoConsoleErrors(ceStart, 'T1-F16-05');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  // ================= F17: In-App & PC Sidebar (/app/*) =================
+  suite.test(
+    { id: 'T1-F17-01', tier: 1, feature: 'F17', milestone: 'M1', name: 'PC Sidebar (#sideNav) accordion toggles cleanly, highlights toeic/so-tay/tro-choi, and stays visible on /app/ngoai-ngu' },
+    async () => {
+      await ctx.visit('/app/en', { role: 'student', viewport: 'desktop' });
+      assert.ok(await ctx.existsVisible('#sideNav details.nav-cat summary.nav-cat-head'), 'Expected #sideNav details.nav-cat summary');
+      const acc = await cdp.evalJs(() => {
+        const cats = [...document.querySelectorAll('#sideNav details.nav-cat')];
+        if (cats.length < 2) return { ok: false, count: cats.length };
+        cats[0].open = false;
+        cats[0].querySelector('summary')?.click();
+        return { ok: true, count: cats.length, firstOpen: cats[0].open, secondOpen: cats[1].open };
+      });
+      assert.ok(acc.ok && acc.firstOpen && !acc.secondOpen, `Expected desktop sidebar accordion behavior (${JSON.stringify(acc)})`);
+
+      for (const route of ['/app/toeic', '/app/so-tay', '/app/tro-choi/en']) {
+        await ctx.visit(route, { role: 'student', viewport: 'desktop' });
+        const hasActive = await cdp.evalJs(() => document.querySelectorAll('#sideNav a.on').length > 0);
+        assert.ok(hasActive, `M1: Expected active #sideNav a.on on ${route}`);
+      }
+
+      await ctx.visit('/app/ngoai-ngu', { role: 'student', viewport: 'desktop' });
+      const pickerShell = await cdp.evalJs(() => ({
+        sideW: document.getElementById('side')?.getBoundingClientRect().width || 0,
+        sideDisp: getComputedStyle(document.getElementById('side')).display,
+        topDisp: getComputedStyle(document.querySelector('.topbar')).display,
+        searchVis: getComputedStyle(document.getElementById('searchBtn')).display !== 'none',
+      }));
+      assert.ok(pickerShell.sideW >= 240 && pickerShell.sideDisp !== 'none', `M1: #side must remain visible on desktop /app/ngoai-ngu (got w=${pickerShell.sideW}, disp=${pickerShell.sideDisp})`);
+      assert.notStrictEqual(pickerShell.topDisp, 'none', 'M1: .topbar must remain visible on /app/ngoai-ngu');
+      assert.strictEqual(pickerShell.searchVis, true, 'M1: .topbar #searchBtn must remain visible on /app/ngoai-ngu');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F17-02', tier: 1, feature: 'F17', milestone: 'M1', name: 'Topbar #udBell dropdown opens, closes on Escape, and sidebar #sideNav navigates via SPA' },
+    async () => {
+      await ctx.visit('/app/en', { role: 'student', viewport: 'desktop' });
+      assert.ok(await ctx.existsVisible('#udBell'), 'Expected visible #udBell');
+      await cdp.click('#udBell');
+      await cdp.waitForCondition(() => document.getElementById('udBellDrop')?.hidden === false, 3000, 60);
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('udBell')?.getAttribute('aria-expanded')), 'true');
+
+      await cdp.evalJs(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+      await new Promise((r) => setTimeout(r, 80));
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('udBellDrop')?.hidden), true, 'Escape must close #udBellDrop');
+
+      assert.ok(await ctx.existsVisible('#sideNav a[href="/app/cai-dat"]'), 'Expected /app/cai-dat inside #sideNav');
+      await cdp.evalJs(() => { window.__e2eTopbarSpa = 1; });
+      await cdp.click('#sideNav a[href="/app/cai-dat"]');
+      await cdp.waitForAppSettled({ selector: '#stThemeBtn' });
+      assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/cai-dat');
+      assert.strictEqual(await cdp.evalJs(() => window.__e2eTopbarSpa), 1, 'Sidebar navigation must use SPA');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F17-03', tier: 1, feature: 'F17', milestone: 'M2', name: '#ivQuickStart on /app/phong-van (mobile) navigates via SPA without reload and respects field/lang/role' },
+    async () => {
+      const ceStart = ctx.consoleErrorCount();
+      await ctx.visit('/app/phong-van', { role: 'student', viewport: 'mobile' });
+      assert.ok(await ctx.existsVisible('#ivFieldSelect'), 'Expected #ivFieldSelect');
+      assert.ok(await ctx.existsVisible('#ivRoleInput'), 'Expected #ivRoleInput');
+      assert.ok(await ctx.existsVisible('#ivLangSelect'), 'Expected #ivLangSelect');
+      assert.ok(await ctx.existsVisible('#ivQuickStart'), 'Expected #ivQuickStart');
+      await cdp.evalJs(() => {
+        window.__e2eIvSpa = 1;
+        const f = document.getElementById('ivFieldSelect');
+        const l = document.getElementById('ivLangSelect');
+        if (f) { f.value = 'iv-it'; f.dispatchEvent(new Event('change', { bubbles: true })); }
+        if (l) { l.value = 'en'; l.dispatchEvent(new Event('change', { bubbles: true })); }
+      });
+      await cdp.fill('#ivRoleInput', 'Frontend Engineer');
+      await cdp.click('#ivQuickStart');
+      await cdp.waitForCondition(() => location.pathname.startsWith('/app/phong-van/en'), 5000, 60);
+      await cdp.waitForAppSettled({ selector: '#main' });
+      const navRes = await cdp.evalJs(() => ({
+        spa: window.__e2eIvSpa || 0,
+        path: location.pathname,
+        search: location.search,
+        text: document.getElementById('main')?.textContent || '',
+      }));
+      assert.strictEqual(navRes.spa, 1, 'M2: #ivQuickStart must use SPA navigation (not location.href reload)');
+      assert.ok(
+        navRes.search.includes('Frontend') || navRes.text.includes('Frontend Engineer') || navRes.path.includes('iv-it'),
+        `M2: #ivQuickStart must pass/preserve field & role context (path=${navRes.path}, search=${navRes.search})`
+      );
+      ctx.assertNoConsoleErrors(ceStart, 'T1-F17-03');
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F17-04', tier: 1, feature: 'F17', milestone: 'M2', name: 'pageFamily (/app/gia-dinh) never multiplies click listeners or API calls across re-renders' },
+    async () => {
+      const dbPath = path.join(srv.tmpDataDir, 'app.db');
+      const nowIso = new Date().toISOString();
+      const expIso = new Date(Date.now() + 30 * 86400000).toISOString();
+      let groupId = null;
+      const db = new DatabaseSync(dbPath);
+      try {
+        const info = db.prepare(
+          `INSERT INTO family_groups (owner_id, seats, starts_at, expires_at, status, created_at)
+           VALUES (?, 4, ?, ?, 'active', ?)`
+        ).run(seed.parent.user.id, nowIso, expIso, nowIso);
+        groupId = Number(info.lastInsertRowid);
+        db.prepare(
+          `INSERT INTO family_members (group_id, user_id, status, share_progress, invited_at, joined_at)
+           VALUES (?, ?, 'active', 1, ?, ?)`
+        ).run(groupId, seed.parent.user.id, nowIso, nowIso);
+      } finally {
+        db.close();
+      }
+
+      try {
+        await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'desktop', selector: '#inv' });
+        assert.ok(await ctx.existsVisible('#inv input[name="u"]'), 'Expected #inv username input');
+        await cdp.fill('#inv input[name="u"]', seed.peer3.username);
+        await cdp.click('#inv button');
+        await cdp.waitForCondition((u) => (document.getElementById('main')?.textContent || '').includes(u), 5000, 80, seed.peer3.username);
+
+        await cdp.fill('#inv input[name="u"]', seed.peer2.username);
+        await cdp.click('#inv button');
+        await cdp.waitForCondition((u) => (document.getElementById('main')?.textContent || '').includes(u), 5000, 80, seed.peer2.username);
+
+        assert.ok(await ctx.existsVisible('[data-prog]'), 'Expected visible [data-prog] button for owner');
+        const reqs = await ctx.trackRequests(
+          async () => {
+            await cdp.click('[data-prog]');
+            assert.ok(await ctx.waitForVisible('.modal', 3000), 'Expected progress modal');
+            await new Promise((r) => setTimeout(r, 200));
+          },
+          { urlPattern: /\/api\/family\/members\/\d+\/progress/, method: 'GET' }
+        );
+        assert.strictEqual(reqs.total, 1, `M2: Expected exactly 1 progress API call after 2 re-renders (got ${reqs.total} from listener multiplication)`);
+        if (await ctx.existsVisible('.modal .modal-x, .modal [data-close]')) {
+          await cdp.click('.modal .modal-x, .modal [data-close]');
+        }
+      } finally {
+        const cleanDb = new DatabaseSync(dbPath);
+        try {
+          if (groupId) {
+            cleanDb.prepare('DELETE FROM family_members WHERE group_id = ?').run(groupId);
+            cleanDb.prepare('DELETE FROM family_groups WHERE id = ?').run(groupId);
+          }
+        } finally {
+          cleanDb.close();
+        }
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T1-F17-05', tier: 1, feature: 'F17', milestone: 'M2', name: '/app/cai-dat uses line icons (zero raw emojis) and Dark Mode persists across /app/en & /app/ca-nhan' },
+    async () => {
+      try {
+        await ctx.visit('/app/cai-dat', { role: 'student', viewport: 'desktop', theme: 'light' });
+        const icons = await cdp.evalJs(() => {
+          const icos = [...document.querySelectorAll('.st-card .pf-m-ico')];
+          const txt = document.getElementById('main')?.textContent || '';
+          const hasRawEmoji = /[\u{1F510}\u{1F4B3}\u{1F514}\u2753]/u.test(txt);
+          const allSvg = icos.length > 0 && icos.every((el) => !!el.querySelector('svg.line-ic'));
+          return { count: icos.length, allSvg, hasRawEmoji };
+        });
+        assert.strictEqual(icons.hasRawEmoji, false, 'M2: /app/cai-dat must replace raw emojis (🔐💳🔔❓) with line icons');
+        assert.ok(icons.allSvg, `M2: Expected svg.line-ic inside .st-card .pf-m-ico (${JSON.stringify(icons)})`);
+
+        assert.ok(await ctx.existsVisible('#stThemeBtn'), 'Expected visible #stThemeBtn');
+        await cdp.click('#stThemeBtn');
+        await cdp.waitForCondition(() => document.documentElement.getAttribute('data-theme') === 'dark', 3000, 60);
+
+        for (const nextRoute of ['/app/en', '/app/ca-nhan']) {
+          await ctx.visit(nextRoute, { role: 'student', viewport: 'desktop', theme: 'dark' });
+          const st = await ctx.getThemeState();
+          assert.strictEqual(st.attr, 'dark', `${nextRoute} must preserve html[data-theme="dark"]`);
+          const lum = await ctx.getSurfaceLuminance('body.in-app');
+          assert.ok(lum.luminance < 0.2, `M2: Expected dark bg on ${nextRoute} (lum=${lum.luminance})`);
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
       }
     }
   );

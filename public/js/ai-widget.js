@@ -138,7 +138,9 @@ function draw() {
 function quota(q) {
   const box = el.querySelector(".aiw-quota");
   if (!q || !q.limits) { box.textContent = ""; return; }
-  box.innerHTML = q.allowed === false ? `<span class="err">${esc(q.reason)}</span>${!q.pro && !(S.me && S.me.role === "admin") ? ` <a href="/bang-gia">Nâng cấp Pro</a>` : ""}` : `Còn ${q.remaining.day}/${q.limits.day} lượt hôm nay`;
+  const isAdm = S.me && S.me.role === "admin";
+  const upg = !isAdm ? ` · <a href="/app/bang-gia">Nâng cấp Pro</a>` : "";
+  box.innerHTML = q.allowed === false ? `<span class="err">${esc(q.reason)}</span>${!isAdm ? ` <a href="/app/bang-gia">Nâng cấp Pro</a>` : ""}` : `Còn ${q.remaining.day}/${q.limits.day} lượt hôm nay${upg}`;
 }
 
 async function ask(mode, question, label = "") {

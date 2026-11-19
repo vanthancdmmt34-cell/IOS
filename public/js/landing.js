@@ -546,7 +546,7 @@ export function hydrateSection2Demo(root = document) {
         if (!ok) ob.classList.add("bad");
         if (msgEl) {
           msgEl.className = "aw-quiz-msg " + (ok ? "ok" : "bad");
-          msgEl.textContent = (ok ? "Chính xác! " : "Chưa đúng. ") + d.why;
+          msgEl.textContent = t(ok ? "Chính xác!" : "Chưa đúng.") + " " + t(d.why);
         }
         if (ok) { trackFunnel("demo_run_ok"); confetti(ob); }
       }));
@@ -654,6 +654,7 @@ export function buildLandingMarkup() {
         <span class="spacer"></span>
 
         <div class="aw-auth">
+          ${themeBtnHtml()}
           ${langSwitchHtml()}
           <button type="button" class="aw-login-link" data-auth="login">Đăng nhập</button>
           <button type="button" class="aw-pill dark" data-auth="register">Bắt đầu ngay</button>
@@ -667,6 +668,7 @@ export function buildLandingMarkup() {
       <!-- Mobile Slide Drawer -->
       <div class="mobile-drawer" id="mobileDrawer" hidden>
         <div class="mobile-drawer-inner">
+          <div class="mobile-drawer-tools">${themeBtnHtml()}</div>
           <div class="mobile-drawer-links">
             <a href="#demoBox">🎯 Thử bài tương tác 6 ngoại ngữ</a>
             <a href="#muc-dich">🧭 Lộ trình theo mục tiêu</a>
@@ -1572,7 +1574,7 @@ export function hydrateLanding(root = document, onAuthed = null) {
       box.dataset.collapseBound = "1";
       box.addEventListener("click", (e) => {
         if (box.classList.contains("is-open")) return;
-        if (e.target.closest(".lang-switch")) return;
+        if (e.target.closest(".lang-switch, [data-theme-toggle]")) return;
         e.preventDefault();
         e.stopPropagation();
         box.classList.add("is-open");
@@ -1589,11 +1591,22 @@ export function hydrateLanding(root = document, onAuthed = null) {
   }
 
   // 2. Smooth scrolling for internal anchor links
+  const mobileAnchorMap = {
+    "#demoBox": "#lpMobileDemo",
+    "#mon-hoc": "#lpMobileLangs",
+    "#muc-dich": "#lpMobileSteps",
+    "#cach-hoc": "#lpMobileTools",
+    "#hoi-dap": "#lpMobileCta",
+  };
   root.querySelectorAll('a[href^="#"], [data-scroll-to], [data-scroll]').forEach((a) => {
     if (a.dataset.scrollBound) return;
     a.dataset.scrollBound = "1";
     a.addEventListener("click", (e) => {
-      const targetSelector = a.dataset.scrollTo || a.getAttribute("href");
+      let targetSelector = a.dataset.scrollTo || a.getAttribute("href");
+      const mHome = document.getElementById("lpMobileHome");
+      if (mHome && getComputedStyle(mHome).display !== "none" && mobileAnchorMap[targetSelector]) {
+        targetSelector = mobileAnchorMap[targetSelector];
+      }
       // Chỉ cuộn tới phần trên trang (#mon-hoc…); địa chỉ trong app (#/ngoai-ngu…) để trình duyệt tự đổi
       if (targetSelector && /^#[A-Za-z][\w-]*$/.test(targetSelector)) {
         const targetEl = document.querySelector(targetSelector);
@@ -1659,7 +1672,15 @@ export function hydrateLanding(root = document, onAuthed = null) {
   }
 
   // 7. Language switch handler
-  bindLangSwitch(root, () => { loadPublic(root, true); demoRefreshFn?.(); mountMobileLanding(root, onAuthed, true); });
+  bindLangSwitch(root, (lang) => {
+    root.querySelectorAll(".aw-foot-nav a[href], .aw-faq a[href], .aw-nav a[href], .mobile-drawer a[href], #link-gia a[href]").forEach((a) => {
+      const m = (a.getAttribute("href") || "").match(/^\/(vi|en)\/(terms|privacy|payment|refund|membership|pricing)$/);
+      if (m) a.setAttribute("href", `/${lang}/${m[2]}`);
+    });
+    loadPublic(root, true);
+    demoRefreshFn?.();
+    mountMobileLanding(root, onAuthed, true);
+  });
 
   // 7b. Dedicated Mobile Logged-out Homepage (<= 760px)
   mountMobileLanding(root, onAuthed);
@@ -1744,7 +1765,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
           <span class="lp-m-pill-tag">${en ? "Free" : "Miễn phí"}</span>
         </div>
         <div class="lp-m-demo-tabs" id="lpMDemoTabs" role="tablist">
-          ${LANG_DEMOS.map((d, i) => `<button type="button" role="tab" class="lp-m-dtab${i === 0 ? " on" : ""}" data-mdemo="${i}" aria-selected="${i === 0}">${LANG_FLAG_SVG[d.code] || d.flag}<span>${esc(d.label.replace(/^Tiếng\s+/i, ""))}</span></button>`).join("")}
+          ${LANG_DEMOS.map((d, i) => `<button type="button" role="tab" class="lp-m-dtab${i === 0 ? " on" : ""}" data-mdemo="${i}" aria-selected="${i === 0}">${LANG_FLAG_SVG[d.code] || d.flag}<span>${esc(en ? (langs.find((x) => x.id === d.code)?.name || d.label) : d.label.replace(/^Tiếng\s+/i, ""))}</span></button>`).join("")}
         </div>
         <div class="lp-m-demo-stage" id="lpMDemoStage"></div>
       </section>
@@ -1766,7 +1787,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
         </div>
       </section>
 
-      <section class="lp-m-sec">
+      <section class="lp-m-sec" id="lpMobileTools">
         <div class="lp-m-sec-head">
           <h2>✨ ${en ? "Everything you need to progress" : "Công cụ học tập hiện đại"}</h2>
         </div>
@@ -1778,7 +1799,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
         </div>
       </section>
 
-      <section class="lp-m-card lp-m-steps-card">
+      <section class="lp-m-card lp-m-steps-card" id="lpMobileSteps">
         <div class="lp-m-sec-head">
           <h2>🧭 ${en ? "4 steps from beginner" : "Lộ trình 4 bước từ con số 0"}</h2>
         </div>
@@ -1790,7 +1811,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
         </ol>
       </section>
 
-      <section class="lp-m-cta-card">
+      <section class="lp-m-cta-card" id="lpMobileCta">
         <div>
           <b>${en ? "Free forever for foundational courses" : "Miễn phí trọn đời cấp cơ bản"}</b>
           <p>${en ? "Create an account in 10 seconds to save your progress across all 6 languages." : "Tạo tài khoản trong 10 giây để lưu tiến độ học, bảng từ vựng và nhận cổ vũ mỗi ngày."}</p>
@@ -1865,7 +1886,7 @@ function mountMobileLanding(root = document, onAuthed, force = false) {
       if (msg) {
         msg.hidden = false;
         msg.className = `lp-m-demo-msg ${ok ? "is-ok" : "is-bad"}`;
-        msg.innerHTML = `<span>${ok ? (en ? "Correct! " : "Chính xác! ") : (en ? "Not quite. " : "Chưa đúng. ")}${esc(d.why)}</span>${ok ? `<button type="button" class="lp-m-demo-reg" data-m-auth="register">${en ? "Save progress →" : "Lưu tiến độ học →"}</button>` : ""}`;
+        msg.innerHTML = `<span><b>${ok ? (en ? "Correct!" : "Chính xác!") : (en ? "Not quite." : "Chưa đúng.")}</b> ${esc(t(d.why))}</span>${ok ? `<button type="button" class="lp-m-demo-reg" data-m-auth="register">${en ? "Save progress →" : "Lưu tiến độ học →"}</button>` : ""}`;
         msg.querySelector("[data-m-auth]")?.addEventListener("click", () => { trackFunnel("register_click"); openAuth("register", onAuthed || authedCb); });
       }
       if (ok) { trackFunnel("demo_run_ok"); confetti(ob); }
@@ -1958,9 +1979,10 @@ async function loadPublic(root, onlyContent = false) {
         // Nhân đôi thẻ để cuộn vô tận liền mạch (bản sao aria-hidden, không đọc 2 lần).
         const dupCards = (items) => items.map((r) => cardHtml(r, false)).join("") + items.map((r) => cardHtml(r, true)).join("");
         const sub = sec.querySelector(".sec-sub");
-        rk.innerHTML = `<div class="rk-score"><b>${esc(avg.toFixed(1))}</b><div class="rk-score-stars" aria-label="${esc(avg.toFixed(1))}/5">${star(avg)}</div><span>/5 trung bình từ ${count} đánh giá</span></div>`
+        const enRank = currentLang() === "en";
+        rk.innerHTML = `<div class="rk-score"><b>${esc(avg.toFixed(1))}</b><div class="rk-score-stars" aria-label="${esc(avg.toFixed(1))}/5">${star(avg)}</div><span>${enRank ? `/5 average from ${count} reviews` : `/5 trung bình từ ${count} đánh giá`}</span></div>`
           + (rec.length ? `<div class="rk-track" tabindex="0"><div class="rk-grid">${dupCards(rec)}</div></div>` : "");
-        if (sub) sub.textContent = "Điểm trung bình từ đánh giá thật của học viên.";
+        if (sub) sub.textContent = enRank ? "Average rating from verified learner reviews." : "Điểm trung bình từ đánh giá thật của học viên.";
         sec.hidden = false;
         if (rec.length) startRankScroll(rk.querySelector(".rk-track"));
       }
@@ -1992,6 +2014,15 @@ let authedCb = null;
 export function openAuth(mode = "login", onAuthed) {
   if (onAuthed) authedCb = onAuthed;
   const allowReg = cfg("allowRegister", true) !== false;
+  const existing = document.querySelector("#modalHost .modal.lp-auth-sheet");
+  if (existing) {
+    const want = mode === "register" && allowReg ? "register" : "login";
+    const wantReg = want === "register";
+    if (existing.classList.contains("is-reg") !== wantReg) {
+      existing.querySelector(`[data-m="${want}"]`)?.click();
+    }
+    return;
+  }
   let reg = mode === "register" && allowReg;
   const en = currentLang() === "en";
   document.body.classList.add("auth-open");
@@ -2146,8 +2177,9 @@ export function openAuth(mode = "login", onAuthed) {
   el.querySelector("[data-eye]").addEventListener("click", (e) => {
     const inp = el.querySelector("[name=p]");
     const show = inp.type === "password";
+    const isEn = currentLang() === "en";
     inp.type = show ? "text" : "password";
-    e.target.textContent = show ? "Ẩn" : "Hiện";
+    e.target.textContent = show ? (isEn ? "Hide" : "Ẩn") : (isEn ? "Show" : "Hiện");
     e.target.setAttribute("aria-pressed", String(show));
   });
 
@@ -2265,8 +2297,9 @@ export function openAuth(mode = "login", onAuthed) {
     if (reg && p.length < 6) return fail(t("Mật khẩu cần tối thiểu 6 ký tự."));
     if (reg && p !== p2) return fail(t("Hai lần nhập mật khẩu chưa khớp."));
     { const em = (el.querySelector("[name=e]")?.value || "").trim(); if (reg && em && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) return fail(t("Email chưa đúng định dạng.")); }
+    const isEn = currentLang() === "en";
     btn.disabled = true;
-    btn.innerHTML = '<span class="spin"></span>' + (reg ? "Đang tạo tài khoản" : "Đang đăng nhập");
+    btn.innerHTML = '<span class="spin"></span>' + (reg ? (isEn ? "Creating account" : "Đang tạo tài khoản") : (isEn ? "Signing in" : "Đang đăng nhập"));
     try {
       const j = await api(reg ? "/api/register" : "/api/login", "POST", reg ? { username: u, password: p, displayName: n || u, email: (el.querySelector("[name=e]")?.value || "").trim(), classCode: (el.querySelector("[name=code]") || {}).value || "", accountType: (el.querySelector("[name=acct]") || {}).value || "student", lang: currentLang() } : { username: u, password: p });
       S.csrf = j.csrfToken;
@@ -2296,7 +2329,7 @@ export function openAuth(mode = "login", onAuthed) {
     } catch (err) {
       fail(err.message);
       btn.disabled = false;
-      btn.textContent = reg ? "Tạo tài khoản và vào học" : "Đăng nhập";
+      btn.textContent = reg ? (currentLang() === "en" ? "Create account & start" : "Tạo tài khoản và vào học") : (currentLang() === "en" ? "Sign in" : "Đăng nhập");
     }
   });
 }

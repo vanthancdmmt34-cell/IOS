@@ -1378,10 +1378,10 @@ body.lx-acct .side-back { display: flex !important; align-items: center; gap: 8p
 body.lx-acct .side-back:hover { border-color: var(--iv); color: var(--iv); }
 body.lx-acct .side-back svg { width: 16px; height: 16px; }
 @media (min-width: 1021px) {
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .shell {
+  body.in-app:not(.ax-on):not(.sw-focus) .shell {
     grid-template-columns: 244px minmax(0, 1fr) !important;
   }
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .shell > .side {
+  body.in-app:not(.ax-on):not(.sw-focus) .shell > .side {
     display: flex !important;
     position: sticky !important;
     top: 0;
@@ -1393,31 +1393,29 @@ body.lx-acct .side-back svg { width: 16px; height: 16px; }
     box-shadow: none !important;
     z-index: 32;
   }
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .topbar .menu-btn,
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .top-brand,
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .main > .topnav {
+  body.in-app:not(.ax-on):not(.sw-focus) .topbar .menu-btn,
+  body.in-app:not(.ax-on):not(.sw-focus) .top-brand,
+  body.in-app:not(.ax-on):not(.sw-focus) .main > .topnav {
     display: none !important;
   }
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .main > .topbar {
+  body.in-app:not(.ax-on):not(.sw-focus) .main > .topbar {
     padding: 0 clamp(18px, 2.5vw, 32px) !important;
   }
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) #main.page:not(.full) {
+  body.in-app:not(.ax-on):not(.sw-focus) #main.page:not(.full) {
     max-width: 1200px;
     padding: 22px clamp(18px, 2.4vw, 30px) 52px;
   }
-  body.sw-focus:not(.ax-on) .top-brand,
-  body.lx-picker:not(.ax-on) .top-brand {
+  body.sw-focus:not(.ax-on) .top-brand {
     display: flex !important; align-items: center; gap: 10px; flex: none; margin-right: 18px; color: var(--iv-ink); text-decoration: none; font-weight: 800;
   }
 }
 @media (min-width: 1021px) {
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .shell {
+  body.in-app:not(.ax-on):not(.sw-focus) .shell {
     grid-template-columns: 256px minmax(0, 1fr) !important;
   }
 }
 @media (max-width: 1020px) {
-  body.sw-focus:not(.ax-on) .top-brand,
-  body.lx-picker:not(.ax-on) .top-brand {
+  body.sw-focus:not(.ax-on) .top-brand {
     display: flex !important; align-items: center; gap: 8px; flex: none; margin-right: 10px; color: var(--iv-ink); text-decoration: none; font-weight: 800;
   }
 }
@@ -1928,6 +1926,8 @@ body.ax-on .ad-content .tabs a, body.ax-on .ad-content .tabs button, body.ax-on 
 body.ax-on .ad-content .tabs .on, body.ax-on .ad-content .seg .on { background: #1C1917; color: #fff; }
 body.ax-on .ad-content .tag-tim { background: #F7EBC0; color: #1C1917; }
 body.ax-on .modal { background: #FFFDF7; border-radius: 22px; border-color: var(--line); }
+body.ax-on { --ink: var(--ad-ink, #0F172A); --ink-2: var(--ad-ink-2, #475569); --ink-3: var(--ad-mut, #64748B); --paper-2: var(--ad-surface, #FFFFFF); --line: var(--ad-line, #E2E8F0); color: var(--ad-ink, #0F172A); }
+body.ax-on .modal { color: var(--ad-ink, #0F172A); }
 
 /* ===================== learn-warm ===================== */
 /* Student learning area in homepage style: warm paper background, cream blocks, pastel cards, pill buttons. Loaded last. */
@@ -2042,17 +2042,32 @@ body.in-app:not(.ax-on) .ws-left .tabs button.on { background: none !important; 
 body.in-app:not(.ax-on) .ws-nav { background: #F6F3E6; }
 
 
-/* ===== Full sync: override root colors so all remaining buttons, links, badges, and tabs match the same style ===== */
-:root, :root[data-theme="dark"], :root[data-theme="light"] {
+/* ===== Full sync: tokenized theme colors (light default, full dark tokens) ===== */
+:root, :root[data-theme="light"] {
   --tim: #1C1917; --tim-2: #2E2C3D; --tim-soft: #F7EBC0; --tim-ink: #FFFFFF;
   --paper: #FAF6EC; --paper-2: #FFFDF7; --paper-3: #F4ECDC; --ink: #1C1917; --ink-2: #44403C; --ink-3: #78716C;
   --line: #D1C7B3; --line-2: #D1C7B3; --code-bg: #FFFDF7; --code-gutter: #F6F3E6; --console-bg: #1C1917; --console-ink: #FAF6EC;
   color-scheme: light;
 }
+:root[data-theme="dark"] {
+  --tim: #A99BFC; --tim-2: #BBB0FD; --tim-soft: rgba(169, 155, 252, .18); --tim-ink: #1B1930;
+  --paper: #0F172A; --paper-2: #1E293B; --paper-3: #273549; --ink: #F8FAFC; --ink-2: #CBD5E1; --ink-3: #94A3B8;
+  --line: #334155; --line-2: #475569; --code-bg: #0F172A; --code-gutter: #1E293B; --console-bg: #020617; --console-ink: #E2E8F0;
+  color-scheme: dark;
+}
 body { font-family: Be Vietnam Pro, Nunito, Inter, system-ui, sans-serif; }
 h1, h2, h3, .modal h2 { font-family: "Bricolage Grotesque", Nunito, Inter, system-ui, sans-serif; letter-spacing: -.03em; }
-/* Light theme only */
-.theme-btn, [data-theme-toggle] { display: none !important; }
+.theme-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper-2); color: var(--ink-2); font-size: 12.5px; font-weight: 700; line-height: 1; white-space: nowrap; cursor: pointer; flex: none; }
+.theme-btn svg { width: 16px; height: 16px; flex: none; }
+.theme-btn .t-moon, .theme-btn .t-sun { display: grid; place-items: center; }
+.theme-btn .theme-btn-txt b { font-weight: 700; }
+:root:not([data-theme="dark"]) .theme-btn :is(.t-sun, .tt-light),
+:root[data-theme="light"] .theme-btn :is(.t-sun, .tt-light),
+:root[data-theme="dark"] .theme-btn :is(.t-moon, .tt-dark) { display: none; }
+@media (max-width: 1020px) {
+  .topbar .theme-btn { width: 36px; padding: 0; }
+  .topbar .theme-btn .theme-btn-txt { display: none; }
+}
 /* All buttons across the system */
 .btn { border-radius: 99px !important; font-family: inherit; font-weight: 700; }
 .btn-primary { --b-bg: #1C1917; --b-ink: #fff; --b-line: #1C1917; background: #1C1917 !important; border-color: #1C1917 !important; color: #fff !important; box-shadow: 0 3px 0 rgba(0, 0, 0, .25) !important; }
@@ -2060,18 +2075,18 @@ h1, h2, h3, .modal h2 { font-family: "Bricolage Grotesque", Nunito, Inter, syste
 .btn-primary svg { color: #F9D976; }
 .icon-btn { border-radius: 99px; }
 /* Modals (login, confirmation...) */
-.modal { background: #FFFDF7 !important; border-radius: 22px !important; border: 0 !important; box-shadow: 0 30px 60px -20px rgba(29, 28, 39, .4), inset 0 0 0 1px #D1C7B3 !important; }
-.modal .seg { background: #F4ECDC; border-radius: 99px; }
+.modal { background: var(--paper-2, #FFFDF7) !important; color: var(--ink, #1C1917); border-radius: 22px !important; border: 0 !important; box-shadow: 0 30px 60px -20px rgba(29, 28, 39, .4), inset 0 0 0 1px var(--line, #D1C7B3) !important; }
+.modal .seg { background: var(--paper-3, #F4ECDC); border-radius: 99px; }
 .modal .seg button { border-radius: 99px; }
-.modal .seg button.on, .modal .seg [aria-selected="true"] { background: #1C1917; color: #fff; }
+.modal .seg button.on, .modal .seg [aria-selected="true"] { background: var(--tim, #1C1917); color: var(--tim-ink, #fff); }
 .modal input, .modal select, .modal textarea { border-radius: 12px !important; font-family: inherit; }
-.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: #1C1917 !important; box-shadow: 0 0 0 3px rgba(249, 217, 118, .6) !important; }
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--tim, #1C1917) !important; box-shadow: 0 0 0 3px rgba(249, 217, 118, .6) !important; }
 /* Toasts, badges, links */
-.toast { border-radius: 16px; background: #1C1917; color: #FAF6EC; font-family: inherit; }
+.toast { border-radius: 16px; background: var(--console-bg, #1C1917); color: var(--console-ink, #FAF6EC); font-family: inherit; }
 .tag { border-radius: 99px; }
 .tag-tim { background: #F7EBC0 !important; color: #1C1917 !important; }
 .lang-switch { border-radius: 99px; }
-.lang-switch button.on { background: #1C1917; color: #fff; }
+.lang-switch button.on { background: var(--tim, #1C1917); color: var(--tim-ink, #fff); }
 .bar > i { background: #5468D4; }
 .stamp { --c: #5468D4; }
 
@@ -2374,27 +2389,19 @@ a.db-ai:hover { background: #F4ECDC; border-color: var(--ul, #D1C7B3); }
 
 /* Màn hình chọn môn sau đăng ký: chỉ còn logo, câu hỏi và avatar */
 body.sw-focus .topnav, body.sw-focus .side, body.sw-focus .side-scrim, body.sw-focus #subjPill, body.sw-focus .menu-btn { display: none !important; }
-/* Màn hình chọn môn (#/?chon=1, #/ngoai-ngu): ẩn thanh Tổng quan / Phỏng vấn / Khám phá và menu bên */
-body.lx-picker .topnav, body.lx-picker .side, body.lx-picker .side-scrim, body.lx-picker #subjPill, body.lx-picker .menu-btn { display: none !important; }
 body.in-app.sw-focus .shell,
-body.in-app.lx-picker .shell,
-body.sw-focus .shell,
-body.lx-picker .shell {
+body.sw-focus .shell {
   grid-template-columns: minmax(0, 1fr) !important;
   gap: 0 !important;
   padding: 0 !important;
 }
-body.lx-picker .topbar > :not(.top-brand):not(.ud-user):not(.spacer),
-body.sw-focus .topbar > :not(.top-brand):not(.ud-user):not(.spacer) { display: none !important; }
-body.in-app.lx-picker .main,
+body.sw-focus .topbar > :not(.top-brand):not(.ud-user):not(.spacer):not(.theme-btn) { display: none !important; }
 body.in-app.sw-focus .main,
-body.lx-picker .main,
 body.sw-focus .main {
   margin-left: 0 !important;
   width: 100% !important;
   min-width: 0 !important;
 }
-body.in-app.lx-picker .main > .topbar,
 body.in-app.sw-focus .main > .topbar {
   padding: 0 clamp(16px, 3vw, 32px) !important;
 }
@@ -3581,8 +3588,8 @@ html:not([data-theme="dark"]) body.in-app details.lx-unit.sheet[open] > summary:
   background: #FACC15;
 }
 @media (min-width: 860px) {
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) #subjPill,
-  body.in-app:not(.ax-on):not(.sw-focus):not(.lx-picker) .lx-focus-hero .lx-switch {
+  body.in-app:not(.ax-on):not(.sw-focus) #subjPill,
+  body.in-app:not(.ax-on):not(.sw-focus) .lx-focus-hero .lx-switch {
     display: none !important;
   }
 }

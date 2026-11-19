@@ -52,6 +52,10 @@ export async function pageFamily(main, _p, _q, ctx) {
       <a class="cl-m-qrow" href="/app/thong-bao"><span class="cl-m-qico">🔔</span><div class="cl-m-qcopy"><b>Thông báo mới</b><span>Cập nhật thông báo học tập và lớp học</span></div><span class="cl-m-qarr">›</span></a>
     </div>`;
 
+  if (main._famAc) main._famAc.abort();
+  const famAc = new AbortController();
+  main._famAc = famAc;
+  ctx?.onLeave?.(() => famAc.abort());
   main.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-accept],[data-decline],[data-rm],[data-prog],#leave"); if (!b) return;
     try {
@@ -68,7 +72,7 @@ export async function pageFamily(main, _p, _q, ctx) {
           <p>Hoạt động gần nhất: ${p.lastActive ? timeAgo(p.lastActive) : "chưa có"}.</p><p class="small muted">7 ngày qua: ${p.week.map((d) => `${d.d.slice(5)}: ${d.n} lần nộp`).join(" · ") || "chưa học"}.</p>`);
       }
     } catch (err) { toast(err.message, "err"); }
-  });
+  }, { signal: famAc.signal });
   $("#share", main)?.addEventListener("change", async (e) => { try { await api("/api/family/share", "POST", { on: e.target.checked }); toast("Đã lưu.", "ok"); } catch (err) { toast(err.message, "err"); } });
   $("#inv", main)?.addEventListener("submit", async (e) => {
     e.preventDefault();

@@ -113,8 +113,10 @@ function showLanding() {
   }
   renderLanding(root, onAuthed);
 }
-window.addEventListener("pl:open-download", () => { if (!S.me) showLanding(); });
-window.addEventListener("popstate", () => { if (!S.me) showLanding(); });
+window.addEventListener("pl:open-download", () => {
+  if (!S.me) return showLanding();
+  setAppHash("/app/tai-ung-dung");
+});
 
 function maintenanceScreen() {
   root.innerHTML = `<div class="boot" style="text-align:center;padding:24px"><div style="font-size:54px" aria-hidden="true">🛠️</div><h1>Đang bảo trì</h1>
@@ -185,6 +187,10 @@ async function enterApp(me, isNew = false, fromAuth = false) {
   refreshNotifBadge();
   paintProBadges();
   dailyProNotice();
+  const pubPath = (location.pathname || "").replace(/\/+$/, "");
+  if (/^\/(?:tai-ung-dung|download|(?:vi|en)\/download)$/.test(pubPath)) {
+    history.replaceState(null, "", "/app/tai-ung-dung" + location.search);
+  }
   if (appHash().startsWith("/app/dang")) setAppHash("/app/");
   // Khách đã bấm thẻ lộ trình / thẻ môn ở trang chủ: vào thẳng trang đích sau khi đăng nhập / đăng ký
   let afterAuth = ""; try { afterAuth = sessionStorage.getItem("pl:after-auth") || ""; sessionStorage.removeItem("pl:after-auth"); } catch {}
@@ -965,7 +971,17 @@ function routeSubject(clean, query) {
 /* ---------- Router ---------- */
 const ROUTES = [
   // 5.1.0: "/app/" is the unified account dashboard; "/app/<lang>" branches each subject overview cleanly; "/app/?mon=..." and "/app/?chon=1" keep legacy behavior
-  [/^chon-mon$/, (m, p, q, c) => import("./welcome.js").then((x) => x.pageSubjectWelcome(m, p, q, c)), ""],
+  [/^chon-mon$/, async (m, p, q, c) => {
+    const x = await import("./welcome.js");
+    const hasSubj = !!(S.prefs?.subject || getSubject());
+    const prom = x.pageSubjectWelcome(m, p, q, c);
+    if (hasSubj) {
+      document.body.classList.remove("sw-focus");
+      queueMicrotask(() => { if (c.isCurrent() && !!(S.prefs?.subject || getSubject())) document.body.classList.remove("sw-focus"); });
+    }
+    await prom;
+    if (c.isCurrent() && !!(S.prefs?.subject || getSubject())) document.body.classList.remove("sw-focus");
+  }, ""],
   // Mục menu "Cổ Vũ": tổng quan theo môn đang học (lời chào, XP, nhiệm vụ, kế hoạch hôm nay)
   [/^so-tay$/, (m, p, q, c) => import("./notebook.js").then((x) => x.pageNotebook(m, p, q, c)), "so-tay"],
   [/^co-vu$/, (m, p, q, c) => { const s = getSubject(); if (!s) { setAppHash("/app/chon-mon"); return; } return import("./home.js").then((x) => x.pageStudentHome(m, [s], { ...q, mode: "cheer" }, c)); }, "co-vu"],
@@ -1022,7 +1038,7 @@ const ROUTES = [
 ];
 
 function parseHashRoute() {
-  const raw = appHash().replace(/^\/app\/?/, "");
+  const raw = appHash().replace(/^\/app\/?/, "").replace(/^\/+/, "");
   const [path, qs] = raw.split("?");
   const query = Object.fromEntries(new URLSearchParams(qs || ""));
   const clean = path.replace(/\/+$/, "");
@@ -1036,19 +1052,23 @@ function parseHashRoute() {
 function syncNavState(parsed = parseHashRoute()) {
   const { clean, query, hit, isPicker, subj } = parsed;
   const isOvHome = clean === "tong-quan" || (clean === "" && !query.mon && !query.chon) || (!!subj && clean === subj && !query.mode);
-  document.body.classList.toggle("lx-picker", isPicker && clean !== "chon-mon");
-  document.body.classList.toggle("is-student-home", isOvHome);
+  document.body.classList.remove("lx-picker");
+  document.body.classList.toggle("is-student-home", isOvHome && S.me?.role === "student");
   document.body.dataset.subject = isPicker ? "" : (subj || getSubject() || "");
   const topnav = document.querySelector(".main > .topnav");
   if (topnav) topnav.hidden = isPicker;
   let activeNav = hit[2] || "";
+  const hasSubj = !!(subj || getSubject());
   if (clean === "" && query.mon) activeNav = "mon-hoc";
   else if (isOvHome) activeNav = "tong-quan";
-  else if (clean === "chon-mon") activeNav = "chon-mon";
+  else if (clean === "chon-mon") activeNav = document.querySelector('.nav a[data-r="chon-mon"]') ? "chon-mon" : "tong-quan";
   else if (/^ngoai-ngu\/luyen-noi(?:\/|$)/.test(clean)) activeNav = "luyen-noi";
   else if (/^ngoai-ngu\/on-tap(?:\/|$)/.test(clean)) activeNav = "on-tap";
   else if (/^ngoai-ngu\/tro-chuyen(?:\/|$)/.test(clean)) activeNav = "tro-chuyen";
-  else if (hit[2] === "ngoai-ngu" && (subj || getSubject())) activeNav = "mon-hoc";
+  else if (["toeic", "so-tay", "tro-choi"].includes(activeNav)) activeNav = hasSubj ? "mon-hoc" : "tong-quan";
+  else if (["chung-nhan", "xep-hang", "huy-hieu", "goi-cua-toi", "bang-gia", "chinh-sach"].includes(activeNav)) activeNav = "ca-nhan";
+  else if (activeNav === "quan-tri-ngoai-ngu") activeNav = "quan-tri";
+  else if (hit[2] === "ngoai-ngu") activeNav = hasSubj ? "mon-hoc" : (document.querySelector('.nav a[data-r="chon-mon"]') ? "chon-mon" : "tong-quan");
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === activeNav));
   // Thanh điều hướng dưới (điện thoại): đường dẫn theo môn đang học và vai trò; mục đang mở được đánh dấu
   const mtSubj = getSubject();
@@ -1208,7 +1228,7 @@ document.addEventListener("click", (e) => {
   const a = e.target.closest && e.target.closest("a[href]");
   if (!a) return;
   const rawHref = a.getAttribute("href") || "";
-  if (rawHref.startsWith("/app/bang-gia")) {
+  if (rawHref.startsWith("/app/bang-gia") && !a.closest(".aiw-quota")) {
     e.preventDefault();
     const kind = new URLSearchParams(rawHref.split("?")[1] || "").get("goi") || "pro";
     document.body.classList.remove("nav-open");
@@ -1229,21 +1249,30 @@ document.addEventListener("click", (e) => {
 }, true);
 for (const ev of ["hashchange", "popstate"]) window.addEventListener(ev, () => {
   if (S.me) return route();
-  if (/^\/app\/(dang|dat-lai-mat-khau)/.test(appHash())) return showLanding();
-  // Khách bấm thẻ lộ trình / thẻ môn (#/ngoai-ngu/ja…): nội dung học cần tài khoản.
-  // Giữ nguyên địa chỉ đích và môn đã chọn, mở hộp tạo tài khoản; xong thì app tự vào đúng môn đó.
-  if (/^\/app\/[a-z]/.test(appHash())) {
-    try { sessionStorage.setItem("pl:after-auth", appHash()); } catch {}
-    history.replaceState(null, "", "/"); // về trang chủ để URL khớp nội dung (khách chưa đăng nhập; bấm lại thẻ vẫn mở được hộp)
+  const h = appHash();
+  if (/^\/app\/[a-z]/.test(h) && !/^\/app\/(dang|dat-lai-mat-khau|tai-ung-dung)/.test(h)) {
+    try { sessionStorage.setItem("pl:after-auth", h); } catch {}
+    history.replaceState(null, "", "/");
+    showLanding();
     openAuth("register");
+    return;
   }
+  showLanding();
 });
 
 // Liên kết trong ứng dụng (/app/...): chuyển trang trong bộ nhớ, không tải lại trang
 document.addEventListener("click", (e) => {
   if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-  const a = e.target.closest && e.target.closest('a[href^="/app/"]');
+  const a = e.target.closest && e.target.closest('a[href^="/app/"], a[href="/tai-ung-dung"], a[href="/download"], a[href="/vi/download"], a[href="/en/download"]');
   if (!a || (a.target && a.target !== "_self")) return;
+  const href = a.getAttribute("href");
+  if (!href.startsWith("/app/")) {
+    if (!S.me) return;
+    e.preventDefault();
+    setNavOpen(false);
+    setAppHash("/app/tai-ung-dung");
+    return;
+  }
   if (a.matches('[data-open-account="mobile"]') && isMobileSheetViewport()) {
     e.preventDefault();
     setAcctSheet(true);
@@ -1251,7 +1280,7 @@ document.addEventListener("click", (e) => {
   }
   e.preventDefault();
   setNavOpen(false);
-  setAppHash(a.getAttribute("href"));
+  setAppHash(href);
 });
 
 /* ---------- Quick search (Ctrl+K) ---------- */
@@ -1418,23 +1447,6 @@ document.addEventListener("focusin", (e) => { if (isFieldEl(e.target)) document.
 document.addEventListener("focusout", () => setTimeout(() => { if (!isFieldEl(document.activeElement)) document.body.classList.remove("kb-open"); }, 150));
 
 // "Reload" button uses data-reload (no inline onclick because Content-Security-Policy blocks it)
-// Nut chuyen ngon ngu VI/EN (delegated, du phong bindLangSwitch): bam EN -> /en, bam VI -> /vi.
-// Dung delegation tren document de bat duoc ca khi header duoc render lai sau.
-document.addEventListener("click", (e) => {
-  const b = e.target.closest && e.target.closest(".lang-switch [data-lang]");
-  if (!b) return;
-  const lang = b.dataset.lang === "en" ? "en" : "vi";
-  const target = lang === "en" ? "/en" : "/vi";
-  const cur = (location.pathname || "/").replace(/\/+$/, "") || "/";
-  if (cur === target) return; // da o dung ngon ngu, khong dieu huong lai
-  try { localStorage.setItem("pl-lang", lang); } catch {}
-  const path = location.pathname || "/";
-  if (/^\/(?:(?:vi|vn|en)\/?)?$/i.test(path)) {
-    location.href = target + location.search + appHash();
-  } else {
-    location.reload();
-  }
-});
 document.addEventListener("click", (e) => { if (e.target.closest("[data-reload]")) location.reload(); });
 // Login session expired mid-work: notify clearly and reopen login modal
 let expiredShown = false;

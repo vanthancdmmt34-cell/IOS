@@ -1,6 +1,6 @@
 /* Admin area (ad-): shell + learning-focused dashboard. Real metrics from admin API. */
 import {  } from "./core.js";
-import { S, api, esc, lineIcon as icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, brandCleanHtml, roleLabel, setAppHash, $ } from "./core.js";
+import { S, api, esc, lineIcon as icon, avatar, avatarColor, initials, fmtN, timeAgo, cfg, siteName, brandCleanHtml, roleLabel, setAppHash, themeBtnHtml, $ } from "./core.js";
 import { currentLang } from "./i18n.js";
 
 const IP = {
@@ -46,14 +46,12 @@ export function adminShell(main, { tab, groups, ctx }) {
           <b>Quản trị viên</b>
           <span>LifeRivo · Admin</span>
         </div>
-        <button type="button" class="ad-m-drawer-close" id="adMClose" aria-label="Đóng">×</button>
       </div>
       <a class="ad-brand brand-clean" href="/app/quan-tri">${brandCleanHtml()}</a>
       <span class="ad-badge">Khu quản trị</span>
       <nav class="ad-nav">${nav}</nav>
       <a class="ad-back" href="/app/">${icon("left")}<span>Về trang học</span></a>
     </aside>
-    <div class="ad-scrim" id="adScrim"></div>
     <div class="ad-main">
       <header class="ad-top">
         <button class="ad-m-back" id="adMBack" type="button" aria-label="Quay lại">${icon("left")}</button>
@@ -64,6 +62,7 @@ export function adminShell(main, { tab, groups, ctx }) {
         <button class="ad-search" id="adSearch" type="button">${icon("search")}<span>Tìm học viên, bài tập, chương…</span><kbd>Ctrl K</kbd></button>
         <span class="ad-sp"></span>
         <button class="ad-ib ad-m-search-btn" id="adMSearch" type="button" title="Tìm kiếm nhanh" aria-label="Tìm kiếm nhanh">${icon("search")}</button>
+        ${themeBtnHtml()}
         <a class="ad-ib" href="/app/quan-tri/thong-bao" id="axBell" title="Thông báo" aria-label="Thông báo">${icon("bell")}</a>
         <a class="ad-ib ad-m-home-btn" href="/app/" id="adMHome" title="Về trang học" aria-label="Về trang học">${I("home")}</a>
         <div class="ad-user">
@@ -86,8 +85,6 @@ export function adminShell(main, { tab, groups, ctx }) {
     </nav>
   </div>`;
   const ad = $("#ad", main);
-  $("#adMClose", main)?.addEventListener("click", () => ad.classList.remove("nav"));
-  $("#adScrim", main)?.addEventListener("click", () => ad.classList.remove("nav"));
   $("#adMBack", main)?.addEventListener("click", () => {
     if (tab !== "tong-quan") setAppHash("/app/quan-tri/tong-quan");
     else setAppHash("/app/");

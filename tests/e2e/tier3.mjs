@@ -4,9 +4,12 @@
  */
 
 import assert from 'node:assert/strict';
+import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
+import { apiRequest } from './server-seed.mjs';
 
 export function registerTier3(suite, ctx) {
-  const { cdp, seed } = ctx;
+  const { cdp, srv, seed } = ctx;
 
   suite.test(
     { id: 'T3-01', tier: 3, feature: 'F4', milestone: 'M1', name: 'Học ngay fan-out -> Luyện nói -> Cá nhân fan-out -> Lớp của tôi navigation' },
@@ -336,6 +339,253 @@ export function registerTier3(suite, ctx) {
       assert.strictEqual(enCheck.lang, 'en');
       assert.strictEqual(enCheck.paperToken, '#FAF6EC');
       assert.ok(['rgb(250, 246, 236)', 'rgb(250, 249, 255)'].includes(enCheck.awBg));
+    }
+  );
+
+  // ================= Pairwise Expansion Tests (T3-17..T3-23) =================
+  suite.test(
+    { id: 'T3-17', tier: 3, feature: 'F14', milestone: 'M1', name: 'Theme toggle persistence across Landing <-> Download <-> In-App <-> Admin (1440x900)' },
+    async () => {
+      try {
+        await ctx.visitLanding({ viewport: 'desktop', pathName: '/', theme: 'light' });
+        await ctx.switchThemeAndAssert('dark', '[data-theme-toggle]');
+
+        await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop', clearAuth: false });
+        assert.strictEqual((await ctx.getThemeState()).attr, 'dark', 'M1: /tai-ung-dung must preserve dark theme');
+        assert.ok((await ctx.getSurfaceLuminance('.dl-public-shell')).luminance < 0.2, 'M1: /tai-ung-dung must render dark surface');
+
+        assert.ok(await ctx.existsVisible('[data-dl-auth="login"]'), 'Expected [data-dl-auth="login"] on /tai-ung-dung');
+        await cdp.click('[data-dl-auth="login"]');
+        assert.ok(await ctx.waitForVisible('[data-auth-view="login"] input[name="u"]', 4000), 'Expected login form');
+        await cdp.fill('[data-auth-view="login"] input[name="u"]', seed.student.username);
+        await cdp.fill('[data-auth-view="login"] input[name="p"]', seed.student.password);
+        await cdp.click('[data-auth-view="login"] button[data-submit]');
+        await cdp.waitForAppSettled({ selector: '#side' });
+        ctx.invalidateRoleCache();
+        assert.strictEqual((await ctx.getThemeState()).attr, 'dark', 'M1: In-app must preserve dark theme after login');
+        assert.ok((await ctx.getSurfaceLuminance('body.in-app')).luminance < 0.2, 'M2: In-app surface must stay dark');
+
+        await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'desktop', expectAdmin: true, theme: 'dark' });
+        assert.strictEqual((await ctx.getThemeState()).attr, 'dark', 'M3: Admin must preserve dark theme');
+        assert.ok((await ctx.getSurfaceLuminance('.ad')).luminance < 0.2, 'M3: Admin .ad must render dark surface');
+        await ctx.switchThemeAndAssert('light', '.ad-top [data-theme-toggle]');
+
+        await ctx.visitLanding({ viewport: 'desktop', pathName: '/', clearAuth: true });
+        const paper = await cdp.evalJs(() => getComputedStyle(document.querySelector('#landingPage.aw')).getPropertyValue('--paper').trim().toUpperCase());
+        assert.strictEqual(paper, '#FAF6EC', 'Returning to Light Landing must preserve --paper: #FAF6EC');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T3-18', tier: 3, feature: 'F1', milestone: 'M1', name: 'VI/EN + Dark Mode combined across Desktop, Tablet (900x700), Mobile (390x844) on all 4 shells' },
+    async () => {
+      try {
+        for (const vp of ['desktop', 'tablet', 'mobile']) {
+          await ctx.visitLanding({ viewport: vp, pathName: '/en', lang: 'en', theme: 'dark' });
+          assert.strictEqual((await ctx.getThemeState()).attr, 'dark', `Landing ${vp}: expected dark theme`);
+          assert.strictEqual(await cdp.evalJs(() => document.documentElement.lang), 'en', `Landing ${vp}: expected en`);
+          await ctx.assertNoOverflow(`T3-18 landing ${vp}`);
+
+          await ctx.visitPublic('/tai-ung-dung', { viewport: vp, lang: 'en', theme: 'dark' });
+          await ctx.assertNoOverflow(`T3-18 download ${vp}`);
+          await ctx.assertNoViLeaksInEn('.dl-public-shell');
+          await ctx.assertContrast('.dl-hero h1, .dl-hero .dl-lead, .dl-card h3, .dl-card-sub', 4.5, `T3-18 download ${vp}`);
+
+          await ctx.visit('/app/en', { role: 'student', viewport: vp, lang: 'en', theme: 'dark' });
+          await ctx.assertNoOverflow(`T3-18 in-app ${vp}`);
+          await ctx.assertContrast('#main h1, #main h2, .topbar .ud-name', 4.5, `T3-18 in-app ${vp}`);
+
+          await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: vp, expectAdmin: true, lang: 'en', theme: 'dark' });
+          await ctx.assertNoOverflow(`T3-18 admin ${vp}`);
+          await ctx.assertContrast('.ad h1, .ad-kpi b, .ad-kpi span', 4.5, `T3-18 admin ${vp}`);
+        }
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T3-19', tier: 3, feature: 'F14', milestone: 'M1', name: 'Landing Tablet (900x700) single nav mode + Mobile (390x844) #mobileDrawer anchor scroll' },
+    async () => {
+      await ctx.visitLanding({ viewport: 'tablet', pathName: '/' });
+      await ctx.assertNoOverflow('T3-19 landing tablet');
+      const navVis = await ctx.existsVisible('.aw-nav');
+      const burgerVis = await ctx.existsVisible('#mobileMenuBtn');
+      assert.ok(navVis || burgerVis, '900x700 must show either .aw-nav or #mobileMenuBtn');
+      assert.strictEqual(navVis && burgerVis, false, 'M1: 900x700 must never show both .aw-nav and #mobileMenuBtn');
+
+      await ctx.visitLanding({ viewport: 'mobile', pathName: '/' });
+      assert.ok(await ctx.existsVisible('#mobileMenuBtn'), 'Expected #mobileMenuBtn on 390x844');
+      await cdp.click('#mobileMenuBtn');
+      const anchorSel = '#mobileDrawer a[href="#lpMobileDemo"], #mobileDrawer a[href="#demoBox"]';
+      assert.ok(await ctx.existsVisible(anchorSel), 'Expected demo anchor inside #mobileDrawer');
+      await cdp.evalJs(() => window.scrollTo(0, 0));
+      await cdp.click(anchorSel);
+      await new Promise((r) => setTimeout(r, 450));
+      assert.strictEqual(await cdp.evalJs(() => document.getElementById('mobileDrawer')?.hidden), true, 'Drawer must close');
+      assert.ok((await cdp.evalJs(() => window.scrollY)) > 50, 'M1: Mobile drawer anchor must scroll to visible section');
+    }
+  );
+
+  suite.test(
+    { id: 'T3-20', tier: 3, feature: 'F5', milestone: 'M1', name: 'PC Sidebar accordion + sub-route active states + AI Widget /app/bang-gia upgrade flow (1440x900 Dark)' },
+    async () => {
+      const prevSettings = await apiRequest(srv.baseUrl, 'GET', '/api/admin/settings', { session: seed.admin });
+      const prevFreeDaily = prevSettings.json?.values?.aiFreeDaily ?? 3;
+      try {
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', {
+          session: seed.admin,
+          body: { values: { AI_PROVIDER: 'gemini' }, secrets: { GEMINI_API_KEY: 'AIzaSyTestE2EDummyKeyForWidget0000' }, password: seed.admin.password },
+        });
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', {
+          session: seed.admin,
+          body: { values: { aiFreeDaily: 0 } },
+        });
+
+        await ctx.visit('/app/en', { role: 'student', viewport: 'desktop', theme: 'dark', forceReset: true });
+        for (const r of ['/app/toeic', '/app/so-tay', '/app/tro-choi/en']) {
+          await ctx.visit(r, { role: 'student', viewport: 'desktop', theme: 'dark' });
+          assert.ok(await cdp.evalJs(() => document.querySelectorAll('#sideNav a.on').length > 0), `M1: Expected active #sideNav link on ${r}`);
+        }
+        await ctx.visit('/app/ngoai-ngu', { role: 'student', viewport: 'desktop', theme: 'dark' });
+        assert.ok(await ctx.existsVisible('#side'), 'M1: #side must remain visible on /app/ngoai-ngu');
+        assert.ok(await ctx.existsVisible('.topbar'), 'M1: .topbar must remain visible on /app/ngoai-ngu');
+
+        assert.ok(await ctx.waitForVisible('.aiw .aiw-fab', 5000), 'M2: Expected visible .aiw-fab');
+        await cdp.click('.aiw .aiw-fab');
+        assert.ok(await ctx.waitForVisible('#aiwPanel .aiw-quota a', 3000), 'Expected .aiw-quota upgrade link');
+        const href = await cdp.evalJs(() => document.querySelector('#aiwPanel .aiw-quota a')?.getAttribute('href') || '');
+        assert.strictEqual(href, '/app/bang-gia', `M2: AI Widget upgrade link must point to /app/bang-gia (got "${href}")`);
+        await cdp.click('#aiwPanel .aiw-quota a');
+        await cdp.waitForAppSettled({ selector: '#main' });
+        assert.strictEqual(await cdp.evalJs(() => location.pathname), '/app/bang-gia');
+      } finally {
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', { session: seed.admin, body: { values: { aiFreeDaily: prevFreeDaily } } }).catch(() => {});
+        await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', { session: seed.admin, body: { values: {}, secrets: { GEMINI_API_KEY: null }, password: seed.admin.password } }).catch(() => {});
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T3-21', tier: 3, feature: 'F4', milestone: 'M1', name: 'Logged-in /tai-ung-dung -> in-app Download + OS filter + guide + Guest EN "Continue on Web" single modal' },
+    async () => {
+      try {
+        await ctx.visit('/tai-ung-dung', { role: 'student', viewport: 'desktop' });
+        assert.strictEqual(await cdp.evalJs(() => document.body.classList.contains('in-app')), true, 'M1: Logged-in /tai-ung-dung must render in-app');
+        assert.ok(await ctx.existsVisible('#main .dl-wrap'), 'M1: Logged-in /tai-ung-dung must render #main .dl-wrap (not 404)');
+        assert.ok(await ctx.existsVisible('[data-dl-filter="pc"]'), 'Expected PC filter');
+        await cdp.click('[data-dl-filter="pc"]');
+        assert.strictEqual(await cdp.evalJs(() => document.querySelectorAll('.dl-card').length), 2);
+        assert.ok(await ctx.existsVisible('[data-dl-guide="windows"]'), 'Expected Windows guide toggle');
+        await cdp.click('[data-dl-guide="windows"]');
+
+        await ctx.visitPublic('/tai-ung-dung', { viewport: 'desktop', lang: 'en', clearAuth: true });
+        await ctx.assertNoViLeaksInEn('.dl-public-shell');
+        assert.ok(await ctx.existsVisible('a.dl-secondary-cta[href="/app/dang-nhap"]'), 'Expected "Continue on Web" CTA');
+        await cdp.click('a.dl-secondary-cta[href="/app/dang-nhap"]');
+        await cdp.waitForCondition(() => document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length >= 1, 5000, 60);
+        await new Promise((r) => setTimeout(r, 150));
+        assert.strictEqual(await cdp.evalJs(() => document.querySelectorAll('#modalHost .modal.lp-auth-sheet').length), 1, 'M1: Expected single auth modal');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T3-22', tier: 3, feature: 'F6', milestone: 'M2', name: 'In-App Dark Mode study surfaces (.sp-chatbar/.sp-msgs) + #ivQuickStart SPA + pageFamily no dup API calls' },
+    async () => {
+      const dbPath = path.join(srv.tmpDataDir, 'app.db');
+      const nowIso = new Date().toISOString();
+      const expIso = new Date(Date.now() + 30 * 86400000).toISOString();
+      let groupId = null;
+      const db = new DatabaseSync(dbPath);
+      try {
+        const info = db.prepare(`INSERT INTO family_groups (owner_id, seats, starts_at, expires_at, status, created_at) VALUES (?, 4, ?, ?, 'active', ?)`).run(seed.parent.user.id, nowIso, expIso, nowIso);
+        groupId = Number(info.lastInsertRowid);
+        db.prepare(`INSERT INTO family_members (group_id, user_id, status, share_progress, invited_at, joined_at) VALUES (?, ?, 'active', 1, ?, ?)`).run(groupId, seed.parent.user.id, nowIso, nowIso);
+      } finally {
+        db.close();
+      }
+
+      try {
+        await ctx.visit('/app/ngoai-ngu/tro-chuyen/en', { role: 'student', viewport: 'mobile', theme: 'dark' });
+        await ctx.assertContrast('.sp-chatbar, .sp-chatbar input', 4.5, 'T3-22 sp-chatbar dark', { includeNonText: true });
+
+        await ctx.visit('/app/phong-van', { role: 'student', viewport: 'mobile', theme: 'dark' });
+        await cdp.evalJs(() => { window.__t322Spa = 1; });
+        assert.ok(await ctx.existsVisible('#ivQuickStart'), 'Expected #ivQuickStart');
+        await cdp.click('#ivQuickStart');
+        await cdp.waitForCondition(() => location.pathname.startsWith('/app/phong-van/en'), 5000, 60);
+        assert.strictEqual(await cdp.evalJs(() => window.__t322Spa), 1, 'M2: #ivQuickStart must use SPA navigation');
+
+        await ctx.visit('/app/gia-dinh', { role: 'parent', viewport: 'desktop', theme: 'dark', selector: '#inv' });
+        await cdp.fill('#inv input[name="u"]', seed.peer3.username);
+        await cdp.click('#inv button');
+        await cdp.waitForCondition((u) => (document.getElementById('main')?.textContent || '').includes(u), 5000, 80, seed.peer3.username);
+        const reqs = await ctx.trackRequests(
+          async () => {
+            await cdp.click('[data-prog]');
+            assert.ok(await ctx.waitForVisible('.modal', 3000), 'Expected progress modal');
+            await new Promise((r) => setTimeout(r, 150));
+          },
+          { urlPattern: /\/api\/family\/members\/\d+\/progress/, method: 'GET' }
+        );
+        assert.strictEqual(reqs.total, 1, `M2: Expected 1 family progress request (got ${reqs.total})`);
+      } finally {
+        const cleanDb = new DatabaseSync(dbPath);
+        try {
+          if (groupId) {
+            cleanDb.prepare('DELETE FROM family_members WHERE group_id = ?').run(groupId);
+            cleanDb.prepare('DELETE FROM family_groups WHERE id = ?').run(groupId);
+          }
+        } finally {
+          cleanDb.close();
+        }
+        await ctx.restoreLightAndVi();
+      }
+    }
+  );
+
+  suite.test(
+    { id: 'T3-23', tier: 3, feature: 'F13', milestone: 'M3', name: 'Admin cross-tab pairwise flow in Dark Mode at 900x700 Tablet (#addU, #gcForm, cai-dat, he-thong, EN)' },
+    async () => {
+      try {
+        await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'tablet', expectAdmin: true, theme: 'dark' });
+        await ctx.assertNoOverflow('T3-23 tong-quan tablet dark');
+        await ctx.assertContrast('.ad h1, .ad-kpi b', 4.5, 'T3-23 tong-quan dark');
+
+        await ctx.visit('/app/quan-tri/hoc-vien', { role: 'admin', viewport: 'tablet', expectAdmin: true, theme: 'dark' });
+        assert.ok(await ctx.existsVisible('#addU'), 'Expected #addU');
+        await cdp.click('#addU');
+        assert.ok(await ctx.waitForVisible('.modal', 3000), 'Expected #addU modal');
+        await ctx.assertContrast('.modal h2, .modal label.field, .modal input[name="u"]', 4.5, 'T3-23 #addU modal dark', { includeNonText: true });
+        if (await ctx.existsVisible('.modal .modal-x, .modal [data-close]')) await cdp.click('.modal .modal-x, .modal [data-close]');
+
+        await ctx.visit('/app/quan-tri/ma-qua-tang', { role: 'admin', viewport: 'tablet', expectAdmin: true, theme: 'dark' });
+        await cdp.fill('#gcForm input[name="count"]', '1');
+        await cdp.fill('#gcForm input[name="days"]', '7');
+        await cdp.click('#gcForm button');
+        await new Promise((r) => setTimeout(r, 400));
+        assert.strictEqual(await cdp.evalJs(() => document.getElementById('gcNew')?.hidden), false, 'M3: #gcNew must stay visible');
+
+        await ctx.visit('/app/quan-tri/he-thong', { role: 'admin', viewport: 'tablet', expectAdmin: true, theme: 'dark' });
+        for (const panel of ['thanh-toan', 'ai', 'website', 'email']) {
+          await cdp.click(`.chips button[data-panel="${panel}"]`);
+          await ctx.assertNoOverflow(`T3-23 he-thong ${panel} tablet`);
+        }
+
+        await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'tablet', expectAdmin: true, theme: 'dark', lang: 'en' });
+        const enTxt = await cdp.evalJs(() => document.querySelector('.ad')?.textContent || '');
+        assert.strictEqual(enTxt.includes('Phân khu quản trị'), false, 'M3: Admin EN must translate Phân khu quản trị');
+      } finally {
+        await ctx.restoreLightAndVi();
+      }
     }
   );
 }

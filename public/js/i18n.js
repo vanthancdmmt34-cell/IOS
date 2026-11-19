@@ -211,19 +211,28 @@ export function syncLangSwitchUI() {
 export function langSwitchHtml() {
   return `<div class="lang-switch" role="group" aria-label="Ngôn ngữ / Language"><button type="button" data-lang="vi" class="${LANG === "vi" ? "on" : ""}" aria-pressed="${LANG === "vi"}">VI</button><button type="button" data-lang="en" class="${LANG === "en" ? "on" : ""}" aria-pressed="${LANG === "en"}">EN</button></div>`;
 }
-export function bindLangSwitch(root, onChange) {
-  root.querySelectorAll(".lang-switch [data-lang]").forEach((b) => b.addEventListener("click", () => {
-    const lang = b.dataset.lang === "en" ? "en" : "vi";
-    if (lang === LANG) return;
-    explicitChoice = true;
-    // Lưu ngôn ngữ rồi điều hướng sang nhánh /vi hoặc /en ngay, giữ nguyên hash hiện tại.
-    try { localStorage.setItem(KEY, lang); } catch {}
-    const p = (typeof location !== "undefined" && location.pathname) || "/";
-    if (/^\/(?:(?:vi|vn|en)\/?)?$/i.test(p)) {
-      location.href = (lang === "en" ? "/en" : "/vi") + location.search + appHash();
-      return;
-    }
-    applyLang(lang).catch(() => {});
-    location.reload();
-  }));
+export function bindLangSwitch(root = document, onChange) {
+  if (!root) return;
+  root.querySelectorAll(".lang-switch [data-lang]").forEach((b) => {
+    if (b.dataset.langBound === "1") return;
+    b.dataset.langBound = "1";
+    b.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const lang = b.dataset.lang === "en" ? "en" : "vi";
+      if (lang === LANG) return;
+      explicitChoice = true;
+      try { localStorage.setItem(KEY, lang); } catch {}
+      await applyLang(lang).catch(() => {});
+      if (typeof onChange === "function") {
+        onChange(lang);
+      } else {
+        const p = (typeof location !== "undefined" && location.pathname) || "/";
+        if (/^\/(?:(?:vi|vn|en)\/?)?$/i.test(p)) {
+          location.href = (lang === "en" ? "/en" : "/vi") + location.search + appHash();
+        } else {
+          location.reload();
+        }
+      }
+    });
+  });
 }
