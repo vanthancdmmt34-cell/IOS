@@ -90,17 +90,18 @@ function voiceBarHtml(d) {
     <span class="sp-voice-n">${mode === "ai" ? L("Giọng AI tự nhiên, cần mạng; câu nghe lần đầu sẽ chậm một chút.", "Natural AI voice; needs a connection, the first play of a sentence is slightly slower.") : ai ? "" : L("Đang dùng giọng có sẵn của trình duyệt.", "Using your browser's built-in voice.")}</span>
   </div>`;
 }
-function bindVoiceBar(root, d) {
+function bindVoiceBar(root, d, signal) {
   const sample = (d.scenarios[0] && d.scenarios[0].open.t) || d.name;
+  const opts = signal ? { signal } : undefined;
   root.addEventListener("click", (e) => {
     const b = e.target.closest("[data-voice]");
     if (b) { const v = b.dataset.voice; setVoicePrefs(v === "browser" ? { mode: "browser" } : { mode: "ai", gender: v }); const bar = root.querySelector("#spVoice"); if (bar) bar.outerHTML = voiceBarHtml(d); say(sample, d.speech); return; }
     if (e.target.closest("[data-voice-test]")) say(sample, d.speech);
-  });
+  }, opts);
   root.addEventListener("change", (e) => {
     if (e.target.id !== "spVoicePick") return;
     const p = voicePrefs(); p.browser[d.lang] = e.target.value; setVoicePrefs({ browser: p.browser }); say(sample, d.speech);
-  });
+  }, opts);
 }
 
 /* ---------- Audio recording + speech recognition ---------- */
@@ -831,8 +832,9 @@ function bindEar(main, d) {
 export async function pageSpeakHub(main, [langId], query, ctx) {
   main.innerHTML = `<div class="lx-loading"><span class="spin"></span> ${L("Đang tải…", "Loading…")}</div>`;
   let d;
-  try { d = await load(langId, true); } catch (e) { if (ctx.isCurrent()) fail(main, e.message); return; }
-  if (!ctx.isCurrent()) return;
+  try { d = await load(langId, true); } catch (e) { if (ctx?.isCurrent?.()) fail(main, e.message); return; }
+  if (ctx && !ctx.isCurrent()) return;
+  if (main._spAc) { main._spAc.abort(); main._spAc = null; }
   if (getSubject() !== d.lang) setSubject(d.lang);
   ctx.setCrumbs([[d.name, `/app/ngoai-ngu/${d.lang}`], [query.muc === "hoi-thoai" ? L("Hội thoại AI", "AI Conversation") : L("Trung tâm luyện nói", "Speaking Lab")]]);
   const lvKey = `pl:speak:lv:${d.lang}`;
@@ -991,28 +993,29 @@ export async function pageSpeakHub(main, [langId], query, ctx) {
       <div class="sp-scenes">${d.scenarios.map((s) => `<a class="sp-scene" href="/app/ngoai-ngu/tro-chuyen/${d.lang}/${s.id}?cap=${lv.id}"><span class="sp-scene-ico">${I(s.icon, 20)}</span><span><b>${esc(s.title)}</b><span>${esc(s.desc)}</span></span></a>`).join("")}</div>
     </section>`}
   </div>`;
-  bindVoiceBar(main, d);
+  const ac = new AbortController();
+  main._spAc = ac;
+  ctx?.onLeave?.(() => ac.abort());
+  bindVoiceBar(main, d, ac.signal);
   if (tab === "phan-biet") bindEar(main, d);
-  // #main được dùng lại giữa các trang: gỡ listener cũ để không bị chạy chồng nhiều lần.
-  if (main._spGoalClick) main.removeEventListener("click", main._spGoalClick);
-  main._spGoalClick = (e) => {
+  main.addEventListener("click", (e) => {
     const r = e.target.closest("[data-remind]");
     if (r) { setReminder(d, r.dataset.remind === "on").catch(() => toast(L("Chưa bật được nhắc. Thử lại sau.", "Could not set the reminder. Try again later."), "err")); return; }
     const g = e.target.closest("[data-goal]"); if (!g) return;
     ls.set("pl:speak:goal", g.dataset.goal);
     syncReminderGoal(Number(g.dataset.goal)).catch(() => {});
     const old = main.querySelector("#spGoal"); if (old) old.outerHTML = goalCard(d);
-  };
-  main.addEventListener("click", main._spGoalClick);
-  ctx.onLeave(stopSpeech);
+  }, { signal: ac.signal });
+  ctx?.onLeave?.(stopSpeech);
 }
 
 /* ================= Read-along room ================= */
 export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], query, ctx) {
   main.innerHTML = `<div class="lx-loading"><span class="spin"></span> ${L("Đang tải…", "Loading…")}</div>`;
   let d;
-  try { d = await load(langId); } catch (e) { if (ctx.isCurrent()) fail(main, e.message); return; }
-  if (!ctx.isCurrent()) return;
+  try { d = await load(langId); } catch (e) { if (ctx?.isCurrent?.()) fail(main, e.message); return; }
+  if (ctx && !ctx.isCurrent()) return;
+  if (main._spAc) { main._spAc.abort(); main._spAc = null; }
   if (getSubject() !== d.lang) setSubject(d.lang);
   const VIRT = { "chu-de": { id: "chu-de", title: L("Luyện nói theo chủ đề", "Speaking topics"), units: d.topics, passage: null }, "phat-am": { id: "phat-am", title: L("Luyện phát âm", "Pronunciation"), units: d.pron, passage: null } };
   const lv = VIRT[levelId] || d.levels.find((l) => l.id === levelId);
@@ -1236,6 +1239,8 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     say(items[i].t, d.speech, { rate: st.slow ? 0.6 : 0.95, onEnd: () => { if (alive && st.readingAll) readAll(i + 1); } });
   }
 
+  const ac = new AbortController();
+  main._spAc = ac;
   main.addEventListener("click", (e) => {
     const g = e.target.closest("[data-go]"); if (g) { go(+g.dataset.go); return; }
     const sy = e.target.closest("[data-say]"); if (sy) { say(sy.dataset.say, d.speech, { rate: 0.75 }); return; }
@@ -1252,13 +1257,13 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     else if (act === "type") { st.typing = !st.typing; const f = $("#spType"); if (f) { f.hidden = !st.typing && !!SR; a.classList.toggle("on", st.typing); if (!f.hidden) f.querySelector("input").focus(); } }
     else if (act === "coach") coach();
     else if (act === "next") go(st.idx + 1);
-  });
+  }, { signal: ac.signal });
   main.addEventListener("submit", (e) => {
     const f = e.target.closest("#spType"); if (!f) return;
     e.preventDefault();
     const t = f.t.value.trim(), it = items[st.idx];
     if (t && it && !st.busy) grade(it, { text: t });
-  });
+  }, { signal: ac.signal });
   const onKey = (e) => {
     if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
     if (e.ctrlKey || e.metaKey || e.altKey || document.querySelector(".modal")) return;
@@ -1267,11 +1272,12 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     else if (e.key === "ArrowLeft") go(st.idx - 1);
     else if (e.key === "l" || e.key === "L") listen();
   };
-  document.addEventListener("keydown", onKey);
+  document.addEventListener("keydown", onKey, { signal: ac.signal });
   const onResize = () => wave && wave.redraw();
-  window.addEventListener("resize", onResize);
-  ctx.onLeave(() => {
+  window.addEventListener("resize", onResize, { signal: ac.signal });
+  ctx?.onLeave?.(() => {
     alive = false;
+    ac.abort();
     document.removeEventListener("keydown", onKey); window.removeEventListener("resize", onResize);
     if (st.cap) st.cap.abort();
     stopSpeech();
@@ -1287,8 +1293,9 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
 export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
   main.innerHTML = `<div class="lx-loading"><span class="spin"></span> ${L("Đang tải…", "Loading…")}</div>`;
   let d;
-  try { d = await load(langId); } catch (e) { if (ctx.isCurrent()) fail(main, e.message); return; }
-  if (!ctx.isCurrent()) return;
+  try { d = await load(langId); } catch (e) { if (ctx?.isCurrent?.()) fail(main, e.message); return; }
+  if (ctx && !ctx.isCurrent()) return;
+  if (main._spAc) { main._spAc.abort(); main._spAc = null; }
   if (getSubject() !== d.lang) setSubject(d.lang);
   const open = d.levels.filter((l) => !l.locked);
   const lvKey = `pl:speak:lv:${d.lang}`;
@@ -1403,6 +1410,8 @@ export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
     send(out.text);
   }
 
+  const ac = new AbortController();
+  main._spAc = ac;
   main.addEventListener("click", (e) => {
     let b = e.target.closest("[data-say]"); if (b) return void say(st.msgs[+b.dataset.say].t, d.speech);
     b = e.target.closest("[data-slow]"); if (b) return void say(st.msgs[+b.dataset.slow].t, d.speech, { rate: 0.6 });
@@ -1412,9 +1421,9 @@ export async function pageSpeakChat(main, [langId, sceneId], query, ctx) {
     if (e.target.closest("#spVi")) { st.showVi = !st.showVi; ls.set("pl:speak:vi", st.showVi ? "1" : "0"); $("#spVi").classList.toggle("on", st.showVi); $("#spVi").setAttribute("aria-pressed", String(st.showVi)); paint(false); return; }
     if (e.target.closest("#spAuto")) { st.auto = !st.auto; ls.set("pl:speak:auto", st.auto ? "1" : "0"); $("#spAuto").classList.toggle("on", st.auto); $("#spAuto").setAttribute("aria-pressed", String(st.auto)); if (!st.auto) stopSpeech(); return; }
     if (e.target.closest("#spReset")) { if (st.cap) st.cap.abort(); stopSpeech(); st.busy = false; reset(); paint(false); return; }
-  });
-  $("#spForm").addEventListener("submit", (e) => { e.preventDefault(); send(input.value); });
-  $("#spLv").addEventListener("change", (e) => { const n = d.levels.find((l) => l.id === e.target.value); if (n && !n.locked) { lv = n; ls.set(lvKey, lv.id); toast(L(`AI sẽ dùng từ ngữ cấp ${lv.title}.`, `The AI will now use ${lv.title} language.`), "info", 2500); } });
-  ctx.onLeave(() => { alive = false; if (st.cap) st.cap.abort(); stopSpeech(); });
+  }, { signal: ac.signal });
+  $("#spForm").addEventListener("submit", (e) => { e.preventDefault(); send(input.value); }, { signal: ac.signal });
+  $("#spLv").addEventListener("change", (e) => { const n = d.levels.find((l) => l.id === e.target.value); if (n && !n.locked) { lv = n; ls.set(lvKey, lv.id); toast(L(`AI sẽ dùng từ ngữ cấp ${lv.title}.`, `The AI will now use ${lv.title} language.`), "info", 2500); } }, { signal: ac.signal });
+  ctx?.onLeave?.(() => { alive = false; ac.abort(); if (st.cap) st.cap.abort(); stopSpeech(); });
   paint(false);
 }

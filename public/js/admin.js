@@ -25,6 +25,7 @@ const ADMIN_GROUPS = [
     ["ngoai-ngu", "Khóa ngoại ngữ", "globe", "Quản lý nội dung ngoại ngữ"],
     ["song-ngu", "Bản dịch giao diện", "translate", "Song ngữ Việt và Anh"],
     ["thong-bao", "Thông báo", "bell", "Gửi thông báo tới học viên"],
+    ["gop-y", "Góp ý & Đánh giá", "chat", "Góp ý sản phẩm và đánh giá sao của học viên"],
   ] },
   { id: "biz", label: "Kinh doanh", items: [
     ["kinh-doanh", "Doanh thu và gói Pro", "star", "Đơn hàng, thanh toán, thống kê AI"],
@@ -115,7 +116,7 @@ export async function pageAdmin(main, [tab = "tong-quan", uid], _q, ctx) {
   if (!ctx.isCurrent()) return;
   if (tab === "hoc-vien" && uid) return studentDetail(body, Number(uid), ctx);
   if (isDash) return dashPage(body, DATA, { onReload: reload });
-  ({ "tong-quan": overview, "hoc-vien": students, "thong-bao": notices, "giao-vien": teachersAdminPage, "lop-giay-phep": lmsAdminPage, "song-ngu": i18nAdminPage, "kinh-doanh": bizPage, "ma-qua-tang": giftCodesAdminPage,"he-thong": systemPage, "cai-dat": settingsPage, "du-lieu": dataPage, "giam-sat": monitorPage, "ngoai-ngu": langAdminPage })[tab](body, ctx);
+  ({ "tong-quan": overview, "hoc-vien": students, "thong-bao": notices, "gop-y": feedbackAdminPage, "giao-vien": teachersAdminPage, "lop-giay-phep": lmsAdminPage, "song-ngu": i18nAdminPage, "kinh-doanh": bizPage, "ma-qua-tang": giftCodesAdminPage,"he-thong": systemPage, "cai-dat": settingsPage, "du-lieu": dataPage, "giam-sat": monitorPage, "ngoai-ngu": langAdminPage })[tab](body, ctx);
 }
 
 /* ---------- Overview ---------- */
@@ -561,4 +562,219 @@ async function dataPage(body) {
         <dl class="exam-meta"><div><dt>Phiên bản</dt><dd>${esc(i.version || "")}</dd></div><div><dt>Node.js</dt><dd>${esc(i.node || "")}</dd></div><div><dt>Phiên đăng nhập đang lưu</dt><dd>${fmtN(i.sessions)}</dd></div></dl>
       </section>
     </div>`;
+}
+
+// Góp ý & Đánh giá sao của học viên
+async function feedbackAdminPage(body, ctx) {
+  body.innerHTML = `<div class="skel" style="height:260px"></div>`;
+  let data;
+  try {
+    data = await api("/api/feedback");
+  } catch (e) {
+    body.innerHTML = `<div class="sheet empty"><b>Không tải được góp ý &amp; đánh giá</b>${esc(e.message)}</div>`;
+    return;
+  }
+  if (!ctx.isCurrent()) return;
+
+  const STATUS_META = {
+    new: { label: "Đã nhận", tag: "tag-cam" },
+    reviewing: { label: "Đang xem xét", tag: "tag-tim" },
+    planned: { label: "Đã lên kế hoạch", tag: "tag-tim" },
+    done: { label: "Đã hoàn thành", tag: "tag-la" },
+    declined: { label: "Chưa thực hiện", tag: "tag-do" },
+  };
+  const KIND_LABEL = { feature: "Tính năng", bug: "Báo lỗi", other: "Khác" };
+  const items = Array.isArray(data.items) ? data.items : [];
+  const ratings = Array.isArray(data.ratings) ? data.ratings : [];
+  const ratingSummary = data.ratingSummary || { count: ratings.length, average: 0, byStars: {} };
+  const initialCounts = () => {
+    const c = { new: 0, reviewing: 0, planned: 0, done: 0, declined: 0, total: items.length };
+    for (const x of items) if (c[x.status] !== undefined) c[x.status]++;
+    return c;
+  };
+  const counts = data.counts ? {
+    new: Number(data.counts.new) || 0,
+    reviewing: Number(data.counts.reviewing) || 0,
+    planned: Number(data.counts.planned) || 0,
+    done: Number(data.counts.done) || 0,
+    declined: Number(data.counts.declined) || 0,
+    total: Number(data.counts.total) || items.length,
+  } : initialCounts();
+  let subTab = "feedback";
+  let fStatus = "all";
+  let fKind = "all";
+  let fQ = "";
+  let rStar = "all";
+
+  const renderStatsHtml = () => {
+    const pendingN = (counts.new || 0) + (counts.reviewing || 0);
+    const activeN = (counts.planned || 0) + (counts.done || 0);
+    const totalR = Number(ratingSummary.count) || 0;
+    return `
+      <div><b>${fmtN(counts.total || items.length)}</b><span>Tổng góp ý</span></div>
+      <div><b>${fmtN(pendingN)}</b><span>Chờ xử lý</span></div>
+      <div><b>${fmtN(activeN)}</b><span>Lên kế hoạch / xong</span></div>
+      <div><b>${ratingSummary.average || 0}/5 ★</b><span>${fmtN(totalR)} lượt đánh giá</span></div>`;
+  };
+
+  const renderFeedbackBody = () => {
+    const box = body.querySelector("#fbBody");
+    if (!box) return;
+    const filteredFb = items.filter((x) => {
+      if (fStatus !== "all" && x.status !== fStatus) return false;
+      if (fKind !== "all" && x.kind !== fKind) return false;
+      if (fQ) {
+        const needle = fQ.toLowerCase();
+        const hay = `${x.subject || ""} ${x.body || ""} ${x.username || ""} ${x.displayName || ""} ${x.page || ""}`.toLowerCase();
+        if (!hay.includes(needle)) return false;
+      }
+      return true;
+    });
+    box.innerHTML = filteredFb.length ? `
+      <div class="table-wrap" style="border:0">
+        <table>
+          <thead>
+            <tr>
+              <th>Người gửi</th>
+              <th>Loại</th>
+              <th>Nội dung</th>
+              <th>Thời gian</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredFb.map((x) => {
+              const sm = STATUS_META[x.status] || { label: x.status, tag: "tag-tim" };
+              const sender = x.displayName ? `${esc(x.displayName)} <small class="muted">@${esc(x.username || "")}</small>` : `@${esc(x.username || "?")}`;
+              return `<tr>
+                <td>${sender}</td>
+                <td><span class="tag">${esc(KIND_LABEL[x.kind] || x.kind)}</span></td>
+                <td style="min-width:260px">
+                  ${x.subject ? `<b>${esc(x.subject)}</b><br>` : ""}
+                  <span>${esc(x.body || "")}</span>
+                  ${x.page ? `<br><small class="muted">Trang: <code>${esc(x.page)}</code></small>` : ""}
+                </td>
+                <td><span title="${esc(fmtDate(x.created_at))}">${esc(timeAgo(x.created_at))}</span></td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                    <span class="tag ${sm.tag}">${esc(sm.label)}</span>
+                    <select class="select" data-fb-id="${esc(x.id)}" aria-label="Cập nhật trạng thái góp ý">
+                      ${Object.entries(STATUS_META).map(([k, m]) => `<option value="${k}" ${x.status === k ? "selected" : ""}>${esc(m.label)}</option>`).join("")}
+                    </select>
+                  </div>
+                </td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    ` : `<div class="empty"><b>Không có góp ý phù hợp</b>Thử đổi bộ lọc hoặc từ khóa tìm kiếm.</div>`;
+
+    box.querySelectorAll("[data-fb-id]").forEach((sel) => sel.addEventListener("change", async () => {
+      const id = sel.dataset.fbId;
+      const nextStatus = sel.value;
+      const prevItem = items.find((x) => x.id === id);
+      const prevStatus = prevItem ? prevItem.status : "";
+      sel.disabled = true;
+      try {
+        const res = await api(`/api/feedback/${encodeURIComponent(id)}`, "PATCH", { status: nextStatus });
+        const applied = res.status || nextStatus;
+        if (prevItem) prevItem.status = applied;
+        if (prevStatus && prevStatus !== applied) {
+          if (counts[prevStatus] !== undefined) counts[prevStatus] = Math.max(0, (counts[prevStatus] || 0) - 1);
+          if (counts[applied] !== undefined) counts[applied] = (counts[applied] || 0) + 1;
+        }
+        const statsEl = body.querySelector("#fbStats");
+        if (statsEl) statsEl.innerHTML = renderStatsHtml();
+        const statusSel = body.querySelector("#fbStatus");
+        if (statusSel) {
+          for (const [k, m] of Object.entries(STATUS_META)) {
+            const opt = statusSel.querySelector(`option[value="${k}"]`);
+            if (opt) opt.textContent = `${m.label} (${fmtN(counts[k] || 0)})`;
+          }
+        }
+        toast(res.changed ? "Đã cập nhật trạng thái và gửi thông báo cho học viên." : "Trạng thái không thay đổi.", "ok");
+        renderFeedbackBody();
+      } catch (err) {
+        sel.value = prevStatus;
+        sel.disabled = false;
+        toast(err.message || "Không cập nhật được trạng thái.", "err");
+      }
+    }));
+  };
+
+  const draw = () => {
+    const filteredRatings = ratings.filter((r) => rStar === "all" || Number(r.stars) === Number(rStar));
+    const byStars = ratingSummary.byStars || {};
+    const totalR = Number(ratingSummary.count) || 0;
+
+    body.innerHTML = `
+      <div class="stats biz-stats" id="fbStats" style="margin-bottom:14px">${renderStatsHtml()}</div>
+      <div class="tabs" style="margin-bottom:14px">
+        <button type="button" class="${subTab === "feedback" ? "on" : ""}" data-fb-tab="feedback">Góp ý học viên (${fmtN(counts.total || items.length)})</button>
+        <button type="button" class="${subTab === "ratings" ? "on" : ""}" data-fb-tab="ratings">Đánh giá sao (${fmtN(totalR || ratings.length)})</button>
+      </div>
+      ${subTab === "feedback" ? `
+        <section class="sheet sheet-pad">
+          <div class="toolbar" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">
+            <input class="input" id="fbSearch" type="search" placeholder="Tìm tiêu đề, nội dung, người gửi..." value="${esc(fQ)}" style="min-width:220px;flex:1">
+            <select class="select" id="fbStatus">
+              <option value="all" ${fStatus === "all" ? "selected" : ""}>Tất cả trạng thái</option>
+              ${Object.entries(STATUS_META).map(([k, m]) => `<option value="${k}" ${fStatus === k ? "selected" : ""}>${esc(m.label)} (${fmtN(counts[k] || 0)})</option>`).join("")}
+            </select>
+            <select class="select" id="fbKind">
+              <option value="all" ${fKind === "all" ? "selected" : ""}>Tất cả loại</option>
+              ${Object.entries(KIND_LABEL).map(([k, lbl]) => `<option value="${k}" ${fKind === k ? "selected" : ""}>${esc(lbl)}</option>`).join("")}
+            </select>
+          </div>
+          <div id="fbBody"></div>
+        </section>
+      ` : `
+        <section class="sheet sheet-pad">
+          <div class="row" style="gap:16px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0">${ratingSummary.average || 0} / 5 ★</h2>
+              <p class="small muted" style="margin:2px 0 0">${fmtN(totalR)} đánh giá từ học viên</p>
+            </div>
+            <div class="chips" style="flex:1">
+              <button type="button" class="chip ${rStar === "all" ? "on" : ""}" data-r-star="all">Tất cả (${fmtN(totalR)})</button>
+              ${[5, 4, 3, 2, 1].map((st) => `<button type="button" class="chip ${String(rStar) === String(st) ? "on" : ""}" data-r-star="${st}">${st} ★ (${fmtN(byStars[st] || 0)})</button>`).join("")}
+            </div>
+          </div>
+          ${filteredRatings.length ? `
+            <div class="table-wrap" style="border:0">
+              <table>
+                <thead><tr><th>Học viên</th><th>Số sao</th><th>Nhận xét</th><th>Cập nhật</th></tr></thead>
+                <tbody>
+                  ${filteredRatings.map((r) => `<tr>
+                    <td>${r.displayName ? `${esc(r.displayName)} <small class="muted">@${esc(r.username || "")}</small>` : `@${esc(r.username || "?")}`}</td>
+                    <td><b>${"★".repeat(Math.max(1, Math.min(5, Number(r.stars) || 0)))}</b> <small class="muted">(${Number(r.stars) || 0}/5)</small></td>
+                    <td>${r.comment ? esc(r.comment) : `<span class="muted">(Không có nhận xét)</span>`}</td>
+                    <td><span title="${esc(fmtDate(r.updatedAt))}">${esc(timeAgo(r.updatedAt))}</span></td>
+                  </tr>`).join("")}
+                </tbody>
+              </table>
+            </div>
+          ` : `<div class="empty"><b>Chưa có đánh giá nào</b>Khi học viên đánh giá sao trong mục Hồ sơ, danh sách sẽ hiện tại đây.</div>`}
+        </section>
+      `}`;
+
+    body.querySelectorAll("[data-fb-tab]").forEach((btn) => btn.addEventListener("click", () => {
+      subTab = btn.dataset.fbTab;
+      draw();
+    }));
+    if (subTab === "feedback") {
+      body.querySelector("#fbStatus")?.addEventListener("change", (e) => { fStatus = e.target.value; renderFeedbackBody(); });
+      body.querySelector("#fbKind")?.addEventListener("change", (e) => { fKind = e.target.value; renderFeedbackBody(); });
+      body.querySelector("#fbSearch")?.addEventListener("input", (e) => { fQ = e.target.value; renderFeedbackBody(); });
+      renderFeedbackBody();
+    } else {
+      body.querySelectorAll("[data-r-star]").forEach((btn) => btn.addEventListener("click", () => {
+        rStar = btn.dataset.rStar;
+        draw();
+      }));
+    }
+  };
+
+  draw();
 }

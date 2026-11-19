@@ -34,14 +34,14 @@ export function adminShell(main, { tab, groups, ctx }) {
     ${g.items.map(([k, l, ic, d]) => `<a href="${k.startsWith("#") ? k : "/app/quan-tri/" + k}" class="${k === tab ? "on" : ""}" title="${esc(d || "")}">${I(k === "tong-quan" ? "grid" : (ic || "file"))}<span>${esc(l)}</span></a>`).join("")}</div>`).join("");
   const isOverviewTab = tab === "tong-quan";
   const isUserTab = ["hoc-vien", "giao-vien", "lop", "lop-giay-phep"].includes(tab);
-  const isContentTab = ["ngoai-ngu", "ban-dich", "song-ngu", "thong-bao"].includes(tab);
+  const isContentTab = ["ngoai-ngu", "ban-dich", "song-ngu", "thong-bao", "gop-y"].includes(tab);
   const isBizTab = ["kinh-doanh", "ma-qua-tang"].includes(tab);
   const isSystemTab = ["cai-dat", "he-thong", "du-lieu", "giam-sat"].includes(tab);
   main.innerHTML = `
   <div class="ad" id="ad">
     <aside class="ad-side" aria-label="Menu quản trị">
       <div class="ad-m-drawer-head">
-        <img class="ad-m-drawer-av" src="/img/kit/chibi-dragon.webp" alt="Admin" width="52" height="52" />
+        <span class="avatar ad-m-drawer-av" style="background:${avatarColor(S.me?.username || S.me?.displayName || "admin")}" aria-hidden="true">${esc(initials(S.me?.displayName || S.me?.username || "Admin"))}</span>
         <div class="ad-m-drawer-user">
           <b>Quản trị viên</b>
           <span>LifeRivo · Admin</span>
@@ -214,6 +214,7 @@ export async function dashPage(host, DATA, { onReload } = {}) {
           <a href="/app/quan-tri/ngoai-ngu">Ngoại ngữ</a>
           <a href="/app/quan-tri/song-ngu">Bản dịch</a>
           <a href="/app/quan-tri/thong-bao">Thông báo</a>
+          <a href="/app/quan-tri/gop-y">Góp ý &amp; Đánh giá</a>
         </div>
       </div>
       <div class="ad-m-qcard">

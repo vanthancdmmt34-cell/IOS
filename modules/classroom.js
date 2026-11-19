@@ -11,7 +11,7 @@ import { familyOf, inviteMember, respondInvite, removeMember, leaveFamily, myFam
 import { revokeSource } from "./entitlements.js";
 import { buildXlsx } from "./xlsx.js";
 import { publicAssignment, assignmentExercise as assignmentExerciseOf, studentAssignmentState as studentAssignmentStateOf, finalScore as finalScoreOf, isAssignmentTarget } from "./assignments.js";
-import { notify } from "./notify.js";
+import { notify, notifyMany } from "./notify.js";
 import { bumpStreak } from "./languages.js";
 // Tên hiển thị: viết hoa chữ cái đầu của mỗi từ
 const capName = (v) => String(v || "").trim().split(" ").filter(Boolean).map((w) => w.charAt(0).toLocaleUpperCase("vi") + w.slice(1)).join(" ");
@@ -37,6 +37,10 @@ export function createClassroomApi(ctx) {
   const managedClass = async (u, id) => { const c = await db.prepare("SELECT * FROM classrooms WHERE id = ?").get(Number(id)); return c && (isAdmin(u) || c.teacher_id === u.id) ? c : null; };
   const membership = (d, classId, userId) => d.prepare("SELECT * FROM class_members WHERE class_id = ? AND user_id = ?").get(classId, userId);
   const activeMember = async (d, classId, userId) => { const m = await membership(d, classId, userId); return m && m.status === "active" ? m : null; };
+  const activeClassUserIds = async (classId, excludeUserId) => {
+    const rows = await db.prepare("SELECT user_id FROM class_members WHERE class_id = ? AND status = 'active'").all(classId);
+    return rows.map((r) => Number(r.user_id)).filter((uid) => uid && uid !== excludeUserId);
+  };
   const teacherIsAdmin = async (d, c) => { const t = await d.prepare("SELECT role FROM users WHERE id = ?").get(c.teacher_id); return t && t.role === "admin"; };
   const newJoinCode = async () => { for (let i = 0; i < 20; i++) { const c = code(7); if (!(await db.prepare("SELECT 1 FROM classrooms WHERE join_code = ?").get(c))) return c; } throw new Error("Không tạo được mã lớp"); };
   const publicClass = (c, extra = {}) => ({ id: c.id, name: c.name, description: c.description, joinCode: c.join_code, status: c.status, maxMembers: c.max_members, requireApproval: !!c.require_approval, startsOn: c.starts_on, endsOn: c.ends_on, teacherId: c.teacher_id, createdAt: c.created_at, ...extra });
@@ -254,6 +258,16 @@ export function createClassroomApi(ctx) {
               return id;
             });
             audit(user.id, "teacher.student_create", "user:" + uid, { username, classId: c ? c.id : null }, req);
+            if (c && uid !== user.id) {
+              await notify(db, {
+                userId: uid,
+                kind: "class_added",
+                title: `Bạn đã được thêm vào lớp «${c.name}»`,
+                body: "Mở lớp để xem bài tập và thông báo.",
+                link: `/app/lop/${c.id}`,
+                payload: { classId: c.id },
+              }).catch(() => {});
+            }
             results.push({ username, displayName, ok: true, id: uid, password: generated ? password : undefined });
           } catch (e) { if (!e.soft) throw e; results.push({ username, error: e.message }); }
         }
@@ -495,9 +509,23 @@ export function createClassroomApi(ctx) {
           const u = await db.prepare("SELECT id, role, username FROM users WHERE LOWER(username) = LOWER(?) AND disabled = 0").get(name);
           if (!u) { results.push({ username: name, error: "Không có tài khoản này" }); continue; }
           if ((await capacityLeft(db, c)) <= 0 && !((await membership(db, id, u.id)) || {}).status) { results.push({ username: name, error: "Lớp đã đủ thành viên" }); continue; }
+          const prev = await membership(db, id, u.id);
+          const wasActive = !!(prev && prev.status === "active");
           const r = await tx(async (t) => activate(t, c, u.id));
           results.push(r.error ? { username: name, error: r.error } : { username: u.username, ok: true });
-          if (!r.error) audit(user.id, "class.member_add", "class:" + id, { userId: u.id }, req);
+          if (!r.error) {
+            audit(user.id, "class.member_add", "class:" + id, { userId: u.id }, req);
+            if (!wasActive && u.id !== user.id) {
+              await notify(db, {
+                userId: u.id,
+                kind: "class_added",
+                title: `Bạn đã được thêm vào lớp «${c.name}»`,
+                body: "Mở lớp để xem bài tập và thông báo.",
+                link: `/app/lop/${id}`,
+                payload: { classId: id },
+              }).catch(() => {});
+            }
+          }
         }
         return ok(res, { results });
       }
@@ -515,6 +543,16 @@ export function createClassroomApi(ctx) {
         else return bad(res, 400, "Thao tác không hợp lệ.");
         if (r.error) return bad(res, 400, r.error);
         audit(user.id, "class.member_" + action, "class:" + id, { userId: uid }, req);
+        if (action === "approve" && uid !== user.id) {
+          await notify(db, {
+            userId: uid,
+            kind: "class_approved",
+            title: `Đã được duyệt vào lớp «${c.name}»`,
+            body: "Bạn có thể xem bài tập và bài kiểm tra của lớp.",
+            link: `/app/lop/${id}`,
+            payload: { classId: id },
+          }).catch(() => {});
+        }
         return ok(res, { ok: true });
       }
       if (m === "GET" && (mt = sub.match(/^\/students\/(\d+)$/))) {
@@ -572,6 +610,18 @@ export function createClassroomApi(ctx) {
           return aidN;
         });
         audit(user.id, "assignment.create", "assignment:" + aid, { classId: id, kind, refId }, req);
+        const recipients = targetAll
+          ? await activeClassUserIds(id, user.id)
+          : (await db.prepare("SELECT user_id FROM assignment_targets WHERE assignment_id = ?").all(aid))
+            .map((r) => Number(r.user_id))
+            .filter((uid) => uid && uid !== user.id);
+        await notifyMany(db, recipients, {
+          kind: "assignment_new",
+          title: `Bài tập mới: ${title}`,
+          body: c.name,
+          link: `/app/bai-giao/${aid}`,
+          payload: { classId: id, assignmentId: aid },
+        }).catch(() => {});
         return ok(res, { assignment: publicAssignment(await db.prepare("SELECT * FROM assignments WHERE id = ?").get(aid)) });
       }
       // --- Class exams ---
@@ -588,14 +638,23 @@ export function createClassroomApi(ctx) {
         if (qs.some((q) => !q)) return bad(res, 400, "Có câu hỏi không hợp lệ (thiếu nội dung hoặc đáp án).");
         const openAt = isoOrNull(b.openAt), dueAt = isoOrNull(b.dueAt);
         if (openAt === undefined || dueAt === undefined) return bad(res, 400, "Thời gian không hợp lệ.");
+        const durMin = int(b.durationMin, 30, 1, 600);
         const tid = await tx(async (t) => {
           const info = await t.prepare("INSERT INTO class_tests (class_id, title, instructions, duration_min, open_at, due_at, max_attempts, shuffle, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'published', ?, ?) RETURNING id")
-            .run(id, title, String(b.instructions || "").slice(0, 3000), int(b.durationMin, 30, 1, 600), openAt, dueAt, int(b.maxAttempts, 1, 1, 20), b.shuffle ? 1 : 0, user.id, nowIso());
+            .run(id, title, String(b.instructions || "").slice(0, 3000), durMin, openAt, dueAt, int(b.maxAttempts, 1, 1, 20), b.shuffle ? 1 : 0, user.id, nowIso());
           const testId = Number(info.lastInsertRowid);
           for (const [i, q] of qs.entries()) await t.prepare("INSERT INTO class_test_questions (test_id, idx, type, points, payload_json) VALUES (?, ?, ?, ?, ?)").run(testId, i, q.type, q.points, JSON.stringify(q.payload));
           return testId;
         });
         audit(user.id, "test.create", "test:" + tid, { classId: id, questions: qs.length }, req);
+        const testRecipients = await activeClassUserIds(id, user.id);
+        await notifyMany(db, testRecipients, {
+          kind: "test_new",
+          title: `Bài kiểm tra mới: ${title}`,
+          body: `${c.name} · ${durMin} phút`,
+          link: `/app/kiem-tra-lop/${tid}`,
+          payload: { classId: id, testId: tid },
+        }).catch(() => {});
         return ok(res, { test: publicTest(await db.prepare("SELECT * FROM class_tests WHERE id = ?").get(tid)) });
       }
       // --- Reports ---
@@ -634,6 +693,14 @@ export function createClassroomApi(ctx) {
         return Number(info.lastInsertRowid);
       });
       audit(user.id, "assignment.create", "assignment:" + aid, { classId: cls.id, kind, maxScore }, req);
+      const recipients = await activeClassUserIds(cls.id, user.id);
+      await notifyMany(db, recipients, {
+        kind: "assignment_new",
+        title: `Bài tập mới: ${title}`,
+        body: cls.name,
+        link: `/app/bai-giao/${aid}`,
+        payload: { classId: cls.id, assignmentId: aid },
+      }).catch(() => {});
       return ok(res, { assignment: publicAssignment(await db.prepare("SELECT * FROM assignments WHERE id = ?").get(aid)) });
     }
 
@@ -697,12 +764,32 @@ export function createClassroomApi(ctx) {
             await t.prepare("UPDATE assignment_submissions SET manual_score = ?, feedback = ?, graded_by = ?, graded_at = ? WHERE id = ?").run(totalScore, comment, user.id, nowIso(), latest.id);
           });
           audit(user.id, "assignment.rubric.grade", "submission:" + latest.id, { studentId, totalScore, criteria: normalized.length }, req);
+          if (studentId !== user.id) {
+            await notify(db, {
+              userId: studentId,
+              kind: "assignment_grade",
+              title: `Đã có điểm bài «${a.title}»`,
+              body: `Điểm: ${totalScore}/${Number(a.max_score ?? 10)}`,
+              link: `/app/bai-giao/${a.id}`,
+              payload: { assignmentId: a.id, submissionId: latest.id, score: totalScore },
+            }).catch(() => {});
+          }
           return ok(res, { ok: true, score: totalScore, maxScore: Number(a.max_score ?? 10), rubricScores: await rubricScoresFor(latest.id) });
         }
         const manualScore = Number(b.manualScore);
         if (!Number.isFinite(manualScore) || manualScore < 0 || manualScore > Number(a.max_score ?? 10)) return bad(res, 400, `Điểm phải từ 0 đến ${Number(a.max_score ?? 10)}.`);
         await db.prepare("UPDATE assignment_submissions SET manual_score = ?, feedback = ?, graded_by = ?, graded_at = ? WHERE id = ?").run(manualScore, String(b.comment || "").slice(0, 3000), user.id, nowIso(), latest.id);
         audit(user.id, "assignment.grade", "submission:" + latest.id, { studentId, manualScore }, req);
+        if (studentId !== user.id) {
+          await notify(db, {
+            userId: studentId,
+            kind: "assignment_grade",
+            title: `Đã có điểm bài «${a.title}»`,
+            body: `Điểm: ${manualScore}/${Number(a.max_score ?? 10)}`,
+            link: `/app/bai-giao/${a.id}`,
+            payload: { assignmentId: a.id, submissionId: latest.id, score: manualScore },
+          }).catch(() => {});
+        }
         return ok(res, { ok: true, score: manualScore, maxScore: Number(a.max_score ?? 10) });
       }
       if (mc) {

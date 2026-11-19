@@ -435,6 +435,331 @@ async function main() {
       assert.strictEqual(gcRedeem.status, 200, `Expected gift code redemption 200, got ${gcRedeem.text}`);
       assert.strictEqual(gcRedeem.json?.ok, true);
     });
+
+    await check('7. Admin Feedback Status & Ratings, Classroom Bell Notifications, Single Read, and Lang Mistakes Review', async () => {
+      // 7a. Admin GET /api/feedback RBAC (non-admin 403) and full admin payload
+      const fbStuGet = await apiRequest(baseUrl, 'GET', '/api/feedback', { session: seed.student });
+      assert.strictEqual(fbStuGet.status, 403);
+      const fbTchGet = await apiRequest(baseUrl, 'GET', '/api/feedback', { session: seed.teacher });
+      assert.strictEqual(fbTchGet.status, 403);
+
+      const fbAdmin = await apiRequest(baseUrl, 'GET', '/api/feedback', { session: seed.admin });
+      assert.strictEqual(fbAdmin.status, 200);
+      assert.ok(Array.isArray(fbAdmin.json?.items) && fbAdmin.json.items.length >= 1, 'Expected feedback items');
+      const firstFb = fbAdmin.json.items[0];
+      assert.ok(firstFb.userId, 'Expected userId on feedback item');
+      assert.ok(firstFb.displayName !== undefined, 'Expected displayName on feedback item');
+      assert.ok(Array.isArray(fbAdmin.json?.ratings) && fbAdmin.json.ratings.length >= 1, 'Expected ratings list');
+      assert.ok(fbAdmin.json?.ratingSummary?.count >= 1, 'Expected ratingSummary.count >= 1');
+      assert.ok(fbAdmin.json?.ratingSummary?.byStars?.['5'] >= 1, 'Expected 5-star count >= 1');
+      assert.ok(fbAdmin.json?.counts?.total >= 1, 'Expected feedback counts.total >= 1');
+
+      // 7b. PATCH /api/feedback/:id RBAC, CSRF, non-string/invalid validation, 404, notification trigger & deduplication
+      const fbPatchNoCsrf = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: { token: seed.admin.token },
+        body: { status: 'reviewing' },
+      });
+      assert.strictEqual(fbPatchNoCsrf.status, 403, 'Expected 403 when CSRF token is omitted on PATCH /api/feedback/:id');
+      const fbPatchStu = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.student,
+        body: { status: 'reviewing' },
+      });
+      assert.strictEqual(fbPatchStu.status, 403);
+      const fbPatchTch = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.teacher,
+        body: { status: 'reviewing' },
+      });
+      assert.strictEqual(fbPatchTch.status, 403);
+      const fbPatchArr = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.admin,
+        body: { status: ['done'] },
+      });
+      assert.strictEqual(fbPatchArr.status, 400, 'Expected 400 when status is non-string array');
+      const fbPatchBad = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.admin,
+        body: { status: 'invalid_state' },
+      });
+      assert.strictEqual(fbPatchBad.status, 400);
+      const fbPatchMissing = await apiRequest(baseUrl, 'PATCH', '/api/feedback/nonexistent-id', {
+        session: seed.admin,
+        body: { status: 'planned' },
+      });
+      assert.strictEqual(fbPatchMissing.status, 404);
+
+      const fbPatchOk = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.admin,
+        body: { status: 'reviewing' },
+      });
+      assert.strictEqual(fbPatchOk.status, 200);
+      assert.strictEqual(fbPatchOk.json?.changed, true);
+
+      const stuNotifsAfterFb = await apiRequest(baseUrl, 'GET', '/api/notifications', { session: seed.student });
+      assert.strictEqual(stuNotifsAfterFb.status, 200);
+      const fbNotifs = (stuNotifsAfterFb.json?.items || []).filter((n) => n.kind === 'feedback_status');
+      assert.strictEqual(fbNotifs.length, 1, `Expected 1 feedback_status notification, got ${fbNotifs.length}`);
+      assert.strictEqual(fbNotifs[0].link, '/app/ca-nhan');
+
+      // Same status again should NOT send duplicate notification
+      const fbPatchSame = await apiRequest(baseUrl, 'PATCH', `/api/feedback/${firstFb.id}`, {
+        session: seed.admin,
+        body: { status: 'reviewing' },
+      });
+      assert.strictEqual(fbPatchSame.status, 200);
+      assert.strictEqual(fbPatchSame.json?.changed, false);
+      const stuNotifsAfterSame = await apiRequest(baseUrl, 'GET', '/api/notifications', { session: seed.student });
+      const fbNotifs2 = (stuNotifsAfterSame.json?.items || []).filter((n) => n.kind === 'feedback_status');
+      assert.strictEqual(fbNotifs2.length, 1, 'Expected no duplicate notification when status unchanged');
+
+      // 7c. Single notification read endpoint POST /api/notifications/:id/read (CSRF + IDOR + owner)
+      const targetNotifId = fbNotifs[0].id;
+      const readNoCsrf = await apiRequest(baseUrl, 'POST', `/api/notifications/${targetNotifId}/read`, {
+        session: { token: seed.student.token },
+        body: {},
+      });
+      assert.strictEqual(readNoCsrf.status, 403, 'Expected 403 when CSRF token is omitted on POST /api/notifications/:id/read');
+      // Another user cannot mark student's notification read
+      const otherRead = await apiRequest(baseUrl, 'POST', `/api/notifications/${targetNotifId}/read`, {
+        session: seed.peer1,
+        body: {},
+      });
+      assert.strictEqual(otherRead.status, 200);
+      assert.strictEqual(otherRead.json?.updated, 0);
+
+      const singleRead = await apiRequest(baseUrl, 'POST', `/api/notifications/${targetNotifId}/read`, {
+        session: seed.student,
+        body: {},
+      });
+      assert.strictEqual(singleRead.status, 200, `Single read failed: ${singleRead.text}`);
+      assert.strictEqual(singleRead.json?.ok, true);
+      assert.strictEqual(singleRead.json?.updated, 1);
+
+      // 7d. Classroom bell notifications: assignment, compact assignment, test, grading (manual & rubric), member add & approve
+      const pastDueIso = new Date(Date.now() - 86400000).toISOString();
+      const soonDueIso = new Date(Date.now() + 86400000).toISOString();
+      const asg1 = await apiRequest(baseUrl, 'POST', `/api/classes/${seed.classroom.id}/assignments`, {
+        session: seed.teacher,
+        body: { title: 'Bài tập thông báo 1', prompt: 'Viết 3 câu chào hỏi.', maxScore: 10, dueAt: pastDueIso },
+      });
+      assert.strictEqual(asg1.status, 200, `Create class assignment failed: ${asg1.text}`);
+      const aid1 = asg1.json?.assignment?.id;
+      assert.ok(aid1);
+
+      const asg2 = await apiRequest(baseUrl, 'POST', '/api/assignments', {
+        session: seed.teacher,
+        body: { classId: seed.classroom.id, title: 'Bài tập thông báo 2', prompt: 'Dịch 2 câu.', maxScore: 10, dueAt: soonDueIso },
+      });
+      assert.strictEqual(asg2.status, 200, `Create compact assignment failed: ${asg2.text}`);
+      const aid2 = asg2.json?.assignment?.id;
+      assert.ok(aid2);
+
+      const testNew = await apiRequest(baseUrl, 'POST', `/api/classes/${seed.classroom.id}/tests`, {
+        session: seed.teacher,
+        body: {
+          title: 'Kiểm tra thông báo',
+          durationMin: 15,
+          questions: [{ type: 'mcq', q: 'Cat nghĩa là gì?', options: ['Mèo', 'Chó'], answer: 0, points: 10 }],
+        },
+      });
+      assert.strictEqual(testNew.status, 200, `Create test failed: ${testNew.text}`);
+      const tidNew = testNew.json?.test?.id;
+      assert.ok(tidNew);
+
+      // Student submits both assignments; before grading, overdue assignment reports passed:false, overdue:true
+      const subA1 = await apiRequest(baseUrl, 'POST', `/api/assignments/${aid1}/submit`, {
+        session: seed.student,
+        body: { answer: 'Hello, good morning, how are you?' },
+      });
+      assert.strictEqual(subA1.status, 200);
+      const dashBeforeGrade = await apiRequest(baseUrl, 'GET', '/api/dashboard', { session: seed.student });
+      assert.strictEqual(dashBeforeGrade.status, 200);
+      const overRowBefore = (dashBeforeGrade.json?.dueAssignments || []).find((a) => a.id === aid1);
+      assert.ok(overRowBefore && overRowBefore.passed === false && overRowBefore.overdue === true && overRowBefore.status === 'overdue',
+        `Expected ungraded overdue custom assignment in dueAssignments, got ${JSON.stringify(overRowBefore)}`);
+
+      const gradeManual = await apiRequest(baseUrl, 'POST', `/api/assignments/${aid1}/grade`, {
+        session: seed.teacher,
+        body: { studentId: seed.student.user.id, manualScore: 9, comment: 'Rất tốt' },
+      });
+      assert.strictEqual(gradeManual.status, 200);
+
+      const rubricSet = await apiRequest(baseUrl, 'POST', `/api/assignments/${aid2}/rubric`, {
+        session: seed.teacher,
+        body: { criteria: [{ title: 'Chính xác', maxScore: 10 }] },
+      });
+      assert.strictEqual(rubricSet.status, 200);
+      const critId = rubricSet.json?.rubric?.[0]?.id;
+      const subA2 = await apiRequest(baseUrl, 'POST', `/api/assignments/${aid2}/submit`, {
+        session: seed.student,
+        body: { answer: 'I am a student.' },
+      });
+      assert.strictEqual(subA2.status, 200);
+      const gradeRubric = await apiRequest(baseUrl, 'POST', `/api/assignments/${aid2}/grade`, {
+        session: seed.teacher,
+        body: { studentId: seed.student.user.id, rubricScores: [{ criterionId: critId, score: 8.5 }] },
+      });
+      assert.strictEqual(gradeRubric.status, 200);
+
+      // After manual & rubric grading, GET /api/dashboard must reflect graded/done (not stuck pending/overdue)
+      const dashAfterGrade = await apiRequest(baseUrl, 'GET', '/api/dashboard', { session: seed.student });
+      assert.strictEqual(dashAfterGrade.status, 200);
+      const overRowAfter = (dashAfterGrade.json?.dueAssignments || []).find((a) => a.id === aid1);
+      assert.strictEqual(overRowAfter, undefined, `Expected graded overdue custom assignment to be cleared from dueAssignments, got ${JSON.stringify(overRowAfter)}`);
+      const soonRowAfter = (dashAfterGrade.json?.dueAssignments || []).find((a) => a.id === aid2);
+      assert.ok(soonRowAfter && soonRowAfter.passed === true && soonRowAfter.graded === true && soonRowAfter.overdue === false && soonRowAfter.status === 'done',
+        `Expected graded dueSoon custom assignment to report passed:true, graded:true, status:'done', got ${JSON.stringify(soonRowAfter)}`);
+
+      const stuNotifsCls = await apiRequest(baseUrl, 'GET', '/api/notifications', { session: seed.student });
+      const sItems = stuNotifsCls.json?.items || [];
+      assert.ok(sItems.some((n) => n.kind === 'assignment_new' && n.link === `/app/bai-giao/${aid1}`), 'Expected assignment_new notif for aid1');
+      assert.ok(sItems.some((n) => n.kind === 'assignment_new' && n.link === `/app/bai-giao/${aid2}`), 'Expected assignment_new notif for aid2');
+      assert.ok(sItems.some((n) => n.kind === 'test_new' && n.link === `/app/kiem-tra-lop/${tidNew}`), 'Expected test_new notif');
+      const gradeNotifs = sItems.filter((n) => n.kind === 'assignment_grade');
+      assert.ok(gradeNotifs.some((n) => n.link === `/app/bai-giao/${aid1}`), 'Expected assignment_grade notif for manual grade');
+      assert.ok(gradeNotifs.some((n) => n.link === `/app/bai-giao/${aid2}`), 'Expected assignment_grade notif for rubric grade');
+
+      // Member add notification
+      const addPeer = await apiRequest(baseUrl, 'POST', `/api/classes/${seed.classroom.id}/members`, {
+        session: seed.teacher,
+        body: { username: seed.peer1.username },
+      });
+      assert.strictEqual(addPeer.status, 200);
+      const peer1Notifs = await apiRequest(baseUrl, 'GET', '/api/notifications', { session: seed.peer1 });
+      assert.ok((peer1Notifs.json?.items || []).some((n) => n.kind === 'class_added' && n.link === `/app/lop/${seed.classroom.id}`), 'Expected class_added notif for peer1');
+
+      // Member approve notification
+      const appClsRes = await apiRequest(baseUrl, 'POST', '/api/classes', {
+        session: seed.teacher,
+        body: { name: 'Lớp duyệt thành viên', requireApproval: true },
+      });
+      assert.strictEqual(appClsRes.status, 200);
+      const appCid = appClsRes.json?.class?.id;
+      const appCode = appClsRes.json?.class?.joinCode;
+      const peer2Join = await apiRequest(baseUrl, 'POST', '/api/classes/join', {
+        session: seed.peer2,
+        body: { code: appCode },
+      });
+      assert.strictEqual(peer2Join.status, 200);
+      assert.strictEqual(peer2Join.json?.status, 'pending');
+      const peer2Approve = await apiRequest(baseUrl, 'POST', `/api/classes/${appCid}/members/${seed.peer2.user.id}`, {
+        session: seed.teacher,
+        body: { action: 'approve' },
+      });
+      assert.strictEqual(peer2Approve.status, 200);
+      const peer2Notifs = await apiRequest(baseUrl, 'GET', '/api/notifications', { session: seed.peer2 });
+      assert.ok((peer2Notifs.json?.items || []).some((n) => n.kind === 'class_approved' && n.link === `/app/lop/${appCid}`), 'Expected class_approved notif for peer2');
+
+      // Teacher creates a student account directly in classroom -> class_added notification
+      const tchStuCreate = await apiRequest(baseUrl, 'POST', '/api/teacher/students', {
+        session: seed.teacher,
+        body: { classId: seed.classroom.id, accounts: [{ username: 'e2e_created_stu', displayName: 'Created Student', password: 'StudentPass!234' }] },
+      });
+      assert.strictEqual(tchStuCreate.status, 200);
+      assert.strictEqual(tchStuCreate.json?.results?.[0]?.ok, true);
+      const createdStuLogin = await apiRequest(baseUrl, 'POST', '/api/login', {
+        body: { username: 'e2e_created_stu', password: 'StudentPass!234' },
+      });
+      assert.strictEqual(createdStuLogin.status, 200);
+      const createdStuNotifs = await apiRequest(baseUrl, 'GET', '/api/notifications', {
+        session: { token: createdStuLogin.cookieToken, csrf: createdStuLogin.json?.csrfToken },
+      });
+      assert.ok((createdStuNotifs.json?.items || []).some((n) => n.kind === 'class_added' && n.link === `/app/lop/${seed.classroom.id}`), 'Expected class_added notif for teacher-created student');
+
+      // 7e. Lang review ?mode=mistakes & reviewDue().mistakes
+      const langCat = await apiRequest(baseUrl, 'GET', '/api/lang', { session: seed.student });
+      const enC = (langCat.json?.courses || []).find((c) => c.id === 'en');
+      const unpassedNghia = (enC?.levels || []).flatMap((l) => (l.units || []).flatMap((u) => u.exercises || [])).find((e) => e.kind === 'nghia' && e.best < 100);
+      assert.ok(unpassedNghia, 'Expected an unpassed nghia exercise to test mistakes');
+      // Submit wrong answers so lang_qstats & lang_srs.wrong_count increment
+      const wrongSub = await apiRequest(baseUrl, 'POST', `/api/lang/ex/${unpassedNghia.id}/submit`, {
+        session: seed.student,
+        body: { answers: [99, 99, 99, 99, 99] },
+      });
+      assert.strictEqual(wrongSub.status, 200);
+
+      // Mark one wrong word via /api/lang/review (ok: false, then ok: true so due_at > now)
+      const thEn = await apiRequest(baseUrl, 'GET', '/api/lang/theory/en/a1/1', { session: seed.student });
+      const targetWord = thEn.json?.theory?.words?.[0]?.word;
+      assert.ok(targetWord);
+      await apiRequest(baseUrl, 'POST', '/api/lang/review', { session: seed.student, body: { lang: 'en', word: targetWord, ok: false } });
+      await apiRequest(baseUrl, 'POST', '/api/lang/review', { session: seed.student, body: { lang: 'en', word: targetWord, ok: true } });
+
+      const dueMode = await apiRequest(baseUrl, 'GET', '/api/lang/review/en', { session: seed.student });
+      assert.strictEqual(dueMode.status, 200);
+      assert.strictEqual(dueMode.json?.mode, 'due');
+      assert.deepStrictEqual(dueMode.json?.hardQuestions, []);
+      assert.ok(dueMode.json?.mistakes >= 1, `Expected mistakes >= 1, got ${dueMode.json?.mistakes}`);
+
+      const mistakesMode = await apiRequest(baseUrl, 'GET', '/api/lang/review/en?mode=mistakes', { session: seed.student });
+      assert.strictEqual(mistakesMode.status, 200);
+      assert.strictEqual(mistakesMode.json?.mode, 'mistakes');
+      assert.ok(
+        (mistakesMode.json?.cards || []).some((c) => c.word === targetWord && c.wrong >= 1),
+        `Expected ${targetWord} with wrong >= 1 in mode=mistakes cards even when due_at > now`,
+      );
+      assert.ok(
+        Array.isArray(mistakesMode.json?.hardQuestions) && mistakesMode.json.hardQuestions.length >= 1,
+        'Expected non-empty hardQuestions from lang_qstats in mode=mistakes',
+      );
+
+      // 7f. LIMIT 20 Pro-shadow regression check on GET /api/lang/review/en?mode=mistakes
+      const adminLangCfg = await apiRequest(baseUrl, 'GET', '/api/admin/lang', { session: seed.admin });
+      assert.strictEqual(adminLangCfg.status, 200);
+      const origProFrom = adminLangCfg.json?.proFrom || {};
+      const setProRes = await apiRequest(baseUrl, 'PUT', '/api/admin/lang/pro', {
+        session: seed.admin,
+        body: { proFrom: { ...origProFrom, en: 2 } },
+      });
+      assert.strictEqual(setProRes.status, 200);
+      try {
+        const nonProReg = await apiRequest(baseUrl, 'POST', '/api/register', {
+          body: { username: 'e2e_nonpro_stu', displayName: 'Non Pro Student', password: 'StudentPass!234' },
+        });
+        assert.ok(nonProReg.status === 200 || nonProReg.status === 201, `Register non-Pro failed: ${nonProReg.text}`);
+        const nonProSess = { token: nonProReg.cookieToken, csrf: nonProReg.json?.csrfToken };
+        const nonProInfo = await apiRequest(baseUrl, 'GET', '/api/me/pro-access', { session: nonProSess });
+        assert.strictEqual(nonProInfo.json?.pro, false, 'Expected newly registered standalone student to be non-Pro');
+
+        const { langCatalog } = await import('../modules/languages.js');
+        const catFull = langCatalog();
+        const enFull = catFull.courses.find((c) => c.id === 'en');
+        const freeLevelId = enFull.levels[0].id;
+        const proLevelIds = new Set(enFull.levels.slice(2).map((l) => l.id));
+        const enExs = [...catFull.exercises.values()].filter((e) => e.lang === 'en');
+        const freeExId = enExs.find((e) => e.levelId === freeLevelId).id;
+        const proExIds = enExs.filter((e) => proLevelIds.has(e.levelId)).map((e) => e.id).slice(0, 22);
+        assert.ok(proExIds.length >= 20, `Expected at least 20 Pro EN exercises, got ${proExIds.length}`);
+
+        const qDb = new DatabaseSync(path.join(srv.tmpDataDir, 'app.db'));
+        try {
+          const stmt = qDb.prepare(
+            'INSERT INTO lang_qstats (item_id, q_index, answered, wrong) VALUES (?, 0, ?, ?) ON CONFLICT(item_id, q_index) DO UPDATE SET answered = excluded.answered, wrong = excluded.wrong',
+          );
+          for (const pid of proExIds) stmt.run(pid, 10, 10);
+          stmt.run(freeExId, 10, 5);
+        } finally {
+          qDb.close();
+        }
+
+        const nonProMistakes = await apiRequest(baseUrl, 'GET', '/api/lang/review/en?mode=mistakes', { session: nonProSess });
+        assert.strictEqual(nonProMistakes.status, 200);
+        const hqList = nonProMistakes.json?.hardQuestions || [];
+        assert.ok(
+          hqList.some((hq) => hq.itemId === freeExId),
+          `Expected free exercise ${freeExId} in hardQuestions even when 20+ Pro rows have higher error rate, got ${JSON.stringify(hqList)}`,
+        );
+        const proSet = new Set(proExIds);
+        assert.strictEqual(
+          hqList.some((hq) => proSet.has(hq.itemId)),
+          false,
+          'Non-Pro user must not receive Pro-locked exercises in hardQuestions',
+        );
+      } finally {
+        await apiRequest(baseUrl, 'PUT', '/api/admin/lang/pro', {
+          session: seed.admin,
+          body: { proFrom: origProFrom },
+        });
+      }
+    });
   } finally {
     await srv.stop();
     assertWorkspaceFilesUntouched(wsSnap);

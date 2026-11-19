@@ -1,6 +1,6 @@
 /* LifeRivo 2.0 - bootstrap, app shell, and router */
 import { appHash, setAppHash } from "./core.js";
-import { S, api, esc, icon, lineIcon, sketchIcon, avatar, fmtN, timeAgo, onScores, setScores, totalStats, closeTopModal, openModal, chapterShort, toast, $, cfg, applyBrand, siteName, brandHtml, brandCleanHtml, themeBtnHtml, refreshAiStatus, aiOn, paintProBadges } from "./core.js";
+import { S, api, esc, icon, lineIcon, sketchIcon, avatar, avatarColor, initials, fmtN, timeAgo, onScores, setScores, totalStats, closeTopModal, openModal, chapterShort, toast, $, cfg, applyBrand, siteName, brandHtml, brandCleanHtml, themeBtnHtml, refreshAiStatus, aiOn, paintProBadges } from "./core.js";
 import { renderLanding, openAuth } from "./landing.js";
 // Admin chi tai khi vao route quan-tri (khach khong can admin.js -> nhe LCP).
 let _pageAdmin = null;
@@ -232,6 +232,9 @@ const NAV = [
   ["mon-hoc", "route", "Lộ trình học", ["student", "parent", "admin"]],
   ["luyen-noi", "mic", "Luyện nói", ["student", "parent", "admin"]],
   ["on-tap", "clock", "Ôn tập", ["student", "parent", "admin"]],
+  ["so-tay", "lesson", "Sổ tay từ vựng", ["student", "parent", "admin"]],
+  ["tro-choi", "sparkle", "Trò chơi học từ", ["student", "parent", "admin"]],
+  ["toeic", "award", "Trung tâm TOEIC", ["student", "parent", "admin"]],
   ["tro-chuyen", "chat", "Hội thoại AI", ["student", "parent", "admin"]],
   ["ai", "chat", "Hội thoại AI", ["student", "parent", "admin"]],
   ["phong-van", "briefcase", "Phỏng vấn", ["student", "parent", "admin"]],
@@ -239,7 +242,9 @@ const NAV = [
   // Cá nhân (hợp nhất hồ sơ, cài đặt & quản trị)
   ["-", "", "Cá nhân"],
   ["ca-nhan", "user", "Hồ sơ của tôi"],
-  ["co-vu", "sparkle", "Cổ vũ", ["student", "parent", "admin"]],
+  ["co-vu", "sparkle", "Nhiệm vụ hôm nay", ["student", "parent", "admin"]],
+  ["xep-hang", "trophy", "Xếp hạng", ["student", "parent", "admin"], "leaderboard"],
+  ["huy-hieu", "star", "Huy hiệu", ["student", "parent", "admin"], "badge"],
   ["lop", "book", "Lớp của tôi", ["student", "parent"], "class"],
   ["gia-dinh", "users", "Gia đình", ["student", "parent", "admin"], "family"],
   ["thong-bao", "bell", "Thông báo"],
@@ -254,6 +259,9 @@ const NAV_HINT = {
   "co-vu": "Tiến độ, nhiệm vụ & kế hoạch hôm nay",
   "luyen-noi": "Đọc theo giọng mẫu, máy chấm",
   "on-tap": "Nhắc lại từ sắp quên",
+  "so-tay": "Từ đã lưu và ghi chú cá nhân",
+  "tro-choi": "Vừa chơi vừa ôn phản xạ từ vựng",
+  "toeic": "7 Part và đề thi thử TOEIC",
   "tro-chuyen": "Trò chuyện, AI sửa câu",
   "ai": "Trò chuyện, AI sửa câu",
   "phong-van": "Tập trả lời phỏng vấn",
@@ -262,8 +270,8 @@ const NAV_HINT = {
 
 const NAV_CATS = [
   { id: "teach", icon: "cat-teach", label: "Giảng dạy", roles: new Set(["teacher", "admin"]), routes: new Set(["giao-vien", "giao-vien/hoc-vien", "lop", "giao-vien/bai-tap", "giao-vien/tien-do"]) },
-  { id: "learn", icon: "cat-learn", label: "Học tập", roles: new Set(["student", "parent", "admin"]), routes: new Set(["tong-quan", "mon-hoc", "luyen-noi", "on-tap", "tro-chuyen", "ai", "phong-van", "chon-mon"]) },
-  { id: "personal", icon: "cat-acct", label: "Cá nhân", routes: new Set(["ca-nhan", "co-vu", "lop", "gia-dinh", "thong-bao", "cai-dat", "quan-tri", "tai-ung-dung", "ho-tro"]) },
+  { id: "learn", icon: "cat-learn", label: "Học tập", roles: new Set(["student", "parent", "admin"]), routes: new Set(["tong-quan", "mon-hoc", "luyen-noi", "on-tap", "so-tay", "tro-choi", "toeic", "tro-chuyen", "ai", "phong-van", "chon-mon"]) },
+  { id: "personal", icon: "cat-acct", label: "Cá nhân", routes: new Set(["ca-nhan", "co-vu", "xep-hang", "huy-hieu", "lop", "gia-dinh", "thong-bao", "cai-dat", "quan-tri", "tai-ung-dung", "ho-tro"]) },
 ];
 
 // Feature can be disabled by the teacher in Settings. Teachers still see it for preview.
@@ -301,11 +309,12 @@ async function loadBellFeed(drop) {
       nid: x.id,
       title: x.title || "",
       sub: [x.body || "", timeAgo(x.createdAt)].filter(Boolean).join(" · "),
+      link: x.link || "",
       unread: !x.readAt,
     }));
     if (items.length < 4) {
       for (const x of (a.announcements || []).slice(0, 4 - items.length)) {
-        items.push({ nid: 0, title: x.title || (en ? "Class notice" : "Thông báo lớp"), sub: timeAgo(x.createdAt), unread: false });
+        items.push({ nid: 0, title: x.title || (en ? "Class notice" : "Thông báo lớp"), sub: timeAgo(x.createdAt), link: "/app/thong-bao", unread: false });
       }
     }
     const unread = n.unread || 0;
@@ -316,7 +325,7 @@ async function loadBellFeed(drop) {
         <b>${en ? "Notifications" : "Thông báo"}${unread > 0 ? ` <span class="ud-bell-cnt">${unread > 99 ? "99+" : unread}</span>` : ""}</b>
         ${unread > 0 ? `<button type="button" class="ud-bell-readall" id="udBellReadAll">${en ? "Mark all read" : "Đọc hết"}</button>` : ""}
       </div>
-      ${items.length ? `<div class="ud-bell-list">${items.map((x) => `<a class="ud-bell-item${x.unread ? " is-new" : ""}" href="/app/thong-bao"${x.nid ? ` data-nid="${x.nid}"` : ""}>
+      ${items.length ? `<div class="ud-bell-list">${items.map((x) => `<a class="ud-bell-item${x.unread ? " is-new" : ""}" href="${esc(x.link || "/app/thong-bao")}"${x.nid ? ` data-nid="${x.nid}"` : ""}>
         <b>${esc(x.title)}</b>
         ${x.sub ? `<small>${esc(x.sub)}</small>` : ""}
       </a>`).join("")}</div>` : `<div class="ud-bell-empty">${en ? "No new notifications." : "Chưa có thông báo mới."}</div>`}
@@ -441,7 +450,7 @@ function renderShell() {
     if (learner && r === "goi-cua-toi" && !(S.membership && S.membership.pro)) return false;
     if (learner && r === "bang-gia" && S.membership && S.membership.pro) return false;
     if (r !== "-" && !featureOn(r)) return false;
-    if (r === "ai" && !aiOn()) return false; // máy chủ chưa cấu hình trợ lý AI: ẩn mục AI chung
+    if ((r === "ai" || r === "tro-chuyen") && !aiOn()) return false; // máy chủ chưa cấu hình trợ lý AI: ẩn mục AI
     if (roles && !roles.includes(S.me.role)) return false;
     if (flag === "class" && !showClass) return false;
     if (flag === "family" && !showFamily) return false;
@@ -479,13 +488,6 @@ function renderShell() {
   const subjMeta = subj ? subjectInfo(subj) : null;
   const oldMain = document.getElementById("main");
   const mtEn = currentLang() === "en";
-  const roleAvatar = S.me.role === "teacher"
-    ? "/img/kit/chibi-owl.webp"
-    : S.me.role === "admin"
-      ? "/img/kit/chibi-dragon.webp"
-      : S.me.role === "parent"
-        ? "/img/kit/chibi-cat.webp"
-        : "/img/kit/chibi-bunny.webp";
   const isTeacherRole = S.me.role === "teacher";
   const isParentRole = S.me.role === "parent";
   const isPro = !!(S.membership && S.membership.pro);
@@ -507,7 +509,7 @@ function renderShell() {
          <button type="button" class="mtab-center" id="mTabLearnBtn" data-mt="hoc-ngay" aria-haspopup="true" aria-expanded="false" aria-controls="mLearnFan" aria-label="${mtEn ? "Open study menu" : "Mở menu học tập"}"><span class="mtab-ic"><span class="mtab-ic-main">${lineIcon("book")}</span><span class="mtab-ic-x">${lineIcon("x")}</span></span><span class="mtab-lbl">${mtEn ? "Learn now" : "Học ngay"}</span></button>
          <a href="/app/phong-van" data-mt="phong-van"><span class="mtab-ic">${lineIcon("briefcase")}</span><span class="mtab-lbl">${mtEn ? "Interview" : "Phỏng vấn"}</span></a>
          <button type="button" class="mtab-acct-btn" id="mTabAcctBtn" data-mt="ca-nhan" aria-haspopup="true" aria-expanded="false" aria-controls="mAcctFan" aria-label="${mtEn ? "Open personal menu" : "Mở menu cá nhân"}"><span class="mtab-ic">${lineIcon("user")}</span><span class="mtab-lbl">${mtEn ? "Profile" : "Cá nhân"}</span></button>`;
-  const useAiFan = subj && featureOn("tro-chuyen");
+  const useAiFan = subj && featureOn("tro-chuyen") && aiOn();
   const useToeicFan = subj === "en";
   const mLearnFanHtml = (!isTeacherRole && !isParentRole) ? `
     <div class="m-fan-wrap m-learn-fan" id="mLearnFan" hidden>
@@ -516,9 +518,9 @@ function renderShell() {
         ${useAiFan ? `<a href="/app/ngoai-ngu/tro-chuyen/${subj}" class="m-fan-petal is-i0" data-ml="tro-chuyen" role="menuitem">
           <span class="m-fan-orb is-indigo">${lineIcon("chat")}</span>
           <span class="m-fan-pill">${mtEn ? "AI Chat" : "Hội thoại AI"}</span>
-        </a>` : `<a href="/app/so-tay" class="m-fan-petal is-i0" data-ml="so-tay" role="menuitem">
-          <span class="m-fan-orb is-indigo">${lineIcon("lesson")}</span>
-          <span class="m-fan-pill">${mtEn ? "Notebook" : "Sổ tay"}</span>
+        </a>` : `<a href="${subj ? `/app/tro-choi/${subj}` : "/app/tro-choi"}" class="m-fan-petal is-i0" data-ml="tro-choi" role="menuitem">
+          <span class="m-fan-orb is-indigo">${lineIcon("sparkle")}</span>
+          <span class="m-fan-pill">${mtEn ? "Games" : "Trò chơi"}</span>
         </a>`}
         <a href="${subj ? `/app/ngoai-ngu/luyen-noi/${subj}` : "/app/chon-mon"}" class="m-fan-petal is-i1" data-ml="luyen-noi" role="menuitem">
           <span class="m-fan-orb is-purple">${lineIcon("mic")}</span>
@@ -568,7 +570,7 @@ function renderShell() {
       <div class="m-fan-arc" role="menu" aria-label="${mtEn ? "Personal" : "Cá nhân"}">
         <a href="${subj ? "/app/co-vu" : "/app/chon-mon"}" class="m-fan-petal is-a0" data-ma="co-vu" role="menuitem">
           <span class="m-fan-orb is-amber">${lineIcon("star")}</span>
-          <span class="m-fan-pill">${mtEn ? "Cheer" : "Cổ vũ"}</span>
+          <span class="m-fan-pill">${mtEn ? "Missions" : "Nhiệm vụ"}</span>
         </a>
         <a href="/app/ca-nhan" class="m-fan-petal is-a2" data-ma="ca-nhan" role="menuitem">
           <span class="m-fan-orb is-sky">${lineIcon("user")}</span>
@@ -589,7 +591,7 @@ function renderShell() {
       <div class="m-fan-arc" role="menu" aria-label="${mtEn ? "Personal" : "Cá nhân"}">
         <a href="${subj ? "/app/co-vu" : "/app/chon-mon"}" class="m-fan-petal is-a0" data-ma="co-vu" role="menuitem">
           <span class="m-fan-orb is-amber">${lineIcon("star")}</span>
-          <span class="m-fan-pill">${mtEn ? "Cheer" : "Cổ vũ"}</span>
+          <span class="m-fan-pill">${mtEn ? "Missions" : "Nhiệm vụ"}</span>
         </a>
         ${showClass ? `<a href="/app/lop" class="m-fan-petal is-a1" data-ma="lop" role="menuitem">
           <span class="m-fan-orb is-mint">${lineIcon("book")}</span>
@@ -659,7 +661,7 @@ function renderShell() {
       <div class="m-sheet-scrim" data-close-acct></div>
       <div class="m-sheet-card m-acct-card" role="dialog" aria-modal="true" aria-labelledby="mAcctName">
         <div class="m-acct-head">
-          <img class="m-acct-av" src="${roleAvatar}" width="48" height="48" alt="">
+          <span class="avatar m-acct-av" style="background:${avatarColor(S.me.username || S.me.displayName)}" aria-hidden="true">${esc(initials(S.me.displayName || S.me.username))}</span>
           <div class="m-acct-who">
             <b id="mAcctName">${esc(S.me.displayName || S.me.username)}<span data-pro-slot></span></b>
             <small>@${esc(S.me.username)} · ${esc(roleLabel(S.me.role))}</small>
@@ -739,6 +741,8 @@ function renderShell() {
             <div class="who"><b>${esc(S.me.displayName)}<span data-pro-slot></span></b><span>${esc(roleLabel(S.me.role))}</span></div>
             <a href="/app/ca-nhan">${lineIcon("user")}Hồ sơ của tôi</a>
             ${isTeacherRole ? `<a href="/app/thong-bao">${lineIcon("bell")}Thông báo lớp</a>` : `<a href="/app/goi-cua-toi">${lineIcon("key")}Gói của tôi</a>
+            ${subj && showLb ? `<a href="/app/ngoai-ngu/xep-hang/${subj}">${lineIcon("trophy")}Xếp hạng</a>` : ""}
+            ${subj && showBadge ? `<a href="/app/ngoai-ngu/huy-hieu/${subj}">${lineIcon("star")}Huy hiệu</a>` : ""}
             <a href="${subj ? `/app/ngoai-ngu/chung-nhan-cua-toi/${subj}` : "/app/chon-mon"}">${lineIcon("award")}Chứng nhận</a>`}
             <a href="/app/cai-dat">${lineIcon("cog")}Cài đặt</a>
             ${S.me.role === "admin" ? `<a href="/app/quan-tri">${lineIcon("settings")}Quản trị hệ thống</a>` : ""}
@@ -885,7 +889,14 @@ function renderShell() {
     const cats = [...document.querySelectorAll("#sideNav details.nav-cat")];
     cats.forEach((d) => d.addEventListener("toggle", () => {
       if (window.innerWidth <= 760) return;
-      if (d.open) cats.forEach((other) => { if (other !== d && other.open) other.open = false; });
+      if (d.open) {
+        cats.forEach((other) => {
+          if (other === d || !other.open) return;
+          if (d.dataset.cat === "learn" && other.dataset.cat === "personal") return;
+          if (d.dataset.cat === "personal" && other.dataset.cat === "learn" && other.querySelector("a.on")) return;
+          other.open = false;
+        });
+      }
     }));
   }
   paintSubjectPill();
@@ -1065,8 +1076,7 @@ function syncNavState(parsed = parseHashRoute()) {
   else if (/^ngoai-ngu\/luyen-noi(?:\/|$)/.test(clean)) activeNav = "luyen-noi";
   else if (/^ngoai-ngu\/on-tap(?:\/|$)/.test(clean)) activeNav = "on-tap";
   else if (/^ngoai-ngu\/tro-chuyen(?:\/|$)/.test(clean)) activeNav = "tro-chuyen";
-  else if (["toeic", "so-tay", "tro-choi"].includes(activeNav)) activeNav = hasSubj ? "mon-hoc" : "tong-quan";
-  else if (["chung-nhan", "xep-hang", "huy-hieu", "goi-cua-toi", "bang-gia", "chinh-sach"].includes(activeNav)) activeNav = "ca-nhan";
+  else if (["chung-nhan", "goi-cua-toi", "bang-gia", "chinh-sach"].includes(activeNav)) activeNav = "ca-nhan";
   else if (activeNav === "quan-tri-ngoai-ngu") activeNav = "quan-tri";
   else if (hit[2] === "ngoai-ngu") activeNav = hasSubj ? "mon-hoc" : (document.querySelector('.nav a[data-r="chon-mon"]') ? "chon-mon" : "tong-quan");
   document.querySelectorAll(".nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === activeNav));
@@ -1080,6 +1090,7 @@ function syncNavState(parsed = parseHashRoute()) {
     "on-tap": mtSubj ? `/app/ngoai-ngu/on-tap/${mtSubj}` : "/app/chon-mon",
     "tro-chuyen": mtSubj ? `/app/ngoai-ngu/tro-chuyen/${mtSubj}` : "/app/ai",
     "so-tay": "/app/so-tay",
+    "tro-choi": mtSubj ? `/app/tro-choi/${mtSubj}` : "/app/tro-choi",
     "phong-van": "/app/phong-van",
     toeic: "/app/toeic",
     "co-vu": mtSubj ? "/app/co-vu" : "/app/chon-mon",
@@ -1106,7 +1117,8 @@ function syncNavState(parsed = parseHashRoute()) {
     "hoc-tap": learnPath,
     "on-tap": /^ngoai-ngu\/on-tap(?:\/|$)/.test(clean),
     "tro-chuyen": /^ngoai-ngu\/tro-chuyen(?:\/|$)/.test(clean) || /^ai(?:\/|$)/.test(clean),
-    "so-tay": clean === "so-tay" || /^tro-choi(?:\/|$)/.test(clean),
+    "so-tay": clean === "so-tay",
+    "tro-choi": /^tro-choi(?:\/|$)/.test(clean),
     "phong-van": /^phong-van(?:\/|$)/.test(clean),
     toeic: /^toeic(?:\/|$)/.test(clean),
     "co-vu": activeNav === "co-vu" || clean === "co-vu",
@@ -1135,7 +1147,7 @@ function syncNavState(parsed = parseHashRoute()) {
   });
   const learnBtn = document.getElementById("mTabLearnBtn");
   if (learnBtn) {
-    learnBtn.classList.toggle("on", !!(mtActive["luyen-noi"] || mtActive["hoc-tap"] || mtActive["on-tap"] || mtActive.toeic || mtActive["tro-chuyen"] || mtActive["so-tay"]));
+    learnBtn.classList.toggle("on", !!(mtActive["luyen-noi"] || mtActive["hoc-tap"] || mtActive["on-tap"] || mtActive.toeic || mtActive["tro-chuyen"] || mtActive["so-tay"] || mtActive["tro-choi"]));
   }
   const acctBtn = document.getElementById("mTabAcctBtn");
   if (acctBtn) {
@@ -1160,7 +1172,10 @@ function syncNavState(parsed = parseHashRoute()) {
   }
   const activeCat = document.querySelector("#sideNav a.on")?.closest("details.nav-cat");
   if (activeCat && window.innerWidth > 760) {
-    document.querySelectorAll("#sideNav details.nav-cat").forEach((d) => { d.open = d === activeCat; });
+    const keepPersonal = activeCat.dataset.cat === "learn";
+    document.querySelectorAll("#sideNav details.nav-cat").forEach((d) => {
+      d.open = d === activeCat || (keepPersonal && d.dataset.cat === "personal");
+    });
   }
 }
 
@@ -1295,7 +1310,7 @@ function openPalette() {
     ["Luyện phát âm & Speaking Lab", `/app/ngoai-ngu/luyen-noi/${curSubj}`, "Speaking Lab", "mic"],
     ["Ôn tập từ vựng (SRS)", `/app/ngoai-ngu/on-tap/${curSubj}`, "Thẻ ghi nhớ đến hạn", "clock"],
     ["Sổ tay từ vựng", "/app/so-tay", "Từ đã lưu và ghi chú", "book"],
-    ["Hội thoại AI", `/app/ngoai-ngu/tro-chuyen/${curSubj}`, "Rivo AI Coach", "bulb"],
+    ...(aiOn() && featureOn("tro-chuyen") ? [["Hội thoại AI", `/app/ngoai-ngu/tro-chuyen/${curSubj}`, "Rivo AI Coach", "bulb"]] : []),
     ["Trò chơi học tập", `/app/tro-choi/${curSubj}`, "Vừa chơi vừa nhớ từ", "sparkle"],
     ["Phỏng vấn thử", `/app/phong-van/${curSubj}`, "Tập trả lời phỏng vấn", "briefcase"],
     ["Đổi môn học", "/app/chon-mon", "Ngoại ngữ", "globe"],

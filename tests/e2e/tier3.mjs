@@ -425,7 +425,7 @@ export function registerTier3(suite, ctx) {
       assert.ok(await ctx.existsVisible(anchorSel), 'Expected demo anchor inside #mobileDrawer');
       await cdp.evalJs(() => window.scrollTo(0, 0));
       await cdp.click(anchorSel);
-      await new Promise((r) => setTimeout(r, 450));
+      await cdp.waitForCondition(() => document.getElementById('mobileDrawer')?.hidden === true && window.scrollY > 50, 2000, 50).catch(() => {});
       assert.strictEqual(await cdp.evalJs(() => document.getElementById('mobileDrawer')?.hidden), true, 'Drawer must close');
       assert.ok((await cdp.evalJs(() => window.scrollY)) > 50, 'M1: Mobile drawer anchor must scroll to visible section');
     }

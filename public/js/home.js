@@ -66,7 +66,7 @@ const SCRIPT_GLYPH = { en: "Aa", zh: "中", ja: "あ", ko: "한", fr: "É", es: 
 
 export async function pageStudentHome(main, params, query, ctx) {
   const cheer = !!(query && query.mode === "cheer");
-  ctx.setCrumbs(cheer ? [[L("Học viên", "Student"), "/app/"], [L("Cổ Vũ · Kế hoạch ngày", "Daily Focus")]] : [[L("Tổng quan", "Overview")]]);
+  ctx.setCrumbs(cheer ? [[L("Học viên", "Student"), "/app/"], [L("Nhiệm vụ hôm nay · Kế hoạch ngày", "Today's missions · Daily Focus")]] : [[L("Tổng quan", "Overview")]]);
   main.innerHTML = `<div class="lh">${skeleton("hero")}${skeleton("block")}</div>`;
   let dash, lang, unread = 0, insightResponse = null;
   const requestedLang = (params && params[0]) || getSubject();
@@ -99,13 +99,13 @@ export async function pageStudentHome(main, params, query, ctx) {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hour12: false }).format(new Date()));
   const hello = hour < 11 ? L("Chào buổi sáng", "Good morning") : hour < 18 ? L("Chào buổi chiều", "Good afternoon") : L("Chào buổi tối", "Good evening");
   const focus = started.find((s) => s.id === cur) || started[0] || null;
-  const due = (dash.dueAssignments || []).filter((a) => !a.passed).slice(0, 4);
+  const due = (dash.dueAssignments || []).filter((a) => !a.passed && !a.graded && a.status !== "done");
   const reviews = subjects.filter((s) => s.review && s.review.due > 0);
   const reviewDue = reviews.reduce((n, s) => n + s.review.due, 0);
-  // Đã chọn môn thì tổng quan chỉ nói về môn đó: không bài giao chung, không ôn của môn khác, không chip môn khác
+  // Đã chọn môn thì tổng quan chỉ nói về môn đó: không ôn của môn khác, không chip môn khác; bài giao của lớp luôn hiển thị
   const scoped = cur ? subjects.find((s) => s.id === cur) || null : null;
   const heroSub = scoped || focus;
-  const dueShown = scoped ? [] : due;
+  const dueShown = due.slice(0, 4);
   const reviewsShown = scoped ? reviews.filter((s) => s.id === scoped.id) : reviews;
   const reviewDueShown = reviewsShown.reduce((n, s) => n + s.review.due, 0);
   const doneShown = scoped ? scoped.done : done;
@@ -603,7 +603,7 @@ export async function pageStudentHome(main, params, query, ctx) {
           </a>
           <a class="hm-tool-card is-gold" href="${heroSub.id === "en" ? "/app/toeic" : ["zh", "ja", "ko"].includes(heroSub.id) ? `/app/ngoai-ngu/luyen-viet/${esc(heroSub.id)}/${esc((heroSub.levels[0] || {}).id || "hsk1")}` : `/app/co-vu`}">
             <img class="hm-tool-chibi" src="/img/kit/chibi-dragon.webp" alt="" width="48" height="48" loading="lazy" />
-            <div class="hm-tool-copy"><b>${heroSub.id === "en" ? L("Luyện thi TOEIC", "TOEIC Center") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Luyện viết chữ", "Handwriting") : L("Cổ vũ & Kế hoạch", "Daily Focus")}</b><small>${heroSub.id === "en" ? L("7 Part · Đề thi thử 120 phút", "7 Parts & mock tests") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Tô nét chữ & chấm độ khớp", "Stroke tracing canvas") : L("Theo dõi chuỗi ngày học", "Track your weekly streak")}</small></div>
+            <div class="hm-tool-copy"><b>${heroSub.id === "en" ? L("Luyện thi TOEIC", "TOEIC Center") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Luyện viết chữ", "Handwriting") : L("Nhiệm vụ hôm nay", "Today's missions")}</b><small>${heroSub.id === "en" ? L("7 Part · Đề thi thử 120 phút", "7 Parts & mock tests") : ["zh", "ja", "ko"].includes(heroSub.id) ? L("Tô nét chữ & chấm độ khớp", "Stroke tracing canvas") : L("Theo dõi chuỗi ngày học", "Track your weekly streak")}</small></div>
           </a>
         </div>
       </section>` : "";
@@ -632,7 +632,23 @@ export async function pageStudentHome(main, params, query, ctx) {
       <div class="hm-primary-row">
         <a class="hm-btn hm-btn-primary hm-continue" href="${esc(heroSub.next.href)}">${sketchIcon("play")}<span>${L("Tiếp tục học", "Continue learning")}</span></a>
         <a class="hm-btn" href="/app/lo-trinh">${L("Xem lộ trình", "Course path")}</a>
+        <a class="hm-btn" href="/app/ngoai-ngu/on-tap/${esc(heroSub.id)}?mode=mistakes">${L("Ôn từ hay sai", "Review mistakes")}${heroSub.review && heroSub.review.mistakes ? ` (${fmtN(heroSub.review.mistakes)})` : ""}</a>
       </div>` : "";
+
+    const assignmentsCard = due.length ? `
+      <section class="hm-card hm-assignments-card" aria-labelledby="hmAssignmentsTitle">
+        <header class="hm-card-head">
+          <h2 id="hmAssignmentsTitle">${L("Bài tập lớp cần làm", "Class assignments due")}</h2>
+          <a class="hm-link" href="/app/lop">${L("Lớp của tôi", "My classes")} →</a>
+        </header>
+        <div class="hm-todos">
+          ${due.slice(0, 5).map((a) => `<a class="lh-todo" href="/app/bai-giao/${a.id}">
+            <span class="lh-dot ${a.overdue ? "bad" : "warn"}"></span>
+            <span class="t"><b>${esc(a.title)}</b><small>${esc(a.className || L("Bài giao của lớp", "Class assignment"))}${a.dueAt ? " · " + L("hạn", "due") + " " + esc(fmtDate(a.dueAt)) : ""}</small></span>
+            <span class="tag ${a.overdue ? "tag-do" : "tag-cam"}">${a.overdue ? L("Quá hạn", "Overdue") : L("Cần làm", "To do")}</span>
+          </a>`).join("")}
+        </div>
+      </section>` : "";
 
     const unfinished = !heroSub ? "" : `
       <section class="hm-card hm-next-card" aria-labelledby="hmNextTitle">
@@ -696,6 +712,7 @@ export async function pageStudentHome(main, params, query, ctx) {
       ...nodes(pickOverviewHtml),
       ...nodes(overviewKpisHtml),
       ...nodes(current),
+      ...nodes(assignmentsCard),
       ...nodes(skillsBlock),
       ...nodes(exploreToolsHtml),
       ...nodes(bottomGridHtml),

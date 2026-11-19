@@ -297,7 +297,8 @@ export function registerTier2(suite, ctx) {
         const menu = (ctrl && document.getElementById(ctrl)) || document.querySelector('#mLearnSheet, .m-fan-learn');
         return menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
       });
-      assert.ok(hrefs.includes('/app/ngoai-ngu/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja') && hrefs.includes('/app/ngoai-ngu/tro-chuyen/ja') && hrefs.includes('/app/so-tay'), `Expected ja hrefs + Sổ tay, got ${JSON.stringify(hrefs)}`);
+      assert.strictEqual(new Set(hrefs).size, 5, `Expected 5 distinct hrefs in Học ngay fan-out, got ${JSON.stringify(hrefs)}`);
+      assert.ok(hrefs.includes('/app/ngoai-ngu/ja') && hrefs.includes('/app/ngoai-ngu/luyen-noi/ja') && hrefs.includes('/app/tro-choi/ja') && hrefs.includes('/app/so-tay'), `Expected ja hrefs + Trò chơi + Sổ tay, got ${JSON.stringify(hrefs)}`);
       // Restore student subject back to en
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile', subject: 'en' });
     }

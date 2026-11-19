@@ -55,7 +55,7 @@ export function registerTier1(suite, ctx) {
         if (!root) return [];
         return [...root.querySelectorAll('a')].map((a) => a.textContent.trim().replace(/\s+/g, ' '));
       });
-      assert.deepStrictEqual(labels, ['AI Chat', 'Speaking', 'Learn', 'Review', 'TOEIC']);
+      assert.deepStrictEqual(labels, ['Games', 'Speaking', 'Learn', 'Review', 'TOEIC']);
     }
   );
 
@@ -139,7 +139,8 @@ export function registerTier1(suite, ctx) {
       assert.deepStrictEqual(nav.cats.map((c) => c.label), ['Học tập', 'Cá nhân']);
       const learn = nav.cats.find((c) => c.id === 'learn')?.hrefs || [];
       const personal = nav.cats.find((c) => c.id === 'personal')?.hrefs || [];
-      assert.ok(learn.length <= 7, `Learner Học tập must stay concise (got ${learn.length})`);
+      assert.ok(learn.length <= 9, `Learner Học tập must stay concise (got ${learn.length})`);
+      assert.ok(learn.includes('/app/so-tay') && learn.includes('/app/tro-choi/en') && learn.includes('/app/toeic'), 'Learner Học tập must expose so-tay, tro-choi, and toeic');
       assert.ok(personal.includes('/app/ca-nhan') && personal.includes('/app/co-vu') && personal.includes('/app/lop'), 'Cá nhân group missing expected learner links');
       assert.ok(personal.includes('/app/thong-bao') && personal.includes('/app/cai-dat') && personal.includes('/app/ho-tro'), 'Cá nhân group must expose thong-bao, cai-dat, and ho-tro');
       assert.strictEqual(nav.hasSbSearch, false, 'Redundant #sbSearch must be removed from .me-card');
@@ -316,7 +317,7 @@ export function registerTier1(suite, ctx) {
       await new Promise((r) => setTimeout(r, 220));
       const fan = await ctx.assertFanMenuGeometry('mTabLearnBtn', { expectedCount: 5 });
       assert.ok(!fan.items.some((x) => x.label === 'Tổng quan' || x.label === 'Lộ trình'), 'Tổng quan and Lộ trình must NOT be duplicated inside Học ngay fan-out');
-      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Hội thoại AI', 'Luyện nói', 'Học', 'Ôn tập', 'TOEIC']);
+      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Trò chơi', 'Luyện nói', 'Học', 'Ôn tập', 'TOEIC']);
       assert.ok(fan.distinctX >= 3 && fan.distinctY >= 2, `Expected symmetric fan-out arc across X/Y (distinctX=${fan.distinctX}, distinctY=${fan.distinctY})`);
       assert.ok(/blur\(/i.test(fan.scrimBlur), `Expected blurred scrim backdrop-filter on fan-out (got "${fan.scrimBlur}")`);
     }
@@ -333,7 +334,7 @@ export function registerTier1(suite, ctx) {
         return menu && !menu.hidden ? [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [];
       });
       assert.deepStrictEqual(hrefs, [
-        '/app/ngoai-ngu/tro-chuyen/en',
+        '/app/tro-choi/en',
         '/app/ngoai-ngu/luyen-noi/en',
         '/app/ngoai-ngu/en',
         '/app/ngoai-ngu/on-tap/en',
@@ -414,7 +415,7 @@ export function registerTier1(suite, ctx) {
       await new Promise((r) => setTimeout(r, 220));
       const fan = await ctx.assertFanMenuGeometry('mTabAcctBtn', { expectedCount: 5 });
       assert.deepStrictEqual(fan.items.map((x) => x.href), ['/app/co-vu', '/app/lop', '/app/ca-nhan', '/app/goi-cua-toi', '/app/cai-dat']);
-      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Cổ vũ', 'Lớp học', 'Hồ sơ', 'Gói của tôi', 'Cài đặt']);
+      assert.deepStrictEqual(fan.items.map((x) => x.label), ['Nhiệm vụ', 'Lớp học', 'Hồ sơ', 'Gói của tôi', 'Cài đặt']);
     }
   );
 
@@ -529,16 +530,21 @@ export function registerTier1(suite, ctx) {
   );
 
   suite.test(
-    { id: 'T1-F6-03', tier: 1, feature: 'F6', milestone: 'M1', name: '#mAcctSheet shows Chibi bunny avatar, name, and @username · role' },
+    { id: 'T1-F6-03', tier: 1, feature: 'F6', milestone: 'M1', name: '#mAcctSheet shows minimalist letter avatar, name, and @username · role' },
     async () => {
       await ctx.visit('/app/en', { role: 'student', viewport: 'mobile' });
       await cdp.click('.hm-top-avatar-wrap[data-open-account="mobile"]');
-      const info = await cdp.evalJs(() => ({
-        src: document.querySelector('#mAcctSheet .m-acct-av')?.getAttribute('src') || '',
-        name: document.getElementById('mAcctName')?.textContent.trim() || '',
-        sub: document.querySelector('#mAcctSheet .m-acct-who small')?.textContent.trim() || '',
-      }));
-      assert.ok(info.src.includes('chibi-bunny.webp'));
+      const info = await cdp.evalJs(() => {
+        const av = document.querySelector('#mAcctSheet .m-acct-av');
+        return {
+          isAvatarSpan: !!av && av.tagName !== 'IMG' && av.classList.contains('avatar'),
+          avText: av?.textContent.trim() || '',
+          hasImg: !!document.querySelector('#mAcctSheet img.m-acct-av, #mAcctSheet .m-acct-av img'),
+          name: document.getElementById('mAcctName')?.textContent.trim() || '',
+          sub: document.querySelector('#mAcctSheet .m-acct-who small')?.textContent.trim() || '',
+        };
+      });
+      assert.ok(info.isAvatarSpan && !info.hasImg && info.avText === 'A', `Expected minimalist letter avatar "A", got ${JSON.stringify(info)}`);
       assert.ok(info.name.includes('Minh Anh'));
       assert.ok(info.sub.includes('@e2e_student') && info.sub.includes('Học viên'), `Unexpected sub: "${info.sub}"`);
     }
@@ -937,7 +943,7 @@ export function registerTier1(suite, ctx) {
 
   // ================= F11: Admin Unified 5-Pillar Architecture & Line Icons =================
   suite.test(
-    { id: 'T1-F11-01', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin shell displays Finn dragon avatar, "Quản trị viên", "LifeRivo · Admin", and zero duplicate menu buttons' },
+    { id: 'T1-F11-01', tier: 1, feature: 'F11', milestone: 'M3', name: 'Admin shell displays minimalist letter avatar, "Quản trị viên", "LifeRivo · Admin", and zero duplicate menu buttons' },
     async () => {
       await ctx.visit('/app/quan-tri/tong-quan', { role: 'admin', viewport: 'mobile', expectAdmin: true });
       const head = await cdp.evalJs(() => {
@@ -945,14 +951,16 @@ export function registerTier1(suite, ctx) {
         return {
           noDupMenuBtns: !document.getElementById('adMMore') && !document.getElementById('adMTabMenu'),
           dockCount: document.querySelectorAll('.ad-m-tab .ad-m-tab-it').length,
-          src: av?.getAttribute('src') || '',
+          isLetterAv: !!av && av.tagName !== 'IMG' && av.classList.contains('avatar'),
+          avText: av?.textContent.trim() || '',
+          hasImg: !!document.querySelector('.ad-m-drawer-head img.ad-m-drawer-av, .ad-m-drawer-head .ad-m-drawer-av img'),
           title: document.querySelector('.ad-m-drawer-user b')?.textContent.trim() || '',
           sub: document.querySelector('.ad-m-drawer-user span')?.textContent.trim() || '',
         };
       });
       assert.ok(head.noDupMenuBtns, 'Must eliminate duplicate #adMMore / #adMTabMenu menu triggers');
       assert.strictEqual(head.dockCount, 5, 'Expected 5 unified pillars on .ad-m-tab dock');
-      assert.ok(head.src.includes('chibi-dragon.webp'), `Expected Finn dragon avatar, got ${head.src}`);
+      assert.ok(head.isLetterAv && !head.hasImg && head.avText === 'V', `Expected minimalist letter avatar "V", got ${JSON.stringify(head)}`);
       assert.strictEqual(head.title, 'Quản trị viên');
       assert.ok(head.sub.includes('LifeRivo · Admin'), `M3: Expected "LifeRivo · Admin", got "${head.sub}"`);
     }
@@ -1702,7 +1710,7 @@ export function registerTier1(suite, ctx) {
         cats[0].querySelector('summary')?.click();
         return { ok: true, count: cats.length, firstOpen: cats[0].open, secondOpen: cats[1].open };
       });
-      assert.ok(acc.ok && acc.firstOpen && !acc.secondOpen, `Expected desktop sidebar accordion behavior (${JSON.stringify(acc)})`);
+      assert.ok(acc.ok && acc.firstOpen && acc.secondOpen, `Expected desktop sidebar to keep Cá nhân open alongside Học tập (${JSON.stringify(acc)})`);
 
       for (const route of ['/app/toeic', '/app/so-tay', '/app/tro-choi/en']) {
         await ctx.visit(route, { role: 'student', viewport: 'desktop' });

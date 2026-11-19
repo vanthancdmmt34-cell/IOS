@@ -319,6 +319,20 @@ export function createE2EContext({ cdp, srv, shotsDir }) {
   }
 
   async function assertFanMenuGeometry(btnId, { minLeft = 10, minRightMargin = 10, expectedCount = null } = {}) {
+    await cdp.waitForCondition((bid) => {
+      const btn = document.getElementById(bid);
+      const ctrl = btn?.getAttribute('aria-controls');
+      const menu = (ctrl && document.getElementById(ctrl)) || null;
+      if (!menu || menu.hidden) return false;
+      const petals = [...menu.querySelectorAll('.m-fan-petal')];
+      const animDone = petals.every((p) => p.getAnimations().every((a) => a.playState === 'finished'));
+      const orbs = [...menu.querySelectorAll('a .m-fan-orb')];
+      return animDone && orbs.length > 0 && orbs.every((orb) => {
+        const r = orb.getBoundingClientRect();
+        return r.width >= 24 && r.height >= 24;
+      });
+    }, 800, 30, btnId).catch(() => {});
+
     const fan = await cdp.evalJs((bid) => {
       const btn = document.getElementById(bid);
       const ctrl = btn?.getAttribute('aria-controls');

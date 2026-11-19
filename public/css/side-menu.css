@@ -800,7 +800,7 @@ html body .m-fan-wrap { display: none; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i2 { --fx: 0px; --fy: -80px; --fd: 50ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i3 { --fx: 55px; --fy: -58px; --fd: 75ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-i4 { --fx: 108px; --fy: -16px; --fd: 100ms; }
-  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -10px; --fy: -154px; --fd: 0ms; }
+  html body.in-app:not(.ax-on) .m-fan-petal.is-a0 { --fx: -10px; --fy: -162px; --fd: 0ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a1 { --fx: -50px; --fy: -116px; --fd: 25ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a2 { --fx: -98px; --fy: -78px; --fd: 50ms; }
   html body.in-app:not(.ax-on) .m-fan-petal.is-a3 { --fx: -150px; --fy: -44px; --fd: 75ms; }
@@ -901,9 +901,14 @@ html body .m-fan-wrap { display: none; }
     height: 48px;
     flex: none;
     border-radius: 50%;
-    object-fit: cover;
-    background: var(--cp-primary-soft, #EAF4FB);
-    border: 1.5px solid var(--cp-border, #DCE8F3);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 1;
+    color: #fff;
+    background: var(--cp-primary, #3F97D3);
+    border: 2px solid var(--cp-border, #DCE8F3);
   }
   html body.in-app:not(.ax-on) .m-acct-who { min-width: 0; display: grid; gap: 2px; }
   html body.in-app:not(.ax-on) .m-acct-who b {

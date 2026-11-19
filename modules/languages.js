@@ -637,7 +637,8 @@ async function reviewDue(db, userId, langId) {
   const now = new Date().toISOString();
   const r = await db.prepare("SELECT COUNT(*) AS n FROM lang_srs WHERE user_id = ? AND lang = ? AND due_at <= ?").get(userId, langId, now);
   const t = await db.prepare("SELECT COUNT(*) AS n FROM lang_srs WHERE user_id = ? AND lang = ?").get(userId, langId);
-  return { due: Number(r.n) || 0, total: Number(t.n) || 0 };
+  const m = await db.prepare("SELECT COUNT(*) AS n FROM lang_srs WHERE user_id = ? AND lang = ? AND wrong_count > 0").get(userId, langId);
+  return { due: Number(r.n) || 0, total: Number(t.n) || 0, mistakes: Number(m.n) || 0 };
 }
 
 /* ---------- Daily study reminder (in-app notification, max once/day per type) ---------- */
@@ -1249,13 +1250,45 @@ export async function langApi(ctx) {
     return true;
   }
 
-  // ----- Review (flashcards) -----
+  // ----- Review (flashcards + frequent mistakes mode) -----
   m = /^\/api\/lang\/review\/([a-z]+)$/.exec(p);
   if (method === "GET" && m) {
-    const rows = await db.prepare("SELECT word, box, wrong_count FROM lang_srs WHERE user_id = ? AND lang = ? AND due_at <= ? ORDER BY wrong_count DESC, due_at ASC LIMIT 20").all(user.id, m[1], new Date().toISOString());
     const c = CATALOG.courses.find((x) => x.id === m[1]);
-    if (!c) { sendJson(res, 404, { error: M(en, "notFoundCourse") }); return true; }
-    sendJson(res, 200, { lang: c.id, langName: tCourse(en, c).name, flag: c.flag, color: c.color, speech: c.speech, cards: rows.map((r) => ({ ...wordInfo(c.id, r.word, en), box: r.box, wrong: r.wrong_count })).filter((x) => x.word), ...(await reviewDue(db, user.id, c.id)) });
+    if (!c || (!isAdmin && isHidden(c.id))) { sendJson(res, 404, { error: M(en, "notFoundCourse") }); return true; }
+    const mode = url.searchParams.get("mode") === "mistakes" ? "mistakes" : "due";
+    const rows = mode === "mistakes"
+      ? await db.prepare("SELECT word, box, wrong_count FROM lang_srs WHERE user_id = ? AND lang = ? AND wrong_count > 0 ORDER BY wrong_count DESC, updated_at DESC LIMIT 30").all(user.id, c.id)
+      : await db.prepare("SELECT word, box, wrong_count FROM lang_srs WHERE user_id = ? AND lang = ? AND due_at <= ? ORDER BY wrong_count DESC, due_at ASC LIMIT 20").all(user.id, c.id, new Date().toISOString());
+    const cards = rows.map((r) => ({ ...wordInfo(c.id, r.word, en), box: r.box, wrong: r.wrong_count })).filter((x) => x.word);
+    let hardQuestions = [];
+    if (mode === "mistakes") {
+      const pro = await isPro();
+      const qRows = await db.prepare("SELECT item_id, q_index, answered, wrong FROM lang_qstats WHERE item_id LIKE ? AND wrong > 0 ORDER BY (wrong * 1.0 / CASE WHEN answered > 0 THEN answered ELSE 1 END) DESC, wrong DESC").all(`${c.id}-%`);
+      hardQuestions = qRows.map((r) => {
+        const ex = langExercise(r.item_id);
+        if (!ex || (!isAdmin && isHidden(ex.lang, ex.levelId)) || (levelIsPro(ex.lang, ex.levelId) && !pro)) return null;
+        const q = ex.questions[r.q_index];
+        if (!q) return null;
+        const answered = Number(r.answered) || 0;
+        const wrong = Number(r.wrong) || 0;
+        return {
+          itemId: ex.id,
+          qIndex: Number(r.q_index),
+          title: tTitle(en, ex, c),
+          levelId: ex.levelId,
+          unitTitle: tUnit(en, ex.unitTitle),
+          kind: ex.kind,
+          q: q.listen ? (en ? `(listen) ${q.say}` : `(nghe) ${q.say}`) : q.q,
+          answer: q.show || "",
+          explain: tExplain(en, q.explain || ""),
+          say: q.sayAfter || q.say || "",
+          answered,
+          wrong,
+          wrongPct: answered > 0 ? Math.round((wrong / answered) * 100) : 0,
+        };
+      }).filter(Boolean).slice(0, 12);
+    }
+    sendJson(res, 200, { lang: c.id, langName: tCourse(en, c).name, flag: c.flag, color: c.color, speech: c.speech, mode, cards, hardQuestions, ...(await reviewDue(db, user.id, c.id)) });
     return true;
   }
   if (method === "POST" && p === "/api/lang/review") {

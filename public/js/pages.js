@@ -70,7 +70,7 @@ export async function pageNotices(main, _p, _q, ctx) {
     const id = el.dataset.nid;
     try { await api(`/api/notifications/${id}/read`, "POST", {}); } catch {}
     const link = el.dataset.link;
-    if (link) setAppHash(link.startsWith("#") ? link : "/app/" + link.replace(/^#?\/?/, ""));
+    if (link) setAppHash(link);
     else pageNotices(main, [], {}, ctx);
   }));
 }
@@ -223,7 +223,7 @@ export async function pageProfile(main, _p, _q, ctx) {
         ${showClass ? `<a class="pf-m-link" href="/app/lop"><span class="pf-m-ico">${lineIcon("book")}</span><b>Lớp của tôi</b><span class="pf-m-arr">›</span></a>` : ""}
         ${showFamily ? `<a class="pf-m-link" href="/app/gia-dinh"><span class="pf-m-ico">${lineIcon("users")}</span><b>Gia đình</b><span class="pf-m-arr">›</span></a>` : ""}
         ${!isTeacher ? `
-          <a class="pf-m-link" href="${subj ? "/app/co-vu" : "/app/chon-mon"}"><span class="pf-m-ico">${lineIcon("sparkle")}</span><b>Cổ vũ & Chuỗi ngày</b><span class="pf-m-arr">›</span></a>
+          <a class="pf-m-link" href="${subj ? "/app/co-vu" : "/app/chon-mon"}"><span class="pf-m-ico">${lineIcon("sparkle")}</span><b>Nhiệm vụ hôm nay</b><span class="pf-m-arr">›</span></a>
           <a class="pf-m-link" href="/app/so-tay"><span class="pf-m-ico">${lineIcon("lesson")}</span><b>Sổ tay từ vựng</b><span class="pf-m-arr">›</span></a>
           ${subj ? `
             <a class="pf-m-link" href="/app/tro-choi/${esc(subj)}"><span class="pf-m-ico">${lineIcon("star")}</span><b>Trò chơi học tập</b><span class="pf-m-arr">›</span></a>

@@ -52,8 +52,22 @@ const EXTRA_EN = {
   "Tiến độ": "Progress",
   "Học ngay": "Learn now",
   "Cổ vũ": "Cheer",
+  "Nhiệm vụ": "Missions",
+  "Nhiệm vụ hôm nay": "Today's missions",
+  "Nhiệm vụ hôm nay · Kế hoạch ngày": "Today's missions · Daily Focus",
   "Gói & Chứng nhận": "Plan & Certificates",
   "Sổ tay": "Notebook",
+  "Sổ tay từ vựng": "Vocabulary notebook",
+  "Trò chơi học từ": "Word games",
+  "Trung tâm TOEIC": "TOEIC Center",
+  "Xếp hạng": "Leaderboard",
+  "Huy hiệu": "Badges",
+  "Bài tập lớp cần làm": "Class assignments due",
+  "Từ & câu hay sai": "Frequent mistakes",
+  "Đến hạn SRS": "SRS Due",
+  "Ôn từ hay sai": "Review frequent mistakes",
+  "Ôn câu / từ hay sai": "Review mistakes",
+  "Góp ý & Đánh giá": "Feedback & Ratings",
   "Hội thoại AI": "AI Chat",
   "Lớp học": "Classes",
   "Tìm kiếm nhanh": "Quick search",
@@ -65,6 +79,10 @@ const EXTRA_EN = {
   "Hệ thống & Tiện ích": "System & Utilities",
   "Thanh toán và gói": "Billing & plans",
   "Chọn môn": "Choose subject",
+  "Tiến độ, nhiệm vụ & kế hoạch hôm nay": "Progress, missions & today's plan",
+  "Từ đã lưu và ghi chú cá nhân": "Saved words and personal notes",
+  "Vừa chơi vừa ôn phản xạ từ vựng": "Play and build vocabulary reflexes",
+  "7 Part và đề thi thử TOEIC": "7 TOEIC Parts and mock tests",
 };
 async function loadDict() {
   if (DICT) return;
@@ -170,11 +188,11 @@ function translateTitle() {
 
 export async function applyLang(lang) {
   LANG = lang === "en" ? "en" : "vi";
-  document.documentElement.lang = LANG;
-  document.documentElement.dataset.lang = LANG;
   try { localStorage.setItem(KEY, LANG); } catch {}
   syncLangPath(LANG);
   if (LANG === "en") await loadDict();
+  document.documentElement.lang = LANG;
+  document.documentElement.dataset.lang = LANG;
   translateTree(document.body);
   translateTitle();
   syncLangSwitchUI();

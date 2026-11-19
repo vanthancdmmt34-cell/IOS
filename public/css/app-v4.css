@@ -3918,9 +3918,14 @@ html body .ad-m-quick {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    object-fit: cover;
-    background: #EAF4FB;
-    border: 1.5px solid #DCE8F3;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1;
+    color: #fff;
+    background: #3F97D3;
+    border: 2px solid #DCE8F3;
     flex: none;
   }
   html:root body.in-app.ax-on .ad-m-drawer-user {

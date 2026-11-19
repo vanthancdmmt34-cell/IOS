@@ -75,7 +75,8 @@ export function createModuleApi(ctx) {
       const rows = await db.prepare(`
         SELECT a.id, a.title, a.due_at AS \"dueAt\", a.class_id AS \"classId\", c.name AS \"className\",
           (SELECT COUNT(*) FROM assignment_submissions s WHERE s.assignment_id = a.id AND s.user_id = ?) AS attempts,
-          (SELECT MAX(s.passed) FROM assignment_submissions s WHERE s.assignment_id = a.id AND s.user_id = ?) AS passed
+          (SELECT MAX(s.passed) FROM assignment_submissions s WHERE s.assignment_id = a.id AND s.user_id = ?) AS passed,
+          (SELECT MAX(s.manual_score) FROM assignment_submissions s WHERE s.assignment_id = a.id AND s.user_id = ?) AS \"manualScore\"
         FROM assignments a
         JOIN classrooms c ON c.id = a.class_id
         JOIN class_members m ON m.class_id = a.class_id AND m.user_id = ? AND m.status = 'active'
@@ -83,17 +84,20 @@ export function createModuleApi(ctx) {
           AND (a.target_all = 1 OR EXISTS (SELECT 1 FROM assignment_targets t WHERE t.assignment_id = a.id AND t.user_id = ?))
         ORDER BY CASE WHEN a.due_at IS NULL THEN 1 ELSE 0 END, a.due_at ASC
         LIMIT 20
-      `).all(user.id, user.id, user.id, user.id);
+      `).all(user.id, user.id, user.id, user.id, user.id);
       const now = Date.now();
       dueAssignments = rows.map((r) => {
         const due = r.dueAt ? Date.parse(r.dueAt) : null;
-        const overdue = due != null && due < now && !(r.passed > 0);
-        const dueSoon = due != null && !overdue && due - now < 3 * 86400000;
+        const graded = r.manualScore != null;
+        const done = (r.passed > 0) || graded;
+        const overdue = due != null && due < now && !done;
+        const dueSoon = due != null && due >= now && due - now < 3 * 86400000;
         return {
           id: r.id, title: r.title, dueAt: r.dueAt, classId: r.classId, className: r.className,
-          attempts: r.attempts || 0, passed: !!(r.passed > 0),
+          attempts: r.attempts || 0, passed: done, graded,
+          manualScore: graded ? Number(r.manualScore) : null,
           overdue, dueSoon,
-          status: r.passed > 0 ? "done" : (overdue ? "overdue" : (r.attempts ? "trying" : "pending")),
+          status: done ? "done" : (overdue ? "overdue" : (r.attempts ? "trying" : "pending")),
         };
       }).filter((x) => x.status !== "done" || x.dueSoon);
     } catch (e) { /* assignments table may not exist on very old instances */ }
@@ -338,6 +342,10 @@ export function createModuleApi(ctx) {
     if (m === "POST" && p === "/api/notifications/read-all") {
       if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ.");
       return ok(res, { ok: true, updated: await markAllRead(db, user.id) });
+    }
+    if (m === "POST" && (mt = /^\/api\/notifications\/(\d+)\/read$/.exec(p))) {
+      if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ.");
+      return ok(res, { ok: true, updated: await markRead(db, user.id, Number(mt[1])) });
     }
 
     // Current entitlements (aggregated across all sources) — used by UI to show/hide features; server still re-verifies on every API call

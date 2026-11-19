@@ -78,17 +78,26 @@ function speak(text, lang) {
   if (!text) return false;
   const slow = lastSay.text === text && Date.now() - lastSay.at < 5000;
   lastSay = { text, at: slow ? 0 : Date.now() };
-  if (slow) toast("Đọc chậm", "info", 1200);
+  if (slow) toast(tx("Đọc chậm", "Slow speed"), "info", 1200);
   speakText(text, lang, { rate: slow ? 0.6 : 0.95 });
   return true;
 }
-const sayBtn = (text, lang) => text ? `<button type="button" class="lx-say" data-say="${esc(text)}" data-lang="${esc(lang)}" title="Nghe đọc (bấm lần nữa để nghe chậm)" aria-label="Nghe đọc">${lineIcon("speaker", 15)}</button>` : "";
-function bindSay(root) {
-  root.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-say]");
-    if (!b) return;
+const sayBtn = (text, lang) => text ? `<button type="button" class="lx-say" data-say="${esc(text)}" data-lang="${esc(lang)}" title="${tx("Nghe đọc (bấm lần nữa để nghe chậm)", "Listen (tap again for slow speed)")}" aria-label="${tx("Nghe đọc", "Listen")}">${lineIcon("speaker", 15)}</button>` : "";
+function bindSay(root, ctx) {
+  if (!root || root.dataset.sayBound || root.closest?.("[data-say-bound]")) return;
+  root.dataset.sayBound = "1";
+  lastSay = { text: "", at: 0 };
+  const onClick = (e) => {
+    const b = e.target.closest("[data-say][data-lang]");
+    if (!b || !root.contains(b)) return;
     e.preventDefault();
-    if (!speak(b.dataset.say, b.dataset.lang)) toast("Trình duyệt này chưa hỗ trợ giọng đọc.", "info");
+    if (!speak(b.dataset.say, b.dataset.lang)) toast(tx("Trình duyệt này chưa hỗ trợ giọng đọc.", "Speech synthesis is not supported in this browser."), "info");
+  };
+  root.addEventListener("click", onClick);
+  ctx?.onLeave?.(() => {
+    root.removeEventListener("click", onClick);
+    delete root.dataset.sayBound;
+    lastSay = { text: "", at: 0 };
   });
 }
 
@@ -377,7 +386,7 @@ function languageInsightsHtml(insight, plan = null, report = null, history = nul
   const radarHtml = `<section class="lx-ai-panel lx-ai-radar-panel"><div class="lx-ai-panel-head"><div><span class="lx-ai-section-kicker">${tx("BẢN ĐỒ NĂNG LỰC", "SKILL RADAR")}</span><h3>${tx("Hồ sơ kỹ năng ngoại ngữ", "Language skill profile")}</h3><p>${tx("Chỉ số có đủ mẫu mới được hiển thị; mục thiếu dữ liệu được để trống.", "Only skills with enough samples are scored; insufficient data remains blank.")}</p></div><span class="lx-ai-panel-icon">${icon("chart")}</span></div><div class="lx-ai-radar-layout"><svg class="lx-ai-radar-svg" viewBox="0 0 ${radarSize} ${radarSize}" role="img" aria-label="${tx("Biểu đồ radar kỹ năng ngoại ngữ", "Foreign-language skill radar chart")}"><g class="lx-ai-radar-grid">${radarGrid}${radarAxes}</g><g class="lx-ai-radar-dots">${radarDots}</g>${radarLabels}</svg><div class="lx-ai-radar-legend"><b>${radarAvailable}/${radarItems.length} ${tx("kỹ năng đủ dữ liệu", "skills with sufficient data")}</b><small>${tx("Cần ít nhất 3 kết quả phù hợp cho mỗi nhóm. Điểm luyện nói và phát âm là hai phép chấm khác nhau.", "At least 3 relevant results are required per skill. Speaking and pronunciation are separate scoring signals.")}</small></div></div></section>`;
   const memory = vocabulary.memory || {};
   const repeatWords = Array.isArray(memory.repeatMistakeWords) ? memory.repeatMistakeWords.slice(0, 5) : [];
-  const vocabularyMemoryHtml = `<section class="lx-ai-panel lx-ai-memory-panel"><div class="lx-ai-panel-head"><div><span class="lx-ai-section-kicker">${tx("SMART VOCABULARY MEMORY", "SMART VOCABULARY MEMORY")}</span><h3>${tx("Theo dõi các lượt ôn từ", "Vocabulary review history")}</h3><p>${tx("Dựa trên kết quả ôn đã lưu trong 30 ngày gần đây.", "Based on recorded review attempts over the last 30 days.")}</p></div><span class="lx-ai-panel-icon">${icon("book")}</span></div><div class="lx-ai-memory-stats"><div><b>${fmtN(memory.reviews30d || 0)}</b><small>${tx("lượt ôn", "reviews")}</small></div><div><b>${memory.successRate30d == null ? "—" : `${fmtN(memory.successRate30d)}%`}</b><small>${tx("tỷ lệ đúng", "correct rate")}</small></div><div><b>${fmtN(memory.uniqueWordsReviewed30d || 0)}</b><small>${tx("từ đã ôn", "words reviewed")}</small></div></div>${repeatWords.length ? `<div class="lx-ai-memory-words"><b>${tx("Từ đã có ít nhất 2 lượt ôn sai", "Words with at least 2 incorrect reviews")}</b><div>${repeatWords.map((word) => `<span>${esc(word.word)} <small>×${fmtN(word.mistakes)}</small></span>`).join("")}</div></div>` : `<p class="lx-ai-empty">${tx("Chưa có từ nào được ghi nhận sai lặp lại. Hãy tiếp tục ôn tập để tích lũy dữ liệu.", "No repeated vocabulary mistakes have been recorded yet. Keep reviewing to build a history.")}</p>`}<small class="lx-ai-score-note">${esc(memory.note || "")}</small><a class="lx-ai-speaking-link" href="/app/ngoai-ngu/on-tap/${encodeURIComponent(String(insight.lang || "en"))}">${tx("Mở kho ôn từ", "Open vocabulary review")} ${icon("right")}</a></section>`;
+  const vocabularyMemoryHtml = `<section class="lx-ai-panel lx-ai-memory-panel"><div class="lx-ai-panel-head"><div><span class="lx-ai-section-kicker">${tx("SMART VOCABULARY MEMORY", "SMART VOCABULARY MEMORY")}</span><h3>${tx("Theo dõi các lượt ôn từ", "Vocabulary review history")}</h3><p>${tx("Dựa trên kết quả ôn đã lưu trong 30 ngày gần đây.", "Based on recorded review attempts over the last 30 days.")}</p></div><span class="lx-ai-panel-icon">${icon("book")}</span></div><div class="lx-ai-memory-stats"><div><b>${fmtN(memory.reviews30d || 0)}</b><small>${tx("lượt ôn", "reviews")}</small></div><div><b>${memory.successRate30d == null ? "—" : `${fmtN(memory.successRate30d)}%`}</b><small>${tx("tỷ lệ đúng", "correct rate")}</small></div><div><b>${fmtN(memory.uniqueWordsReviewed30d || 0)}</b><small>${tx("từ đã ôn", "words reviewed")}</small></div></div>${repeatWords.length ? `<div class="lx-ai-memory-words"><b>${tx("Từ đã có ít nhất 2 lượt ôn sai", "Words with at least 2 incorrect reviews")}</b><div>${repeatWords.map((word) => `<span>${esc(word.word)} <small>×${fmtN(word.mistakes)}</small></span>`).join("")}</div></div>` : `<p class="lx-ai-empty">${tx("Chưa có từ nào được ghi nhận sai lặp lại. Hãy tiếp tục ôn tập để tích lũy dữ liệu.", "No repeated vocabulary mistakes have been recorded yet. Keep reviewing to build a history.")}</p>`}<small class="lx-ai-score-note">${esc(memory.note || "")}</small><div class="row" style="gap:12px;flex-wrap:wrap"><a class="lx-ai-speaking-link" href="/app/ngoai-ngu/on-tap/${encodeURIComponent(String(insight.lang || "en"))}">${tx("Mở kho ôn từ", "Open vocabulary review")} ${icon("right")}</a><a class="lx-ai-speaking-link" href="/app/ngoai-ngu/on-tap/${encodeURIComponent(String(insight.lang || "en"))}?mode=mistakes">${tx("Ôn từ hay sai", "Review mistakes")} ${icon("right")}</a></div></section>`;
   const pronunciation = insight.pronunciation || {};
   const pronunciationHtml = `<section class="lx-ai-panel lx-ai-pron-panel"><div class="lx-ai-panel-head"><div><span class="lx-ai-section-kicker">${tx("AI PRONUNCIATION COACH", "AI PRONUNCIATION COACH")}</span><h3>${tx("Theo dõi phát âm", "Pronunciation assessment")}</h3><p>${tx("Điểm ước lượng từ mô hình phân tích âm thanh; không phải phép đo âm vị chuẩn hóa.", "Model-estimated audio scores; not standardized phoneme measurements.")}</p></div><span class="lx-ai-panel-icon">${icon("mic")}</span></div><div class="lx-ai-pron-stats"><div><b>${pronunciation.averageAccuracy == null ? "—" : `${fmtN(pronunciation.averageAccuracy)}%`}</b><small>${tx("độ chính xác ước lượng", "estimated accuracy")}</small></div><div><b>${pronunciation.averageFluency == null ? "—" : `${fmtN(pronunciation.averageFluency)}%`}</b><small>${tx("độ trôi chảy ước lượng", "estimated fluency")}</small></div><div><b>${fmtN(pronunciation.sampleCount || 0)}</b><small>${tx("lượt chấm", "assessments")}</small></div></div><p class="lx-ai-pron-note">${pronunciation.sampleCount ? tx("Mỗi lượt chỉ lưu điểm và góp ý theo từ; tệp âm thanh không được lưu trong lịch sử.", "Only scores and word-level feedback are retained; audio files are not stored in history.") : tx("Hãy thực hiện ít nhất 3 lượt chấm phát âm để LifeRivo bắt đầu tổng hợp xu hướng.", "Complete at least 3 pronunciation assessments to start tracking a trend.")}</p>${Array.isArray(pronunciation.wordIssues) && pronunciation.wordIssues.length ? `<div class="lx-ai-pron-issues"><b>${tx("Từ có góp ý lặp lại", "Words with repeated feedback")}</b>${pronunciation.wordIssues.slice(0, 4).map((item) => `<div><span>${esc(item.word)} <small>${fmtN(item.averageScore)}% · ${fmtN(item.sampleCount)} ${tx("mẫu", "samples")}</small></span>${item.tip ? `<small>${esc(item.tip)}</small>` : ""}</div>`).join("")}</div>` : ""}<a class="lx-ai-speaking-link" href="/app/ngoai-ngu/luyen-noi/${encodeURIComponent(String(insight.lang || "en"))}?muc=phat-am">${tx("Mở AI Pronunciation Coach", "Open AI Pronunciation Coach")} ${icon("right")}</a></section>`;
   const historyPoints = (Array.isArray(history?.points) ? history.points : []).filter((point) => point.learningScore != null && Number.isFinite(Number(point.learningScore)));
@@ -634,6 +643,11 @@ async function focusLanguage(main, data, c, ctx) {
         <span class="lx-practice-category">${tx("Củng cố kiến thức", "Review & retain")}</span><span class="lx-skill-ico">${sketchIcon("play", 'width="24" height="24"')}</span>
         <span class="t"><b>${c.review && c.review.due ? tx(`Ôn tập hôm nay: ${c.review.due} từ`, `Review today: ${c.review.due} words`) : tx("Ôn tập từ vựng", "Vocabulary review")}</b><span>${c.review && c.review.total ? tx(`Đang theo dõi ${c.review.total} từ cần ôn`, `Tracking ${c.review.total} words to review`) : tx("Làm bài từ vựng để theo dõi", "Do vocabulary exercises to start tracking")}</span></span>
         <span class="lx-practice-action">${c.review && c.review.due ? tx("Ôn ngay", "Review now") : tx("Mở", "Open")} ${icon("right")}</span>
+      </a>
+      <a class="lx-review lx-practice-card ${c.review && c.review.mistakes ? "has" : ""}" data-category="mistakes" href="/app/ngoai-ngu/on-tap/${c.id}?mode=mistakes">
+        <span class="lx-practice-category">${tx("Ôn lỗi sai", "Mistakes drill")}</span><span class="lx-skill-ico">${sketchIcon("flag", 'width="24" height="24"')}</span>
+        <span class="t"><b>${c.review && c.review.mistakes ? tx(`Ôn câu / từ hay sai (${c.review.mistakes})`, `Review mistakes (${c.review.mistakes})`) : tx("Ôn câu / từ hay sai", "Review mistakes")}</b><span>${tx("Tập trung lại các từ từng sai và câu hay nhầm", "Focus on missed words and tricky questions")}</span></span>
+        <span class="lx-practice-action">${tx("Ôn ngay", "Practice")} ${icon("right")}</span>
       </a>
     </div>
   </section>
@@ -976,15 +990,18 @@ export async function pageLangCourse(main, [langId, levelId], query, ctx) {
   });
 }
 
-/* ---------- Flashcard review ---------- */
+/* ---------- Flashcard review & mistakes drill ---------- */
 export async function pageLangReview(page, [langId], query, ctx) {
   page.innerHTML = ""; const main = document.createElement("div"); page.appendChild(main);
-  const d = await api(`/api/lang/review/${langId}`);
+  bindSay(main, ctx);
+  let mode = query && query.mode === "mistakes" ? "mistakes" : "due";
+  let d = await api(`/api/lang/review/${langId}${mode === "mistakes" ? "?mode=mistakes" : ""}`);
   if (!ctx.isCurrent()) return;
   if (getSubject() !== d.lang) setSubject(d.lang);
   window.__plAiCtx = { langItem: `${d.lang}-review`, langName: d.langName, page: `${d.langName} · Ôn tập từ vựng` };
   withAi(ctx);
-  ctx.setCrumbs([[d.langName, `/app/ngoai-ngu/${d.lang}`], [tx("Ôn tập SRS", "SRS Review")]]);
+  const updateCrumbs = () => ctx.setCrumbs([[d.langName, `/app/ngoai-ngu/${d.lang}`], [mode === "mistakes" ? tx("Ôn câu / từ hay sai", "Review mistakes") : tx("Ôn tập SRS", "SRS Review")]]);
+  updateCrumbs();
   let i = 0, flipped = false, good = 0, onlyFav = false;
   const favKey = `pl:fav:${d.lang}`;
   const getFavs = () => { try { return new Set(JSON.parse(localStorage.getItem(favKey) || "[]")); } catch { return new Set(); } };
@@ -994,22 +1011,100 @@ export async function pageLangReview(page, [langId], query, ctx) {
     try { localStorage.setItem(favKey, JSON.stringify([...s])); } catch {}
     return s.has(w);
   };
+  const modeTabsHtml = () => `<div class="tabs lx-rev-modes" role="tablist" aria-label="${tx("Chế độ ôn tập", "Review mode")}" style="margin:12px 0">
+    <button type="button" role="tab" aria-selected="${mode === "due"}" class="${mode === "due" ? "on" : ""}" data-rev-mode="due">${tx("Đến hạn SRS", "SRS Due")} (${fmtN(d.due || 0)})</button>
+    <button type="button" role="tab" aria-selected="${mode === "mistakes"}" class="${mode === "mistakes" ? "on" : ""}" data-rev-mode="mistakes">${tx("Từ & câu hay sai", "Frequent mistakes")} (${fmtN(d.mistakes || 0)})</button>
+  </div>`;
+  const hardQuestionsHtml = () => {
+    const list = mode === "mistakes" && Array.isArray(d.hardQuestions) ? d.hardQuestions : [];
+    if (!list.length) return "";
+    return `<section class="sheet sheet-pad lx-hard-q" style="margin-top:16px" aria-labelledby="lxHardQTitle">
+      <div class="sec-head" style="margin-bottom:10px">
+        <div>
+          <h2 id="lxHardQTitle">${tx("Câu hỏi hay sai trong khóa học", "Frequently missed course questions")}</h2>
+          <p class="small muted">${tx("Tổng hợp từ thống kê trả lời sai của khóa học để bạn luyện lại.", "Aggregated from course question error stats so you can re-practice.")}</p>
+        </div>
+      </div>
+      <div class="stack" style="gap:10px">
+        ${list.map((hq) => `<article class="sheet sheet-pad" style="padding:14px">
+          <div class="row" style="justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <small class="muted">${esc(hq.title || "")}</small>
+            <span class="tag tag-do">${tx(`sai ${fmtN(hq.wrongPct)}%`, `${fmtN(hq.wrongPct)}% wrong`)} · ${fmtN(hq.wrong)}/${fmtN(hq.answered)}</span>
+          </div>
+          <div class="row" style="align-items:center;gap:8px;margin-bottom:8px">
+            <b style="flex:1">${esc(hq.q || "")}</b>
+            ${hq.say ? sayBtn(hq.say, d.speech) : ""}
+          </div>
+          <div class="row" style="justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <details style="flex:1;min-width:200px">
+              <summary class="small" style="cursor:pointer;font-weight:700">${tx("Xem đáp án & giải thích", "Show answer & explanation")}</summary>
+              <div class="small" style="margin-top:6px">
+                ${hq.answer ? `<div><b>${tx("Đáp án:", "Answer:")}</b> ${esc(hq.answer)}</div>` : ""}
+                ${hq.explain ? `<div class="muted" style="margin-top:2px">${esc(hq.explain)}</div>` : ""}
+              </div>
+            </details>
+            <a class="btn btn-sm btn-primary" href="/app/ngoai-ngu/bai/${esc(hq.itemId)}">${tx("Luyện lại bài này", "Retry lesson")} →</a>
+          </div>
+        </article>`).join("")}
+      </div>
+    </section>`;
+  };
+  const bindModes = () => {
+    main.querySelectorAll("[data-rev-mode]").forEach((btn) => btn.addEventListener("click", async () => {
+      const nextMode = btn.dataset.revMode === "mistakes" ? "mistakes" : "due";
+      if (nextMode === mode) return;
+      mode = nextMode;
+      try {
+        history.replaceState(null, "", `/app/ngoai-ngu/on-tap/${d.lang}${mode === "mistakes" ? "?mode=mistakes" : ""}`);
+      } catch {}
+      btn.disabled = true;
+      try {
+        d = await api(`/api/lang/review/${d.lang}${mode === "mistakes" ? "?mode=mistakes" : ""}`);
+      } catch (e) { toast(e.message, "err"); btn.disabled = false; return; }
+      if (!ctx.isCurrent()) return;
+      i = 0; flipped = false; good = 0; onlyFav = false;
+      updateCrumbs();
+      paint();
+    }));
+  };
   const paint = () => {
     const favs = getFavs();
-    const cards = onlyFav ? d.cards.filter((x) => favs.has(x.word)) : d.cards;
+    const allCards = Array.isArray(d.cards) ? d.cards : [];
+    const cards = onlyFav ? allCards.filter((x) => favs.has(x.word)) : allCards;
     const attnCount = cards.filter((x) => x.wrong > 0).length || favs.size;
+    const headTitle = mode === "mistakes" ? tx("Ôn câu & từ hay sai", "Review frequent mistakes") : tx("Ôn tập hôm nay", "Today's Review");
+    const headSub = mode === "mistakes"
+      ? tx("Tập trung lại các từ từng sai và câu hay nhầm.", "Focus on words you missed and tricky course questions.")
+      : tx("Nhắc lại đúng lúc để ghi nhớ lâu hơn.", "Review at the right moment for long-term retention.");
+    const hqHtml = hardQuestionsHtml();
     if (!cards.length || i >= cards.length) {
+      const emptyTitle = cards.length
+        ? (mode === "mistakes"
+          ? tx(`Xong lượt ôn từ hay sai: nhớ ${good}/${cards.length} từ`, `Finished mistake review: remembered ${good}/${cards.length} words`)
+          : tx(`Xong lượt ôn: nhớ ${good}/${cards.length} từ`, `Review complete: remembered ${good}/${cards.length} words`))
+        : onlyFav
+          ? tx("Chưa có từ yêu thích nào trong lượt ôn này", "No favorite words in this review session")
+          : (mode === "mistakes" ? tx("Chưa có từ hay sai nào được ghi nhận", "No frequent mistakes recorded yet") : tx("Hôm nay không có từ nào cần ôn", "No words due for review today"));
+      const emptyDesc = cards.length
+        ? tx("Từ chưa nhớ sẽ được nhắc lại ngay lần ôn sau; từ đã nhớ sẽ giãn dần 1, 3, 7, 14, 30 ngày.", "Words you missed will reappear next session; remembered words space out over 1, 3, 7, 14, 30 days.")
+        : (mode === "mistakes"
+          ? tx("Khi bạn trả lời nhầm từ vựng trong bài tập hoặc thẻ ghi nhớ, từ đó sẽ tự động xuất hiện tại đây.", "When you miss vocabulary in exercises or flashcards, those words will automatically appear here.")
+          : tx("Làm thêm bài từ vựng, nghe hoặc bấm ★ yêu thích từ để luyện riêng.", "Try more vocabulary or listening lessons, or ★ star words to practice them separately."));
       main.innerHTML = `<div class="lx-ex-page">
         <div class="lx-rev-m-head">
-          <h1>${tx("Ôn tập hôm nay", "Today's Review")}</h1>
-          <p>${tx("Nhắc lại đúng lúc để ghi nhớ lâu hơn.", "Review at the right moment for long-term retention.")}</p>
+          <h1>${headTitle}</h1>
+          <p>${headSub}</p>
           <div class="lx-rev-kpis">
-            <div class="lx-rev-kpi"><b>${fmtN(Math.max(0, cards.length - i))}</b><span>${tx("Từ đến hạn", "Words due")}</span></div>
-            <div class="lx-rev-kpi"><b>${fmtN(attnCount)}</b><span>${tx("Từ cần chú ý", "Needs attention")}</span></div>
+            <div class="lx-rev-kpi"><b>${fmtN(Math.max(0, cards.length - i))}</b><span>${mode === "mistakes" ? tx("Từ hay sai", "Mistake words") : tx("Từ đến hạn", "Words due")}</span></div>
+            <div class="lx-rev-kpi"><b>${fmtN(mode === "mistakes" ? (d.hardQuestions?.length || 0) : attnCount)}</b><span>${mode === "mistakes" ? tx("Câu hay sai", "Hard questions") : tx("Từ cần chú ý", "Needs attention")}</span></div>
           </div>
+          ${modeTabsHtml()}
         </div>
-        <div class="sheet sheet-pad lx-pro-card">${ChibiMascot({ state: cards.length ? "achievement" : "welcome", size: 88 })}<h2>${cards.length ? `Xong lượt ôn: nhớ ${good}/${cards.length} từ` : onlyFav ? "Chưa có từ yêu thích nào trong lượt ôn này" : "Hôm nay không có từ nào cần ôn"}</h2><p>${cards.length ? "Từ chưa nhớ sẽ được nhắc lại ngay lần ôn sau; từ đã nhớ sẽ giãn dần 1, 3, 7, 14, 30 ngày." : "Làm thêm bài từ vựng, nghe hoặc bấm ★ yêu thích từ để luyện riêng."}</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="/app/">Về trang môn học</a>${onlyFav ? `<button class="btn" id="lxShowAll">Xem tất cả</button>` : cards.length ? `<button class="btn" id="lxAgain">Ôn tiếp</button>` : ""}</div></div></div>`;
-      main.querySelector("#lxAgain")?.addEventListener("click", () => pageLangReview(page, [langId], query, ctx));
+        <div class="sheet sheet-pad lx-pro-card">${ChibiMascot({ state: cards.length ? "achievement" : "welcome", size: 88 })}<h2>${emptyTitle}</h2><p>${emptyDesc}</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="/app/${esc(d.lang)}">${tx("Về trang môn học", "Back to subject")}</a>${onlyFav ? `<button class="btn" id="lxShowAll">${tx("Xem tất cả", "Show all")}</button>` : cards.length ? `<button class="btn" id="lxAgain">${tx("Ôn tiếp", "Review again")}</button>` : (mode === "due" && (d.mistakes || 0) > 0 ? `<button class="btn" data-rev-mode="mistakes">${tx(`Ôn ${fmtN(d.mistakes)} từ hay sai`, `Review ${fmtN(d.mistakes)} mistakes`)}</button>` : "")}</div></div>
+        ${hqHtml}
+      </div>`;
+      bindModes();
+      main.querySelector("#lxAgain")?.addEventListener("click", () => pageLangReview(page, [langId], { ...query, mode }, ctx));
       main.querySelector("#lxShowAll")?.addEventListener("click", () => { onlyFav = false; i = 0; paint(); });
       return;
     }
@@ -1018,37 +1113,39 @@ export async function pageLangReview(page, [langId], query, ctx) {
     const estMin = Math.max(1, Math.ceil((cards.length - i) * 0.5));
     main.innerHTML = `<div class="lx-ex-page lx-review-page">
       <div class="lx-rev-m-head">
-        <h1>${tx("Ôn tập hôm nay", "Today's Review")}</h1>
-        <p>${tx("Nhắc lại đúng lúc để ghi nhớ lâu hơn.", "Review at the right moment for long-term retention.")}</p>
+        <h1>${headTitle}</h1>
+        <p>${headSub}</p>
         <div class="lx-rev-kpis">
-          <div class="lx-rev-kpi"><b>${fmtN(cards.length - i)}</b><span>${tx("Từ đến hạn", "Words due")}</span></div>
-          <div class="lx-rev-kpi"><b>${fmtN(attnCount)}</b><span>${tx("Từ cần chú ý", "Needs attention")}</span></div>
+          <div class="lx-rev-kpi"><b>${fmtN(cards.length - i)}</b><span>${mode === "mistakes" ? tx("Từ hay sai", "Mistake words") : tx("Từ đến hạn", "Words due")}</span></div>
+          <div class="lx-rev-kpi"><b>${fmtN(mode === "mistakes" ? (d.hardQuestions?.length || 0) : attnCount)}</b><span>${mode === "mistakes" ? tx("Câu hay sai", "Hard questions") : tx("Từ cần chú ý", "Needs attention")}</span></div>
         </div>
+        ${modeTabsHtml()}
       </div>
-      <div class="page-head"><div><span class="edu-eyebrow">${d.flag} ${esc(d.langName)} · ÔN TẬP SRS</span><h1>Thẻ ${i + 1}/${cards.length}</h1><p>Nhớ nghĩa trước, rồi bấm lật thẻ để kiểm tra. Bấm ★ để lưu từ yêu thích.</p></div><div class="row">${favs.size ? `<button type="button" class="btn btn-sm ${onlyFav ? "btn-primary" : ""}" id="lxFavFilter">★ Yêu thích (${favs.size})</button>` : ""}${ChibiMascot({ state: flipped ? "learning" : "welcome", size: 70 })}</div></div>
-      <div class="lx-flash ${flipped ? "flip" : ""}" style="--c:${esc(d.color)}" tabindex="0" role="button" aria-label="Lật thẻ">
+      <div class="page-head"><div><span class="edu-eyebrow">${d.flag} ${esc(d.langName)} · ${mode === "mistakes" ? tx("ÔN TỪ HAY SAI", "FREQUENT MISTAKES") : tx("ÔN TẬP SRS", "SRS REVIEW")}</span><h1>${tx(`Thẻ ${i + 1}/${cards.length}`, `Card ${i + 1}/${cards.length}`)}</h1><p>${tx("Nhớ nghĩa trước, rồi bấm lật thẻ để kiểm tra. Bấm ★ để lưu từ yêu thích.", "Recall the meaning first, then flip to check. Click ★ to save favorites.")}</p></div><div class="row">${favs.size ? `<button type="button" class="btn btn-sm ${onlyFav ? "btn-primary" : ""}" id="lxFavFilter">${tx(`★ Yêu thích (${favs.size})`, `★ Favorites (${favs.size})`)}</button>` : ""}${ChibiMascot({ state: flipped ? "learning" : "welcome", size: 70 })}</div></div>
+      <div class="lx-flash ${flipped ? "flip" : ""}" style="--c:${esc(d.color)}" tabindex="0" role="button" aria-label="${tx("Lật thẻ", "Flip card")}">
         <div class="lx-flash-top">
           <span class="lx-ex-pill">${tx("TỪ VỰNG", "VOCABULARY")} · ${i + 1}/${cards.length}</span>
           <span class="lx-ex-cnt">${tx("Còn", "Left")} ${estMin} ${tx("phút", "min")}</span>
         </div>
-        <button type="button" class="lx-fav-btn ${isFav ? "on" : ""}" data-fav="${esc(c.word)}" title="Đánh dấu từ yêu thích" aria-label="Đánh dấu từ yêu thích">${isFav ? "★" : "☆"}</button>
+        <button type="button" class="lx-fav-btn ${isFav ? "on" : ""}" data-fav="${esc(c.word)}" title="${tx("Đánh dấu từ yêu thích", "Toggle favorite")}" aria-label="${tx("Đánh dấu từ yêu thích", "Toggle favorite")}">${isFav ? "★" : "☆"}</button>
         <div class="lx-flash-word">${esc(c.word)} ${sayBtn(c.word, d.speech)}</div>
         ${c.reading ? `<div class="lx-flash-reading">${esc(c.reading)}</div>` : ""}
-        ${flipped ? `<div class="lx-flash-back"><b class="lx-vi">${esc(c.meaning)}</b><span class="small muted">${esc(c.level)} · ${esc(c.unit)}${c.wrong ? ` · đã sai ${c.wrong} lần` : ""}</span></div>` : `<div class="muted small lx-flash-hint">${tx("Chạm để xem nghĩa", "Tap to reveal meaning")}</div>`}
+        ${flipped ? `<div class="lx-flash-back"><b class="lx-vi">${esc(c.meaning)}</b><span class="small muted">${esc(c.level)} · ${esc(c.unit)}${c.wrong ? ` · ${tx(`đã sai ${c.wrong} lần`, `missed ${c.wrong}x`)}` : ""}</span></div>` : `<div class="muted small lx-flash-hint">${tx("Chạm để xem nghĩa", "Tap to reveal meaning")}</div>`}
         <button type="button" class="btn btn-primary btn-block lx-flash-reveal" data-flip-btn>${flipped ? tx("Ẩn đáp án", "Hide answer") : tx("Hiện đáp án", "Show answer")}</button>
       </div>
-      <div class="row lx-flash-actions" ${flipped ? "" : "hidden"}><button class="btn" data-r="0">Chưa nhớ</button><button class="btn btn-primary" data-r="1">Nhớ rồi</button><button class="btn" type="button" id="lxAskWord">💬 Hỏi AI mẹo nhớ & ví dụ</button></div>
+      <div class="row lx-flash-actions" ${flipped ? "" : "hidden"}><button class="btn" data-r="0">${tx("Chưa nhớ", "Not yet")}</button><button class="btn btn-primary" data-r="1">${tx("Nhớ rồi", "Got it")}</button><button class="btn" type="button" id="lxAskWord">${tx("💬 Hỏi AI mẹo nhớ & ví dụ", "💬 Ask AI for memory tips & examples")}</button></div>
       <details class="lx-due-list" open>
-        <summary><span>Danh sách đến hạn</span><b>${cards.length - i} còn lại</b></summary>
-        <ol>${cards.map((x, idx) => `<li><button type="button" class="lx-due-row ${idx === i ? "on" : ""}" data-go="${idx}"${idx === i ? ' aria-current="true"' : ""}><span class="lx-due-no">${idx + 1}</span><span class="lx-due-t"><b>${esc(x.word)}</b><small>${esc(x.meaning)}</small></span>${x.wrong ? `<em>sai ${x.wrong}</em>` : ""}</button></li>`).join("")}</ol>
+        <summary><span>${mode === "mistakes" ? tx("Danh sách từ hay sai", "Frequent mistakes list") : tx("Danh sách đến hạn", "Due words list")}</span><b>${cards.length - i} ${tx("còn lại", "left")}</b></summary>
+        <ol>${cards.map((x, idx) => `<li><button type="button" class="lx-due-row ${idx === i ? "on" : ""}" data-go="${idx}"${idx === i ? ' aria-current="true"' : ""}><span class="lx-due-no">${idx + 1}</span><span class="lx-due-t"><b>${esc(x.word)}</b><small>${esc(x.meaning)}</small></span>${x.wrong ? `<em>${tx(`sai ${x.wrong}`, `${x.wrong} wrong`)}</em>` : ""}</button></li>`).join("")}</ol>
       </details>
+      ${hqHtml}
     </div>`;
-    bindSay(main);
+    bindModes();
     main.querySelector("#lxFavFilter")?.addEventListener("click", () => { onlyFav = !onlyFav; i = 0; flipped = false; paint(); });
     main.querySelector("[data-fav]")?.addEventListener("click", (e) => {
       e.stopPropagation();
       const added = toggleFav(c.word);
-      toast(added ? `Đã thêm "${c.word}" vào yêu thích ★` : `Đã bỏ "${c.word}" khỏi yêu thích`, "info");
+      toast(added ? tx(`Đã thêm "${c.word}" vào yêu thích ★`, `Added "${c.word}" to favorites ★`) : tx(`Đã bỏ "${c.word}" khỏi yêu thích`, `Removed "${c.word}" from favorites`), "info");
       paint();
     });
     main.querySelector("#lxAskWord")?.addEventListener("click", () => {
@@ -1213,7 +1310,7 @@ export async function pageLangTheory(page, [langId, levelId, unitId], query, ctx
     <section class="lx-box"><div class="row lx-theory-actions"><button class="btn" id="lxAskRule">${li("chat", 16)}Hỏi AI giải thích bài này</button>${t.words.length ? `<button class="btn" type="button" id="lxAskVocab">${li("book", 16)}Mẹo nhớ từ vựng bài này</button><a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/tu/${esc(t.unitId)}">${li("mic", 16)}Luyện đọc từ vựng bài này</a>` : ""}${t.sentences.length ? `<a class="btn" href="/app/ngoai-ngu/luyen-noi/${t.lang}/${t.levelId}/cau/${esc(t.unitId)}">${li("mic", 16)}Đọc theo mẫu câu</a>` : ""}</div>
       <h2>Luyện tập</h2><div class="lx-ex-list">${d.exercises.map((e) => `<a class="lx-ex" href="/app/ngoai-ngu/bai/${e.id}"><span class="t"><b>${esc(e.kindTitle)}</b><span>${e.count} câu</span></span><span class="tag tag-tim">Làm bài →</span></a>`).join("")}</div></section>
   </div>`;
-  bindSay(main);
+  bindSay(main, ctx);
   main.querySelector("#lxAskRule").addEventListener("click", () => { if (window.__plAiAsk) window.__plAiAsk("Giải thích ngắn gọn các quy tắc ngữ pháp của bài này, mỗi quy tắc cho 2 ví dụ."); else toast("Trợ lý AI tạm thời chưa sẵn sàng.", "info"); });
   main.querySelector("#lxAskVocab")?.addEventListener("click", () => { if (window.__plAiAsk) window.__plAiAsk("Cho mình mẹo nhớ nhanh các từ vựng trong bài này (nhóm từ, chiết tự hoặc từ ghép hay đi kèm) và đặt câu ngắn ứng dụng."); else toast("Trợ lý AI tạm thời chưa sẵn sàng.", "info"); });
 }
@@ -1561,7 +1658,7 @@ export async function pageLangExercise(page, [exId], query, ctx) {
     const inp = e.target.closest(".lx-input");
     if (inp && e.key === "Enter") { e.preventDefault(); const all = [...main.querySelectorAll(".lx-input")]; const n = all[all.indexOf(inp) + 1]; if (n) n.focus(); else main.querySelector("#lxSubmit")?.focus(); }
   });
-  bindSay(main);
+  bindSay(main, ctx);
   bindKeyboard(main);
   function paintKeep() { const y = window.scrollY; paint(); window.scrollTo(0, y); }
   paint();
@@ -1704,11 +1801,15 @@ export async function langClassReport(host, classId) {
 /* ---------- Hanzi / Kana / Hangul handwriting practice (4.9.14) ----------
    Students trace over a faint guide character on the canvas; the grader compares ink strokes against the glyph (coverage + accuracy).
    Stroke order is not graded (requires separate stroke data); this is free practice and does not count toward course scores. */
-export async function pageLangWrite(main, [langId, levelId], query, ctx) {
+export async function pageLangWrite(page, [langId, levelId], query, ctx) {
+  page.innerHTML = "";
+  const main = document.createElement("div");
+  page.appendChild(main);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
   let d;
-  try { d = await api(`/api/lang/write/${langId}/${levelId}`); } catch (e) { main.innerHTML = `<div class="sheet empty"><b>Không mở được trang này</b><p>${esc(e.message)}</p><a class="btn" href="/app/ngoai-ngu/${esc(langId)}">Về khóa học</a></div>`; return; }
+  try { d = await api(`/api/lang/write/${langId}/${levelId}`); } catch (e) { if (ctx.isCurrent()) main.innerHTML = `<div class="sheet empty"><b>Không mở được trang này</b><p>${esc(e.message)}</p><a class="btn" href="/app/ngoai-ngu/${esc(langId)}">Về khóa học</a></div>`; return; }
   if (!ctx.isCurrent()) return;
+  bindSay(main, ctx);
   if (getSubject() !== d.lang) setSubject(d.lang);
   window.__plAiCtx = { langItem: `${d.lang}-${d.level.id}`, langName: d.name, page: `${d.name} · Luyện viết ${d.level.title}` };
   withAi(ctx);
@@ -1748,7 +1849,6 @@ export async function pageLangWrite(main, [langId, levelId], query, ctx) {
         </div>
         <div class="sheet lx-write-list">${d.chars.map((x, i) => `<button type="button" class="lx-wc lx-vi ${i === idx ? "on" : ""} ${best[x.ch] >= 70 ? "ok" : best[x.ch] ? "try" : ""}" data-i="${i}" title="${esc(x.meaning)}">${esc(x.ch)}</button>`).join("")}</div>
       </div></div>`;
-    bindSay(main);
     const cv = main.querySelector("#lxCv"), g = cv.getContext("2d");
     const draw = () => {
       const isDark = document.documentElement.getAttribute("data-theme") === "dark";
