@@ -525,7 +525,11 @@ export function createClassroomApi(ctx) {
         const asg = await db.prepare("SELECT * FROM assignments WHERE class_id = ? AND status <> 'deleted' ORDER BY id DESC").all(id);
         const subs = await db.prepare("SELECT s.id, s.assignment_id, s.attempt_no, s.passed, s.auto_score, s.manual_score, s.feedback, s.late, s.created_at, a.title FROM assignment_submissions s JOIN assignments a ON a.id = s.assignment_id WHERE a.class_id = ? AND s.user_id = ? ORDER BY s.id DESC LIMIT 200").all(id, uid);
         const assignmentsWithState = await Promise.all(asg.map(async (a) => ({ ...publicAssignment(a), state: await studentAssignmentState(a, uid) })));
-        return ok(res, { student: { id: u.id, username: u.username, displayName: u.display_name, status: mem.status }, xp: 0, solved: 0, lessonsDone: 0, assignments: assignmentsWithState, submissions: subs });
+        const lpRows = await db.prepare("SELECT item_id, best_score FROM lang_progress WHERE user_id = ?").all(uid);
+        const xp = lpRows.reduce((s, r) => s + ((Number(r.best_score) || 0) >= 80 ? Number(r.best_score) : 0), 0);
+        const solved = lpRows.filter((r) => (Number(r.best_score) || 0) >= 80).length;
+        const lessonsDone = lpRows.length;
+        return ok(res, { student: { id: u.id, username: u.username, displayName: u.display_name, status: mem.status }, xp, solved, lessonsDone, assignments: assignmentsWithState, submissions: subs });
       }
 
       // --- Class assignments ---
