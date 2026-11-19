@@ -12,6 +12,7 @@ import { revokeSource } from "./entitlements.js";
 import { buildXlsx } from "./xlsx.js";
 import { publicAssignment, assignmentExercise as assignmentExerciseOf, studentAssignmentState as studentAssignmentStateOf, finalScore as finalScoreOf, isAssignmentTarget } from "./assignments.js";
 import { notify } from "./notify.js";
+import { bumpStreak } from "./languages.js";
 // Tên hiển thị: viết hoa chữ cái đầu của mỗi từ
 const capName = (v) => String(v || "").trim().split(" ").filter(Boolean).map((w) => w.charAt(0).toLocaleUpperCase("vi") + w.slice(1)).join(" ");
 
@@ -121,7 +122,8 @@ export function createClassroomApi(ctx) {
       }
       const testScores = await Promise.all(tests.map(async (t) => { const b = await db.prepare("SELECT MAX(score) AS s, MAX(max_score) AS m FROM class_test_attempts WHERE test_id = ? AND user_id = ? AND status IN ('done','late')").get(t.id, m.user_id); return b && b.s != null ? Math.round((b.s / b.m) * 1000) / 100 : null; }));
       const weakChapters = [];
-      const xp = 0;
+      const xpRow = await db.prepare("SELECT COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp FROM lang_progress WHERE user_id = ?").get(m.user_id).catch(() => ({ xp: 0 }));
+      const xp = Number(xpRow?.xp) || 0;
       const entrance = await db.prepare("SELECT percent, submitted_at FROM learning_assessments WHERE user_id = ? AND kind = 'entrance' AND status = 'completed' ORDER BY submitted_at DESC, id DESC LIMIT 1").get(m.user_id);
       const weekly = await db.prepare("SELECT percent, submitted_at FROM learning_assessments WHERE user_id = ? AND kind = 'weekly' AND status = 'completed' ORDER BY submitted_at DESC, id DESC LIMIT 1").get(m.user_id);
       const learningProgress = {
@@ -164,10 +166,11 @@ export function createClassroomApi(ctx) {
   }
   async function studentRow(teacherId, u) {
     const classes = await db.prepare(`SELECT c.id, c.name, m.status FROM class_members m JOIN classrooms c ON c.id = m.class_id WHERE c.teacher_id = ? AND m.user_id = ? AND m.status IN ${MEMBER_ST} AND c.status <> 'archived' ORDER BY c.id`).all(teacherId, u.id);
-    const last = null;
+    const lp = await db.prepare("SELECT COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, COALESCE(SUM(CASE WHEN best_score >= 80 THEN 1 ELSE 0 END), 0) AS solved, COUNT(*) AS tried, MAX(updated_at) AS t FROM lang_progress WHERE user_id = ?").get(u.id).catch(() => ({}));
+    const last = lp?.t || null;
     const lastA = (await db.prepare("SELECT MAX(created_at) AS t FROM assignment_submissions WHERE user_id = ?").get(u.id)).t;
-    const solved = (await db.prepare("SELECT COUNT(*) AS n FROM lang_progress WHERE user_id = ? AND best_score >= 80").get(u.id)).n;
-    return { id: u.id, username: u.username, displayName: u.display_name, disabled: !!u.disabled, managed: u.managed_by === teacherId, createdAt: u.created_at, classes, solved, lastActive: [last, lastA].filter(Boolean).sort().pop() || null };
+    const solved = Number(lp?.solved) || 0;
+    return { id: u.id, username: u.username, displayName: u.display_name, disabled: !!u.disabled, managed: u.managed_by === teacherId, createdAt: u.created_at, classes, solved, xp: Number(lp?.xp) || 0, lessonsDone: Number(lp?.tried) || 0, lastActive: [last, lastA].filter(Boolean).sort().pop() || null };
   }
   async function teacherStudents(teacherId) {
     const rows = await db.prepare(`SELECT u.id, u.username, u.display_name, u.disabled, u.managed_by, u.created_at FROM users u WHERE u.role = 'student' AND (u.managed_by = ? OR u.id IN (SELECT m.user_id FROM class_members m JOIN classrooms c ON c.id = m.class_id WHERE c.teacher_id = ? AND m.status IN ${MEMBER_ST} AND c.status <> 'archived')) ORDER BY LOWER(u.display_name) LIMIT 2000`).all(teacherId, teacherId);
@@ -177,8 +180,9 @@ export function createClassroomApi(ctx) {
     const base = await studentRow(teacherId, st);
     const ids = base.classes.map((c) => c.id);
     const asg = ids.length ? await Promise.all((await db.prepare(`SELECT * FROM assignments WHERE class_id IN (${ids.map(() => "?").join(",")}) AND status <> 'deleted' ORDER BY id DESC LIMIT 100`).all(...ids)).map(async (a) => ({ ...publicAssignment(a), className: (base.classes.find((c) => c.id === a.class_id) || {}).name, state: await studentAssignmentState(a, st.id) }))) : [];
-    const recent = [];
-    return { ...base, xp: 0, lessonsDone: 0, assignments: asg, recent };
+    const recentRows = await db.prepare("SELECT item_id, best_score, last_score, updated_at FROM lang_progress WHERE user_id = ? ORDER BY updated_at DESC LIMIT 10").all(st.id).catch(() => []);
+    const recent = recentRows.map((r) => ({ exerciseId: r.item_id, score: r.last_score ?? r.best_score ?? 0, maxScore: 100, createdAt: r.updated_at }));
+    return { ...base, assignments: asg, recent };
   }
   async function teacherList(onlyId) {
     const t = nowIso();
@@ -787,6 +791,7 @@ export function createClassroomApi(ctx) {
         const r = { passed: false, output: "" }; // Máy chấm tự động đã gỡ: giáo viên chấm thủ công
         const late = a.due_at && Date.now() > Date.parse(a.due_at) ? 1 : 0;
         await db.prepare("INSERT INTO assignment_submissions (assignment_id, user_id, attempt_no, code, output, passed, auto_score, late, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(a.id, user.id, n + 1, codeStr, String(r.output || "").slice(0, 10000), r.passed ? 1 : 0, r.passed ? 10 : 0, late, nowIso());
+        await bumpStreak(db, user.id, nowIso()).catch(() => {});
         // Notify the teacher in charge of the class
         try {
           const cls = await db.prepare("SELECT teacher_id, name FROM classrooms WHERE id = ?").get(a.class_id);
@@ -887,6 +892,7 @@ export function createClassroomApi(ctx) {
           if (q.type === "mcq") { const right = Number(ans) === q.payload.answer; if (right) score += q.points; detail.push({ id: q.id, correct: right }); }
         }
         await db.prepare("UPDATE class_test_attempts SET status = ?, answers_json = ?, detail_json = ?, score = ?, max_score = ? WHERE id = ?").run(late ? "late" : "done", JSON.stringify(answers).slice(0, 200000), JSON.stringify(detail), score, max, at.id);
+        await bumpStreak(db, user.id, nowIso()).catch(() => {});
         // Correct/incorrect details are only shown after the deadline (do not leak answers while others are still working)
         const reveal = !t.due_at || Date.now() > Date.parse(t.due_at);
         return ok(res, { score, maxScore: max, late, detail: reveal ? detail : null });
@@ -907,10 +913,27 @@ export function createClassroomApi(ctx) {
       if (!fm) return bad(res, 404, "Không có thành viên này.");
       if (!fm.share_progress && fm.user_id !== user.id) return bad(res, 403, "Thành viên này chưa bật chia sẻ tiến độ.");
       const u = await db.prepare("SELECT display_name, username FROM users WHERE id = ?").get(fm.user_id);
-      const last = (await db.prepare("SELECT MAX(created_at) AS t FROM assignment_submissions WHERE user_id = ?").get(fm.user_id)).t;
-      const week = await db.prepare("SELECT substr(created_at, 1, 10) AS d, COUNT(*) AS n FROM assignment_submissions WHERE user_id = ? AND created_at >= ? GROUP BY d ORDER BY d").all(fm.user_id, new Date(Date.now() - 7 * 86400000).toISOString());
+      const lp = await db.prepare("SELECT COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, COALESCE(SUM(CASE WHEN best_score >= 80 THEN 1 ELSE 0 END), 0) AS solved, COALESCE(SUM(CASE WHEN best_score >= 80 AND item_id LIKE '%-kiem-tra' THEN 1 ELSE 0 END), 0) AS exams, COUNT(*) AS tried, MAX(updated_at) AS t FROM lang_progress WHERE user_id = ?").get(fm.user_id).catch(() => ({}));
+      const lastAsg = (await db.prepare("SELECT MAX(created_at) AS t FROM assignment_submissions WHERE user_id = ?").get(fm.user_id)).t;
+      const last = [lastAsg, lp?.t].filter(Boolean).sort().pop() || null;
+      const since7 = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+      let week = [];
+      try {
+        week = await db.prepare("SELECT activity_date AS d, COUNT(*) AS n FROM learning_activities WHERE user_id = ? AND activity_date >= ? GROUP BY activity_date ORDER BY activity_date").all(fm.user_id, since7);
+      } catch {}
+      if (!week.length) {
+        week = await db.prepare("SELECT substr(created_at, 1, 10) AS d, COUNT(*) AS n FROM assignment_submissions WHERE user_id = ? AND created_at >= ? GROUP BY d ORDER BY d").all(fm.user_id, new Date(Date.now() - 7 * 86400000).toISOString());
+      }
       // Aggregated metrics only: no code, no passwords, no other personal data
-      return ok(res, { member: { displayName: u.display_name, username: u.username }, lastActive: last, week });
+      return ok(res, {
+        member: { displayName: u.display_name, username: u.username },
+        xp: Number(lp?.xp) || 0,
+        solved: Number(lp?.solved) || 0,
+        examsPassed: Number(lp?.exams) || 0,
+        lessonsDone: Number(lp?.tried) || 0,
+        lastActive: last,
+        week,
+      });
     }
 
       const b = await body(); if (b === null) return bad(res, 400, "Dữ liệu không hợp lệ.");

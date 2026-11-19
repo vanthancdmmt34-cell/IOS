@@ -1,5 +1,5 @@
 /* Shared Pet Companion ("Cổ vũ · Bạn đồng hành") widget used in /app/ca-nhan and /app/co-vu. */
-import { esc, fmtN, toast } from "./core.js";
+import { S, esc, fmtN, toast, paintProBadges } from "./core.js";
 import { currentLang } from "./i18n.js";
 import { COMPANIONS, companionOf, companionSvg, activeCompanionId, refreshCompanion } from "./companion.js";
 import { petState, cheer, exchange, refreshPet, petView } from "./pet-state.js";
@@ -105,7 +105,9 @@ export function bindCompanionCard(container, { userLv = 1, starRoot = container 
     const btn = ev.currentTarget;
     btn.disabled = true;
     try {
-      await exchange();
+      const r = await exchange();
+      if (S.membership) { S.membership.pro = true; if (r && r.expiresAt) S.membership.expiresAt = r.expiresAt; }
+      try { paintProBadges(); } catch {}
       toast(L("Đã đổi 100 tri thức lấy 1 ngày Pro!", "Exchanged 100 knowledge for 1 day of Pro!"), "ok");
     } catch (e) { toast(e.message, "info"); }
     paintPet();

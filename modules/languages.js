@@ -1215,8 +1215,8 @@ export async function langApi(ctx) {
     const g = gradeLang(ex, body.answers, en);
     const now = nowIso();
     const prior = await db.prepare("SELECT completed_at, best_score FROM lang_progress WHERE user_id = ? AND item_id = ?").get(user.id, ex.id);
-    // Bài đã đạt 100% thì khóa, không làm lại
-    if (prior && Number(prior.best_score) >= 100) { sendJson(res, 400, { error: "Bài này đã đạt 100%, không làm lại nữa." }); return true; }
+    // Bài đã đạt 100% thì khóa làm lại tự do (trừ khi học viên đang nộp bài được giáo viên giao trong lớp)
+    if (prior && Number(prior.best_score) >= 100 && !body.asg) { sendJson(res, 400, { error: "Bài này đã đạt 100%, không làm lại nữa." }); return true; }
     await db.prepare(`INSERT INTO lang_progress (user_id, item_id, best_score, last_score, attempts, completed_at, updated_at)
       VALUES (?, ?, ?, ?, 1, ?, ?)
       ON CONFLICT(user_id, item_id) DO UPDATE SET

@@ -68,8 +68,8 @@ export async function pageFamily(main, _p, _q, ctx) {
       if (b.id === "leave") { if (!(await confirmBox("Rời gói Family?", "Bạn mất quyền Pro từ gói này.", "Rời gói", true))) return; await api("/api/family/leave", "POST", {}); return pageFamily(main, _p, _q, ctx); }
       if (b.dataset.prog) {
         const p = await api(`/api/family/members/${b.dataset.prog}/progress`);
-        openModal(`<h2>Tiến độ của ${esc(p.member.displayName)}</h2><div class="stats" style="margin-top:12px"><div><b>${fmtN(p.xp)}</b><span>XP</span></div><div><b>${p.solved}</b><span>Bài đã đạt</span></div><div><b>${p.examsPassed}</b><span>Bài kiểm tra đạt</span></div><div><b>${p.lessonsDone}</b><span>Bài học xong</span></div></div>
-          <p>Hoạt động gần nhất: ${p.lastActive ? timeAgo(p.lastActive) : "chưa có"}.</p><p class="small muted">7 ngày qua: ${p.week.map((d) => `${d.d.slice(5)}: ${d.n} lần nộp`).join(" · ") || "chưa học"}.</p>`);
+        openModal(`<h2>Tiến độ của ${esc(p.member.displayName)}</h2><div class="stats" style="margin-top:12px"><div><b>${fmtN(p.xp || 0)}</b><span>XP</span></div><div><b>${fmtN(p.solved || 0)}</b><span>Bài đã đạt</span></div><div><b>${fmtN(p.examsPassed || 0)}</b><span>Bài kiểm tra đạt</span></div><div><b>${fmtN(p.lessonsDone || 0)}</b><span>Bài học xong</span></div></div>
+          <p>Hoạt động gần nhất: ${p.lastActive ? timeAgo(p.lastActive) : "chưa có"}.</p><p class="small muted">7 ngày qua: ${(p.week || []).map((d) => `${d.d.slice(5)}: ${d.n} lần nộp`).join(" · ") || "chưa học"}.</p>`);
       }
     } catch (err) { toast(err.message, "err"); }
   }, { signal: famAc.signal });

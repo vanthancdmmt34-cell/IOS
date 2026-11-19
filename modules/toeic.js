@@ -1,6 +1,10 @@
 // Trung tâm TOEIC: bài học theo Part, luyện tập từng Part, đề thi thử có giờ, chấm điểm và lịch sử.
 // API: /api/toeic/...  (cần đăng nhập; mọi thao tác ghi đều cần CSRF)
 import { PARTS, SECTIONS, LESSONS, QUESTIONS, PASSAGES, MOCK_TESTS, SCALE_NOTE, partOf, questionsOfPart, passageOf, estimateScore } from "./toeic-bank.js";
+import { awardExercise } from "./pet.js";
+import { bumpStreak } from "./languages.js";
+
+const vnDate = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 
 export async function initToeic(db) {
   const isPg = !!db.pool; // PgDb co connection pool; SQLite thi khong
@@ -122,9 +126,16 @@ export async function toeicApi(ctx) {
     const results = list.map((q) => review(q, answers[q.id]));
     const correct = results.filter((r) => r.correct && answers[r.id] !== undefined).length;
     const answered = Object.keys(answers).length;
+    const now = nowIso();
+    const prior = await db.prepare("SELECT MAX(correct * 100 / CASE WHEN total > 0 THEN total ELSE 1 END) AS best FROM toeic_attempts WHERE user_id = ? AND kind = 'drill' AND part = ?").get(user.id, n).catch(() => null);
     await db.prepare("INSERT INTO toeic_attempts (user_id, kind, part, correct, total, answers_json, seconds, created_at) VALUES (?, 'drill', ?, ?, ?, ?, ?, ?)")
-      .run(user.id, n, correct, list.length, JSON.stringify(answers), Math.max(0, Math.min(86400, Number(body.seconds) || 0)), nowIso());
-    sendJson(res, 200, { correct, total: list.length, answered, results, passages: usedPassages(list) });
+      .run(user.id, n, correct, list.length, JSON.stringify(answers), Math.max(0, Math.min(86400, Number(body.seconds) || 0)), now);
+    const pct = list.length ? Math.round((correct / list.length) * 100) : 0;
+    let starsEarned = 0;
+    try { starsEarned = (await awardExercise(db, user.id, `toeic:drill:${n}`, pct, !!(pct >= 60 && !(prior && Number(prior.best) >= 60)))).stars; } catch {}
+    try { await db.prepare("INSERT INTO learning_activities (user_id, activity_type, reference_id, activity_date, created_at) VALUES (?, 'lang_submission', ?, ?, ?)").run(user.id, `en-toeic-part${n}`, vnDate(), now); } catch {}
+    if (answered > 0) await bumpStreak(db, user.id, now);
+    sendJson(res, 200, { correct, total: list.length, answered, results, passages: usedPassages(list), starsEarned });
     return true;
   }
 
@@ -155,9 +166,16 @@ export async function toeicApi(ctx) {
     const score = { ...estimateScore(listening, reading), listeningCorrect: listening, readingCorrect: reading, listeningTotal: 51, readingTotal: 49, note: SCALE_NOTE };
     const correct = listening + reading;
     const seconds = Math.max(0, Math.min(86400, Number(body.seconds) || 0));
+    const now = nowIso();
+    const prior = await db.prepare("SELECT 1 FROM toeic_attempts WHERE user_id = ? AND kind = 'test' AND test_id = ? LIMIT 1").get(user.id, t.id).catch(() => null);
     const ins = await db.prepare("INSERT INTO toeic_attempts (user_id, kind, part, test_id, correct, total, score_json, answers_json, seconds, created_at) VALUES (?, 'test', NULL, ?, ?, ?, ?, ?, ?, ?) RETURNING id")
-      .run(user.id, t.id, correct, QUESTIONS.length, JSON.stringify(score), JSON.stringify(answers), seconds, nowIso());
-    sendJson(res, 200, { id: Number(ins.lastInsertRowid), score, correct, total: QUESTIONS.length, seconds, results, passages: usedPassages(QUESTIONS), createdAt: nowIso() });
+      .run(user.id, t.id, correct, QUESTIONS.length, JSON.stringify(score), JSON.stringify(answers), seconds, now);
+    const pct = QUESTIONS.length ? Math.round((correct / QUESTIONS.length) * 100) : 0;
+    let starsEarned = 0;
+    try { starsEarned = (await awardExercise(db, user.id, `toeic:test:${t.id}`, pct, !!(pct >= 50 && !prior))).stars; } catch {}
+    try { await db.prepare("INSERT INTO learning_activities (user_id, activity_type, reference_id, activity_date, created_at) VALUES (?, 'lang_submission', ?, ?, ?)").run(user.id, `en-toeic-${t.id}`, vnDate(), now); } catch {}
+    await bumpStreak(db, user.id, now);
+    sendJson(res, 200, { id: Number(ins.lastInsertRowid), score, correct, total: QUESTIONS.length, seconds, results, passages: usedPassages(QUESTIONS), createdAt: now, starsEarned });
     return true;
   }
 

@@ -3,7 +3,7 @@
 // - Trình duyệt chỉ nhận đề, gửi đáp án từng câu; máy chủ chấm và mới cộng thưởng (mỗi câu chỉ chấm một lần).
 // - Không còn đường nhận "số câu đúng" từ trình duyệt.
 import crypto from "node:crypto";
-import { gameBank } from "./languages.js";
+import { gameBank, bumpStreak } from "./languages.js";
 import { isPro } from "./membership.js";
 import { withPetLock, grantGameUnlocked, petStatus } from "./pet.js";
 import { ttsClip } from "./tts.js";
@@ -179,7 +179,8 @@ export function judgeGame(db, user, { session, i, answer }) {
     }
     await db.prepare("UPDATE pet_game_sessions SET data = ? WHERE id = ?").run(JSON.stringify(d), row.id);
     if (!ok) return { ok: false, correct: false, energy: 0, knowledge: 0, expected, status: await petStatus(db, user) };
-    const r = await grantGameUnlocked(db, user.id, 1, word, now);
+    const r = await grantGameUnlocked(db, user.id, 1, true, now);
+    await bumpStreak(db, user.id, new Date(now).toISOString()).catch(() => {});
     return { ok: true, correct: true, energy: r.energy, knowledge: r.knowledge, gameEnergyLeft: r.gameEnergyLeft, pet: r.pet, status: await petStatus(db, user) };
   });
 }

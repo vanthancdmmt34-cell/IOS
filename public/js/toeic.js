@@ -1,10 +1,12 @@
 // Trung tâm TOEIC & luyện thi (môn Tiếng Anh): tổng quan, học theo Part, luyện từng Part,
 // đề thi thử có giờ, kết quả và lịch sử. Dữ liệu và chấm điểm do máy chủ thực hiện (/api/toeic).
 import { setAppHash } from "./core.js";
-import { api, esc, icon, lineIcon, toast, fmtN } from "./core.js";
+import { api, esc, icon, lineIcon, toast, fmtN, confirmBox } from "./core.js";
 import { currentLang } from "./i18n.js";
 import { speakText as voiceSpeak, stopSpeaking } from "./voice.js";
 import { HeroBanner } from "./chibi-ds.js";
+import { onExerciseSubmitted } from "./pet-state.js";
+import { refreshLangSide } from "./lang.js";
 
 const EN = () => currentLang() === "en";
 const T = (vi, en) => (EN() ? en : vi);
@@ -254,8 +256,10 @@ async function viewDrill(main, n, ctx) {
         box.innerHTML = `<p class="${res.correct ? "toeic-ok" : "toeic-no-ok"}">${res.correct ? "✓ " + T("Đúng", "Correct") : "✗ " + T("Sai", "Wrong")}${res.chosen === null ? " · " + T("chưa chọn", "not answered") : ""}</p><p class="toeic-explain">${esc(res.explain)}</p>`;
       });
       main.querySelectorAll("[data-speak]").forEach((el) => { const sc = el.parentElement.querySelector(".toeic-script"); if (sc) sc.hidden = false; });
-      main.querySelector("#drillScore").innerHTML = `<section class="sheet sheet-pad toeic-scorebox"><b>${T("Kết quả", "Result")}: ${r.correct}/${r.total} (${Math.round((r.correct / r.total) * 100)}%)</b><p class="muted">${T("Đã trả lời", "Answered")}: ${r.answered}/${r.total}</p></section>`;
-      toast(T("Đã chấm bài.", "Graded."));
+      main.querySelector("#drillScore").innerHTML = `<section class="sheet sheet-pad toeic-scorebox"><b>${T("Kết quả", "Result")}: ${r.correct}/${r.total} (${Math.round((r.correct / r.total) * 100)}%)</b><p class="muted">${T("Đã trả lời", "Answered")}: ${r.answered}/${r.total}${r.starsEarned > 0 ? ` · +${r.starsEarned} ⭐` : ""}</p></section>`;
+      onExerciseSubmitted().then(() => refreshLangSide()).catch(() => {});
+      const starBonus = Number(r.starsEarned) > 0 ? ` (+${r.starsEarned} ⭐)` : "";
+      toast(T(`Đã chấm bài${starBonus}.`, `Graded${starBonus}.`));
       main.querySelector("#drillScore").scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (e) { toast(e.message, "err"); }
   });
@@ -313,6 +317,7 @@ async function viewExam(main, id, ctx) {
       const seconds = Math.min(total, Math.floor((Date.now() - started) / 1000));
       const r = await api(`/api/toeic/tests/${encodeURIComponent(id)}/submit`, "POST", { answers, seconds });
       try { sessionStorage.removeItem(key); } catch {}
+      onExerciseSubmitted().then(() => refreshLangSide()).catch(() => {});
       if (auto) toast(T("Hết giờ, bài đã được nộp.", "Time is up. Your test was submitted."));
       setAppHash(`/app/toeic/ket/${r.id}`)
     } catch (e) { submitted = false; toast(e.message, "err"); }
@@ -336,9 +341,9 @@ async function viewExam(main, id, ctx) {
       if (cnt) cnt.textContent = `${Object.keys(answers).length}/${d.questions.length} ${T("đã chọn", "answered")}`;
     }
   });
-  main.querySelector("#examSubmit").addEventListener("click", () => {
+  main.querySelector("#examSubmit").addEventListener("click", async () => {
     const n = Object.keys(answers).length;
-    if (n < d.questions.length && !confirm(T(`Bạn mới chọn ${n}/${d.questions.length} câu. Vẫn nộp bài?`, `You answered ${n}/${d.questions.length}. Submit anyway?`))) return;
+    if (n < d.questions.length && !(await confirmBox(T("Nộp bài thi thử?", "Submit mock test?"), T(`Bạn mới chọn ${n}/${d.questions.length} câu. Vẫn nộp bài?`, `You answered ${n}/${d.questions.length}. Submit anyway?`), T("Vẫn nộp", "Submit")))) return;
     finish(false);
   });
 }
