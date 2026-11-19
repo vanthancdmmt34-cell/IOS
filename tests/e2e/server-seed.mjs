@@ -89,6 +89,8 @@ function buildSanitizedEnv(port, dataDir) {
   env.HOST = '127.0.0.1';
   env.DATA_DIR = dataDir;
   env.NODE_ENV = 'test';
+  // Fixture E2E: người đăng ký đầu tiên là admin (xem ALLOW_FIRST_USER_ADMIN trong server.js)
+  env.ALLOW_FIRST_USER_ADMIN = '1';
   return env;
 }
 

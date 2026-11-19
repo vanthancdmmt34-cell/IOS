@@ -10,6 +10,8 @@ module.exports = {
     env: {
       PORT: "8082",
       HOST: "127.0.0.1",
+      // Quản trị viên: đặt ADMIN_USERNAME = tên tài khoản sẽ thành admin khi đăng ký.
+      // ALLOW_FIRST_USER_ADMIN=1 (chỉ dev/test) để tài khoản đăng ký đầu tiên trên DB trống thành admin. Không bật trên production.
       TZ: "Asia/Ho_Chi_Minh",
       PUBLIC_URL: "https://study.liferivo.com",
       // SePay payment: fill in ONE of the two

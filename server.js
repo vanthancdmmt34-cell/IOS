@@ -494,11 +494,13 @@ async function handleApi(req, res, url) {
     if (rawEmail && !email) return sendJson(res, 400, { error: "Email chưa đúng định dạng." });
     if (email && await db.prepare("SELECT id FROM users WHERE LOWER(email) = ?").get(email)) return sendJson(res, 400, { error: "Email này đã được dùng cho tài khoản khác." });
     const count = (await db.prepare("SELECT COUNT(*) AS n FROM users").get()).n;
-    // 4.0: system administrator account (admin): ADMIN_USERNAME if set, otherwise the very first account.
+    // 4.0: system administrator account (admin): ADMIN_USERNAME if set. Without it, the very first account becomes admin
+    // only when ALLOW_FIRST_USER_ADMIN=1 (dev/test). Production default never grants admin to a public registrant (AUDIT P1-5).
     // Registrant chooses: student (default) or parent. Teacher role is granted upon purchasing a Teacher license or by an admin.
     const adminName = (process.env.ADMIN_USERNAME || "").toLowerCase();
     const picked = "student"; // 4.9.3: registration always creates a student; admins upgrade roles when needed
-    const role = adminName ? (username.toLowerCase() === adminName ? "admin" : picked) : (count === 0 ? "admin" : picked);
+    const firstUserAdmin = process.env.ALLOW_FIRST_USER_ADMIN === "1";
+    const role = adminName ? (username.toLowerCase() === adminName ? "admin" : picked) : (count === 0 && firstUserAdmin ? "admin" : picked);
     const lang = body.lang === "en" ? "en" : "vi";
     const createdAt = nowIso();
     const passHash = hashPassword(password);
@@ -1512,6 +1514,10 @@ const moduleApi = createModuleApi({
 });
 server.listen(PORT, HOST, () => {
   console.log(`He thong hoc ngoai ngu ${VERSION} chay tai http://${HOST}:${PORT} (du lieu: ${DATA_DIR})`);
+  // Cảnh báo khi chưa có quản trị viên nào (AUDIT P1-5): không có admin thì không ai quản trị được hệ thống
+  db.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'admin'").get().then((r) => {
+    if (!r || !r.n) console.warn("[admin] Chưa có quản trị viên. Đặt ADMIN_USERNAME trước khi đăng ký, hoặc chạy: node tools/promote-admin.js <tên tài khoản>");
+  }).catch(() => {});
 });
 // Graceful shutdown on PM2 restart
 for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => { server.close(); try { const p = db.close(); if (p && typeof p.catch === "function") p.catch(() => {}); } catch {} process.exit(0); });

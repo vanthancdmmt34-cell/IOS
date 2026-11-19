@@ -4,6 +4,7 @@
  * Supports Windows Named Pipes, Unix Domain Sockets, and external TEST_BASE_URL.
  */
 
+import fs from 'node:fs';
 import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
@@ -63,7 +64,10 @@ export async function getTestServer() {
     return origListen.call(this, pipePath);
   };
 
-  process.env.DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), 'data');
+  // Dữ liệu test luôn nằm trong thư mục tạm, không bao giờ trong data/ của repo (không ghi đè DB thật của máy dev)
+  process.env.DATA_DIR = process.env.DATA_DIR || fs.mkdtempSync(path.join(os.tmpdir(), 'liferivo-test-data-'));
+  // Test cần người đăng ký đầu tiên là admin (fixture); production không bật biến này (AUDIT P1-5)
+  process.env.ALLOW_FIRST_USER_ADMIN = process.env.ALLOW_FIRST_USER_ADMIN || '1';
 
   try {
     const serverPath = path.resolve(process.cwd(), 'server.js');
