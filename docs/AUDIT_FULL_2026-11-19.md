@@ -4,7 +4,7 @@
 - Nhánh: `claude/liferivo-study-audit-2304c0` (commit gốc `b5ab72b`)
 - Môi trường: Windows 11, Node.js 24.18.1 (dự án yêu cầu Node ≥ 22), npm 11.16.0
 - Phạm vi: toàn bộ mã nguồn trong repo (675 file theo dõi), chạy thử server thật, kiểm tra giao diện trên trình duyệt.
-- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (Phụ lục C). **Cập nhật đợt 1:** đã sửa P1-2, P1-3 (phần lớn), P1-4, P1-5 và kiểm chứng (Phụ lục D). Chưa commit.
+- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (Phụ lục C). **Cập nhật đợt 1:** đã sửa P1-2, P1-3 (phần lớn), P1-4, P1-5 và kiểm chứng (Phụ lục D). **Cập nhật đợt 2:** CI cho test, thu hẹp CSP Rive, cache file tĩnh (Phụ lục E). Chưa commit.
 
 ## Chú thích trạng thái
 
@@ -566,3 +566,23 @@ Chưa làm (còn mở):
 - **P1-1** (chấm phát âm `/score` tin văn bản client) và **P1-6** (analytics và đồng ý cookie): cần quyết định sản phẩm và pháp lý.
 - **P1-3** còn thiếu: chưa có CI chạy test; T1-F03 còn TODO chờ quyết định về thẻ môn trên landing.
 - Triển khai: nếu môi trường dựa vào admin đầu tiên trên DB trống, phải đặt `ADMIN_USERNAME` trước khi đăng ký.
+
+## Phụ lục E — Kết quả đợt 2 (CI, CSP Rive, cache file tĩnh)
+
+| ID | Thay đổi | Kiểm chứng |
+|---|---|---|
+| P1-3 (phần còn lại) | `.github/workflows/ci.yml`: chạy trên Ubuntu và Windows (Node 22): `npm ci`, `check:css`, `check:js`, `verify:lang`, `npm test`. | YAML đã parse hợp lệ (2 hệ điều hành, 6 bước). **Chưa chạy trên GitHub Actions**: chỉ kiểm tra cú pháp và chạy đủ các lệnh trên Windows. |
+| P2-4 | `server.js` CSP: `script-src` và `connect-src` chỉ cho `https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.49.0/` thay vì toàn bộ host. `tests/csp-rive.test.mjs` khóa quan hệ giữa `RIVE_VERSION` và CSP. | Gói `@rive-app/canvas@2.49.0` không có phụ thuộc, `+esm` và `rive_fallback.wasm` đều trả 200 dưới tiền tố này. Runtime tải wasm từ `unpkg.com` trước nhưng CSP đang chặn; bản dự phòng jsDelivr vẫn nằm trong phạm vi mới. Test CSP đạt 3/3. **Không kiểm chứng được bằng trình duyệt** (sandbox không tải được CDN nên không thấy Rive chạy). Landing không có vi phạm CSP. |
+| P2-6 | `server.js`: cache file tĩnh theo đường dẫn, mtime và kích thước (`readStaticFile`). Bỏ `readFileSync` và băm SHA-256 lặp lại mỗi request; HTML băm lại các asset qua cache. | So sánh trực tiếp với HEAD (hai server, cùng dữ liệu): mọi file tĩnh giống hệt (body, kích thước, ETag, 304). Mọi trang HTML giống hệt sau khi chuẩn hóa cổng và nonce. Đo 200 request/loại: trang chủ **31.8 → 18.5 ms**; CSS 16.9 → 15.0 ms; JS 13.6 → 13.5 ms (chủ yếu là chi phí fetch). |
+
+Kiểm thử đầy đủ: `npm test` đạt **168 pass / 0 fail / 1 todo** (T1-F03 có lý do), thoát 0, không tạo `data/` trong repo.
+
+Còn mở, cần quyết định trước khi làm:
+- **P1-1**: chấm phát âm `/score` tin văn bản client (xem mục 9).
+- **P1-6**: analytics và đồng ý cookie (pháp lý).
+- **P2-1**: xác minh email trước khi dùng cho OTP, và `UNIQUE` cho email (đổi hành vi đăng ký/hồ sơ).
+- **P2-2**: tên hiển thị trong `/api/stats` (cách che tên là quyết định sản phẩm).
+- **P2-3**: chấm phát âm `/assess` có nên tính hạn mức gói hay không.
+- **P2-10**: nguồn sự thật cho số phiên bản (`package.json` 5.1.3 hay `VERSION` 1.0.1).
+- **P2-11**: nhận secret Zalo chỉ qua header có làm gãy tích hợp bot hiện tại không (cần xác nhận cách bot gửi).
+- **P2-7, P2-8, P2-5, P2-9**: phân trang admin, giới hạn tốc độ bền vững, giảm JS landing, dọn mã cũ; cần rà riêng.
