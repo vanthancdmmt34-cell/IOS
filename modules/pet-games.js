@@ -194,7 +194,7 @@ export async function gameAudio(db, user, { session, i }, env) {
   const idx = Number(i);
   const key = Number.isInteger(idx) && idx >= 0 && idx < d.keys.length ? d.keys[idx] : null;
   if (!key || !key.word) throw Object.assign(new Error("Câu hỏi không hợp lệ."), { status: 400 });
-  return ttsClip({ text: key.word, lang: d.lang || "en", userId: user.id, settings: env.settings, dataDir: env.dataDir });
+  return ttsClip({ db, text: key.word, lang: d.lang || "en", userId: user.id, settings: env.settings, dataDir: env.dataDir });
 }
 
 // Trả về true nếu đã xử lý /api/me/pet/game/start, /judge và /audio

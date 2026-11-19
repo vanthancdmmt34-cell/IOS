@@ -4,6 +4,7 @@
 //  - Admins can view all classes, create classes, and assign teachers.
 //  - Students can only view classes they belong to, assignments given to them, and their own submissions.
 //  - Parents can only view progress of family members who HAVE enabled progress sharing.
+import { weakPasswordReason } from "./passwords.js";
 import crypto from "node:crypto";
 import { can } from "./entitlements.js";
 import { allocateSeat, releaseSeatIfUnused, licenseSummary, issueLicense } from "./licenses.js";
@@ -248,7 +249,7 @@ export function createClassroomApi(ctx) {
           const generated = !password;
           if (generated) password = genPassword();
           if (!/^[A-Za-z0-9_.-]{3,30}$/.test(username)) { results.push({ username, error: "Tên đăng nhập chỉ gồm chữ không dấu, số, dấu _ . - và dài 3 đến 30 ký tự." }); continue; }
-          if (password.length < 6 || password.length > 128) { results.push({ username, error: "Mật khẩu cần từ 6 đến 128 ký tự." }); continue; }
+          if (password.length < 6 || password.length > 128) { results.push({ username, error: "Mật khẩu cần từ 6 đến 128 ký tự." }); continue; } { const __wk = weakPasswordReason(password); if (__wk) { results.push({ username, error: __wk }); continue; } }
           if (await db.prepare("SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)").get(username)) { results.push({ username, error: "Tên đăng nhập đã có người dùng." }); continue; }
           if (c && (await capacityLeft(db, c)) <= 0) { results.push({ username, error: "Lớp đã đủ thành viên." }); continue; }
           try {
@@ -285,7 +286,7 @@ export function createClassroomApi(ctx) {
       const b = await body(); if (b === null) return bad(res, 400, "Dữ liệu không hợp lệ.");
       if (m === "POST" && sm[2] === "/password") {
         let pw = String(b.password || "").trim(); const gen = !pw; if (gen) pw = genPassword();
-        if (pw.length < 6 || pw.length > 128) return bad(res, 400, "Mật khẩu cần từ 6 đến 128 ký tự.");
+        if (pw.length < 6 || pw.length > 128) return bad(res, 400, "Mật khẩu cần từ 6 đến 128 ký tự."); if (weakPasswordReason(pw)) return bad(res, 400, weakPasswordReason(pw));
         await db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(ctx.hashPassword(pw), st.id);
         await db.prepare("DELETE FROM sessions WHERE user_id = ?").run(st.id);
         audit(user.id, "teacher.student_password", "user:" + st.id, {}, req);
@@ -310,7 +311,7 @@ export function createClassroomApi(ctx) {
         const username = String(b.username || "").trim(), displayName = capName(String(b.displayName || "").trim() || username).slice(0, 40);
         let password = String(b.password || "").trim(); const gen = !password; if (gen) password = genPassword();
         if (!/^[A-Za-z0-9_.-]{3,30}$/.test(username)) return bad(res, 400, "Tên đăng nhập chỉ gồm chữ không dấu, số, dấu _ . - và dài 3 đến 30 ký tự.");
-        if (password.length < 6 || password.length > 128) return bad(res, 400, "Mật khẩu cần từ 6 đến 128 ký tự.");
+        if (password.length < 6 || password.length > 128) return bad(res, 400, "Mật khẩu cần từ 6 đến 128 ký tự."); if (weakPasswordReason(password)) return bad(res, 400, weakPasswordReason(password));
         if (await db.prepare("SELECT 1 FROM users WHERE LOWER(username) = LOWER(?)").get(username)) return bad(res, 400, "Tên đăng nhập này đã có người dùng.");
         const seats = int(b.seats, 0, 0, 5000), months = int(b.months, 0, 0, 36);
         const note = String(b.note || "").trim();

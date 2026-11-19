@@ -32,13 +32,14 @@ import { initToeic, toeicApi } from "./modules/toeic.js";
 import { ttsApi } from "./modules/tts.js";
 import { qrDataUrl } from "./modules/vietqr.js";
 import { cleanEmail, maskEmail, mailConfigured, sendMail, otpMail } from "./modules/mailer.js";
+import { weakPasswordReason } from "./modules/passwords.js";
 import { SETTINGS_SCHEMA, SETTINGS_GROUPS, BRAND_COLORS, defaultSettings, cleanSettings, publicSettings, clientSettings } from "./settings.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || 8082);
-// Single source of truth for system version: only update here on each deploy.
-// /api/health, /api/stats, page footer, and index.html ?v= query param all read from this constant.
-const VERSION = "1.0.1"
+// AUDIT P2-10: nguồn duy nhất của số phiên bản là package.json ("version"). Bump phiên bản ở đó khi phát hành.
+// /api/health, /api/stats, chân trang và tham số ?v= của index.html đều đọc hằng này.
+const VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8")).version || "0.0.0";
 const httpMetrics = new HttpMetrics();
 const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(__dirname, "data");
 // Listens on 127.0.0.1 by default (behind nginx proxy). Set HOST=0.0.0.0 to expose directly.
@@ -190,6 +191,14 @@ async function assertCriticalSchema(database) {
   }
 }
 try { await assertCriticalSchema(db); } catch (err) { console.warn("[schema] Không kiểm tra được:", err.message); }
+// AUDIT P2-1 / P3: email và username không phân biệt hoa thường phải duy nhất ở tầng DB.
+// Nếu dữ liệu cũ đang trùng thì không tạo được chỉ mục: chỉ cảnh báo, không làm máy chủ dừng.
+for (const sql of [
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_lower ON users (LOWER(email)) WHERE email IS NOT NULL AND email <> ''",
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_lower ON users (LOWER(username))",
+]) {
+  try { await db.prepare(sql).run(); } catch (e) { console.warn("[db] Chưa tạo được chỉ mục duy nhất (có thể đang trùng dữ liệu cũ):", e.message); }
+}
 
 // ===== 4.0.1: system logo (stored in DB, included in backup files) =====
 // Accept PNG / JPEG / WebP only (reject SVG as it may contain scripts). Check file magic bytes, max 512 KB.
@@ -252,10 +261,17 @@ setInterval(langRemindTick, 15 * 60000).unref?.();
 const hidden = (k) => new Set(SETTINGS[k] || []);
 async function bump(k) { await db.prepare("INSERT INTO site_stats (k, v) VALUES (?, 1) ON CONFLICT(k) DO UPDATE SET v = site_stats.v + 1").run(k); }
 async function statVal(k) { const r = await db.prepare("SELECT v FROM site_stats WHERE k = ?").get(k); return r ? r.v : 0; }
+// AUDIT P2-2: tên hiển thị công khai chỉ hiện tên và chữ cái đầu họ: "Trần Thị Hải" -> "Trần H."
+function maskName(n) {
+  const w = String(n || "").trim().split(/\s+/).filter(Boolean);
+  if (!w.length) return "";
+  if (w.length === 1) return `${w[0].charAt(0)}.`;
+  return `${w[0]} ${w[w.length - 1].charAt(0).toLocaleUpperCase("vi")}.`;
+}
 async function ratingSummary() {
   const s = await db.prepare("SELECT COUNT(*) AS n, AVG(stars) AS avg FROM ratings").get();
   const recent = (await db.prepare("SELECT r.stars, r.comment, r.updated_at, u.display_name FROM ratings r JOIN users u ON u.id = r.user_id WHERE r.comment != '' ORDER BY r.updated_at DESC LIMIT 20").all())
-    .map((x) => ({ stars: x.stars, comment: x.comment, name: x.display_name, at: x.updated_at }));
+    .map((x) => ({ stars: x.stars, comment: x.comment, name: maskName(x.display_name), at: x.updated_at }));
   return { count: s.n, average: s.n ? Math.round(s.avg * 10) / 10 : 0, recent };
 }
 // Default exam settings (editable in Admin)
@@ -499,7 +515,7 @@ async function handleApi(req, res, url) {
     if (!firstUser && SETTINGS.registerCode && String(body.classCode || "").trim() !== SETTINGS.registerCode) return sendJson(res, 403, { error: "Mã lớp chưa đúng. Hãy hỏi giáo viên mã lớp." });
     if (!firstUser && SETTINGS.maintenance) return sendJson(res, 503, { error: SETTINGS.maintenanceText, maintenance: true });
     if (!/^[A-Za-z0-9_.-]{3,30}$/.test(username)) return sendJson(res, 400, { error: "Tên đăng nhập chỉ gồm chữ, số, dấu _ . - và dài từ 3 đến 30 ký tự." });
-    if (password.length < 6 || password.length > 128) return sendJson(res, 400, { error: "Mật khẩu cần từ 6 đến 128 ký tự." });
+    if (password.length < 6 || password.length > 128) return sendJson(res, 400, { error: "Mật khẩu cần từ 6 đến 128 ký tự." }); if (weakPasswordReason(password)) return sendJson(res, 400, { error: weakPasswordReason(password) });
     const exists = await db.prepare("SELECT id FROM users WHERE LOWER(username) = LOWER(?)").get(username);
     if (exists) return sendJson(res, 400, { error: "Tên đăng nhập này đã có người dùng." });
     // Email khôi phục (không bắt buộc): dùng để nhận mã OTP khi quên mật khẩu.
@@ -570,6 +586,8 @@ if (method === "POST" && url.pathname === "/api/login") {
   }
   if (method === "POST" && url.pathname === "/api/logout") {
     const sess = await getSession(req);
+    // AUDIT P3: đăng xuất khi đang có phiên cũng phải kèm CSRF, để trang khác không đăng xuất được người dùng
+    if (sess && !requireCsrf(req, sess)) return sendJson(res, 403, { error: "Phiên làm việc không hợp lệ, hãy tải lại trang." });
     if (sess) await db.prepare("DELETE FROM sessions WHERE token = ?").run(sess.token);
     res.setHeader("Set-Cookie", `hoc_session=; ${cookieFlags(req)}; Max-Age=0`);
     return sendJson(res, 200, { ok: true });
@@ -637,6 +655,8 @@ if (method === "POST" && url.pathname === "/api/login") {
 
   // Traffic counter (no login required): visits = every page load, visitors = unique browser (30-day cookie)
   if (method === "POST" && url.pathname === "/api/visit") {
+    // AUDIT P3: không cho một IP tự tăng bộ đếm truy cập không giới hạn
+    if (hit("visit:" + clientIp(req), 60, 60000)) return sendJson(res, 429, { ok: false });
     await bump("visits");
     const seen = parseCookies(req).hoc_visitor;
     if (!seen) { await bump("visitors"); res.setHeader("Set-Cookie", `hoc_visitor=1; ${cookieFlags(req)}; Max-Age=${30 * 86400}`); }
@@ -678,6 +698,8 @@ if (method === "POST" && url.pathname === "/api/login") {
     // Có email + đã cấu hình SMTP: gửi mã OTP 6 số (hiệu lực 10 phút, dùng một lần). Chỉ lưu bản băm của mã.
     if (otpOn && u.email) {
       if (hit("pwotp-send:" + u.id, 4, 600000)) return sendJson(res, 200, generic);
+      // AUDIT P2-1: cùng một địa chỉ không nhận quá 3 OTP mỗi giờ, dù có bao nhiêu tài khoản trỏ tới nó
+      if (hit("pwotp-mail:" + cleanEmail(u.email), 3, 3600000)) return sendJson(res, 200, generic);
       const code = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
       const salt = crypto.randomBytes(8).toString("hex");
       const otpExp = new Date(Date.now() + OTP_MINUTES * 60000).toISOString();
@@ -746,7 +768,7 @@ if (method === "POST" && url.pathname === "/api/login") {
     const newPassword = String(body.newPassword || "");
     const wrong = { error: "Mã OTP không đúng hoặc đã hết hạn. Hãy kiểm tra lại hoặc yêu cầu mã mới." };
     if (!/^\d{6}$/.test(code)) return sendJson(res, 400, { error: "Mã OTP gồm 6 chữ số." });
-    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." });
+    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." }); if (weakPasswordReason(newPassword)) return sendJson(res, 400, { error: weakPasswordReason(newPassword) });
     // Tối đa 5 lần thử cho mỗi tài khoản trong 10 phút: mã 6 số không dò được.
     if (hit("pwotp-try:" + ident.toLowerCase(), 5, 600000)) return tooManyMsg(res, "Bạn nhập sai mã quá nhiều lần. Hãy yêu cầu mã mới sau ít phút.");
     const u = ident ? await findUserForReset(ident) : null;
@@ -776,7 +798,7 @@ if (method === "POST" && url.pathname === "/api/login") {
     const token = String(body.token || "").trim();
     const newPassword = String(body.newPassword || "");
     if (!token || token.length < 16 || token.startsWith("otp:")) return sendJson(res, 400, { error: "Liên kết đặt lại không hợp lệ." });
-    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." });
+    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." }); if (weakPasswordReason(newPassword)) return sendJson(res, 400, { error: weakPasswordReason(newPassword) });
     let row;
     try {
       row = await db.prepare("SELECT * FROM password_resets WHERE token = ?").get(resetTokenHash(token));
@@ -807,7 +829,7 @@ if (method === "POST" && url.pathname === "/api/login") {
   const isTeacher = user.role === "admin";
   // 4.8.0: Foreign Languages (HSK, JLPT, DELF, CEFR, TOPIK) - server-side grading
   // 4.13.0: AI speech synthesis (with disk cache)
-  if (await ttsApi({ req, res, url, method, user, sess, sendJson, readBody, requireCsrf, hit, settings: () => SETTINGS, dataDir: DATA_DIR })) return;
+  if (await ttsApi({ db, req, res, url, method, user, sess, sendJson, readBody, requireCsrf, hit, settings: () => SETTINGS, dataDir: DATA_DIR })) return;
   // 4.11.0: Speaking Lab (word-by-word read-along grading, AI conversation) - must be mounted before langApi
   if (await speakApi({ db, req, res, url, method, user, sess, isAdmin: user.role === "admin", sendJson, readBody, requireCsrf, hit, nowIso, settings: () => SETTINGS, getPro: async () => !!(await membership(db, user)).pro, lang: reqLang(req, user) })) return;
   // Góp ý sản phẩm (tính năng, báo lỗi, ý kiến khác)
@@ -840,7 +862,7 @@ if (method === "POST" && url.pathname === "/api/password/change") {
     if (body === null || !requireCsrf(req, sess)) return sendJson(res, 403, { error: "Phiên làm việc không hợp lệ, hãy tải lại trang và đăng nhập lại." });
     const currentPassword = String(body.currentPassword || "");
     const newPassword = String(body.newPassword || "");
-    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." });
+    if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." }); if (weakPasswordReason(newPassword)) return sendJson(res, 400, { error: weakPasswordReason(newPassword) });
     const row = await db.prepare("SELECT * FROM users WHERE id = ?").get(user.id);
     if (!row || !verifyPassword(currentPassword, row.password_hash)) return sendJson(res, 401, { error: "Mật khẩu hiện tại chưa đúng." });
     await db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(hashPassword(newPassword), user.id);
@@ -966,17 +988,25 @@ if (method === "POST" && url.pathname === "/api/password/change") {
   if (parts[0] === "api" && parts[1] === "admin") {
     if (user.role !== "admin") return sendJson(res, 403, { error: "Bạn không có quyền truy cập trang này." });
     if (method === "GET" && url.pathname === "/api/admin/overview") {
-      const users = await db.prepare("SELECT id, username, display_name, role, created_at, disabled, lang FROM users ORDER BY created_at ASC").all();
-      const lastSubMap = Object.fromEntries((await db.prepare("SELECT user_id, MAX(created_at) AS t FROM assignment_submissions GROUP BY user_id").all()).map((r) => [r.user_id, r.t]));
+      // AUDIT P2-7: thống kê đếm bằng SQL trên toàn bảng; danh sách học viên là 500 người mới nhất (truncated=true nếu còn nữa)
+      const roleRows = await db.prepare("SELECT role, COUNT(*) AS n, COALESCE(SUM(disabled), 0) AS locked FROM users GROUP BY role").all();
+      const byRole = { admin: 0, teacher: 0, student: 0, parent: 0 };
+      let total = 0, locked = 0;
+      for (const r of roleRows) { const n = Number(r.n) || 0; byRole[r.role] = n; total += n; locked += Number(r.locked) || 0; }
+      const users = await db.prepare("SELECT id, username, display_name, role, created_at, disabled, lang FROM users ORDER BY created_at DESC LIMIT 500").all();
+      const ids = users.map((u) => u.id);
+      const inList = ids.length ? ids.map(() => "?").join(",") : "NULL";
+      const lastSubMap = Object.fromEntries((await db.prepare(`SELECT user_id, MAX(created_at) AS t FROM assignment_submissions WHERE user_id IN (${inList}) GROUP BY user_id`).all(...ids)).map((r) => [r.user_id, r.t]));
       const xpMap = {};
       try {
-        for (const r of await db.prepare("SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress GROUP BY user_id").all()) {
+        for (const r of await db.prepare(`SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress WHERE user_id IN (${inList}) GROUP BY user_id`).all(...ids)) {
           xpMap[r.user_id] = Number(r.xp) || 0;
           if (r.t && (!lastSubMap[r.user_id] || r.t > lastSubMap[r.user_id])) lastSubMap[r.user_id] = r.t;
         }
       } catch {}
-      const sessMap = Object.fromEntries((await db.prepare("SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? GROUP BY user_id").all(nowIso())).map((r) => [r.user_id, r.n]));
-      const students = await Promise.all(users.map(async (u) => ({
+      const sessMap = Object.fromEntries((await db.prepare(`SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? AND user_id IN (${inList}) GROUP BY user_id`).all(nowIso(), ...ids)).map((r) => [r.user_id, r.n]));
+      const online = Number((await db.prepare("SELECT COUNT(DISTINCT user_id) AS n FROM sessions WHERE expires_at > ?").get(nowIso())).n) || 0;
+      const students = users.map((u) => ({
         ...publicUser(u),
         createdAt: u.created_at,
         disabled: !!u.disabled,
@@ -985,14 +1015,13 @@ if (method === "POST" && url.pathname === "/api/password/change") {
         lastActive: lastSubMap[u.id] || null,
         sessions: sessMap[u.id] || 0,
         lang: u.lang || "vi",
-      })));
+      }));
       const customExercises = await db.prepare("SELECT * FROM custom_exercises ORDER BY created_at DESC").all();
-      const byRole = { admin: 0, teacher: 0, student: 0, parent: 0 };
-      for (const u of users) byRole[u.role] = (byRole[u.role] || 0) + 1;
       return sendJson(res, 200, {
         students, customExercises,
         userCount: students.length,
-        userStats: { total: users.length, byRole, locked: users.filter((u) => u.disabled).length, online: Object.keys(sessMap).length },
+        truncated: total > students.length,
+        userStats: { total, byRole, locked, online },
       });
     }
 
@@ -1023,21 +1052,27 @@ if (method === "POST" && url.pathname === "/api/password/change") {
       const role = String(url.searchParams.get("role") || "").trim();
       const status = String(url.searchParams.get("status") || "").trim(); // active|locked|all
       const limit = Math.min(2000, Math.max(1, Number(url.searchParams.get("limit")) || 500));
-      let rows = await db.prepare("SELECT id, username, display_name, role, created_at, disabled, lang FROM users ORDER BY created_at DESC").all();
-      if (role && ROLES.includes(role)) rows = rows.filter((u) => u.role === role);
-      if (status === "locked") rows = rows.filter((u) => u.disabled);
-      else if (status === "active") rows = rows.filter((u) => !u.disabled);
+      // AUDIT P2-7: vai trò và trạng thái lọc trong SQL. Từ khóa tìm theo tên (có dấu tiếng Việt) lọc trong JS trên tối đa 5000 dòng mới nhất,
+      // vì LOWER() của SQLite không đổi chữ có dấu. Các truy vấn phụ chỉ đọc đúng những người được trả về.
+      const conds = [], params = [];
+      if (role && ROLES.includes(role)) { conds.push("role = ?"); params.push(role); }
+      if (status === "locked") conds.push("disabled = 1");
+      else if (status === "active") conds.push("disabled = 0");
+      const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+      let rows = await db.prepare(`SELECT id, username, display_name, role, created_at, disabled, lang FROM users ${where} ORDER BY created_at DESC LIMIT ?`).all(...params, q ? 5000 : limit);
       if (q) rows = rows.filter((u) => u.username.toLowerCase().includes(q) || (u.display_name || "").toLowerCase().includes(q));
       rows = rows.slice(0, limit);
-      const lastSubMap = Object.fromEntries((await db.prepare("SELECT user_id, MAX(created_at) AS t FROM assignment_submissions GROUP BY user_id").all()).map((r) => [r.user_id, r.t]));
+      const ids = rows.map((u) => u.id);
+      const inList = ids.length ? ids.map(() => "?").join(",") : "NULL";
+      const lastSubMap = Object.fromEntries((await db.prepare(`SELECT user_id, MAX(created_at) AS t FROM assignment_submissions WHERE user_id IN (${inList}) GROUP BY user_id`).all(...ids)).map((r) => [r.user_id, r.t]));
       const xpMap = {};
       try {
-        for (const r of await db.prepare("SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress GROUP BY user_id").all()) {
+        for (const r of await db.prepare(`SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress WHERE user_id IN (${inList}) GROUP BY user_id`).all(...ids)) {
           xpMap[r.user_id] = Number(r.xp) || 0;
           if (r.t && (!lastSubMap[r.user_id] || r.t > lastSubMap[r.user_id])) lastSubMap[r.user_id] = r.t;
         }
       } catch {}
-      const sessMap = Object.fromEntries((await db.prepare("SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? GROUP BY user_id").all(nowIso())).map((r) => [r.user_id, r.n]));
+      const sessMap = Object.fromEntries((await db.prepare(`SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? AND user_id IN (${inList}) GROUP BY user_id`).all(nowIso(), ...ids)).map((r) => [r.user_id, r.n]));
       const list = await Promise.all(rows.map(async (u) => ({
         ...publicUser(u),
         createdAt: u.created_at,
@@ -1138,7 +1173,7 @@ if (method === "POST" && url.pathname === "/api/password/change") {
       const password = String(u.password || "");
       const role = ROLES.includes(u.role) ? u.role : "student";
       if (!/^[A-Za-z0-9_.-]{3,30}$/.test(username)) return `“${username}”: tên đăng nhập chỉ gồm chữ không dấu, số, dấu _ . - và dài 3 đến 30 ký tự.`;
-      if (password.length < 6 || password.length > 128) return `“${username}”: mật khẩu cần từ 6 đến 128 ký tự.`;
+      if (password.length < 6 || password.length > 128) return `“${username}”: mật khẩu cần từ 6 đến 128 ký tự.`; if (weakPasswordReason(password)) return `“${username}”: ${weakPasswordReason(password)}`;
       if (await db.prepare("SELECT id FROM users WHERE LOWER(username) = LOWER(?)").get(username)) return `“${username}”: tên đăng nhập đã có người dùng.`;
       await db.prepare("INSERT INTO users (username, display_name, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?)").run(username, displayName, hashPassword(password), role, nowIso());
       return null;
@@ -1280,7 +1315,7 @@ if (method === "POST" && url.pathname === "/api/password/change") {
       const body = await readBody(req);
       if (body === null || !requireCsrf(req, sess)) return sendJson(res, 403, { error: "Phiên làm việc không hợp lệ." });
       const newPassword = String(body.newPassword || "");
-      if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." });
+      if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." }); if (weakPasswordReason(newPassword)) return sendJson(res, 400, { error: weakPasswordReason(newPassword) });
       const targetId = Number(parts[3]);
       if (!Number.isFinite(targetId)) return sendJson(res, 400, { error: "Tài khoản không hợp lệ." });
       if (targetId === user.id) return sendJson(res, 400, { error: "Không dùng endpoint này để tự đổi mật khẩu của chính mình. Hãy dùng Đổi mật khẩu." });
@@ -1340,14 +1375,13 @@ if (method === "POST" && url.pathname === "/api/password/change") {
 // Security headers for pages and static files
 const CSP = [
   "default-src 'self'",
-  // Rive (bạn đồng hành) chỉ tải đúng một gói, đúng phiên bản: @rive-app/canvas@2.49.0 (public/js/rive-companion.js RIVE_VERSION).
-  // Khi nâng phiên bản Rive, đổi cả tiền tố này. wasm-unsafe-eval: Rive dùng WebAssembly.
-  "script-src 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.49.0/ 'wasm-unsafe-eval'",
+  // Không còn tải script/WASM bên thứ ba ngoài Google Tag Manager (đã gỡ Rive: AUDIT P2-4/P2-9).
+  "script-src 'self' https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self' blob:", // replay own voice recording in Speaking Lab
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.49.0/",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
   "object-src 'none'",
   "frame-src 'self' https://www.googletagmanager.com",
   "base-uri 'self'",

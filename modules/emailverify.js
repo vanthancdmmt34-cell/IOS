@@ -96,6 +96,8 @@ export async function emailVerifyApi({ db, req, res, url, method, user: sessUser
       if (await verifiedRow(db, user)) { sendJson(res, 200, { ok: true, verified: true }); return true; }
       if (!mailConfigured()) { sendJson(res, 503, { error: "Chưa gửi được mã qua email. Hãy liên hệ quản trị viên." }); return true; }
       if (hit("emailv-send:" + user.id, 4, 600000)) { sendJson(res, 429, { error: "Bạn đã yêu cầu mã nhiều lần. Thử lại sau vài phút." }); return true; }
+      // AUDIT P2-1: giới hạn theo địa chỉ, không chỉ theo tài khoản, để một email không bị spam qua nhiều tài khoản
+      if (hit("emailv-mail:" + canonicalEmail(email), 3, 3600000)) { sendJson(res, 429, { error: "Email này đã nhận nhiều mã xác thực trong giờ qua. Thử lại sau." }); return true; }
       const code = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
       const salt = crypto.randomBytes(8).toString("hex");
       const exp = new Date(Date.now() + VERIFY_MINUTES * 60000).toISOString();

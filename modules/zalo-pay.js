@@ -32,7 +32,7 @@ export async function zaloPush(S, event, text, extra = {}) {
   try {
     const r = await fetch(String(S.zaloWebhookUrl), {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-bot-secret": String(S.zaloSecret), "User-Agent": "CongHocTap-ZaloPay/1.0" },
+      headers: { "Content-Type": "application/json", "x-bot-secret": String(S.zaloSecret), "User-Agent": "LifeRivo-ZaloPay/1.0" },
       body: JSON.stringify({ threadId: String(S.zaloAdminId || ""), message: text, threadType: "user" }),
       signal: AbortSignal.timeout(8000),
     });

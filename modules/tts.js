@@ -23,13 +23,28 @@ const assemblyKey = () => assemblyKeys()[0] || "";
 const MAX_CHARS = 400;
 
 const dayKey = () => new Date().toISOString().slice(0, 10);
-const counters = { day: dayKey(), system: 0, users: new Map() };
-function bump(userId, limits) {
-  if (counters.day !== dayKey()) { counters.day = dayKey(); counters.system = 0; counters.users.clear(); }
-  const u = counters.users.get(userId) || 0;
-  if (counters.system >= limits.system) return "system";
-  if (u >= limits.user) return "user";
-  counters.system++; counters.users.set(userId, u + 1);
+// AUDIT P2-8: hạn mức TTS lưu trong DB (site_stats) nên không mất khi khởi động lại hay khi chạy nhiều tiến trình.
+async function incCount(db, k) {
+  await db.prepare("INSERT INTO site_stats (k, v) VALUES (?, 1) ON CONFLICT(k) DO UPDATE SET v = site_stats.v + 1").run(k);
+  const r = await db.prepare("SELECT v FROM site_stats WHERE k = ?").get(k);
+  return Number(r && r.v) || 0;
+}
+let lastPrune = "";
+async function pruneOldCounts(db) {
+  const today = dayKey();
+  if (lastPrune === today) return;
+  lastPrune = today;
+  const cutoff = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+  try { await db.prepare("DELETE FROM site_stats WHERE k LIKE 'tts:%' AND k < ?").run(`tts:${cutoff}`); } catch { /* không dọn được thì bỏ qua */ }
+}
+async function bump(db, userId, limits) {
+  const day = dayKey();
+  await pruneOldCounts(db);
+  // Đếm người dùng trước: người đã hết lượt không làm tốn hạn mức chung của hệ thống
+  const u = await incCount(db, `tts:${day}:u:${userId}`);
+  if (u > limits.user) return "user";
+  const sys = await incCount(db, `tts:${day}:sys`);
+  if (sys > limits.system) return "system";
   return "";
 }
 
@@ -157,7 +172,7 @@ async function synthesizeAssemblyEvents(text, langId) {
 
 // Tạo (hoặc lấy từ bộ nhớ đệm) giọng đọc WAV cho một câu. Dùng chung cho /api/tts và trò chơi nghe/chính tả.
 // Ném lỗi có status; off = true nếu không nên thử lại trong phiên này.
-export async function ttsClip({ text, lang, voiceKey, userId, settings, dataDir }) {
+export async function ttsClip({ db, text, lang, voiceKey, userId, settings, dataDir }) {
   const S = settings();
   if (S.ttsEnabled === false || !ttsConfigured()) throw Object.assign(new Error("Giọng đọc tạm thời chưa sẵn sàng."), { status: 503, off: true });
   const langId = Object.keys(LANG_NAME).includes(lang) ? lang : "en";
@@ -177,7 +192,7 @@ export async function ttsClip({ text, lang, voiceKey, userId, settings, dataDir 
   try { wav = await fs.promises.readFile(file); } catch {}
   try { words = JSON.parse(await fs.promises.readFile(wordsFile, "utf-8")); } catch { words = null; }
   if (!wav) {
-    const over = bump(userId, { user: Number(S.ttsUserDaily) || 300, system: Number(S.ttsSystemDaily) || 5000 });
+    const over = await bump(db, userId, { user: Number(S.ttsUserDaily) || 300, system: Number(S.ttsSystemDaily) || 5000 });
     if (over) throw Object.assign(new Error("Đã hết lượt tạo giọng đọc AI hôm nay."), { status: 429, off: true });
     try {
       if (useAssembly) {
@@ -212,14 +227,14 @@ export async function ttsClip({ text, lang, voiceKey, userId, settings, dataDir 
 }
 
 export async function ttsApi(ctx) {
-  const { req, res, url, method, user, sess, sendJson, readBody, requireCsrf, hit, settings, dataDir } = ctx;
+  const { db, req, res, url, method, user, sess, sendJson, readBody, requireCsrf, hit, settings, dataDir } = ctx;
   if (url.pathname !== "/api/tts") return false;
   if (method !== "POST") { sendJson(res, 405, { error: "Phương thức không hỗ trợ." }); return true; }
   const body = await readBody(req);
   if (body === null || !requireCsrf(req, sess)) { sendJson(res, 403, { error: "Phiên làm việc không hợp lệ." }); return true; }
   if (hit("tts:u" + user.id, 90, 60000)) { sendJson(res, 429, { error: "Bạn nghe quá nhanh, chờ một chút nhé." }); return true; }
   try {
-    const { wav, words } = await ttsClip({ text: body.text, lang: body.lang, voiceKey: body.voice, userId: user.id, settings, dataDir });
+    const { wav, words } = await ttsClip({ db, text: body.text, lang: body.lang, voiceKey: body.voice, userId: user.id, settings, dataDir });
     const headers = { "Content-Type": "audio/wav", "Content-Length": wav.length, "Cache-Control": "private, max-age=604800", "X-Content-Type-Options": "nosniff" };
     if (words && words.length) { try { headers["X-Word-Timings"] = JSON.stringify(words); } catch {} }
     res.writeHead(200, headers);

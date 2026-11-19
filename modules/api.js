@@ -299,8 +299,10 @@ export function createModuleApi(ctx) {
       if (raw === null) return bad(res, 413, "Payload too large");
       let b = {}; try { b = JSON.parse(raw || "{}"); } catch { return bad(res, 400, "Invalid JSON"); }
       if (!S.zaloEnabled) return bad(res, 403, "Tính năng Zalo đang tắt trong Quản trị → Thanh toán.");
-      if (!secretOk(S, req.headers["x-pl-secret"] || b.secret)) { audit(null, "zalo.rejected", "zalo", "bad secret", req); return bad(res, 401, "Unauthorized"); }
-      if (S.zaloAdminId && b.from && String(b.from) !== String(S.zaloAdminId)) return ok(res, { ok: false, reply: "Chỉ quản trị viên mới được xác nhận đơn." });
+      // AUDIT P2-11: secret chỉ nhận qua header x-pl-secret (không qua body, tránh bị ghi lại trong log proxy).
+      // Khi đã cấu hình tài khoản Zalo quản trị, người gửi phải khớp trường from (không còn bỏ qua khi thiếu from).
+      if (!secretOk(S, req.headers["x-pl-secret"])) { audit(null, "zalo.rejected", "zalo", "bad secret", req); return bad(res, 401, "Unauthorized"); }
+      if (S.zaloAdminId && String(b.from || "") !== String(S.zaloAdminId)) { audit(null, "zalo.rejected", "zalo", "sender not admin", req); return ok(res, { ok: false, reply: "Chỉ quản trị viên mới được xác nhận đơn." }); }
       const r = await zaloCommand(db, S, b.text || b.message || "", { audit: (a1, a2, a3, a4) => audit(a1, a2, a3, a4, req) });
       return ok(res, r);
     }
@@ -394,6 +396,34 @@ export function createModuleApi(ctx) {
     }
     // Personal QR: student reports bank transfer -> order awaits admin reconciliation (does NOT activate Pro)
     // No recurring auto-charge (manual bank transfer), so "cancel renewal" = disable renewal reminders
+    // Đơn của chính học viên: xem trạng thái (để tiếp tục thanh toán và chờ kích hoạt)
+    if (m === "GET" && (mt = /^\/api\/billing\/orders\/(\d+)$/.exec(p))) {
+      const o = await db.prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?").get(Number(mt[1]), user.id);
+      if (!o) return bad(res, 404, "Không tìm thấy đơn này.");
+      return ok(res, { ...(await payInfo(o, S, db)), membership: await membership(db, user) });
+    }
+    // Học viên báo "Tôi đã chuyển khoản": đánh dấu đơn và báo quản trị viên (qua Zalo nếu đã cấu hình). Không kích hoạt Pro tại đây.
+    if (m === "POST" && (mt = /^\/api\/billing\/orders\/(\d+)\/claim$/.exec(p))) {
+      if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ, hãy tải lại trang.");
+      const o = await db.prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?").get(Number(mt[1]), user.id);
+      if (!o) return bad(res, 404, "Không tìm thấy đơn này.");
+      if (o.status !== "pending") return bad(res, 400, "Đơn này không còn ở trạng thái chờ thanh toán.");
+      if (!o.claimed_at && Date.parse(o.expires_at) < Date.now()) return bad(res, 400, "Đơn đã hết hạn. Hãy tạo đơn mới.");
+      if (!o.claimed_at) await db.prepare("UPDATE orders SET claimed_at = ? WHERE id = ? AND status = 'pending'").run(nowIso(), o.id);
+      const fresh = await db.prepare("SELECT * FROM orders WHERE id = ?").get(o.id);
+      const plan = await db.prepare("SELECT name FROM plans WHERE id = ?").get(fresh.plan_id);
+      audit(user.id, "order.claim", "order:" + o.id, { code: o.code }, req);
+      pushOrderClaimed(db, S, fresh).catch(() => {});
+      return ok(res, { order: publicOrder(fresh, plan) });
+    }
+    // Hủy đơn chưa thanh toán. Sau khi đã báo chuyển khoản thì không cho hủy, để không bỏ sót tiền đã chuyển.
+    if (m === "POST" && (mt = /^\/api\/billing\/orders\/(\d+)\/cancel$/.exec(p))) {
+      if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ, hãy tải lại trang.");
+      const n = (await db.prepare("UPDATE orders SET status = 'canceled' WHERE id = ? AND user_id = ? AND status = 'pending' AND claimed_at IS NULL").run(Number(mt[1]), user.id)).changes;
+      if (!n) return bad(res, 400, "Không hủy được đơn này. Nếu bạn đã chuyển khoản, hãy chờ hệ thống kích hoạt hoặc liên hệ hỗ trợ.");
+      audit(user.id, "order.cancel", "order:" + mt[1], {}, req);
+      return ok(res, { ok: true });
+    }
     if (m === "POST" && p === "/api/billing/reminder") {
       const b = await body();
       if (b === null || !csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ.");
@@ -453,11 +483,35 @@ export function createModuleApi(ctx) {
       if (b === null || !csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ, hãy tải lại trang.");
       return aiAsk(req, res, user, b);
     }
+    // Xem và xóa một cuộc trò chuyện AI của chính học viên
+    if ((m === "GET" || m === "DELETE") && (mt = /^\/api\/ai\/conversations\/(\d+)$/.exec(p))) {
+      const c = await db.prepare("SELECT id, title FROM ai_conversations WHERE id = ? AND user_id = ?").get(Number(mt[1]), user.id);
+      if (!c) return bad(res, 404, "Không tìm thấy cuộc trò chuyện này.");
+      if (m === "GET") {
+        const messages = await db.prepare("SELECT role, content, created_at AS \"createdAt\" FROM ai_messages WHERE conversation_id = ? ORDER BY id ASC").all(c.id);
+        return ok(res, { conversation: c, messages });
+      }
+      if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ, hãy tải lại trang.");
+      await db.prepare("DELETE FROM ai_messages WHERE conversation_id = ?").run(c.id);
+      await db.prepare("DELETE FROM ai_conversations WHERE id = ? AND user_id = ?").run(c.id, user.id);
+      return ok(res, { ok: true });
+    }
     if (m === "GET" && p === "/api/ai/conversations") {
       return ok(res, { conversations: await db.prepare("SELECT id, title, created_at AS \"createdAt\", updated_at AS \"updatedAt\" FROM ai_conversations WHERE user_id = ? ORDER BY updated_at DESC LIMIT 50").all(user.id) });
     }
 
     // ----- System configuration (3.2.0): AI keys, SePay, website URL -----
+    // Nút "Gửi thông báo thử" trong quản trị: tạo thông báo nội bộ và thử webhook nếu đã cấu hình
+    if (m === "POST" && p === "/api/admin/notify-test") {
+      if (!isTeacher) return bad(res, 403, "Chỉ quản trị viên mới dùng được chức năng này.");
+      if (!csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ.");
+      await notify(db, { userId: user.id, kind: "test", title: "Thông báo thử", body: "Đây là thông báo thử từ trang quản trị.", link: "/app/quan-tri" });
+      const wh = webhookConfig();
+      const result = wh.enabled
+        ? await deliverWebhook({ kind: "test", userId: user.id, username: user.username, title: "Thông báo thử", body: "Kiểm tra kết nối webhook từ quản trị.", link: "/app/quan-tri", createdAt: nowIso() })
+        : { ok: false, skipped: true };
+      return ok(res, { ok: true, webhook: { enabled: wh.enabled }, result });
+    }
     if (p.startsWith("/api/admin/system")) {
       if (!isTeacher) return bad(res, 403, "Chỉ quản trị viên mới dùng được chức năng này.");
       if (m !== "GET" && !csrfOk()) return bad(res, 403, "Phiên làm việc không hợp lệ.");

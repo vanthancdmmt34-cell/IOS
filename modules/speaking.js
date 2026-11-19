@@ -14,7 +14,8 @@ import { initReminders, pushEnabled, isPushEndpoint, MAX_SUBS_PER_USER } from ".
 import { awardExercise } from "./pet.js";
 
 // Ngay theo gio VN (Asia/Ho_Chi_Minh) — dung cho activity_date de khop voi user_streaks.
-const ASSESS_DAILY = 40; // số lượt chấm phát âm (Gemini) mỗi người mỗi ngày
+const ASSESS_DAILY = 40; // số lượt chấm phát âm (Gemini) mỗi người mỗi ngày, gói Pro
+const ASSESS_DAILY_FREE = 5; // gói miễn phí (AUDIT P2-3)
 const vnDateOffset = (i) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(Date.now() - i * 86400000));
 const vnDate = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 
@@ -467,18 +468,20 @@ export async function speakApi(ctx) {
       const x = assess(c.id, it.alt, a, opt);
       if (x && x.score > r.score) r = { ...x, words: splitUnits(c.id, it.text).map((u) => ({ t: u.t, sp: u.sp, s: x.score >= 85 ? "ok" : x.score >= 60 ? "near" : "bad", heard: "" })) };
     }
-    const now = nowIso();
+    // AUDIT P1-1: điểm này dựa trên văn bản do trình duyệt nhận diện, máy chủ không nghe được âm thanh nên không đáng tin.
+    // Vì vậy route này không ghi tiến độ, không cộng sao/XP và không tính streak.
+    // Chỉ ghi nhận đã luyện (hoạt động hằng ngày, không gắn phần thưởng); tiến độ chính thức đến từ /api/lang/speak/assess (chấm bằng âm thanh).
     const key = String(body.key);
-    await db.prepare(`INSERT INTO lang_speak (user_id, lang, item_key, best_score, last_score, attempts, updated_at) VALUES (?, ?, ?, ?, ?, 1, ?)
-      ON CONFLICT(user_id, lang, item_key) DO UPDATE SET
-        best_score = CASE WHEN excluded.best_score > lang_speak.best_score THEN excluded.best_score ELSE lang_speak.best_score END,
-        last_score = excluded.last_score, attempts = lang_speak.attempts + 1, updated_at = excluded.updated_at`).run(user.id, c.id, key, r.score, r.score, now);
-    let starsEarned = 0;
-    try { starsEarned = (await awardExercise(db, user.id, `speak:${c.id}:${key}`, r.score, false)).stars; } catch {}
-    try { await db.prepare("INSERT INTO learning_activities (user_id, activity_type, reference_id, activity_date, created_at) VALUES (?, 'lang_speak', ?, ?, ?)").run(user.id, `${c.id}:${key}`.slice(0, 80), vnDate(), now); } catch {}
-    if (r.score >= 60) await bumpStreak(db, user.id, now);
-    const row = await db.prepare("SELECT best_score, attempts FROM lang_speak WHERE user_id = ? AND lang = ? AND item_key = ?").get(user.id, c.id, key);
-    sendJson(res, 200, { ...r, best: Number(row.best_score), attempts: Number(row.attempts), starsEarned });
+    try { await db.prepare("INSERT INTO learning_activities (user_id, activity_type, reference_id, activity_date, created_at) VALUES (?, 'lang_speak', ?, ?, ?)").run(user.id, `${c.id}:${key}`.slice(0, 80), vnDate(), nowIso()); } catch {}
+    const prev = await db.prepare("SELECT best_score, attempts FROM lang_speak WHERE user_id = ? AND lang = ? AND item_key = ?").get(user.id, c.id, key);
+    sendJson(res, 200, {
+      ...r,
+      best: prev ? Number(prev.best_score) : null,
+      attempts: prev ? Number(prev.attempts) : 0,
+      starsEarned: 0,
+      recorded: false,
+      note: T("Đây là phản hồi luyện tập. Tiến độ và sao được ghi khi chấm bằng âm thanh.", "This is practice feedback. Progress and stars are recorded when scored from audio."),
+    });
     return true;
   }
 
@@ -527,15 +530,17 @@ export async function speakApi(ctx) {
     return true;
   }
 
-  // Chấm phát âm (Azure): âm thanh một lượt chỉ dùng để chấm và không được lưu lại.
+  // Chấm phát âm bằng Gemini: âm thanh một lượt chỉ dùng để chấm và không được lưu lại.
   if (method === "POST" && p === "/api/lang/speak/assess") {
     const body = await post(6000000); if (!body) return true;
     const S = settings();
     if (!S.aiEnabled || !assessAvailable()) { sendJson(res, 404, { error: T("Chấm phát âm chưa được bật trên máy chủ.", "Pronunciation scoring is not enabled on the server.") }); return true; }
     const c = courseOf(String(body.lang || ""));
     if (!c) { sendJson(res, 404, { error: T("Không tìm thấy khóa học.", "Course not found.") }); return true; }
+    // AUDIT P2-3: gói miễn phí có hạn mức chấm bằng âm thanh thấp hơn gói Pro (chi phí Gemini)
+    const cap = (await ctx.getPro()) ? ASSESS_DAILY : ASSESS_DAILY_FREE;
     const assessToday = Number((await db.prepare("SELECT COUNT(*) AS n FROM ai_usage WHERE user_id = ? AND mode = 'assess' AND created_at >= ?").get(user.id, new Date(Date.now() - 86400000).toISOString())).n) || 0;
-    if (assessToday >= ASSESS_DAILY) { sendJson(res, 429, { error: T(`Hôm nay bạn đã chấm ${ASSESS_DAILY} lượt. Hãy quay lại vào ngày mai nhé.`, `You have used ${ASSESS_DAILY} scoring attempts today. Please come back tomorrow.`) }); return true; }
+    if (assessToday >= cap) { sendJson(res, 429, { error: T(`Hôm nay bạn đã chấm ${cap} lượt${cap < ASSESS_DAILY ? " (gói miễn phí). Nâng cấp Pro để chấm nhiều hơn" : ""}. Hãy quay lại vào ngày mai nhé.`, `You have used ${cap} scoring attempts today${cap < ASSESS_DAILY ? " (free plan). Upgrade to Pro for more" : ""}. Please come back tomorrow.`) }); return true; }
     if (hit("assess:u:" + user.id, 30, 60000)) { sendJson(res, 429, { error: T("Bạn chấm quá nhanh. Hãy chờ một chút.", "Too many scoring requests. Please wait a moment.") }); return true; }
     if ((await monthlyCostMicro(db)) >= monthlyBudgetMicro()) { sendJson(res, 503, { error: T("Chấm phát âm tạm dừng do đạt giới hạn sử dụng của hệ thống tháng này.", "Scoring is paused: the system reached this month's usage limit.") }); return true; }
     const audio = String(body.audio || "");
