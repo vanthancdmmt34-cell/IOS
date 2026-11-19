@@ -439,7 +439,7 @@ export function registerTier3(suite, ctx) {
       try {
         await apiRequest(srv.baseUrl, 'PUT', '/api/admin/system', {
           session: seed.admin,
-          body: { values: { AI_PROVIDER: 'gemini' }, secrets: { GEMINI_API_KEY: 'AIzaSyTestE2EDummyKeyForWidget0000' }, password: seed.admin.password },
+          body: { values: { AI_PROVIDER: 'gemini' }, secrets: { GEMINI_API_KEY: 'TEST-GEMINI-KEY-NOT-REAL-0000000000' }, password: seed.admin.password },
         });
         await apiRequest(srv.baseUrl, 'PUT', '/api/admin/settings', {
           session: seed.admin,

@@ -1466,7 +1466,7 @@ export function registerTier2(suite, ctx) {
           session: seed.admin,
           body: {
             values: { AI_PROVIDER: 'gemini' },
-            secrets: { GEMINI_API_KEY: 'AIzaSyTestE2EDummyKeyForWidget0000' },
+            secrets: { GEMINI_API_KEY: 'TEST-GEMINI-KEY-NOT-REAL-0000000000' },
             password: seed.admin.password,
           },
         });

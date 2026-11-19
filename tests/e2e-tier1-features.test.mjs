@@ -57,15 +57,17 @@ describe('E2E Tier 1: Feature Coverage (All 20 Features in Isolation)', () => {
   });
 
   // T1-F03: No Pre-S8 Auth Barrier
-  // TODO có chủ đích: landing SSR đã đổi cấu trúc (không còn id muc-dich/cach-hoc) và thẻ môn ở renderHomeSSR
-  // đang đặt data-auth="register". Spec "không có rào đăng ký trước mục 8" cần quyết định sản phẩm (docs/AUDIT_FULL_2026-11-19.md).
-  it('T1-F03: Pre-S8 sections (S1-S7) have zero mandatory registration gates', { todo: 'Chờ quyết định sản phẩm: cấu trúc landing đã đổi, thẻ môn đang mở đăng ký' }, () => {
+  // Thẻ mục đích (mục 3) và thẻ môn (mục 4) là liên kết trực tiếp tới /app/ngoai-ngu/... không có cổng đăng ký.
+  // Hai nút đăng ký trước mục 8 nằm ở header và drawer di động (điều hướng, không chặn nội dung).
+  it('T1-F03: Pre-S8 sections (S1-S7) have zero mandatory registration gates', () => {
     const preS8Html = ssrHtml.slice(0, ssrHtml.indexOf('id="chot-cuoi"'));
     const s3s4Snippet = ssrHtml.slice(ssrHtml.indexOf('id="muc-dich"'), ssrHtml.indexOf('id="cach-hoc"'));
 
     assert.doesNotMatch(s3s4Snippet, /data-auth="register"/i, 'Section 3 and 4 cards must not trigger registration modal');
     assert.doesNotMatch(s3s4Snippet, /data-auth="login"/i, 'Section 3 and 4 cards must not trigger login modal');
-    assert.match(s3s4Snippet, /href="#\/ngoai-ngu\//, 'Section 3/4 cards must contain direct language links');
+    assert.match(s3s4Snippet, /href="(?:#|\/app)\/ngoai-ngu\//, 'Section 3/4 cards must contain direct language links (hash or /app route)');
+    const gates = [...preS8Html.matchAll(/<(button|a)\b[^>]*data-auth="register"[^>]*>/gi)].map((m) => m[0]);
+    assert.ok(gates.every((g) => /class="[^"]*(aw-auth|mobile-drawer-cta)|class="aw-pill dark"/.test(g)), 'Only header or drawer register buttons may appear before section 8');
     assert.match(ssrHtml, /id="chot-cuoi"/, 'Section 8 must be present as the registration CTA location');
   });
 
