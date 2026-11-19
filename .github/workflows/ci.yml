@@ -1,0 +1,46 @@
+name: CI
+
+# Chạy tự động khi push và khi mở pull request. Kiểm tra build và toàn bộ test trên Linux và Windows
+# (AUDIT P1-3). Không cần secret: test dùng DB tạm và máy chủ cục bộ.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-test:
+    name: check and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Lấy mã nguồn
+        uses: actions/checkout@v5
+
+      - name: Cài Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Cài dependency
+        run: npm ci
+
+      - name: Kiểm tra bundle CSS và JS (chỉ đọc, không ghi file)
+        run: |
+          npm run check:css
+          npm run check:js
+
+      - name: Kiểm tra nội dung ngoại ngữ
+        run: npm run verify:lang
+
+      - name: Chạy toàn bộ test
+        run: npm test
