@@ -404,6 +404,20 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
 // request (placeholders), so it is compressed on the fly and never cached.
 const COMPRESSIBLE = new Set([".html", ".js", ".css", ".json", ".svg", ".txt", ".webmanifest"]);
 const compressCache = new Map();
+// AUDIT P2-6: cache file tĩnh theo đường dẫn + mtime + kích thước. File không đổi thì không đọc lại và không băm lại mỗi request.
+const staticCache = new Map();
+async function readStaticFile(absPath) {
+  let st;
+  try { st = await fs.promises.stat(absPath); } catch { return null; }
+  if (st.isDirectory()) return null;
+  const hit = staticCache.get(absPath);
+  if (hit && hit.mtimeMs === st.mtimeMs && hit.size === st.size) return hit;
+  const data = await fs.promises.readFile(absPath);
+  const entry = { mtimeMs: st.mtimeMs, size: st.size, data, hash: crypto.createHash("sha256").update(data).digest("hex").slice(0, 12) };
+  if (staticCache.size > 500) staticCache.clear();
+  staticCache.set(absPath, entry);
+  return entry;
+}
 function compressStatic(req, filePath, ext, data) {
   if (!COMPRESSIBLE.has(ext) || data.length < 1024) return null;
   const accept = String(req.headers["accept-encoding"] || "");
@@ -1326,12 +1340,14 @@ if (method === "POST" && url.pathname === "/api/password/change") {
 // Security headers for pages and static files
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net 'wasm-unsafe-eval'", // jsDelivr: runtime Rive (bạn đồng hành); wasm-unsafe-eval: Rive dùng WebAssembly
+  // Rive (bạn đồng hành) chỉ tải đúng một gói, đúng phiên bản: @rive-app/canvas@2.49.0 (public/js/rive-companion.js RIVE_VERSION).
+  // Khi nâng phiên bản Rive, đổi cả tiền tố này. wasm-unsafe-eval: Rive dùng WebAssembly.
+  "script-src 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.49.0/ 'wasm-unsafe-eval'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self' blob:", // replay own voice recording in Speaking Lab
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://cdn.jsdelivr.net",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.49.0/",
   "object-src 'none'",
   "frame-src 'self' https://www.googletagmanager.com",
   "base-uri 'self'",
@@ -1419,9 +1435,10 @@ const server = http.createServer(async (req, res) => {
     let filePath = url.pathname === "/" ? "/index.html" : url.pathname;
     filePath = path.normalize(path.join(__dirname, "public", filePath));
     if (!filePath.startsWith(path.join(__dirname, "public"))) { res.writeHead(403); return res.end("Forbidden"); }
-    if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) filePath = path.join(__dirname, "public", "index.html");
+    let asset = await readStaticFile(filePath);
+    if (!asset) { filePath = path.join(__dirname, "public", "index.html"); asset = await readStaticFile(filePath); }
     const ext = path.extname(filePath);
-    let data = fs.readFileSync(filePath);
+    let data = asset.data;
     let cspNonce = null; // chi HTML moi co script inline (theme-init), nonce moi theo tung request
     const isHomePath = url.pathname === "/" || /^\/(?:vi|vn|en)\/?$/i.test(url.pathname);
     if (ext === ".html") {
@@ -1438,16 +1455,18 @@ const server = http.createServer(async (req, res) => {
       // Inline critical CSS (header+hero) de bo 1 request chan hien thi (PageSpeed).
       // CSP style-src co 'unsafe-inline' nen <style> inline duoc. Neu doc loi thi giu nguyen link.
       try {
-        const critCss = fs.readFileSync(path.join(__dirname, "public", "css", "critical.min.css"), "utf8");
-        htmlText = htmlText.replace('<link rel="stylesheet" href="/css/critical.min.css?v=__VERSION__">', `<style>${critCss}</style>`);
+        const critCss = await readStaticFile(path.join(__dirname, "public", "css", "critical.min.css"));
+        if (critCss) htmlText = htmlText.replace('<link rel="stylesheet" href="/css/critical.min.css?v=__VERSION__">', `<style>${critCss.data.toString("utf8")}</style>`);
       } catch { /* giu nguyen link */ }
-      htmlText = htmlText.replace(/\/[\w./-]+\.(?:js|css|png|svg|webp|ico)\?v=__VERSION__/g, (m) => {
+      // Băm nội dung từng asset được tham chiếu (qua cache), rồi thay thế đồng bộ
+      const assetRefs = [...new Set(htmlText.match(/\/[\w./-]+\.(?:js|css|png|svg|webp|ico)\?v=__VERSION__/g) || [])];
+      const assetUrl = new Map();
+      for (const m of assetRefs) {
         const fp = m.slice(1, m.indexOf("?v="));
-        try {
-          const h = crypto.createHash("sha256").update(fs.readFileSync(path.join(__dirname, "public", fp))).digest("hex").slice(0, 12);
-          return `/${fp}?v=${h}`;
-        } catch { return m; }
-      });
+        const a = await readStaticFile(path.join(__dirname, "public", fp)).catch(() => null);
+        assetUrl.set(m, a ? `/${fp}?v=${a.hash}` : m);
+      }
+      htmlText = htmlText.replace(/\/[\w./-]+\.(?:js|css|png|svg|webp|ico)\?v=__VERSION__/g, (m) => assetUrl.get(m) ?? m);
       htmlText = htmlText.replaceAll("__VERSION__", VERSION)
         .replaceAll("__CANONICAL__", escA(base + canonicalPath)).replaceAll("__SITE_NAME__", escA(SETTINGS.siteName)).replaceAll("__SITE_DESC__", escA(desc)).replaceAll("__SITE_TAGLINE__", escA(SETTINGS.tagline)).replaceAll("__GSV_META__", gsvMeta()).replaceAll("__CSP_NONCE__", cspNonce);
       if (isHomePath) {
@@ -1483,7 +1502,8 @@ const server = http.createServer(async (req, res) => {
     }
     // Split CSS: if ?v= matches current content hash, cache immutable for 1 year (editing file changes URL, no stale cache);
     // if ?v= is missing or mismatched, fall back to no-cache. JS, HTML, and vendor assets stay unchanged.
-    const contentHash = crypto.createHash("sha256").update(data).digest("hex").slice(0, 12);
+    // HTML được dựng lại mỗi request nên băm theo nội dung đã dựng; file tĩnh dùng hash đã cache
+    const contentHash = ext === ".html" ? crypto.createHash("sha256").update(data).digest("hex").slice(0, 12) : asset.hash;
     let cacheControl = "public, max-age=86400";
     if (ext === ".html") cacheControl = "no-cache";
     else if (ext === ".js" || ext === ".css") {
