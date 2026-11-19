@@ -4,7 +4,7 @@
 - Nhánh: `claude/liferivo-study-audit-2304c0` (commit gốc `b5ab72b`)
 - Môi trường: Windows 11, Node.js 24.18.1 (dự án yêu cầu Node ≥ 22), npm 11.16.0
 - Phạm vi: toàn bộ mã nguồn trong repo (675 file theo dõi), chạy thử server thật, kiểm tra giao diện trên trình duyệt.
-- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (xem Phụ lục C). Chưa commit.
+- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (Phụ lục C). **Cập nhật đợt 1:** đã sửa P1-2, P1-3 (phần lớn), P1-4, P1-5 và kiểm chứng (Phụ lục D). Chưa commit.
 
 ## Chú thích trạng thái
 
@@ -552,3 +552,17 @@ Hệ quả cần biết khi triển khai:
 4. Biến `ALLOW_RESET_TOKEN_IN_RESPONSE=1` đã dùng trong kiểm thử để lấy token; biến này làm trả `devToken` trong phản hồi và **không được đặt trên production**.
 5. Backup vẫn chứa hash mật khẩu (có chủ ý, để khôi phục không bắt buộc đặt lại mật khẩu). Nếu muốn bỏ hash cần quyết định riêng.
 6. Chưa thay đổi cấu hình thật nào; webhook được kiểm bằng máy nhận giả trên `127.0.0.1`.
+
+## Phụ lục D — Kết quả đợt 1
+
+| ID | Thay đổi | Kiểm chứng |
+|---|---|---|
+| P1-4 | `tools/build-css.mjs`, `build-critical-css.mjs`, `build-landing-css.mjs`, `build-js.mjs`: so sánh nội dung sau khi chuẩn hóa `\r\n` → `\n`. | `check:css` và `check:js` đạt trên Windows. Thử phủ định: thay đổi nội dung thật của `landing.min.css` vẫn làm check thất bại (đã khôi phục file). |
+| P1-3 | `tests/helpers/test-server.mjs`: `DATA_DIR` mặc định là thư mục tạm; đặt `ALLOW_FIRST_USER_ADMIN=1` cho fixture (cùng `tests/e2e/server-seed.mjs`). `C1-BUILD-01` chạy các script `check:*` thay vì `npm run build` (không ghi file). Sửa kỳ vọng lỗi thời: og:image chấp nhận `?v=` (C1-06, T1-F19, tier3); shape `today` của daily-missions; tier4 chấp nhận `/app/ngoai-ngu/ja`. T1-F03 đánh dấu TODO có lý do (quyết định sản phẩm). | `npm test`: **165 pass / 0 fail / 1 todo**, thoát 0, không tạo `data/` trong repo, không đổi file build đã commit. Trước đó: 119/6/41 và 79/5/82. |
+| P1-5 | `server.js`: người đăng ký đầu tiên chỉ thành admin khi `ALLOW_FIRST_USER_ADMIN=1`. Khi khởi động, cảnh báo nếu chưa có admin. `ecosystem.config.example.cjs` ghi chú hai biến. | DB mới không có biến: tài khoản đầu là học viên và có cảnh báo. Có biến: thành admin. |
+| P1-2 | `public/css/landing-premium.css`: khối `@media (360–400px)` thu gọn header landing (không đổi hero). | Đo `scrollWidth`/`clientWidth` và nút menu: 360px: 360/360 (trước 367); 375px: 375/375 (trước 377, cuộn ngang 404 ở bản gốc); 390, 400, 414px vừa khít. `elementFromPoint` xác nhận nút menu và nút đăng nhập nhấn được. |
+
+Chưa làm (còn mở):
+- **P1-1** (chấm phát âm `/score` tin văn bản client) và **P1-6** (analytics và đồng ý cookie): cần quyết định sản phẩm và pháp lý.
+- **P1-3** còn thiếu: chưa có CI chạy test; T1-F03 còn TODO chờ quyết định về thẻ môn trên landing.
+- Triển khai: nếu môi trường dựa vào admin đầu tiên trên DB trống, phải đặt `ADMIN_USERNAME` trước khi đăng ký.
