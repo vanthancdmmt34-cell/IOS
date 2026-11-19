@@ -6,7 +6,8 @@
 import { setAppHash } from "./core.js";
 import { S, api, esc, toast } from "./core.js";
 import { currentLang } from "./i18n.js";
-import { getSubject, setSubject } from "./lang.js";
+import { getSubject, setSubject, paintLangSide } from "./lang.js";
+import { refreshPet } from "./pet-state.js";
 import { speakText, stopSpeaking, voicePrefs, setVoicePrefs, aiVoiceAvailable, browserVoices } from "./voice.js";
 import { mdLite, mdInline } from "./pro.js";
 import EAR from "./speak-ear.js";
@@ -1207,6 +1208,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
       const r = await api("/api/lang/speak/score", "POST", { lang: d.lang, key: it.k, heard: out.text, alts: out.alts || [], conf: out.conf || 0, ms: out.ms || 0 });
       if (!alive) return;
       st.res[it.k] = r; d.best[it.k] = r.best; delete st.tips[it.k];
+      refreshPet().then(() => paintLangSide()).catch(() => {});
       if (d.pronAssess && out.audioUrl) assessIt(it, out.audioUrl);
       if (items[st.idx] === it) { paintDots(); paintCard(); card.querySelector(".sp-result")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
     } catch (e) { status(e.message, "err"); }

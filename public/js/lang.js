@@ -1,14 +1,14 @@
 /* 4.8.0 - Categorized learning home + Foreign Languages (HSK, JLPT, DELF, CEFR, TOPIK).
    Exercise workflow: open -> solve -> submit -> server grades -> save best score. */
 import {  } from "./core.js";
-import { S, api, esc, icon, lineIcon, sketchIcon, subjectMascotSvg, fmtN, toast, totalStats, confirmBox, emptyState, groupProgress } from "./core.js";
+import { S, api, esc, icon, lineIcon, sketchIcon, subjectMascotSvg, fmtN, toast, totalStats, confirmBox, emptyState, groupProgress, setScores } from "./core.js";
 import { ChibiMascot, HeroBanner, AchievementCard, triggerConfetti } from "./chibi-ds.js";
 import { savePrefs } from "./game.js";
 import "./lang-en.js";
 import { currentLang } from "./i18n.js";
 import { STANDARD_ROADMAP, ROADMAP_HEAD, roadmapStep } from "./roadmap-std.js";
 import { companionSvg, activeCompanionId } from "./companion.js";
-import { onExerciseSubmitted, petState } from "./pet-state.js";
+import { onExerciseSubmitted, petState, petView, refreshPet } from "./pet-state.js";
 import { isWordSaved, toggleWord } from "./notebook.js";
 // Chuỗi giao diện cho khối tổng quan khóa học: tiếng Việt mặc định, tiếng Anh khi người học chọn English
 const tx = (vi, en) => (currentLang() === "en" ? en : vi);
@@ -38,12 +38,35 @@ export function paintLangSide() {
   if (!c || !lv || !xp || !bar) return false;
   lv.textContent = `Tiến độ ${c.name}`; lv.title = `${c.done}/${c.total} bài đã đạt`;
   xp.textContent = `${fmtN(c.done)}/${fmtN(c.total)} bài`;
-  bar.style.width = Math.max(0, Math.min(100, c.pct)) + "%";
+  const coursePct = Math.max(0, Math.min(100, c.pct || 0));
+  bar.style.width = coursePct + "%";
+  const pet = petState();
+  const goal = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));
+  const lessonsToday = pet.daily?.lessons || 0;
+  const todayGoalPct = lessonsToday > 0 ? Math.min(100, Math.round((lessonsToday / goal) * 100)) : coursePct;
+  const ring = document.getElementById("sbTodayRing");
+  const txt = document.getElementById("sbTodayPct");
+  const metaSpan = ring?.querySelector(".sb-ring-meta span");
+  if (ring) ring.style.setProperty("--pct", String(todayGoalPct));
+  if (txt) txt.textContent = `${todayGoalPct}%`;
+  if (metaSpan) {
+    metaSpan.textContent = lessonsToday > 0
+      ? `${fmtN(lessonsToday)}/${fmtN(goal)} bài · ⭐ ${fmtN(pet.stars)}`
+      : c.done > 0
+        ? `${fmtN(c.done)}/${fmtN(c.total)} bài đạt · ⭐ ${fmtN(pet.stars)}`
+        : "Làm bài để nhận ⭐";
+  }
   return true;
 }
 export async function refreshLangSide() {
   const s = getSubject(); if (!s) return false;
-  try { await loadLang(!CACHE); } catch {} return paintLangSide();
+  try {
+    await Promise.all([
+      loadLang(!CACHE),
+      !petView() ? refreshPet() : Promise.resolve(),
+    ]);
+  } catch {}
+  return paintLangSide();
 }
 
 /* ---------- Speech synthesis (browser) ----------
@@ -1491,10 +1514,13 @@ export async function pageLangExercise(page, [exId], query, ctx) {
       if (graded.assignment) asgNote = graded.assignment.error ? graded.assignment.error : `Đã ghi lần nộp ${graded.assignment.attemptNo} cho giáo viên${graded.assignment.late ? " (nộp muộn)" : ""}.`;
       data.best = graded.best; data.attempts = graded.attempts;
       CACHE = null;
-      onExerciseSubmitted();
+      await onExerciseSubmitted().catch(() => {});
+      refreshLangSide().catch(() => {});
+      try { setScores(S.scores || {}); } catch {}
       paint(); window.scrollTo(0, 0);
       if (graded.passed) triggerConfetti();
-      toast(graded.passed ? `Đạt ${graded.score} điểm!` : `${graded.score} điểm — chưa đạt`, graded.passed ? "ok" : "info");
+      const starBonus = Number(graded.starsEarned) > 0 ? ` (+${graded.starsEarned} ⭐)` : "";
+      toast(graded.passed ? `Đạt ${graded.score} điểm${starBonus}!` : `${graded.score} điểm — chưa đạt${starBonus}`, graded.passed ? "ok" : "info");
       if (auto) toast("Hết giờ, bài đã được nộp tự động.", "info");
     } catch (e) {
       toast(e.message, "err");

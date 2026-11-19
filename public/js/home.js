@@ -76,6 +76,7 @@ export async function pageStudentHome(main, params, query, ctx) {
       api("/api/dashboard"),
       api("/api/lang"),
       canLoadInsights ? api(`/api/lang/insights/${encodeURIComponent(requestedLang)}`).catch(() => null) : Promise.resolve(null),
+      refreshPet().catch(() => null),
     ]);
     try { unread = (await api("/api/notifications?unread=1")).unread || 0; } catch {}
   } catch (e) {
@@ -206,11 +207,12 @@ export async function pageStudentHome(main, params, query, ctx) {
   const pet = petState();
   const starCount = pet.stars;
   const goal = Math.min(20, Math.max(1, Number(S.prefs && S.prefs.dailyGoal) || 3));
-  const lessonsToday = pet.daily.lessons;
-  const goalPct = Math.min(100, Math.round((lessonsToday / goal) * 100));
   const planLang = (scoped && scoped.id) || (heroSub && heroSub.id) || "en";
   const heroPctShown = scoped ? scoped.pct : (heroSub ? heroSub.pct : 0);
   // Số liệu nhiệm vụ hôm nay, lấy từ máy chủ (chu kỳ 5:00 sáng)
+  const lessonsToday = Math.max(pet.daily.lessons, Number(dash.today && dash.today.lessons) || 0);
+  const goalPct = Math.min(100, Math.round((lessonsToday / goal) * 100));
+  const speaksToday = Number((dash.today && dash.today.speaksByLang || {})[planLang] ?? (dash.today && dash.today.speaks)) || 0;
   const reviewedToday = Number((dash.today && dash.today.reviewsByLang || {})[planLang]) || 0;
   const miniGamesToday = Math.min(3, Number(dash.today && dash.today.miniGames) || 0);
 
@@ -542,7 +544,7 @@ export async function pageStudentHome(main, params, query, ctx) {
       </nav>` : "";
 
     const step1Done = lessonsToday >= 1;
-    const step2Done = lessonsToday >= 2;
+    const step2Done = speaksToday >= 1 || lessonsToday >= 2;
     const step3Done = reviewedToday > 0 || lessonsToday >= 3;
     const dailyStepsHtml = heroSub ? `
       <div class="hm-daily-steps">
@@ -560,7 +562,7 @@ export async function pageStudentHome(main, params, query, ctx) {
             <b>${L("2. Luyện phát âm AI", "2. AI Speaking")}</b>
             <small>${L("Nghe mẫu 0.6x & chấm từng từ", "0.6x audio & word scoring")}</small>
           </div>
-          <span class="hm-step-tag">${L("5 phút", "5 min")}</span>
+          <span class="hm-step-tag">${step2Done ? L("Xong", "Done") : L("5 phút", "5 min")}</span>
         </a>
         <a class="hm-step-chip${step3Done ? " is-done" : ""}" href="/app/ngoai-ngu/on-tap/${esc(heroSub.id)}">
           <span class="hm-step-ic is-green">${step3Done ? "✓" : "🃏"}</span>
@@ -884,11 +886,11 @@ export async function pageStudentHome(main, params, query, ctx) {
             </span>
             <span class="hm-ct-arr" aria-hidden="true">›</span>
           </a>
-          <a class="hm-cheer-task" href="/app/ngoai-ngu/luyen-noi/${esc(planLang)}">
-            <span class="hm-ct-ic">${lineIcon("mic")}</span>
+          <a class="hm-cheer-task${speaksToday >= 5 ? " is-done" : ""}" href="/app/ngoai-ngu/luyen-noi/${esc(planLang)}">
+            <span class="hm-ct-ic">${speaksToday >= 5 ? "✓" : lineIcon("mic")}</span>
             <span class="hm-ct-body">
               <b>${L("Luyện nói 5 câu", "Practice speaking 5 sentences")}</b>
-              <small>${L("Speaking Lab · Luyện phát âm", "Speaking Lab · Pronunciation")}</small>
+              <small>${speaksToday >= 5 ? L(`Đã luyện ${fmtN(speaksToday)} câu hôm nay`, `Practiced ${fmtN(speaksToday)} sentences today`) : speaksToday > 0 ? L(`Đã luyện ${fmtN(speaksToday)}/5 câu · Speaking Lab`, `${fmtN(speaksToday)}/5 sentences · Speaking Lab`) : L("Speaking Lab · Luyện phát âm", "Speaking Lab · Pronunciation")}</small>
             </span>
             <span class="hm-ct-arr" aria-hidden="true">›</span>
           </a>

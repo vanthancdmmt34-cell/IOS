@@ -11,6 +11,7 @@ import { aiConfigured, askTutor, transcribeAudio, quotaStatus, monthlyCostMicro,
 import { can } from "./entitlements.js";
 import { assessAvailable, assessPronunciation } from "./pronassess.js";
 import { initReminders, pushEnabled, isPushEndpoint, MAX_SUBS_PER_USER } from "./reminders.js";
+import { awardExercise } from "./pet.js";
 
 // Ngay theo gio VN (Asia/Ho_Chi_Minh) — dung cho activity_date de khop voi user_streaks.
 const ASSESS_DAILY = 40; // số lượt chấm phát âm (Gemini) mỗi người mỗi ngày
@@ -472,10 +473,12 @@ export async function speakApi(ctx) {
       ON CONFLICT(user_id, lang, item_key) DO UPDATE SET
         best_score = CASE WHEN excluded.best_score > lang_speak.best_score THEN excluded.best_score ELSE lang_speak.best_score END,
         last_score = excluded.last_score, attempts = lang_speak.attempts + 1, updated_at = excluded.updated_at`).run(user.id, c.id, key, r.score, r.score, now);
+    let starsEarned = 0;
+    try { starsEarned = (await awardExercise(db, user.id, `speak:${c.id}:${key}`, r.score, false)).stars; } catch {}
     try { await db.prepare("INSERT INTO learning_activities (user_id, activity_type, reference_id, activity_date, created_at) VALUES (?, 'lang_speak', ?, ?, ?)").run(user.id, `${c.id}:${key}`.slice(0, 80), vnDate(), now); } catch {}
     if (r.score >= 60) await bumpStreak(db, user.id, now);
     const row = await db.prepare("SELECT best_score, attempts FROM lang_speak WHERE user_id = ? AND lang = ? AND item_key = ?").get(user.id, c.id, key);
-    sendJson(res, 200, { ...r, best: Number(row.best_score), attempts: Number(row.attempts) });
+    sendJson(res, 200, { ...r, best: Number(row.best_score), attempts: Number(row.attempts), starsEarned });
     return true;
   }
 

@@ -180,14 +180,16 @@ function nextHrefForHelp() {
 export async function pageProfile(main, _p, _q, ctx) {
   ctx.setCrumbs([["Học viên", "/app/"], ["Cá nhân"]]);
   main.innerHTML = `<div class="skel" style="height:300px"></div>`;
-  const [rating, langData] = await Promise.all([
+  const [rating, langData, dashData] = await Promise.all([
     api("/api/rating").catch(() => null),
     api("/api/lang").catch(() => null),
+    api("/api/dashboard").catch(() => null),
   ]);
   if (!ctx.isCurrent()) return;
   let stars = rating && rating.mine ? rating.mine.stars : 0;
   const totalPassed = langData && Array.isArray(langData.courses) ? langData.courses.reduce((s, c) => s + (c.done || 0), 0) : 0;
   const actSt = activityStats();
+  const realStreak = Math.max(1, Number(dashData?.streak?.current) || actSt.totalDays || actSt.streak || 1);
   const roleLabel = ({ admin: "Quản trị", teacher: "Giáo viên", student: "Học viên", parent: "Phụ huynh" })[S.me.role] || "Học viên";
   const roleAvatar = S.me.role === "admin" ? "dragon" : S.me.role === "teacher" ? "owl" : S.me.role === "parent" ? "cat" : "bunny";
   const subj = getSubject();
@@ -206,7 +208,7 @@ export async function pageProfile(main, _p, _q, ctx) {
     </div>
     <div class="pf-m-kpis">
       <div class="pf-m-kpi"><b>${fmtN(totalPassed)}</b><span>Bài đã đạt</span></div>
-      <div class="pf-m-kpi"><b>${fmtN(Math.max(1, actSt.totalDays || actSt.streak || 1))} ngày</b><span>Chuỗi học tập</span></div>
+      <div class="pf-m-kpi"><b>${fmtN(realStreak)} ngày</b><span>Chuỗi học tập</span></div>
     </div>
     <div class="page-head pf-desk-head"><div class="row" style="gap:16px"><span class="avatar" style="width:64px;height:64px;font-size:24px;background:${avatarColor(S.me.username)}">${esc(initials(S.me.displayName))}</span>
       <div><h1>${esc(S.me.displayName)}</h1><p>@${esc(S.me.username)} · ${roleLabel}</p></div></div></div>

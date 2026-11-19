@@ -951,12 +951,19 @@ if (method === "POST" && url.pathname === "/api/password/change") {
     if (method === "GET" && url.pathname === "/api/admin/overview") {
       const users = await db.prepare("SELECT id, username, display_name, role, created_at, disabled, lang FROM users ORDER BY created_at ASC").all();
       const lastSubMap = Object.fromEntries((await db.prepare("SELECT user_id, MAX(created_at) AS t FROM assignment_submissions GROUP BY user_id").all()).map((r) => [r.user_id, r.t]));
+      const xpMap = {};
+      try {
+        for (const r of await db.prepare("SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress GROUP BY user_id").all()) {
+          xpMap[r.user_id] = Number(r.xp) || 0;
+          if (r.t && (!lastSubMap[r.user_id] || r.t > lastSubMap[r.user_id])) lastSubMap[r.user_id] = r.t;
+        }
+      } catch {}
       const sessMap = Object.fromEntries((await db.prepare("SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? GROUP BY user_id").all(nowIso())).map((r) => [r.user_id, r.n]));
       const students = await Promise.all(users.map(async (u) => ({
         ...publicUser(u),
         createdAt: u.created_at,
         disabled: !!u.disabled,
-        total: 0,
+        total: xpMap[u.id] || 0,
         complete: false,
         lastActive: lastSubMap[u.id] || null,
         sessions: sessMap[u.id] || 0,
@@ -1006,12 +1013,19 @@ if (method === "POST" && url.pathname === "/api/password/change") {
       if (q) rows = rows.filter((u) => u.username.toLowerCase().includes(q) || (u.display_name || "").toLowerCase().includes(q));
       rows = rows.slice(0, limit);
       const lastSubMap = Object.fromEntries((await db.prepare("SELECT user_id, MAX(created_at) AS t FROM assignment_submissions GROUP BY user_id").all()).map((r) => [r.user_id, r.t]));
+      const xpMap = {};
+      try {
+        for (const r of await db.prepare("SELECT user_id, COALESCE(SUM(CASE WHEN best_score >= 80 THEN best_score ELSE 0 END), 0) AS xp, MAX(updated_at) AS t FROM lang_progress GROUP BY user_id").all()) {
+          xpMap[r.user_id] = Number(r.xp) || 0;
+          if (r.t && (!lastSubMap[r.user_id] || r.t > lastSubMap[r.user_id])) lastSubMap[r.user_id] = r.t;
+        }
+      } catch {}
       const sessMap = Object.fromEntries((await db.prepare("SELECT user_id, COUNT(*) AS n FROM sessions WHERE expires_at > ? GROUP BY user_id").all(nowIso())).map((r) => [r.user_id, r.n]));
       const list = await Promise.all(rows.map(async (u) => ({
         ...publicUser(u),
         createdAt: u.created_at,
         disabled: !!u.disabled,
-        total: 0,
+        total: xpMap[u.id] || 0,
         complete: false,
         lastActive: lastSubMap[u.id] || null,
         sessions: sessMap[u.id] || 0,

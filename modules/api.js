@@ -48,12 +48,22 @@ export function createModuleApi(ctx) {
         FROM learning_activities WHERE user_id = ? AND activity_date >= ? GROUP BY activity_date ORDER BY activity_date`).all(user.id, sinceDate);
     } catch { /* learning_activities table may not exist on older/unmigrated instances */ }
     // Hoạt động trong chu kỳ hôm nay (từ 5:00 sáng), để mục tiêu, nhiệm vụ và trạng thái "đã học hôm nay" khớp nhau
-    const today = { activities: 0, reviewsByLang: {}, miniGames: 0 };
+    const today = { activities: 0, lessons: 0, lessonsByLang: {}, speaks: 0, speaksByLang: {}, reviewsByLang: {}, miniGames: 0 };
     try {
       const rows = await db.prepare("SELECT activity_type AS t, reference_id AS r, COUNT(*) AS n FROM learning_activities WHERE user_id = ? AND created_at >= ? GROUP BY activity_type, reference_id").all(user.id, cycleStartIso());
       for (const row of rows) {
         const n = Number(row.n) || 0;
         today.activities += n;
+        if (row.t === "lang_submission") {
+          today.lessons += n;
+          const lang = String(row.r || "").split("-")[0];
+          if (lang) today.lessonsByLang[lang] = (today.lessonsByLang[lang] || 0) + n;
+        }
+        if (row.t === "lang_speak") {
+          today.speaks += n;
+          const lang = String(row.r || "").split(":")[0];
+          if (lang) today.speaksByLang[lang] = (today.speaksByLang[lang] || 0) + n;
+        }
         if (row.t === "lang_review") { const lang = String(row.r || "").split(":")[0]; today.reviewsByLang[lang] = (today.reviewsByLang[lang] || 0) + n; }
         if (row.t === "mini_game") today.miniGames += n;
       }
