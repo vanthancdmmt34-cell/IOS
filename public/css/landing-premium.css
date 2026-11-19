@@ -1555,6 +1555,18 @@ html body:not(.in-app) #lpMobileHome { display: none; }
     color: #FFFFFF;
     box-shadow: 0 3px 10px rgba(43, 124, 184, 0.28);
   }
+  /* AUDIT P1-2 (F-05): ở 360–400px header tràn ngang (scrollWidth 404 > 375), nút menu bị đẩy ra ngoài màn hình.
+     Chỉ thu gọn các thành phần header, không đổi hero. */
+  @media (min-width: 360px) and (max-width: 400px) {
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top-in { gap: 4px !important; padding-inline: 8px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top .brand-clean .me-word b { font-size: 16px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth { gap: 3px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top .theme-btn.theme-btn { width: 32px; height: 32px; min-width: 32px; padding: 0; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top .theme-btn.theme-btn svg { width: 15px; height: 15px; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .lang-switch button { padding: 4px 6px !important; }
+    html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-auth .aw-login-link { padding: 5px 6px !important; font-size: 12px !important; }
+    html body:not(.in-app) .landing-page.aw .mobile-menu-btn { min-width: 36px; min-height: 36px; width: 36px; height: 36px; }
+  }
   @media (max-width: 359px) {
     html body:not(.in-app) #landingPage:has(#lpMobileHome) .aw-top-in { gap: 4px !important; padding-inline: 8px !important; }
     html body:not(.in-app) #landingPage:has(#lpMobileHome) .brand.brand-sketch { min-height: 32px; display: inline-flex; align-items: center; }
