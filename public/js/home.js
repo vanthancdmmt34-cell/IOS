@@ -790,6 +790,8 @@ export async function pageStudentHome(main, params, query, ctx) {
     let exLang = EXPLORE[cur] ? cur : "en";
     const exBox = main.querySelector("#lhExplore");
     const drawExplore = () => {
+      // #lhExplore bị arrangeDashboard() gỡ khỏi Tổng quan (đã gộp sang Cổ vũ/Học): không có chỗ để vẽ thì bỏ qua
+      if (!exBox) return;
       const m = EXPLORE[exLang] || EXPLORE.en;
       const lowerVi = m.name.charAt(0).toLowerCase() + m.name.slice(1);
       exBox.innerHTML = `

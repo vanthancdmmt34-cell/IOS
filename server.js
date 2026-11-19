@@ -381,6 +381,8 @@ const ROLES = ["admin", "teacher", "student", "parent"];
 // Quên mật khẩu bằng OTP gửi về email
 const OTP_MINUTES = 10;
 const otpHash = (code, salt) => crypto.createHash("sha256").update(`${salt}:${code}`).digest("hex");
+// Token đặt lại (48 ký tự hex ngẫu nhiên) chỉ lưu dạng băm SHA-256 trong DB; token thô chỉ tồn tại ở email/link.
+const resetTokenHash = (token) => crypto.createHash("sha256").update(String(token)).digest("hex");
 async function findUserForReset(ident) {
   const cols = "id, username, display_name, role, disabled, email, lang";
   if (ident.includes("@")) {
@@ -680,7 +682,7 @@ if (method === "POST" && url.pathname === "/api/login") {
     const exp = new Date(Date.now() + 3600 * 1000).toISOString();
     try {
       await db.prepare("DELETE FROM password_resets WHERE user_id = ? AND used_at IS NULL").run(u.id);
-      await db.prepare("INSERT INTO password_resets (token, user_id, expires_at, created_at, created_ip) VALUES (?, ?, ?, ?, ?)").run(token, u.id, exp, nowIso(), clientIp(req));
+      await db.prepare("INSERT INTO password_resets (token, user_id, expires_at, created_at, created_ip) VALUES (?, ?, ?, ?, ?)").run(resetTokenHash(token), u.id, exp, nowIso(), clientIp(req));
     } catch (e) {
       console.error("[password/forgot]", e.message);
       return sendJson(res, 200, generic);
@@ -694,22 +696,21 @@ if (method === "POST" && url.pathname === "/api/login") {
         title: "Yêu cầu đặt lại mật khẩu",
         body: "Có yêu cầu đặt lại mật khẩu cho tài khoản này. Nếu không phải bạn, hãy đổi mật khẩu ngay sau khi vào được hệ thống.",
         link: "/app/ca-nhan",
-        payload: { resetTokenHint: token.slice(0, 6) + "…" },
       });
     } catch {}
-    // Log token for admin/VPS support (never returned to client for security). Webhook receives full token if configured.
-    console.log(`[password/forgot] user=#${u.id} @${u.username} token=${token} expires=${exp}`);
+    // Không ghi token ra log và không gửi token qua webhook (P0-2). Quản trị viên đặt lại mật khẩu trong Quản trị.
+    console.log(`[password/forgot] yêu cầu đặt lại mật khẩu: user=#${u.id} @${u.username} hết hạn=${exp}`);
     try {
       const { deliverWebhook } = await import("./modules/notify.js");
       deliverWebhook({
-        kind: "password_reset_token",
+        kind: "password_reset_requested",
         userId: u.id,
         username: u.username,
         displayName: capName(u.display_name),
-        title: "Đặt lại mật khẩu",
-        body: `Token cho @${u.username}`,
-        link: `/app/dat-lai-mat-khau?token=${token}`,
-        payload: { token, expiresAt: exp },
+        title: "Yêu cầu đặt lại mật khẩu",
+        body: `Có yêu cầu đặt lại mật khẩu cho @${u.username}. Token không được gửi qua kênh này.`,
+        link: "/app/quan-tri",
+        payload: { expiresAt: exp },
         createdAt: nowIso(),
       }).catch(() => {});
     } catch {}
@@ -762,7 +763,7 @@ if (method === "POST" && url.pathname === "/api/login") {
     if (newPassword.length < 6 || newPassword.length > 128) return sendJson(res, 400, { error: "Mật khẩu mới cần từ 6 đến 128 ký tự." });
     let row;
     try {
-      row = await db.prepare("SELECT * FROM password_resets WHERE token = ?").get(token);
+      row = await db.prepare("SELECT * FROM password_resets WHERE token = ?").get(resetTokenHash(token));
     } catch (e) {
       return sendJson(res, 503, { error: "Chức năng đặt lại mật khẩu chưa sẵn sàng. Hãy khởi động lại máy chủ sau khi cập nhật." });
     }
@@ -771,7 +772,7 @@ if (method === "POST" && url.pathname === "/api/login") {
     const u = await db.prepare("SELECT id, username, role FROM users WHERE id = ?").get(row.user_id);
     if (!u || u.role === "admin") return sendJson(res, 400, { error: "Không thể đặt lại mật khẩu cho tài khoản này." });
     await db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(hashPassword(newPassword), u.id);
-    await db.prepare("UPDATE password_resets SET used_at = ? WHERE token = ?").run(nowIso(), token);
+    await db.prepare("UPDATE password_resets SET used_at = ? WHERE token = ?").run(nowIso(), row.token);
     await db.prepare("DELETE FROM sessions WHERE user_id = ?").run(u.id);
     try {
       const { notify } = await import("./modules/notify.js");
@@ -1215,7 +1216,8 @@ if (method === "POST" && url.pathname === "/api/password/change") {
         // Postgres: pg_dump -Fc (requires postgresql-client on the server; fail clearly if binary is missing, never fail silently)
         const tmp = path.join(DATA_DIR, `backup-${Date.now()}.dump`);
         try {
-          await execFileAsync("pg_dump", ["-Fc", "-h", PGCONF.host, "-p", String(PGCONF.port), "-U", PGCONF.user, "-d", PGCONF.database, "-f", tmp], { env: { ...process.env, PGPASSWORD: PGCONF.password } });
+          // P0-3: không đưa dữ liệu bảng sessions (token phiên đang hoạt động) vào file backup
+          await execFileAsync("pg_dump", ["-Fc", "--exclude-table-data=sessions", "-h", PGCONF.host, "-p", String(PGCONF.port), "-U", PGCONF.user, "-d", PGCONF.database, "-f", tmp], { env: { ...process.env, PGPASSWORD: PGCONF.password } });
           const buf = fs.readFileSync(tmp);
           res.writeHead(200, { "Content-Type": "application/octet-stream", "Content-Length": buf.length, "Content-Disposition": `attachment; filename="liferivo-backup-${stamp}.dump"`, "Cache-Control": "no-store" });
           return res.end(buf);
@@ -1225,6 +1227,9 @@ if (method === "POST" && url.pathname === "/api/password/change") {
       const tmp = path.join(DATA_DIR, `backup-${Date.now()}.db`);
       try {
         db.exec(`VACUUM INTO '${tmp.replace(/'/g, "''")}'`);
+        // P0-3: xóa phiên đăng nhập khỏi bản sao trước khi tải về; secure_delete + VACUUM để không còn token trong trang nhớ trống
+        const copy = new DatabaseSync(tmp);
+        try { copy.exec("PRAGMA secure_delete = ON; DELETE FROM sessions; VACUUM;"); } finally { copy.close(); }
         const buf = fs.readFileSync(tmp);
         const name = `liferivo-backup-${stamp}.db`;
         res.writeHead(200, { "Content-Type": "application/octet-stream", "Content-Length": buf.length, "Content-Disposition": `attachment; filename="${name}"`, "Cache-Control": "no-store" });
