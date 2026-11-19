@@ -117,7 +117,8 @@ export function buildLanding() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const built = buildLanding();
   if (process.argv.includes("--check")) {
-    const cur = fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8") : "";
+    // So sánh sau khi chuẩn hóa xuống dòng: Windows (core.autocrlf=true) ghi CRLF, nội dung vẫn đúng
+    const cur = fs.existsSync(OUT) ? fs.readFileSync(OUT, "utf8").replace(/\r\n/g, "\n") : "";
     if (cur !== built) { console.error("landing.min.css is stale: run node tools/build-landing-css.mjs"); process.exit(1); }
     console.log("landing.min.css is up to date");
   } else {

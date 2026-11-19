@@ -84,7 +84,8 @@ for (const f of appFiles) {
   const { code, origBytes } = await buildOne(srcPath, outPath, true, appSet);
   totalOrig += origBytes; totalMin += Buffer.byteLength(code, "utf8"); count++;
   if (CHECK) {
-    if (!fs.existsSync(outPath) || fs.readFileSync(outPath, "utf8") !== code) stale.push(outPath);
+    // Chuẩn hóa xuống dòng để không báo sai trên Windows (core.autocrlf=true)
+    if (!fs.existsSync(outPath) || fs.readFileSync(outPath, "utf8").replace(/\r\n/g, "\n") !== code.replace(/\r\n/g, "\n")) stale.push(outPath);
   } else {
     fs.writeFileSync(outPath, code);
   }
