@@ -1,5 +1,7 @@
 # Python Lab Audit, Bug-Fix, and Upgrade Report — v2.3.0
 
+> **Lưu ý (lỗi thời):** báo cáo này mô tả phiên bản Python Lab v2.3.0 cũ, dùng SQLite và không còn đúng với mã hiện tại (đã bỏ lập trình, dùng PostgreSQL/SQLite, có trợ lý AI). Giữ lại để tham khảo lịch sử. Báo cáo hiện hành: `docs/AUDIT_FULL_2026-11-19.md`.
+
 Date: 29/10/2026. Scope: v2.2.0 source code (the previous build from the same work session) and original v1.5.0 source code for comparison.
 All conclusions below are based on the source code or actual test execution results. No operations were performed on the production server.
 

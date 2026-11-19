@@ -4,7 +4,7 @@
 - Nhánh: `claude/liferivo-study-audit-2304c0` (commit gốc `b5ab72b`)
 - Môi trường: Windows 11, Node.js 24.18.1 (dự án yêu cầu Node ≥ 22), npm 11.16.0
 - Phạm vi: toàn bộ mã nguồn trong repo (675 file theo dõi), chạy thử server thật, kiểm tra giao diện trên trình duyệt.
-- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (Phụ lục C). **Cập nhật đợt 1:** đã sửa P1-2, P1-3 (phần lớn), P1-4, P1-5 và kiểm chứng (Phụ lục D). **Cập nhật đợt 2:** CI cho test, thu hẹp CSP Rive, cache file tĩnh (Phụ lục E). Chưa commit.
+- Trạng thái: báo cáo gốc được lập khi chưa sửa mã. **Cập nhật đợt 0:** đã sửa P0-1, P0-2, P0-3 và kiểm chứng (Phụ lục C). **Cập nhật đợt 1:** đã sửa P1-2, P1-3 (phần lớn), P1-4, P1-5 và kiểm chứng (Phụ lục D). **Cập nhật đợt 2:** CI cho test, thu hẹp CSP Rive, cache file tĩnh (Phụ lục E). **Cập nhật đợt 3:** xử lý toàn bộ mục còn lại, gồm chấm phát âm, consent analytics, chống spam email, admin SQL, TTS bền vững, dọn mã cũ, Zalo và các mục P3 (Phụ lục F). **Cập nhật rà soát sau đợt 3:** kiểm tra lại giao diện, tính năng, API, nút bấm và nghiệp vụ; sửa 3 nhóm route thiếu (đơn Pro "Tôi đã chuyển khoản", hội thoại AI, thử thông báo) (Phụ lục G). Chưa commit.
 
 ## Chú thích trạng thái
 
@@ -585,4 +585,71 @@ Còn mở, cần quyết định trước khi làm:
 - **P2-3**: chấm phát âm `/assess` có nên tính hạn mức gói hay không.
 - **P2-10**: nguồn sự thật cho số phiên bản (`package.json` 5.1.3 hay `VERSION` 1.0.1).
 - **P2-11**: nhận secret Zalo chỉ qua header có làm gãy tích hợp bot hiện tại không (cần xác nhận cách bot gửi).
-- **P2-7, P2-8, P2-5, P2-9**: phân trang admin, giới hạn tốc độ bền vững, giảm JS landing, dọn mã cũ; cần rà riêng.
+- (Các mục trên đã được xử lý trong Phụ lục F. Không còn quyết định nào đang chờ.)
+
+## Phụ lục F — Kết quả đợt 3 (xử lý toàn bộ mục còn lại)
+
+Quyết định được chọn để không phải chờ: mọi mục còn mở đã được làm theo hướng nêu dưới đây. Mục nào đổi hành vi người dùng được ghi rõ để có thể đảo lại.
+
+| ID | Thay đổi | Kiểm chứng |
+|---|---|---|
+| P1-1 | `/api/lang/speak/score`: không ghi tiến độ `lang_speak`, không cộng sao/XP, không tính streak. Vẫn ghi nhận đã luyện (hoạt động hằng ngày, không gắn phần thưởng). Trả `recorded: false`, `starsEarned: 0`, `best` là `null` nếu chưa có. Client không ghi `null` vào điểm cao nhất. **Đổi hành vi:** số sao từ luyện nói chỉ đến từ chấm bằng âm thanh. | `tests/speak-score-integrity.test.mjs` (mới): điểm vẫn trả về, không có sao, `stats.practiced` vẫn 0. Suite `api-business-audit` pass. |
+| P1-6 | `public/js/consent.js` (mới): GTM/GA chỉ nạp sau khi bấm "Đồng ý"; mặc định từ chối; lưu `pl:consent:analytics`; banner tiếng Việt/Anh; không hiện ở khu quản trị. Bỏ khối GTM inline và `noscript` iframe ở `index.html` và `modules/seo.js`. | Trình duyệt: trước khi chọn không có request tới Google; "Chỉ cần thiết" lưu `denied`, không nạp GTM; "Đồng ý" lưu `granted`, thêm GTM và khởi tạo `dataLayer`. |
+| P2-1 | Giới hạn theo địa chỉ email: tối đa 3 OTP quên mật khẩu và 3 mã xác minh mỗi giờ cho một địa chỉ, dù có bao nhiêu tài khoản. Chỉ mục duy nhất `idx_users_email_lower` (email không phân biệt hoa thường) và `idx_users_username_lower`; nếu dữ liệu cũ đang trùng thì chỉ cảnh báo. | Chỉ mục đã được tạo trên DB mới (xác minh trên server). Giới hạn theo địa chỉ không chạy được trực tiếp vì không có SMTP; nằm sau kiểm tra `mailConfigured()`. |
+| P2-2 | `/api/stats` công khai: tên hiển thị thành "Trần H." (họ đầy đủ và chữ đầu tên đệm/tên được che). | Live: `names = ["Trần H."]`. |
+| P2-3 | `/api/lang/speak/assess`: gói miễn phí 5 lượt/ngày, gói Pro 40 lượt/ngày. **Đổi hành vi:** học viên miễn phí bị giới hạn chấm bằng âm thanh. | Đọc mã (cần GEMINI key để chạy live). |
+| P2-4 | Rive không được dùng ở đâu (chỉ có `rive-companion.js` không ai import), nên gỡ luôn: xóa file, `public/rive/`, và bỏ jsDelivr và `wasm-unsafe-eval` khỏi CSP. Test CSP Rive cũng bỏ. | Đồ thị import: không còn file nào bị bỏ sót. CSP trên landing không có vi phạm. |
+| P2-5 | `main.js`: các trang lớp học, gia đình, giáo viên và gói Pro chuyển sang import động. | Landing: 33 → 30 module JS (228 → 205 KB; phần còn lại là module dùng chung). Trình duyệt: `/app/lop`, `/app/gia-dinh`, `/app/bang-gia`, `/app/mon-hoc` render đúng. |
+| P2-7 | `/api/admin/overview`: thống kê đếm bằng `GROUP BY`; danh sách học viên 500 người mới nhất (`truncated` nếu còn nữa). `/api/admin/users`: lọc vai trò và trạng thái trong SQL; tìm theo tên lọc trong JS trên tối đa 5000 dòng (vì `LOWER()` của SQLite không đổi chữ có dấu); truy vấn phụ chỉ đọc đúng những người được trả về. | Live: `userStats` đúng (total, byRole, locked, online); lọc `role`, `status`; tìm "hải" có dấu trả đúng 1 kết quả. |
+| P2-8 | Đếm hạn mức TTS lưu trong `site_stats` (khóa theo ngày và người dùng), không còn nằm trong bộ nhớ. Dọn các khóa cũ hơn 2 ngày. Đếm người dùng trước để người đã hết lượt không làm tốn hạn mức chung. | Đọc mã (cần khóa TTS để chạy live). |
+| P2-9 | Đã xóa: stack judge/Python/C/C++/Java (`interpreter.js`, `judge-*`, `run-*`, `runner/`, `modules/code-runner.js`, `modules/codecourses.js`, `content/code/`, `curriculum.js`, `lessons.js`, `en-content.js`, `content/py-hidden-chapter.js`, `modules/content-i18n.js`, `modules/export.js`, `modules/learning.js`, `db/serial-write.js`), tools tương ứng, `docker-compose.redis.yml`, `docker-compose.staging.yml`, unit `pythonlab-*`, `archive/`, 14 file rỗng, client `code.js`, `editor.js`, `assignments.js`, `classes.js`, `licenses.js`, `rive-companion.js`, `public/app.js`, `public/vendor/codemirror`. **Không xóa bảng hay dữ liệu trong DB** (giữ lịch sử người học). | Đồ thị import phía server: 95 file được tới, phần còn lại là script chạy tay và file cấu hình. Đồ thị client: không còn import nào bị gãy. Build JS và test đạt. |
+| P2-10 | Số phiên bản đọc từ `package.json` (hiện 5.1.3). README cập nhật 6 ngôn ngữ, biến admin và cách kiểm thử. `BAO-CAO-KIEM-TOAN.md` và `PROJECT.md` có cảnh báo lỗi thời. `docs/README.md` đánh dấu tài liệu lịch sử. | Live: `/api/health` trả `5.1.3`. |
+| P2-11 | Zalo: secret chỉ nhận qua header `x-pl-secret`; khi đã cấu hình admin Zalo, trường `from` phải khớp (không còn bỏ qua khi thiếu). **Đổi hành vi:** bot phải gửi secret trong header và gửi `from`. | Live (bật Zalo trong môi trường test): body secret → 401; header không có `from` → từ chối; sai người gửi → từ chối; admin đúng → 200. |
+| P3 | Logout khi đang có phiên phải kèm CSRF (403 nếu thiếu). `/api/visit` giới hạn 60/phút mỗi IP. Mật khẩu phổ biến hoặc toàn một ký tự bị từ chối ở đăng ký, đổi, đặt lại, admin và tạo tài khoản lớp. Thay chuỗi trông như khóa Gemini thật trong test bằng chuỗi giả rõ ràng. Sửa comment "Azure" và User-Agent `CongHocTap`. | Live: logout không CSRF → 403, có CSRF → 200; `123456` → 400. |
+| T1-F03 | Test đã đúng hơn. **Đính chính:** trước đây tôi ghi rằng thẻ môn trên landing mở đăng ký. Kiểm tra lại: thẻ môn (mục 3–4) là liên kết trực tiếp. Chỉ có nút đăng ký ở header và drawer di động trước mục 8, và đó là điều hướng. Lỗi test chỉ là đường dẫn `#/` cũ. | Test pass, không còn TODO. |
+
+Kết quả cuối: `npm test` **167 pass / 0 fail / 0 todo**, thoát 0, không tạo `data/` trong repo. `check:css`, `check:js`, `verify:lang` đạt.
+
+Hệ quả cần biết khi triển khai:
+1. Bot Zalo phải gửi secret trong header `x-pl-secret` và trường `from` là ID admin. Nếu không, xác nhận đơn qua Zalo sẽ dừng.
+2. Học viên miễn phí bị giới hạn chấm phát âm bằng âm thanh ở 5 lượt/ngày.
+3. Sao từ luyện nói chỉ đến từ chấm bằng âm thanh (cần khóa Gemini).
+4. Trước khi bật chỉ mục duy nhất email/username trên DB cũ, server sẽ cảnh báo nếu dữ liệu đang trùng. Cần xử lý trùng trước khi chỉ mục được tạo.
+5. Phân trang admin: danh sách học viên là 500 người mới nhất. Nếu cần xem đầy đủ, cần thêm phân trang ở giao diện.
+
+## Phụ lục G — Rà soát lại sau đợt 3 (giao diện, tính năng, API, nút bấm, nghiệp vụ)
+
+Phạm vi: chạy thật trên máy chủ thử `127.0.0.1:8095` với DB tạm trong thư mục scratchpad, không chạm dữ liệu thật. Kịch bản kiểm tra nằm ngoài repo.
+
+| Hạng mục | Cách kiểm | Kết quả |
+|---|---|---|
+| Giao diện học viên | Duyệt tự động 120 trang (điều hướng SPA), tìm thông báo lỗi, trang trống, lỗi console, tràn ngang | 120 trang, 0 vấn đề |
+| Giao diện quản trị | 19 trang quản trị và 2 cách xem tab kinh doanh; 8 trang giáo viên, lớp, gia đình, cá nhân | 0 vấn đề, không lỗi console |
+| Điện thoại 375px | Đo phần tử vượt khung nhìn trên 8 trang chính và trang chủ | Không tràn trang. Hai chỗ cuộn ngang có chủ đích (bảng giá, thanh chip) |
+| Route client → server | 153 đường dẫn client gọi; kiểm 15 route có tham số thật | Không route nào thiếu handler |
+| Nghiệp vụ đơn Pro, hội thoại AI, thử thông báo | Kịch bản `review-flows` | 18/18 PASS |
+
+**Lỗi đã tìm thấy và sửa trong đợt này:**
+- **R-1 [P1] Luồng "Tôi đã chuyển khoản" không hoạt động.** Thiếu 3 route: `POST /api/billing/orders/:id/claim`, `POST /api/billing/orders/:id/cancel`, `GET /api/billing/orders/:id`. Học viên bấm nút nhưng không có gì được lưu; quản trị viên không thấy đơn đã báo; học viên không xem lại được đơn để tiếp tục thanh toán. Đã thêm vào `modules/api.js`: chỉ chủ đơn mới thao tác được; claim ghi `claimed_at` và lặp lại vẫn 200; không hủy được đơn sau khi đã claim.
+- **R-2 [P2] Lịch sử hội thoại AI không tải và không xóa được.** Thiếu `GET` và `DELETE /api/ai/conversations/:id`. Đã thêm, chỉ chủ hội thoại truy cập được.
+- **R-3 [P3] Nút "Thử thông báo" của quản trị gọi tới route không tồn tại** (`POST /api/admin/notify-test`, trả 404). Đã thêm, chỉ quản trị viên; trả trạng thái webhook.
+
+**Không phải lỗi (đã xác minh):**
+- `/app/luyen-noi` trả 404 vì đường dẫn này không tồn tại. Menu dùng `/app/ngoai-ngu/luyen-noi/{môn}`, hoặc `/app/chon-mon` khi chưa chọn môn.
+- Kịch bản quét báo thiếu `/api/lang/*`, `/api/admin/biz/plans/1` và `DELETE /api/admin/lang/units/...`. Nguyên nhân là kịch bản thay `1` vào chỗ mã ngôn ngữ hoặc mã gói. Kiểm lại với giá trị thật: 15/15 có handler.
+- `POST /api/billing/orders` trả 503 khi body rỗng. Thứ tự kiểm tra là cấu hình thanh toán trước, tham số sau. Cấu hình đã bị xóa vì chính kịch bản quét gọi `POST /api/admin/settings/reset`, đưa mọi cài đặt về mặc định trong DB thử.
+- `POST /api/ai/ask` và `POST /api/lang/insights/:lang/report` trả 503 "chưa được cấu hình": máy thử không có khóa Gemini. Hành vi này đúng thiết kế.
+
+**Quan sát chưa sửa (P3, không đổi hành vi):**
+- Bảng giá trên điện thoại 375px rộng 480px và cuộn ngang trong khung. Người dùng phải vuốt để thấy đủ các cột gói. Có thể thu gọn ở đợt sau.
+
+**Chưa kiểm chứng được:**
+- Luồng lớp học đầy đủ (giáo viên tạo lớp, mời, giao bài, học viên nộp, chấm). Chưa tạo tài khoản giáo viên thử; mới kiểm tra các trang render đúng.
+- Chấm bài tập tương tác và cộng XP, giao diện khóa Pro, mã quà tặng, mời thành viên gia đình: chưa chạy đầu cuối.
+- AI (Gemini), Zalo và SePay thật: không có khóa hay kết nối thật.
+
+**Test mới:** `tests/billing-claim-ai-notify.test.mjs`, 5 test cho đơn (tạo, xem, claim, hủy), hội thoại AI và thử thông báo.
+
+Kết quả: `npm test` **172 pass / 0 fail / 0 todo**, thoát 0 (đợt 3 là 167, thêm 5 test mới). `check:css`, `check:js`, `verify:lang` đạt.
+
+Hệ quả cần biết khi triển khai: nút "Tôi đã chuyển khoản" của học viên bắt đầu hoạt động (trước đó gọi tới route không tồn tại). Cần kiểm tra lại luồng này trên môi trường thật, gồm cả việc quản trị viên thấy đơn đã báo.

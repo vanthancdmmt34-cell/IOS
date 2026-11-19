@@ -1,5 +1,7 @@
 # Project: MyEvolve Study Homepage 8-Section Overhaul
 
+> **Lưu ý (lỗi thời):** tài liệu này ghi lại một đợt thiết kế landing cũ (8 mục, môn lập trình, đường dẫn `#/`). Mã hiện tại dùng đường dẫn `/app/`, sáu ngôn ngữ và không còn môn lập trình. Báo cáo hiện hành: `docs/AUDIT_FULL_2026-11-19.md`.
+
 ## Architecture
 - **Runtime**: Pure Node.js (`node:http`, Node >= 22) without Express.
 - **SSR Pipeline**: `server.js` serves `public/index.html` on `GET /` with template token replacements (`__VERSION__`, `__SITE_NAME__`, etc.). Pre-rendered semantic 8 sections inside `<div id="root">` ensure server response contains `<section id="demoBox">`.
