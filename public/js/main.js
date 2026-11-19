@@ -11,11 +11,23 @@ async function pageAdminLazy(main, params, query, ctx) {
   }
   return _pageAdmin(main, params, query, ctx);
 }
-import { pagePricing, pageMyPlan, pageAi } from "./pro.js";
-import { pageMyClasses, pageJoinLink, pageClass, pageAssignment, pageClassTest, pageTeacher, pageTeacherClass, pagePrintReport, pageTeacherAssignments, pageTeacherProgress } from "./classroom.js";
-import { pageFamily } from "./family.js";
+// AUDIT P2-5: các trang lớp học, gia đình, giáo viên và gói Pro chỉ tải khi vào đúng route (landing không cần).
+const pagePricing = (...a) => import("./pro.js").then((m) => m.pagePricing(...a));
+const pageMyPlan = (...a) => import("./pro.js").then((m) => m.pageMyPlan(...a));
+const pageAi = (...a) => import("./pro.js").then((m) => m.pageAi(...a));
+const pageMyClasses = (...a) => import("./classroom.js").then((m) => m.pageMyClasses(...a));
+const pageJoinLink = (...a) => import("./classroom.js").then((m) => m.pageJoinLink(...a));
+const pageClass = (...a) => import("./classroom.js").then((m) => m.pageClass(...a));
+const pageAssignment = (...a) => import("./classroom.js").then((m) => m.pageAssignment(...a));
+const pageClassTest = (...a) => import("./classroom.js").then((m) => m.pageClassTest(...a));
+const pageTeacher = (...a) => import("./classroom.js").then((m) => m.pageTeacher(...a));
+const pageTeacherClass = (...a) => import("./classroom.js").then((m) => m.pageTeacherClass(...a));
+const pagePrintReport = (...a) => import("./classroom.js").then((m) => m.pagePrintReport(...a));
+const pageTeacherAssignments = (...a) => import("./classroom.js").then((m) => m.pageTeacherAssignments(...a));
+const pageTeacherProgress = (...a) => import("./classroom.js").then((m) => m.pageTeacherProgress(...a));
+const pageFamily = (...a) => import("./family.js").then((m) => m.pageFamily(...a));
+const pageMyStudents = (...a) => import("./teacher-students.js").then((m) => m.pageMyStudents(...a));
 import { pageHome, pageLangCourse, pageLangExercise, pageLangWrite, pageLangTheory, pageLangReview, pageLangCertificate, pageLangCertList, pageLangLeaderboard, pageLangBadges, paintLangSide, refreshLangSide, paintSubjectPill, getSubject, setSubject, subjectNav, subjectInfo } from "./lang.js";
-import { pageMyStudents } from "./teacher-students.js";
 import { roleLabel } from "./core.js";
 import { applyLang, initialLang, currentLang, t } from "./i18n.js";
 import { loadPrefs, levelOf } from "./game.js";

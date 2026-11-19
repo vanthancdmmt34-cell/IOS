@@ -66,17 +66,8 @@ ${links}
 <meta property="og:type" content="website"><meta property="og:site_name" content="${esc(site)}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${esc(url)}"><meta property="og:locale" content="${lang === "en" ? "en_US" : "vi_VN"}">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.png" type="image/png">
-<!-- Google Tag Manager -->
-<script${nonce ? ` nonce="${nonce}"` : ""}>
-  if (!/^#\\\/quan-tri/.test(location.hash)) {
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-W7Q4KGDG');
-  }
-</script>
-<!-- End Google Tag Manager -->
+<!-- Analytics (GTM/GA4) chỉ nạp sau khi người dùng đồng ý: public/js/consent.js (AUDIT P1-6) -->
+<script src="/js/consent.js" defer></script>
 <!-- GA4 qua GTM (Võ chọn 14/11): khong dung gtag.js truc tiep; 4 event day qua dataLayer de GTM kich hoat the GA4 -->
 <script${nonce ? ` nonce="${nonce}"` : ""}>
   window.__plGA = function(ev){ try { (window.dataLayer = window.dataLayer || []).push({event: ev}); } catch (e) {} };
@@ -85,9 +76,6 @@ ${links}
 <script src="/js/theme-init.js"></script>
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>`).join("\n")}
 </head><body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W7Q4KGDG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <header class="pub-top"><a class="pub-brand" href="${loggedIn ? appHome : "/"}">${S.logoUrl ? `<img class="logo${S.logoMode === "only" ? " only" : ""}" src="${esc(S.logoUrl)}" alt="${S.logoMode === "only" ? esc(site) : ""}">${S.logoMode === "only" ? "" : esc(site)}` : `<svg class="me-mark" width="34" height="34" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="12" fill="#EFEBFF" stroke="#9B8AFB" stroke-width="1.8"/><path d="M9.5 16.5 8 7.5l6.5 4.2M26.5 16.5 28 7.5l-6.5 4.2" fill="#FFFDF9" stroke="#303047" stroke-width="1.8" stroke-linejoin="round"/><ellipse cx="18" cy="20.5" rx="10.2" ry="8.8" fill="#FFFDF9" stroke="#303047" stroke-width="1.8"/><circle cx="13.8" cy="19.6" r="1.6" fill="#303047"/><circle cx="22.2" cy="19.6" r="1.6" fill="#303047"/><ellipse cx="11.2" cy="22" rx="1.6" ry=".9" fill="#FFB9D0"/><ellipse cx="24.8" cy="22" rx="1.6" ry=".9" fill="#FFB9D0"/><path d="M16.2 22q.9 1.1 1.8 0 .9 1.1 1.8 0" stroke="#303047" stroke-width="1.5" stroke-linecap="round"/></svg><span class="me-word"><b>${esc((/^(.*\S)\s+study$/i.exec(site) || [0, site])[1])}</b></span>`}</a><nav><a href="${loggedIn ? appHome : "/#muc-dich"}">${lang === "en" ? "Paths" : "Lộ trình"}</a><a href="${loggedIn ? `${appHome}chon-mon` : "/#mon-hoc"}">${lang === "en" ? "Languages" : "Ngoại ngữ"}</a><a href="${loggedIn ? `${appHome}ho-tro` : "/#hoi-dap"}">${lang === "en" ? "FAQ" : "Hỏi đáp"}</a><a href="${loggedIn ? `${appHome}bang-gia` : `/${lang}/pricing`}">${t.pricing}</a>${loggedIn ? `<a class="btn" href="${appHome}">← ${t.backApp}</a>` : `<a class="btn" href="/app/dang-nhap">${t.login}</a>`}</nav></header>
 <main class="pub-main">${body}</main>
 <footer class="pub-foot"><p>${esc(lang === "en" && S.footerTextEn ? S.footerTextEn : (S.footerText || ""))}</p><nav>${Object.entries(LEGAL).filter(([k]) => !(S.hiddenFooterLinks || []).includes(k)).map(([k, v]) => `<a href="/${lang}/${k}">${esc(v[lang])}</a>`).join("")}</nav><p class="muted">© ${new Date().getFullYear()} ${esc(S.legalOwner || site)}. ${t.foot}</p></footer>

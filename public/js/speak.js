@@ -1197,7 +1197,7 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     if (out.audioUrl) { if (st.audio[it.k]) URL.revokeObjectURL(st.audio[it.k]); st.audio[it.k] = out.audioUrl; }
     await grade(it, out);
   }
-  // Chấm chi tiết (Azure): đổi bản thu sang WAV 16 kHz rồi gửi lên máy chủ. Chỉ chạy khi máy chủ đã bật.
+  // Chấm chi tiết bằng Gemini: đổi bản thu sang WAV 16 kHz rồi gửi lên máy chủ. Chỉ chạy khi máy chủ đã bật.
   async function assessIt(it, audioUrl) {
     try {
       const blob = await (await fetch(audioUrl)).blob();
@@ -1210,7 +1210,8 @@ export async function pageSpeakStudio(main, [langId, levelId, kind, unitId], que
     try {
       const r = await api("/api/lang/speak/score", "POST", { lang: d.lang, key: it.k, heard: out.text, alts: out.alts || [], conf: out.conf || 0, ms: out.ms || 0 });
       if (!alive) return;
-      st.res[it.k] = r; d.best[it.k] = r.best; delete st.tips[it.k];
+      // Điểm luyện tập không ghi tiến độ (AUDIT P1-1): chỉ cập nhật điểm cao nhất khi máy chủ đã có sẵn
+      st.res[it.k] = r; if (r.best != null) d.best[it.k] = r.best; delete st.tips[it.k];
       refreshPet().then(() => paintLangSide()).catch(() => {});
       if (d.pronAssess && out.audioUrl) assessIt(it, out.audioUrl);
       if (items[st.idx] === it) { paintDots(); paintCard(); card.querySelector(".sp-result")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
