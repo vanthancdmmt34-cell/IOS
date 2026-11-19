@@ -359,9 +359,10 @@ describe('Milestone 3 Adversarial Verification (Challenger 1)', () => {
     });
 
 
-    it('C1-BUILD-01: npm run build completes successfully with exit code 0', () => {
-      const output = execSync('npm run build', { cwd: ROOT, encoding: 'utf8' });
-      assert.match(output, /OK|bundle\.min\.css/, 'Build output must indicate success');
+    // Chỉ kiểm tra (không ghi file): npm run build ghi đè các file build đã commit mỗi lần chạy test (AUDIT F-06)
+    it('C1-BUILD-01: build verification scripts (check:css, check:js, verify:lang) pass with exit code 0', () => {
+      const output = execSync('npm run check:css && npm run check:js && npm run verify:lang', { cwd: ROOT, encoding: 'utf8' });
+      assert.match(output, /up to date|OK|không có lỗi/, 'Verification output must indicate success');
     });
   });
 });

@@ -99,12 +99,12 @@ describe('E2E Tier 3: Cross-Feature Combinations & Pairwise Integration (7 Pairs
       // 3. Metadata og:image & twitter:image
       assert.match(
         ssrHtml,
-        /<meta[^>]*property="og:image"[^>]*content="https:\/\/study\.liferivo\.com\/og-image\.png"/i,
+        /<meta[^>]*property="og:image"[^>]*content="https:\/\/study\.liferivo\.com\/og-image\.png(?:\?v=[\w.-]+)?"/i,
         'og:image must match https://study.liferivo.com/og-image.png'
       );
       assert.match(
         ssrHtml,
-        /<meta[^>]*name="twitter:image"[^>]*content="https:\/\/study\.liferivo\.com\/og-image\.png"/i,
+        /<meta[^>]*name="twitter:image"[^>]*content="https:\/\/study\.liferivo\.com\/og-image\.png(?:\?v=[\w.-]+)?"/i,
         'twitter:image must match https://study.liferivo.com/og-image.png'
       );
     });

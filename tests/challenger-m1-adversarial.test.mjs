@@ -75,16 +75,18 @@ describe('Milestone 1 Adversarial Verification (Challenger 1)', () => {
     const ogMatch = ssrHtml.match(/<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/i) ||
                     ssrHtml.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:image["']/i);
     assert.ok(ogMatch, 'og:image meta tag must exist');
-    assert.strictEqual(ogMatch[1], 'https://study.liferivo.com/og-image.png', 'og:image content mismatch');
+    // Ảnh có thể gắn tham số phiên bản (?v=...) để bust cache mạng xã hội; domain và đường dẫn phải đúng
+    const OG_IMAGE_RE = /^https:\/\/study\.liferivo\.com\/og-image\.png(\?v=[\w.-]+)?$/;
+    assert.match(ogMatch[1], OG_IMAGE_RE, 'og:image content mismatch');
 
     const twMatch = ssrHtml.match(/<meta\s+name=["']twitter:image["']\s+content=["']([^"']+)["']/i) ||
                     ssrHtml.match(/<meta\s+content=["']([^"']+)["']\s+name=["']twitter:image["']/i);
     assert.ok(twMatch, 'twitter:image meta tag must exist');
-    assert.strictEqual(twMatch[1], 'https://study.liferivo.com/og-image.png', 'twitter:image content mismatch');
+    assert.match(twMatch[1], /^https:\/\/study\.liferivo\.com\/og-image\.png(\?v=[\w.-]+)?$/, 'twitter:image content mismatch');
 
     const ogSecureMatch = ssrHtml.match(/<meta\s+property=["']og:image:secure_url["']\s+content=["']([^"']+)["']/i);
     assert.ok(ogSecureMatch, 'og:image:secure_url meta tag must exist');
-    assert.strictEqual(ogSecureMatch[1], 'https://study.liferivo.com/og-image.png');
+    assert.match(ogSecureMatch[1], /^https:\/\/study\.liferivo\.com\/og-image\.png(\?v=[\w.-]+)?$/);
   });
 
   it('C1-07: Zero unhandled template tokens in SSR output', () => {

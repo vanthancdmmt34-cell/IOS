@@ -65,7 +65,8 @@ describe('E2E Tier 4: Real-World Application Scenarios (5 Composite Journeys)', 
         ssrHtml.indexOf('Học theo lộ trình xuất khẩu') + 60
       );
       assert.doesNotMatch(abroadCardSnippet, /data-auth/, 'Step 5: No auth barrier on abroad CTA');
-      assert.match(abroadCardSnippet, /href="#\/ngoai-ngu\/ja"/, 'Step 5: Direct navigation to #/ngoai-ngu/ja');
+      // Route hiện dùng đường dẫn /app/... (không còn hash #/); liên kết trực tiếp vẫn phải có, không có chặn đăng ký
+      assert.match(abroadCardSnippet, /href="(?:#|\/app)\/ngoai-ngu\/ja"/, 'Step 5: Direct navigation to /app/ngoai-ngu/ja');
     });
   });
 

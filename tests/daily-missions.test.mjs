@@ -49,7 +49,8 @@ describe("số liệu hôm nay và biểu đồ tuần trên máy chủ thật",
   it("chưa học gì thì mọi số liệu hôm nay bằng 0", async () => {
     const d = await call("/api/dashboard", { cookie });
     assert.equal(d.status, 200);
-    assert.deepEqual(d.json.today, { activities: 0, reviewsByLang: {}, miniGames: 0 });
+    // Shape hiện tại của /api/dashboard → today (modules/api.js): có thêm số bài học và luyện nói theo ngôn ngữ
+    assert.deepEqual(d.json.today, { activities: 0, lessons: 0, lessonsByLang: {}, speaks: 0, speaksByLang: {}, reviewsByLang: {}, miniGames: 0 });
   });
 
   it("mỗi lượt mini game được ghi nhận, không tính vào hoạt động học ngoại ngữ", async () => {
